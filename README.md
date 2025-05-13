@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Project Documentation Site
+
+A modern documentation site built with Next.js, inspired by the design of nyko.cool. This project provides a clean, responsive interface for documentation with features like:
+
+- Interactive background animations (waves or stars) using Three.js
+- File tree navigation for documentation structure
+- Responsive design for all devices
+- Dark mode with beautiful animations
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18.0 or later
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd project-docs
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Run the development server:
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project uses environment variables to configure certain features:
 
-## Learn More
+| Variable | Options | Default | Description |
+|----------|---------|---------|-------------|
+| `NEXT_PUBLIC_BACKGROUND_TYPE` | `wave`, `stars` | `wave` | Sets the background animation type |
 
-To learn more about Next.js, take a look at the following resources:
+You can set these variables using a `.env.local` file in the project root:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+NEXT_PUBLIC_BACKGROUND_TYPE=stars
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+- `/app`: Next.js app router pages and components
+- `/app/components`: Reusable UI components
+- `/app/data`: Documentation content and structure
+- `/app/docs/[[...slug]]`: Dynamic routes for documentation pages
+- `/public`: Static assets
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Documentation Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The documentation is structured as a file tree with nested categories and documents in markdown format. The structure is defined in `/app/data/documentation.ts`.
+
+To edit or add new documentation:
+
+1. Add your markdown content to the `documentationContent` object in `/app/data/documentation.ts`
+2. Update the file tree structure in the `documentationTree` array if needed
+
+## Features
+
+- **Interactive Backgrounds**:
+  - Wave animation: Interactive curved line grid that responds to cursor movements
+  - Star animation: Interactive star field with subtle movement and cursor reactivity
+- **Dynamic Navigation**: File tree structure with expandable sections
+- **Markdown Rendering**: Built-in markdown parsing for documentation
+- **Responsive Design**: Mobile-friendly layout
+- **Client-side Navigation**: Fast page transitions with client-side routing
+- **Smooth Animations**: Using Framer Motion for smooth UI transitions
+
+## Customization
+
+### Theme Colors
+
+The main colors are defined in `/app/globals.css`:
+
+```css
+:root {
+  --primary-color: #8a56ff;
+  --secondary-color: #61dafb;
+}
+```
+
+### Documentation Content
+
+Edit the markdown content in the `documentationContent` object in `/app/data/documentation.ts`.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Design inspired by [nyko.cool](https://www.nyko.cool/)
+- Built with [Next.js](https://nextjs.org/)
+- 3D rendering with [Three.js](https://threejs.org/) and [React Three Fiber](https://docs.pmnd.rs/react-three-fiber/)
