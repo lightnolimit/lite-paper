@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { marked } from 'marked';
@@ -12,7 +12,49 @@ type ContentRendererProps = {
   path: string;
 };
 
-// Function to find the previous and next pages based on the current path
+/**
+ * Apply CSS classes to various HTML elements in the rendered markdown
+ */
+const applyMarkdownStyles = (html: string): string => {
+  // Style for code blocks (but not wallet addresses)
+  html = html.replace(/<code(?! class="wallet-address")/g, '<code class="font-mono bg-opacity-10 bg-gray-200 dark:bg-gray-700 dark:bg-opacity-20 px-1 py-0.5 rounded"');
+  
+  // Apply styling for tables
+  html = html.replace(/<table>/g, '<table class="w-full border-collapse my-4">');
+  html = html.replace(/<th>/g, '<th class="border border-gray-300 dark:border-gray-700 px-4 py-2 bg-gray-100 dark:bg-gray-800">');
+  html = html.replace(/<td>/g, '<td class="border border-gray-300 dark:border-gray-700 px-4 py-2">');
+  
+  // Style for blockquotes
+  html = html.replace(/<blockquote>/g, '<blockquote class="border-l-4 border-primary-color pl-4 italic text-gray-600 dark:text-gray-400 my-4">');
+  
+  // Style for regular headings (not icon headings)
+  html = html.replace(/<h1(?! class="icon-heading")([^>]*)>/g, '<h1$1 class="font-title text-3xl mb-6 mt-8">')
+    .replace(/<h2(?! class="icon-heading")([^>]*)>/g, '<h2$1 class="font-title text-2xl mb-4 mt-6">')
+    .replace(/<h3(?! class="icon-heading")([^>]*)>/g, '<h3$1 class="font-title text-xl mb-3 mt-5">')
+    .replace(/<h4(?! class="icon-heading")([^>]*)>/g, '<h4$1 class="font-title text-lg mb-2 mt-4">')
+    .replace(/<h5(?! class="icon-heading")([^>]*)>/g, '<h5$1 class="font-title text-base mb-2 mt-3">')
+    .replace(/<h6(?! class="icon-heading")([^>]*)>/g, '<h6$1 class="font-title text-sm mb-2 mt-3">');
+  
+  // Style for paragraphs
+  html = html.replace(/<p([^>]*)>/g, '<p$1 class="font-body mb-4">');
+  
+  // Style for links
+  html = html.replace(/<a(?! class="social)([^>]*)>/g, '<a$1 class="text-primary-color hover:underline">');
+  
+  // Style for lists
+  html = html.replace(/<ul([^>]*)>/g, '<ul$1 class="list-disc pl-6 mb-4">')
+    .replace(/<ol([^>]*)>/g, '<ol$1 class="list-decimal pl-6 mb-4">')
+    .replace(/<li([^>]*)>/g, '<li$1 class="mb-1">');
+
+  // Add styling for horizontal rules
+  html = html.replace(/<hr>/g, '<hr class="my-8 border-t border-gray-300 dark:border-gray-700">');
+
+  return html;
+};
+
+/**
+ * Function to find the previous and next pages based on the current path
+ */
 const findAdjacentPages = (currentPath: string): { prevPage?: { path: string, title: string }, nextPage?: { path: string, title: string } } => {
   // Flatten the documentation tree to get all file items in order
   const flattenedItems: { path: string, name: string }[] = [];
@@ -62,62 +104,62 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
   const contentRef = useRef<HTMLDivElement>(null);
   
   // Get previous and next pages using useMemo to avoid re-calculating on every render
-  const { prevPage, nextPage } = React.useMemo(() => findAdjacentPages(path), [path]);
+  const { prevPage, nextPage } = useMemo(() => findAdjacentPages(path), [path]);
   
   // Process links and add wallet copy buttons after render
   useEffect(() => {
-    if (contentRef.current) {
-      // Find all links in the rendered content
-      const links = contentRef.current.querySelectorAll('a');
-      links.forEach(link => {
-        // Add tabindex to make links focusable in tab order
-        link.setAttribute('tabindex', '0');
-        
-        // Add keyboard event listener for Enter key
-        link.addEventListener('keydown', (e: KeyboardEvent) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            link.click();
-          }
+    if (!contentRef.current) return;
+
+    // Find all links in the rendered content
+    const links = contentRef.current.querySelectorAll('a');
+    links.forEach(link => {
+      // Add tabindex to make links focusable in tab order
+      link.setAttribute('tabindex', '0');
+      
+      // Add keyboard event listener for Enter key
+      link.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          link.click();
+        }
+      });
+    });
+
+    // Add copy buttons to wallet addresses
+    const walletAddresses = contentRef.current.querySelectorAll('.wallet-address');
+    walletAddresses.forEach(walletElement => {
+      const address = walletElement.getAttribute('data-address');
+      if (!address) return;
+      
+      // Check if button already exists to prevent duplicates
+      if (walletElement.querySelector('.copy-button')) return;
+
+      // Create the copy button
+      const copyButton = document.createElement('button');
+      copyButton.className = 'copy-button';
+      copyButton.innerHTML = `<img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" width="16" height="16" />`;
+      copyButton.setAttribute('aria-label', 'Copy to clipboard');
+      copyButton.setAttribute('title', 'Copy to clipboard');
+      
+      // Add click handler
+      copyButton.addEventListener('click', () => {
+        navigator.clipboard.writeText(address).then(() => {
+          // Success feedback
+          copyButton.innerHTML = `<img src="/assets/icons/pixel-check-circle-solid.svg" alt="Copied" width="16" height="16" />`;
+          setTimeout(() => {
+            copyButton.innerHTML = `<img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" width="16" height="16" />`;
+          }, 1500);
         });
       });
-
-      // Add copy buttons to wallet addresses
-      const walletAddresses = contentRef.current.querySelectorAll('.wallet-address');
-      walletAddresses.forEach(walletElement => {
-        const address = walletElement.getAttribute('data-address');
-        if (!address) return;
-        
-        // Check if button already exists to prevent duplicates
-        if (walletElement.querySelector('.copy-button')) return;
-
-        // Create the copy button
-        const copyButton = document.createElement('button');
-        copyButton.className = 'copy-button';
-        copyButton.innerHTML = `<img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" width="16" height="16" />`;
-        copyButton.setAttribute('aria-label', 'Copy to clipboard');
-        copyButton.setAttribute('title', 'Copy to clipboard');
-        
-        // Add click handler
-        copyButton.addEventListener('click', () => {
-          navigator.clipboard.writeText(address).then(() => {
-            // Success feedback
-            copyButton.innerHTML = `<img src="/assets/icons/pixel-check-circle-solid.svg" alt="Copied" width="16" height="16" />`;
-            setTimeout(() => {
-              copyButton.innerHTML = `<img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" width="16" height="16" />`;
-            }, 1500);
-          });
-        });
-        
-        // Add button after the wallet address
-        walletElement.appendChild(copyButton);
-      });
-    }
+      
+      // Add button after the wallet address
+      walletElement.appendChild(copyButton);
+    });
   }, [content]);
   
-  // Basic markdown rendering
-  const renderMarkdown = (text: string): string => {
-    if (!text) return '<p>No content available.</p>';
+  // Render markdown with memoization
+  const contentHtml = useMemo(() => {
+    if (!content) return '<p>No content available.</p>';
 
     try {
       // Configure marked to handle markdown properly
@@ -125,54 +167,17 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
         gfm: true,
         breaks: true,
         pedantic: false
-        // Note: Using HTML directly in the markdown file instead of sanitize option
       });
 
-      // Parse markdown into HTML
-      let html = marked.parse(text) as string;
-
-      // Style for code blocks (but not wallet addresses)
-      html = html.replace(/<code(?! class="wallet-address")/g, '<code class="font-mono bg-opacity-10 bg-gray-200 dark:bg-gray-700 dark:bg-opacity-20 px-1 py-0.5 rounded"');
-      
-      // Apply styling for tables
-      html = html.replace(/<table>/g, '<table class="w-full border-collapse my-4">');
-      html = html.replace(/<th>/g, '<th class="border border-gray-300 dark:border-gray-700 px-4 py-2 bg-gray-100 dark:bg-gray-800">');
-      html = html.replace(/<td>/g, '<td class="border border-gray-300 dark:border-gray-700 px-4 py-2">');
-      
-      // Style for blockquotes
-      html = html.replace(/<blockquote>/g, '<blockquote class="border-l-4 border-primary-color pl-4 italic text-gray-600 dark:text-gray-400 my-4">');
-      
-      // Style for regular headings (not icon headings)
-      html = html.replace(/<h1(?! class="icon-heading")([^>]*)>/g, '<h1$1 class="font-title text-3xl mb-6 mt-8">')
-        .replace(/<h2(?! class="icon-heading")([^>]*)>/g, '<h2$1 class="font-title text-2xl mb-4 mt-6">')
-        .replace(/<h3(?! class="icon-heading")([^>]*)>/g, '<h3$1 class="font-title text-xl mb-3 mt-5">')
-        .replace(/<h4(?! class="icon-heading")([^>]*)>/g, '<h4$1 class="font-title text-lg mb-2 mt-4">')
-        .replace(/<h5(?! class="icon-heading")([^>]*)>/g, '<h5$1 class="font-title text-base mb-2 mt-3">')
-        .replace(/<h6(?! class="icon-heading")([^>]*)>/g, '<h6$1 class="font-title text-sm mb-2 mt-3">');
-      
-      // Style for paragraphs
-      html = html.replace(/<p([^>]*)>/g, '<p$1 class="font-body mb-4">');
-      
-      // Style for links
-      html = html.replace(/<a(?! class="social)([^>]*)>/g, '<a$1 class="text-primary-color hover:underline">');
-      
-      // Style for lists
-      html = html.replace(/<ul([^>]*)>/g, '<ul$1 class="list-disc pl-6 mb-4">')
-        .replace(/<ol([^>]*)>/g, '<ol$1 class="list-decimal pl-6 mb-4">')
-        .replace(/<li([^>]*)>/g, '<li$1 class="mb-1">');
-
-      // Add styling for horizontal rules
-      html = html.replace(/<hr>/g, '<hr class="my-8 border-t border-gray-300 dark:border-gray-700">');
-
-      return html;
+      // Parse markdown into HTML and apply styling
+      const html = marked.parse(content) as string;
+      return applyMarkdownStyles(html);
     } catch (error: unknown) {
       console.error('Error rendering markdown:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       return `<p>Error rendering content: ${errorMessage}</p>`;
     }
-  };
-
-  const contentHtml = renderMarkdown(content);
+  }, [content]);
   
   // Check if this is a synopsis page to show banner
   const isSynopsisPage = path.toLowerCase().includes('synopsis');
