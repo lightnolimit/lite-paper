@@ -1,0 +1,5 @@
+[pages]
+build_command = "pnpm run build"
+output_directory = "out"
+compatibility_date = "2023-12-01"
+compatibility_flags = ["nodejs_compat"] 

@@ -9,7 +9,8 @@
     "lint": "next lint",
     "pages:build": "next build",
     "pages:deploy": "npm run pages:build && wrangler pages deploy out",
-    "deploy:production": "npm run pages:build && wrangler pages deploy out --env production"
+    "deploy:production": "npm run pages:build && wrangler pages deploy out --env production",
+    "cloudflare-pages": "next build"
   },
   "engines": {
     "node": ">=16.0.0"
