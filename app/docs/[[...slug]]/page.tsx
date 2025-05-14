@@ -9,8 +9,10 @@ interface PageProps {
 }
 
 export default async function DocPage({ params }: PageProps) {
-  // In Next.js App Router server components, we need to access params directly without checking first
-  const slugPath = params?.slug?.join('/') || 'introduction/synopsis';
+  // Handle params safely without accessing properties directly
+  const slugPath = Array.isArray(params?.slug) 
+    ? params.slug.join('/') 
+    : 'introduction/synopsis';
   
   // Load the content for this document
   const content = await loadMarkdownContent(slugPath);
