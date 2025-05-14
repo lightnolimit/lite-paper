@@ -1,6 +1,6 @@
 # Configuration for Cloudflare Pages
 [build]
-command = "pnpm run build"
+command = "npm run pages:build"
 publish = "out"
 
 [build.environment]
