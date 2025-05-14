@@ -71,10 +71,11 @@ export default function BackgroundSelector({ className = "" }: BackgroundSelecto
   
   // Common button styling
   const getButtonStyles = (type: BackgroundType) => ({
-    className: `px-2 py-1 rounded text-sm ${backgroundType === type ? 'bg-primary-color text-background-color' : 'bg-card-color hover:bg-gray-200 dark:hover:bg-gray-700'}`,
+    className: `px-2 py-1 rounded text-sm ${backgroundType === type ? 'active-bg-button' : 'bg-card-color hover:bg-gray-200 dark:hover:bg-gray-700'}`,
     style: { 
       border: '1px solid var(--border-color)',
-      color: backgroundType === type ? 'var(--background-color)' : 'var(--text-color)'
+      color: backgroundType === type ? 'var(--background-color)' : 'var(--text-color)',
+      backgroundColor: backgroundType === type ? 'var(--primary-color)' : ''
     },
     whileHover: { scale: 1.05 },
     whileTap: { scale: 0.95 },

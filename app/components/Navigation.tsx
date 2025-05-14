@@ -61,7 +61,7 @@ const socialLinks = [
     href: 'https://x.com', 
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
-        <path fill="currentColor" d="M15.5 10V9h1V8h1V7h1V6h1V5h1V4h1V3h1V2h-3v1h-1v1h-1v1h-1v1h-1v1h-1v1h-2V7h-1V6h-1V4h-1V3h-1V2h-7v1h1v1h1v1h1v2h1v1h1v2h1v1h1v2h1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h3v-1h1v-1h1v-1h1v-1h1v-1h2v1h1v1h1v2h1v1h1v1h7v-1h-1v-1h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1zm0 4v1h1v2h1v1h1v2h-3v-2h-1v-1h-1v-1h-1v-2h-1v-1h-1v-1h-1v-2h-1V9h-1V7h-1V6h-1V4h3v1h1v2h1v1h1v2h1v1h1v1h1v2z" strokeWidth="0.5" stroke="#000"/>
+        <path fill="currentColor" d="M15.5 10V9h1V8h1V7h1V6h1V5h1V4h1V3h1V2h-3v1h-1v1h-1v1h-1v1h-1v1h-2V7h-1V6h-1V4h-1V3h-1V2h-7v1h1v1h1v1h1v2h1v1h1v2h1v1h1v2h1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h3v-1h1v-1h1v-1h1v-1h1v-1h2v1h1v1h1v2h1v1h1v1h7v-1h-1v-1h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1zm0 4v1h1v2h1v1h1v2h-3v-2h-1v-1h-1v-1h-1v-2h-1v-1h-1v-1h-1v-2h-1V9h-1V7h-1V6h-1V4h3v1h1v2h1v1h1v2h1v1h1v1h1v2z" strokeWidth="0.5" stroke="#000"/>
       </svg>
     )
   },
@@ -154,84 +154,89 @@ export default function Navigation({ docsPath, onToggleSidebar, sidebarVisible }
   
   return (
     <header className="fixed top-0 left-0 right-0 z-40 header-bar border-b" style={{ backgroundColor: 'var(--card-color)' }}>
-      <div className="w-full px-4 md:px-8 flex items-center justify-between h-16">
-        {/* Logo and site title */}
-        <Link 
-          href="/"
-          className="flex items-center gap-2"
-          style={{ color: 'var(--text-color)' }}
-          tabIndex={0}
-        >
-          <Image 
-            src={isDarkMode ? "/assets/logo/phantasy-icon-pink.png" : "/assets/logo/phantasy-icon-black.png"}
-            alt="Phantasy Logo"
-            width={32}
-            height={32}
-            className="h-8 w-auto logo-image"
-          />
-          <span className="font-mono text-xl tracking-tighter" style={{ fontFamily: 'var(--mono-font)' }}>DOCS</span>
-        </Link>
-        
-        <div className="flex items-center gap-2">
-          {/* Desktop navigation */}
-          <nav className="hidden md:flex items-center gap-6">
-            {navItems.map((item) => (
-              <div 
-                key={item.label} 
-                className="relative"
-                onMouseEnter={() => setHoveredItem(item.label)}
-                onMouseLeave={() => setHoveredItem(null)}
-              >
-                {renderNavLink(item)}
-              </div>
-            ))}
-          </nav>
+      <div className="w-full mx-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 flex items-center justify-between h-16">
+          {/* Logo and site title */}
+          <Link 
+            href="/"
+            className="flex items-center gap-2"
+            style={{ color: 'var(--text-color)' }}
+            tabIndex={0}
+          >
+            <Image 
+              src={isDarkMode ? "/assets/logo/phantasy-icon-pink.png" : "/assets/logo/phantasy-icon-black.png"}
+              alt="Phantasy Logo"
+              width={32}
+              height={32}
+              className="h-8 w-auto logo-image"
+            />
+            <span className="font-mono text-xl tracking-tighter" style={{ fontFamily: 'var(--mono-font)' }}>DOCS</span>
+          </Link>
           
-          {/* Desktop Social Media Icons */}
-          <div className="hidden md:flex items-center gap-2">
-            {socialLinks.map(link => (
-              <a 
-                key={link.name}
-                href={link.href} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                aria-label={link.name} 
-                className="hover:opacity-80 transition-opacity"
+          <div className="flex items-center gap-2">
+            {/* Desktop navigation */}
+            <nav className="hidden md:flex items-center gap-6">
+              {navItems.map((item) => (
+                <div 
+                  key={item.label} 
+                  className="relative"
+                  onMouseEnter={() => setHoveredItem(item.label)}
+                  onMouseLeave={() => setHoveredItem(null)}
+                >
+                  {renderNavLink(item)}
+                </div>
+              ))}
+              
+              {/* Separator between nav links and social icons */}
+              <div className="h-6 w-px bg-gray-300 dark:bg-gray-700 ml-2" aria-hidden="true"></div>
+            </nav>
+            
+            {/* Desktop Social Media Icons */}
+            <div className="hidden md:flex items-center gap-2 ml-4">
+              {socialLinks.map(link => (
+                <a 
+                  key={link.name}
+                  href={link.href} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  aria-label={link.name} 
+                  className="hover:opacity-80 transition-opacity"
+                >
+                  {link.icon}
+                </a>
+              ))}
+              
+              {/* Separator between social icons and settings */}
+              <div className="h-6 w-px bg-gray-300 dark:bg-gray-700 ml-1 mr-2" aria-hidden="true"></div>
+              
+              {/* Settings menu with theme and background options */}
+              <SettingsMenu className="hover:text-primary-color" />
+            </div>
+            
+            {/* Mobile menu toggle and settings */}
+            <div className="flex md:hidden items-center gap-3">
+              {/* Settings menu for mobile */}
+              <SettingsMenu className="hover:text-primary-color" isCompact={true} />
+              
+              {/* Mobile menu button */}
+              <button 
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                style={{ color: 'var(--text-color)' }}
+                aria-label="Toggle mobile menu"
+                aria-expanded={mobileMenuOpen}
+                tabIndex={0}
               >
-                {link.icon}
-              </a>
-            ))}
-            
-            {/* Separator between social icons and settings */}
-            <div className="h-6 w-px bg-gray-300 dark:bg-gray-700 ml-1 mr-2" aria-hidden="true"></div>
-            
-            {/* Settings menu with theme and background options */}
-            <SettingsMenu className="hover:text-primary-color" />
-          </div>
-          
-          {/* Mobile menu toggle and settings */}
-          <div className="flex md:hidden items-center gap-3">
-            {/* Settings menu for mobile */}
-            <SettingsMenu className="hover:text-primary-color" isCompact={true} />
-            
-            {/* Mobile menu button */}
-            <button 
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              style={{ color: 'var(--text-color)' }}
-              aria-label="Toggle mobile menu"
-              aria-expanded={mobileMenuOpen}
-              tabIndex={0}
-            >
-              {mobileMenuOpen ? (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                </svg>
-              )}
-            </button>
+                {mobileMenuOpen ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>

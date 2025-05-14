@@ -87,7 +87,26 @@ export default function DocumentationPage({ initialContent, currentPath }: Docum
     // Add resize listener
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [sidebarVisible]);
+  }, []);
+  
+  // Handle sidebar layout clicks
+  useEffect(() => {
+    // For mobile, add a click handler to close sidebar when clicking outside
+    if (typeof window === 'undefined') return;
+    
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (isMobile && sidebarVisible) {
+        const sidebarEl = document.querySelector('.file-tree-panel');
+        const target = e.target as Node;
+        if (sidebarEl && !sidebarEl.contains(target)) {
+          setSidebarVisible(false);
+        }
+      }
+    };
+    
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [isMobile, sidebarVisible]);
   
   const handleSelectFile = (item: FileItem) => {
     if (item.type === 'file') {

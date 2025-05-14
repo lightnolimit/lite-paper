@@ -93,6 +93,7 @@ export default function SettingsMenu({
         title="Settings"
         aria-expanded={isOpen}
         aria-controls="settings-dropdown"
+        style={{ color: 'var(--text-color)' }}
       >
         <Image 
           src="/assets/icons/pixel-cog-solid.svg"
@@ -130,7 +131,7 @@ export default function SettingsMenu({
             aria-orientation="vertical"
             aria-labelledby="settings-menu-button"
           >
-            <div className="space-y-4">
+            <div className="space-y-3 pt-0">
               {/* Theme section */}
               <div>
                 <h3 className="text-sm font-medium mb-2" style={{ color: 'var(--muted-color)', fontFamily: 'var(--mono-font)' }}>
