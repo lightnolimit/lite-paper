@@ -6,11 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "pages:build": "next build",
-    "pages:deploy": "npm run pages:build && wrangler pages deploy out",
-    "deploy:production": "npm run pages:build && wrangler pages deploy out --env production",
-    "cloudflare-pages": "next build"
+    "lint": "next lint"
   },
   "engines": {
     "node": ">=16.0.0"
@@ -30,7 +26,6 @@
     "three": "^0.176.0"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.13.12",
     "@eslint/eslintrc": "^3",
     "@types/hapi__shot": "^4.1.6",
     "@types/node": "^20",
