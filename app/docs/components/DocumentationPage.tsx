@@ -166,13 +166,13 @@ export default function DocumentationPage({ initialContent, currentPath }: Docum
                 }}
               >
                 <div className="flex justify-between items-center mb-3 md:hidden">
-                  <h2 className="text-lg font-medium">Documentation</h2>
+                  <div></div>
                   <button 
                     onClick={toggleSidebar}
-                    className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    className="p-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                     aria-label="Close sidebar"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
@@ -196,7 +196,7 @@ export default function DocumentationPage({ initialContent, currentPath }: Docum
             {isMobile && !sidebarVisible && (
               <motion.button
                 onClick={toggleSidebar}
-                className="fixed z-30 bottom-6 left-6 bg-primary-color rounded p-3 shadow-lg"
+                className="fixed z-30 bottom-6 left-6 rounded p-3 shadow-lg dark:bg-primary-color bg-card-color border"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 initial={{ opacity: 0, y: 20 }}
@@ -204,14 +204,16 @@ export default function DocumentationPage({ initialContent, currentPath }: Docum
                 exit={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.2 }}
                 aria-label="Show documentation tree"
+                style={{ borderColor: 'var(--border-color)' }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
-                  stroke="white"
+                  stroke="currentColor"
                   className="w-5 h-5"
+                  style={{ color: 'var(--text-color)' }}
                 >
                   <path
                     strokeLinecap="round"
