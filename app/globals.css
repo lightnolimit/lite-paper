@@ -56,6 +56,7 @@
   --text-color: #2E3A23;
   --muted-color: #6E7D61;
   --mono-font: 'VCR OSD Mono', monospace;
+  --icon-color: #2E3A23; /* Icon color for light mode */
 }
 
 .dark {
@@ -69,6 +70,7 @@
   --border-soft: #23232a; /* Softer border for header/sidebar */
   --text-color: #F0F0F5;
   --muted-color: #9C9CAF;
+  --icon-color: #F0F0F5; /* Icon color for dark mode */
 }
 
 body {
@@ -154,6 +156,21 @@ body {
 .dark .file-tree-item.active {
   background: rgba(255, 255, 255, 0.05);
   color: var(--primary-color);
+}
+
+/* Custom SVG icon handling for dark mode */
+.dark img[src*="pixel-folder"],
+.dark img[src*="pixel-file"],
+.dark img[src*="pixel-info-circle"],
+.dark img[src*="pixel-exclamation"],
+.dark img[src*="pixel-times-circle"],
+.dark img[src*="pixel-check-circle"] {
+  filter: invert(1);
+}
+
+/* Logo styling */
+.logo-image {
+  border-radius: 6px;
 }
 
 /* Custom animations */

@@ -161,7 +161,7 @@ const FileTree: React.FC<FileTreeProps> = ({ items, onSelect, currentPath }) => 
           key={item.path}
           item={item}
           onSelect={onSelect}
-          depth={0}
+          depth={1}
           onToggle={toggleItem}
           currentPath={currentPath}
         />

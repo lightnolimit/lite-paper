@@ -33,6 +33,7 @@ const DitherPattern = ({
   const cursorRef = useRef<THREE.Mesh>(null);
   const canvasRef = useRef<DOMRect | null>(null);
   const timeRef = useRef(0);
+  const materialRef = useRef<THREE.ShaderMaterial | null>(null);
   
   const uniforms = useMemo(() => ({
     u_time: { value: 0 },
@@ -148,20 +149,45 @@ const DitherPattern = ({
     }
   `;
 
+  // Create a new shader material when dark mode changes
+  useEffect(() => {
+    if (!meshRef.current) return;
+    
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms: {
+        u_time: { value: timeRef.current },
+        u_resolution: { value: new THREE.Vector2() },
+        u_mouse: { value: new THREE.Vector2() },
+        u_color1: { value: new THREE.Color(isDarkMode ? '#555555' : '#678D58') },
+        u_color2: { value: new THREE.Color(isDarkMode ? '#1A1A1F' : '#F3F5F0') },
+        u_accent: { value: new THREE.Color(isDarkMode ? '#ffffff' : '#557153') },
+        u_pattern_scale: { value: 60.0 },
+        u_noise_scale: { value: 3.0 },
+        u_noise_time: { value: timeRef.current * 0.2 },
+        u_dither_size: { value: 6.0 }
+      }
+    });
+    
+    materialRef.current = material;
+    meshRef.current.material = material;
+  }, [isDarkMode, vertexShader, fragmentShader]);
+
   // Update canvas reference and animation loop
   useFrame(() => {
-    if (!meshRef.current) return;
+    if (!meshRef.current || !materialRef.current) return;
     
     // Update time uniform
     timeRef.current += 0.01;
-    uniforms.u_time.value = timeRef.current;
-    uniforms.u_noise_time.value = timeRef.current * 0.2;
+    materialRef.current.uniforms.u_time.value = timeRef.current;
+    materialRef.current.uniforms.u_noise_time.value = timeRef.current * 0.2;
     
     // Update canvas bounds for accurate mouse position
     const canvas = document.querySelector('canvas');
     if (canvas) {
       canvasRef.current = canvas.getBoundingClientRect();
-      uniforms.u_resolution.value.set(canvas.width, canvas.height);
+      materialRef.current.uniforms.u_resolution.value.set(canvas.width, canvas.height);
     }
     
     // Calculate relative mouse position in canvas pixel coordinates
@@ -169,8 +195,8 @@ const DitherPattern = ({
     const relativeMouseY = mouseY;
     
     // Update mouse uniform - fix the offset by adjusting the position
-    if (canvasRef.current) {
-      uniforms.u_mouse.value.set(
+    if (canvasRef.current && materialRef.current) {
+      materialRef.current.uniforms.u_mouse.value.set(
         relativeMouseX, 
         canvasRef.current.height - relativeMouseY
       );
@@ -198,15 +224,6 @@ const DitherPattern = ({
       cursorRef.current.visible = false;
     }
   });
-
-  // Update uniforms when dark mode changes
-  useEffect(() => {
-    if (uniforms && uniforms.u_color1 && uniforms.u_color2 && uniforms.u_accent) {
-      uniforms.u_color1.value.set(isDarkMode ? '#555555' : '#678D58');
-      uniforms.u_color2.value.set(isDarkMode ? '#1A1A1F' : '#F3F5F0');
-      uniforms.u_accent.value.set(isDarkMode ? '#ffffff' : '#557153');
-    }
-  }, [isDarkMode, uniforms]);
 
   return (
     <>
@@ -273,7 +290,7 @@ export default function DitherBackground() {
     };
   }, []);
   
-  // Check dark mode from localStorage
+  // Check dark mode from localStorage and listen for theme changes
   useEffect(() => {
     const checkDarkMode = () => {
       if (typeof window !== 'undefined') {
@@ -286,7 +303,7 @@ export default function DitherBackground() {
     // Initial check
     checkDarkMode();
     
-    // Listen for theme changes
+    // Listen for storage changes
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'darkMode') {
         checkDarkMode();
@@ -295,7 +312,7 @@ export default function DitherBackground() {
     
     window.addEventListener('storage', handleStorageChange);
     
-    // Also set up a MutationObserver to catch theme changes in the DOM
+    // Set up a MutationObserver to catch theme changes in the DOM
     const observer = new MutationObserver((mutations) => {
       mutations.forEach(mutation => {
         if (mutation.attributeName === 'class' && 
@@ -308,7 +325,7 @@ export default function DitherBackground() {
     
     observer.observe(document.documentElement, { attributes: true });
     
-    // Add event listener for theme change from other components
+    // Add event listener for custom theme change event
     window.addEventListener('themeChange', checkDarkMode);
     
     return () => {
