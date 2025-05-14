@@ -38,9 +38,9 @@ const DitherPattern = ({
     u_time: { value: 0 },
     u_resolution: { value: new THREE.Vector2() },
     u_mouse: { value: new THREE.Vector2() },
-    u_color1: { value: new THREE.Color(isDarkMode ? '#FF85A1' : '#678D58') },
+    u_color1: { value: new THREE.Color(isDarkMode ? '#373737' : '#678D58') },
     u_color2: { value: new THREE.Color(isDarkMode ? '#1A1A1F' : '#F3F5F0') },
-    u_accent: { value: new THREE.Color(isDarkMode ? '#FF4989' : '#557153') },
+    u_accent: { value: new THREE.Color(isDarkMode ? '#8a56ff' : '#557153') },
     u_pattern_scale: { value: 100.0 },
     u_noise_scale: { value: 2.0 },
     u_noise_time: { value: 0.0 },
@@ -119,12 +119,12 @@ const DitherPattern = ({
       // Base pattern with moving noise
       float n = noise(position * u_pattern_scale + u_noise_time);
       
-      // Create waves emanating from mouse
+      // Create waves emanating from mouse with stronger effect
       float wave = sin(mouseDist * 10.0 - u_time * 2.0) * 0.5 + 0.5;
-      wave *= smoothstep(1.0, 0.0, mouseDist * 2.0); // Fade with distance
+      wave *= smoothstep(2.0, 0.0, mouseDist * 3.0); // Stronger fade with distance
       
-      // Combine noise with mouse interaction
-      float pattern = n * 0.7 + wave * 0.3;
+      // Combine noise with mouse interaction - emphasize mouse effect
+      float pattern = n * 0.6 + wave * 0.8;
       
       // Apply dithering at different scales
       vec2 ditherPos = gl_FragCoord.xy / u_dither_size;
@@ -133,9 +133,9 @@ const DitherPattern = ({
       // Choose color based on dithering
       vec3 color = dith ? u_color1 : u_color2;
       
-      // Add subtle accent color near mouse
-      float mouseHighlight = smoothstep(0.3, 0.0, mouseDist);
-      color = mix(color, u_accent, mouseHighlight * 0.3);
+      // Add stronger accent color near mouse
+      float mouseHighlight = smoothstep(0.5, 0.0, mouseDist);
+      color = mix(color, u_accent, mouseHighlight * 0.5); 
       
       gl_FragColor = vec4(color, 1.0);
     }
@@ -169,8 +169,8 @@ const DitherPattern = ({
     let relativeMouseY = mouseY;
     
     if (canvasRef.current) {
-      relativeMouseX = mouseX - canvasRef.current.left;
-      relativeMouseY = mouseY - canvasRef.current.top;
+      relativeMouseX = mouseX;
+      relativeMouseY = window.innerHeight - mouseY;
     }
     
     // Update mouse uniform
@@ -179,11 +179,11 @@ const DitherPattern = ({
     // Update cursor position if showing
     if (cursorRef.current && showCursor) {
       // Normalize mouse coordinates to [-1, 1]
-      const canvasWidth = canvasRef.current?.width || window.innerWidth;
-      const canvasHeight = canvasRef.current?.height || window.innerHeight;
+      const canvasWidth = window.innerWidth;
+      const canvasHeight = window.innerHeight;
       
-      const normalizedMouseX = (relativeMouseX / canvasWidth) * 2 - 1;
-      const normalizedMouseY = -(relativeMouseY / canvasHeight) * 2 + 1;
+      const normalizedMouseX = (mouseX / canvasWidth) * 2 - 1;
+      const normalizedMouseY = -(mouseY / canvasHeight) * 2 + 1;
       
       cursorRef.current.position.x = normalizedMouseX * 5;
       cursorRef.current.position.y = normalizedMouseY * 3;
@@ -196,15 +196,15 @@ const DitherPattern = ({
 
   // Update uniforms when dark mode changes
   useEffect(() => {
-    uniforms.u_color1.value.set(isDarkMode ? '#FF85A1' : '#678D58');
+    uniforms.u_color1.value.set(isDarkMode ? '#373737' : '#678D58');
     uniforms.u_color2.value.set(isDarkMode ? '#1A1A1F' : '#F3F5F0');
-    uniforms.u_accent.value.set(isDarkMode ? '#FF4989' : '#557153');
+    uniforms.u_accent.value.set(isDarkMode ? '#8a56ff' : '#557153');
   }, [isDarkMode, uniforms]);
 
   return (
     <>
       <mesh ref={meshRef} position={[0, 0, 0]}>
-        <planeGeometry args={[12, 8]} />
+        <planeGeometry args={[30, 20]} />
         <shaderMaterial
           vertexShader={vertexShader}
           fragmentShader={fragmentShader}
@@ -313,7 +313,7 @@ export default function DitherBackground() {
       style={{ zIndex: 0 }}
     >
       <Canvas 
-        camera={{ position: [0, 0, 10], fov: 75, near: 0.1, far: 1000 }}
+        camera={{ position: [0, 0, 5], fov: 75, near: 0.1, far: 1000 }}
         style={{ width: '100%', height: '100%' }}
       >
         <ambientLight intensity={0.8} />
