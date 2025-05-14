@@ -1,0 +1,10 @@
+# Configuration for Cloudflare Pages
+[build]
+command = "pnpm run build"
+publish = "out"
+
+[build.environment]
+NEXT_PUBLIC_BACKGROUND_TYPE = "wave"
+NEXT_PUBLIC_SITE_URL = "https://docs.phantasy.bot"
+
+# No deploy command needed - Cloudflare Pages handles this automatically 
