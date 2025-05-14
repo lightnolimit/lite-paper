@@ -1,7 +1,5 @@
-'use client';
-
-import DocumentationPage from './docs/[[...slug]]/page';
+import { redirect } from 'next/navigation';
 
 export default function Home() {
-  return <DocumentationPage />;
+  redirect('/docs/introduction/synopsis');
 }

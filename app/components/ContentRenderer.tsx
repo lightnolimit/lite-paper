@@ -8,7 +8,7 @@ type ContentRendererProps = {
   path: string;
 };
 
-export default function ContentRenderer({ content, path }: ContentRendererProps) {
+export default function ContentRenderer({ content = '', path = '' }: ContentRendererProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   
   // Process links after render to add tabindex and other accessibility attributes
@@ -33,6 +33,8 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
   
   // Basic markdown rendering (you would use a proper markdown library in a real app)
   const renderMarkdown = (text: string) => {
+    if (!text) return '<p>No content available.</p>';
+    
     // Process the content step by step
     let html = text;
     
@@ -80,19 +82,19 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
     
     // Process links
     html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/gim, 
-      '<a class="font-body text-primary-color hover:underline focus:outline-none focus:ring-2 focus:ring-primary-color" style="color: var(--primary-color);" href="$2">$1</a>');
+      '<a class="font-body text-primary-color hover:underline focus:outline-none focus:ring-2 focus:ring-primary-color" style="color: var(--primary-color); font-family: var(--body-font);" href="$2">$1</a>');
     
     // Process styling
-    html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold">$1</strong>');
-    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold font-body">$1</strong>');
+    html = html.replace(/\*(.*?)\*/g, '<em class="font-body">$1</em>');
     
     // Process lists
-    html = html.replace(/^\s*-\s+(.*)/gim, '<li class="font-body ml-4">$1</li>');
-    html = html.replace(/^\s*\d+\.\s+(.*)/gim, '<li class="font-body ml-4">$1</li>');
+    html = html.replace(/^\s*-\s+(.*)/gim, '<li class="font-body ml-4" style="font-family: var(--body-font); text-transform: none;">$1</li>');
+    html = html.replace(/^\s*\d+\.\s+(.*)/gim, '<li class="font-body ml-4" style="font-family: var(--body-font); text-transform: none;">$1</li>');
     
     // Wrap consecutive <li> elements with <ul> or <ol>
     html = html.replace(/(<li.*?>.*?<\/li>)(\s*\n\s*)?(<li)/g, '$1$3');
-    html = html.replace(/(<li[^>]*>.*?<\/li>(\s*\n\s*)?)+/g, '<ul class="list-disc pl-5 my-3">$&</ul>');
+    html = html.replace(/(<li[^>]*>.*?<\/li>(\s*\n\s*)?)+/g, '<ul class="list-disc pl-5 my-3 font-body">$&</ul>');
     
     // Process paragraphs (lines that aren't already wrapped in HTML tags)
     const paragraphLines = html.split('\n');
@@ -118,7 +120,7 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
       }
       
       // Wrap remaining text in paragraphs
-      processedHtml += `<p class="font-body my-2">${line}</p>\n`;
+      processedHtml += `<p class="font-body my-2" style="font-family: var(--body-font); text-transform: none;">${line}</p>\n`;
     }
     
     // Restore notification divs
@@ -188,7 +190,7 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
           </div>
           
           {/* Pagination links - prev/next */}
-          <div className="pagination-links mt-4">
+          <div className="pagination-links mt-4 flex justify-between">
             <a 
               href={`/docs/introduction/synopsis`}
               className="font-title flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 nav-button"
@@ -211,7 +213,7 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
             
             <a 
               href={`/docs/prelude-phantasy/synopsis`}
-              className="font-title flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 nav-button"
+              className="font-title flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 nav-button ml-auto"
               style={{ 
                 backgroundColor: 'var(--card-color)',
                 color: 'var(--text-color)',
@@ -219,7 +221,7 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
               }}
               tabIndex={0}
             >
-              <span>
+              <span className="text-right">
                 <span className="block text-xs opacity-75">Next</span>
                 <span className="block font-medium">Phantasy Platform</span>
               </span>

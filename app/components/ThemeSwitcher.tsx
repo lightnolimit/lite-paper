@@ -36,6 +36,10 @@ export default function ThemeSwitcher({ className = "" }) {
       html.classList.remove('dark');
       localStorage.setItem('darkMode', 'false');
     }
+    
+    // Dispatch a custom event for theme change
+    const themeChangeEvent = new Event('themeChange');
+    window.dispatchEvent(themeChangeEvent);
   }, [isDarkMode]);
 
   const toggleTheme = () => {

@@ -113,10 +113,10 @@ const StarField = ({ count = 800, mouseX, mouseY, isDarkMode, showCursor }: Star
         colors[i * 3 + 1] = 0.4 + Math.random() * 0.3; // G
         colors[i * 3 + 2] = 0.7 + Math.random() * 0.3; // B
       } else {
-        // Green palette for light mode
-        colors[i * 3] = 0.3 + Math.random() * 0.2; // R
-        colors[i * 3 + 1] = 0.6 + Math.random() * 0.4; // G
-        colors[i * 3 + 2] = 0.3 + Math.random() * 0.2; // B
+        // Faded black palette for light mode
+        colors[i * 3] = 0.2 + Math.random() * 0.1; // R (darker)
+        colors[i * 3 + 1] = 0.2 + Math.random() * 0.1; // G (darker)
+        colors[i * 3 + 2] = 0.2 + Math.random() * 0.1; // B (darker)
       }
     }
     
@@ -243,6 +243,7 @@ export default function StarsBackground() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [showDebugCursor, setShowDebugCursor] = useState(false);
+  const [forceUpdate, setForceUpdate] = useState(0); // Add force update state
   
   // Initialize debug mode
   useEffect(() => {
@@ -281,12 +282,14 @@ export default function StarsBackground() {
     };
   }, []);
   
-  // Check dark mode status from localStorage
+  // Check dark mode status from localStorage and DOM
   useEffect(() => {
     const checkDarkMode = () => {
       if (typeof window !== 'undefined') {
-        const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+        const darkModeEnabled = localStorage.getItem('darkMode') === 'true' || 
+                               document.documentElement.classList.contains('dark');
         setIsDarkMode(darkModeEnabled);
+        setForceUpdate(prev => prev + 1); // Force re-render when theme changes
         
         // Ensure correct class is on the document element
         if (darkModeEnabled) {
@@ -302,6 +305,18 @@ export default function StarsBackground() {
     // Initial check
     checkDarkMode();
     
+    // Create a MutationObserver to watch for class changes on the document element
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          checkDarkMode();
+        }
+      });
+    });
+    
+    // Start observing document element for class changes
+    observer.observe(document.documentElement, { attributes: true });
+    
     // Listen for changes (in case theme is toggled in another component)
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'darkMode') {
@@ -309,10 +324,18 @@ export default function StarsBackground() {
       }
     };
     
+    // Also listen for a custom theme change event
+    const handleThemeChange = () => {
+      checkDarkMode();
+    };
+    
     window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('themeChange', handleThemeChange);
     
     return () => {
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('themeChange', handleThemeChange);
+      observer.disconnect();
     };
   }, []);
   
@@ -323,6 +346,7 @@ export default function StarsBackground() {
       style={{ zIndex: 0 }}
     >
       <Canvas 
+        key={`canvas-${isDarkMode}-${forceUpdate}`} // Force canvas recreation on theme change
         camera={{ position: [0, 0, 20], fov: 75, near: 0.1, far: 1000 }}
         style={{ width: '100%', height: '100%' }}
       >
