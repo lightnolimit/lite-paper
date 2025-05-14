@@ -89,7 +89,7 @@ const findAdjacentPages = (currentPath: string): { prevPage?: AdjacentPage, next
  * @param {React.RefObject<HTMLDivElement>} contentRef - Reference to the content container
  * @param {string} content - The markdown content
  */
-const useProcessDomElements = (contentRef: React.RefObject<HTMLDivElement>, content: string): void => {
+const useProcessDomElements = (contentRef: React.RefObject<HTMLDivElement | null>, content: string): void => {
   useEffect(() => {
     const currentRef = contentRef.current;
     if (!currentRef) return;

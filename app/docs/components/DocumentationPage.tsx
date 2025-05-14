@@ -87,7 +87,7 @@ export default function DocumentationPage({ initialContent, currentPath }: Docum
     // Add resize listener
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [sidebarVisible]);
   
   // Handle sidebar layout clicks
   useEffect(() => {

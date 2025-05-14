@@ -5,7 +5,7 @@ const nextConfig = {
    */
   env: {
     NEXT_PUBLIC_BACKGROUND_TYPE: process.env.NEXT_PUBLIC_BACKGROUND_TYPE || 'wave',
-    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'https://phantasy-docs.example.com',
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'https://docs.phantasy.bot',
   },
   
   /**
@@ -19,20 +19,20 @@ const nextConfig = {
         hostname: '**.phantasy.io',
       },
     ],
+    unoptimized: process.env.NODE_ENV === 'production', // For Cloudflare Pages compatibility
   },
   
   /**
    * Output configuration
-   * - Using 'standalone' for optimized production build
+   * - Using 'export' for Cloudflare Pages compatibility
    */
-  output: 'standalone',
+  output: 'export',
   
   /**
    * Enable React strict mode
    */
   reactStrictMode: true,
   
-
   /**
    * Trailing slash configuration - consistent URL handling
    */
@@ -54,52 +54,8 @@ const nextConfig = {
     optimizePackageImports: ['framer-motion', '@react-three/fiber', '@react-three/drei'],
   },
   
-  /**
-   * Configure headers for security and caching
-   */
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-        ],
-      },
-      {
-        source: '/favicon/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      {
-        source: '/images/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=86400, must-revalidate',
-          },
-        ],
-      },
-    ];
-  },
+    // Headers configuration removed as it doesn't work with 'export' mode
+  // These headers can be added through Cloudflare Pages custom headers
 };
 
 module.exports = nextConfig; 
