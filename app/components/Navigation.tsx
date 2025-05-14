@@ -64,7 +64,7 @@ const socialLinks = [
     href: 'https://x.com', 
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
-        <path fill="currentColor" d="M15.5 10V9h1V8h1V7h1V6h1V5h1V4h1V3h1V2h-3v1h-1v1h-1v1h-1v1h-1v1h-2V7h-1V6h-1V4h-1V3h-1V2h-7v1h1v1h1v1h1v2h1v1h1v2h1v1h1v2h1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h3v-1h1v-1h1v-1h1v-1h1v-1h2v1h1v1h1v2h1v1h1v1h7v-1h-1v-1h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1zm0 4v1h1v2h1v1h1v2h-3v-2h-1v-1h-1v-1h-1v-2h-1v-1h-1v-1h-1v-2h-1V9h-1V7h-1V6h-1V4h3v1h1v2h1v1h1v2h1v1h1v1h1v2z" strokeWidth="0.5" stroke="#000"/>
+        <path fill="currentColor" d="M15.5 10V9h1V8h1V7h1V6h1V5h1V4h1V3h1V2h-3v1h-1v1h-1v1h-1v1h-1v1h-2V7h-1V6h-1V4h-1V3h-1V2h-7v1h1v1h1v1h1v2h1v1h1v2h1v1h1v2h1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h3v-1h1v-1h1v-1h1v-1h1v-1h2v1h1v1h1v2h1v1h1v1h7v-1h-1v-1h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1zm0 4v1h1v2h1v1h1v2h-3v-2h-1v-1h-1v-1h-1v-2h-1v-1h-1v-1h-1v-2h-1V9h-1V7h-1V6h-1V4h3v1h1v2h1v1h1v2h1v1h1v1h1v2z" strokeWidth="0.5" stroke="#000"/>
       </svg>
     )
   },
@@ -149,9 +149,29 @@ export default function Navigation({ docsPath, onToggleSidebar, sidebarVisible }
       onMouseLeave={() => setHoveredItem(null)}
       tabIndex={0}
     >
-      <span className="bracket-left">{hoveredItem === item.label ? '「' : ''}</span>
-      {item.label}
-      <span className="bracket-right">{hoveredItem === item.label ? '」' : ''}</span>
+      <div className="flex items-center">
+        <motion.span 
+          className="bracket-left mr-0.5"
+          initial={{ opacity: 0, x: 5 }}
+          animate={{ 
+            opacity: hoveredItem === item.label ? 1 : 0,
+            x: hoveredItem === item.label ? 0 : 5 
+          }}
+          transition={{ duration: 0.2 }}
+        >「</motion.span>
+        
+        {item.label}
+        
+        <motion.span 
+          className="bracket-right ml-0.5"
+          initial={{ opacity: 0, x: -5 }}
+          animate={{ 
+            opacity: hoveredItem === item.label ? 1 : 0,
+            x: hoveredItem === item.label ? 0 : -5 
+          }}
+          transition={{ duration: 0.2 }}
+        >」</motion.span>
+      </div>
     </Link>
   );
   

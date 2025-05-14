@@ -26,6 +26,7 @@ export const processLinks = (element: HTMLElement): void => {
  */
 export const processWalletAddresses = (element: HTMLElement): void => {
   const walletAddresses = element.querySelectorAll('.wallet-address');
+  
   walletAddresses.forEach(walletElement => {
     const address = walletElement.getAttribute('data-address');
     if (!address) return;
@@ -33,10 +34,29 @@ export const processWalletAddresses = (element: HTMLElement): void => {
     // Check if button already exists to prevent duplicates
     if (walletElement.querySelector('.copy-button')) return;
 
+    // Add styles to the wallet address element
+    const walletEl = walletElement as HTMLElement;
+    walletEl.style.position = 'relative';
+    walletEl.style.paddingRight = '30px';
+    walletEl.style.display = 'inline-flex';
+    walletEl.style.alignItems = 'center';
+    
     // Create the copy button
     const copyButton = document.createElement('button');
     copyButton.className = 'copy-button';
-    copyButton.innerHTML = `<img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" width="16" height="16" />`;
+    copyButton.style.position = 'absolute';
+    copyButton.style.right = '5px';
+    copyButton.style.display = 'flex';
+    copyButton.style.alignItems = 'center';
+    copyButton.style.justifyContent = 'center';
+    copyButton.style.cursor = 'pointer';
+    copyButton.style.padding = '2px';
+    copyButton.style.borderRadius = '4px';
+    copyButton.style.backgroundColor = 'var(--card-color)';
+    copyButton.style.border = '1px solid var(--border-color)';
+    
+    // Add the copy icon
+    copyButton.innerHTML = `<img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" width="14" height="14" />`;
     copyButton.setAttribute('aria-label', 'Copy to clipboard');
     copyButton.setAttribute('title', 'Copy to clipboard');
     
@@ -44,14 +64,44 @@ export const processWalletAddresses = (element: HTMLElement): void => {
     copyButton.addEventListener('click', () => {
       navigator.clipboard.writeText(address).then(() => {
         // Success feedback
-        copyButton.innerHTML = `<img src="/assets/icons/pixel-check-circle-solid.svg" alt="Copied" width="16" height="16" />`;
+        copyButton.innerHTML = `<img src="/assets/icons/pixel-check-circle-solid.svg" alt="Copied" width="14" height="14" />`;
+        
+        // Show feedback toast
+        const toast = document.createElement('div');
+        toast.innerText = 'Copied to clipboard!';
+        toast.style.position = 'fixed';
+        toast.style.bottom = '20px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.backgroundColor = 'var(--primary-color)';
+        toast.style.color = 'white';
+        toast.style.padding = '8px 16px';
+        toast.style.borderRadius = '4px';
+        toast.style.zIndex = '9999';
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        
+        document.body.appendChild(toast);
+        
+        // Show the toast
         setTimeout(() => {
-          copyButton.innerHTML = `<img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" width="16" height="16" />`;
+          toast.style.opacity = '1';
+        }, 10);
+        
+        // Reset the button and remove toast after delay
+        setTimeout(() => {
+          copyButton.innerHTML = `<img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" width="14" height="14" />`;
+          toast.style.opacity = '0';
+          
+          // Remove the toast element after fade out
+          setTimeout(() => {
+            document.body.removeChild(toast);
+          }, 300);
         }, 1500);
       });
     });
     
-    // Add button after the wallet address
+    // Add button to the wallet address element
     walletElement.appendChild(copyButton);
   });
 };

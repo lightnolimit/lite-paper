@@ -154,7 +154,7 @@ export default function DocumentationPage({ initialContent, currentPath }: Docum
                 transition={{
                   duration: isMobile ? 0.3 : 0
                 }}
-                className="w-[90%] md:w-72 lg:w-80 shrink-0 doc-card file-tree-panel p-4 h-[calc(100vh-64px)] top-16 overflow-y-auto z-20 border-r scrollbar-hide"
+                className="w-full md:w-72 lg:w-80 shrink-0 doc-card file-tree-panel p-4 h-[calc(100vh-64px)] top-16 overflow-y-auto z-20 border-r scrollbar-hide"
                 style={{
                   left: isMobile ? '0' : 'auto',
                   borderTopRightRadius: 0,
@@ -196,7 +196,7 @@ export default function DocumentationPage({ initialContent, currentPath }: Docum
             {isMobile && !sidebarVisible && (
               <motion.button
                 onClick={toggleSidebar}
-                className="fixed z-30 bottom-6 left-6 rounded p-3 shadow-lg dark:bg-primary-color bg-card-color border"
+                className="fixed z-30 bottom-6 left-6 rounded p-3 shadow-lg"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 initial={{ opacity: 0, y: 20 }}
@@ -204,7 +204,11 @@ export default function DocumentationPage({ initialContent, currentPath }: Docum
                 exit={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.2 }}
                 aria-label="Show documentation tree"
-                style={{ borderColor: 'var(--border-color)' }}
+                style={{ 
+                  backgroundColor: 'var(--background-color)', 
+                  borderColor: 'var(--border-color)',
+                  border: '1px solid'
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
