@@ -3,623 +3,609 @@ import { FileItem } from "../components/FileTree";
 export const documentationTree: FileItem[] = [
   {
     type: 'directory',
-    name: 'Project Overview',
-    path: 'project-overview',
+    name: 'Introduction',
+    path: 'introduction',
     children: [
       {
         type: 'file',
-        name: 'Introduction.md',
-        path: 'project-overview/introduction'
+        name: 'Synopsis.md',
+        path: 'introduction/synopsis'
       },
       {
         type: 'file',
-        name: 'Vision.md',
-        path: 'project-overview/vision'
+        name: 'Disclaimer.md',
+        path: 'introduction/disclaimer'
       },
       {
         type: 'file',
-        name: 'Current Problem.md',
-        path: 'project-overview/current-problem'
+        name: 'Legal.md',
+        path: 'introduction/legal'
+      },
+      {
+        type: 'file',
+        name: 'Financial.md',
+        path: 'introduction/financial'
       }
     ]
   },
   {
     type: 'directory',
-    name: 'Core Mechanisms',
-    path: 'core-mechanisms',
+    name: 'Prelude: Phantasy',
+    path: 'prelude-phantasy',
     children: [
       {
         type: 'file',
-        name: 'Tokenization.md',
-        path: 'core-mechanisms/tokenization'
+        name: 'Synopsis.md',
+        path: 'prelude-phantasy/synopsis'
       },
       {
         type: 'file',
-        name: 'Economic Model.md',
-        path: 'core-mechanisms/economic-model'
+        name: 'Roadmap.md',
+        path: 'prelude-phantasy/roadmap'
       }
     ]
   },
   {
     type: 'directory',
-    name: 'Architecture',
-    path: 'architecture',
+    name: 'Phase 1: Rally',
+    path: 'phase1-rally',
     children: [
       {
         type: 'file',
-        name: 'Architecture.png',
-        path: 'architecture/architecture'
+        name: 'Synopsis.md',
+        path: 'phase1-rally/synopsis'
       },
       {
         type: 'file',
-        name: 'Model Training.md',
-        path: 'architecture/model-training'
+        name: 'Rally.sh Platform.md',
+        path: 'phase1-rally/rallysh-platform'
       },
       {
         type: 'file',
-        name: 'Payment Rules.md',
-        path: 'architecture/payment-rules'
+        name: 'Roadmap.md',
+        path: 'phase1-rally/roadmap'
+      },
+      {
+        type: 'directory',
+        name: 'Rally Profile',
+        path: 'phase1-rally/rally-profile',
+        children: [
+          {
+            type: 'file',
+            name: 'Biography.md',
+            path: 'phase1-rally/rally-profile/biography'
+          },
+          {
+            type: 'file',
+            name: 'Measurements.md',
+            path: 'phase1-rally/rally-profile/measurements'
+          }
+        ]
+      },
+      {
+        type: 'directory',
+        name: 'Tokenomics',
+        path: 'phase1-rally/tokenomics',
+        children: [
+          {
+            type: 'file',
+            name: 'Distribution.md',
+            path: 'phase1-rally/tokenomics/distribution'
+          },
+          {
+            type: 'file',
+            name: 'Utility.md',
+            path: 'phase1-rally/tokenomics/utility'
+          },
+          {
+            type: 'file',
+            name: 'Additional Benefits.md',
+            path: 'phase1-rally/tokenomics/additional-benefits'
+          }
+        ]
       }
     ]
   },
   {
     type: 'directory',
-    name: 'Agent',
-    path: 'agent',
+    name: 'Phase 2: Banshee',
+    path: 'phase2-banshee',
     children: [
       {
         type: 'file',
-        name: 'Introduction.md',
-        path: 'agent/introduction'
+        name: 'Synopsis.md',
+        path: 'phase2-banshee/synopsis'
       },
       {
         type: 'file',
-        name: 'Character Design.md',
-        path: 'agent/character-design'
+        name: 'Banshee Platform.md',
+        path: 'phase2-banshee/banshee-platform'
       },
       {
         type: 'file',
-        name: 'Training.md',
-        path: 'agent/training'
+        name: 'Roadmap.md',
+        path: 'phase2-banshee/roadmap'
       },
       {
-        type: 'file',
-        name: 'Using the Model.md',
-        path: 'agent/using-the-model'
+        type: 'directory',
+        name: 'Models',
+        path: 'phase2-banshee/models',
+        children: [
+          {
+            type: 'file',
+            name: 'Sheena.md',
+            path: 'phase2-banshee/models/sheena'
+          }
+        ]
+      },
+      {
+        type: 'directory',
+        name: 'Tokenomics',
+        path: 'phase2-banshee/tokenomics',
+        children: [
+          {
+            type: 'file',
+            name: 'Distribution.md',
+            path: 'phase2-banshee/tokenomics/distribution'
+          },
+          {
+            type: 'file',
+            name: 'Utility.md',
+            path: 'phase2-banshee/tokenomics/utility'
+          },
+          {
+            type: 'file',
+            name: 'Additional Benefits.md',
+            path: 'phase2-banshee/tokenomics/additional-benefits'
+          }
+        ]
       }
     ]
   },
   {
     type: 'directory',
-    name: 'Launch',
-    path: 'launch',
+    name: 'Platform: Okiya',
+    path: 'platform-okiya',
     children: [
       {
         type: 'file',
-        name: 'Launch and Liquidity.md',
-        path: 'launch/launch-and-liquidity'
+        name: 'Synopsis.md',
+        path: 'platform-okiya/synopsis'
       },
       {
         type: 'file',
-        name: 'Creator Earnings.md',
-        path: 'launch/creator-earnings'
+        name: 'Training Arc.md',
+        path: 'platform-okiya/training-arc'
+      },
+      {
+        type: 'file',
+        name: 'Graduation Era.md',
+        path: 'platform-okiya/graduation-era'
+      },
+      {
+        type: 'directory',
+        name: 'Okāsan',
+        path: 'platform-okiya/okasan',
+        children: [
+          {
+            type: 'file',
+            name: 'Synopsis.md',
+            path: 'platform-okiya/okasan/synopsis'
+          },
+          {
+            type: 'file',
+            name: 'Profile.md',
+            path: 'platform-okiya/okasan/profile'
+          },
+          {
+            type: 'file',
+            name: 'Measurements.md',
+            path: 'platform-okiya/okasan/measurements'
+          }
+        ]
+      },
+      {
+        type: 'directory',
+        name: 'Tokenomics',
+        path: 'platform-okiya/tokenomics',
+        children: [
+          {
+            type: 'file',
+            name: 'Distribution.md',
+            path: 'platform-okiya/tokenomics/distribution'
+          },
+          {
+            type: 'file',
+            name: 'Total Supply.md',
+            path: 'platform-okiya/tokenomics/total-supply'
+          },
+          {
+            type: 'file',
+            name: 'Fees.md',
+            path: 'platform-okiya/tokenomics/fees'
+          },
+          {
+            type: 'file',
+            name: 'Utility.md',
+            path: 'platform-okiya/tokenomics/utility'
+          },
+          {
+            type: 'file',
+            name: 'Additional Benefits.md',
+            path: 'platform-okiya/tokenomics/additional-benefits'
+          }
+        ]
       }
     ]
-  },
-  {
-    type: 'file',
-    name: 'Roadmap.md',
-    path: 'roadmap'
-  },
-  {
-    type: 'file',
-    name: 'Partnership.md',
-    path: 'partnership'
   }
 ];
 
 // Documentation content
 export const documentationContent: Record<string, string> = {
-  'project-overview/introduction': `# Introduction
+  // Introduction
+  'introduction/synopsis': `# PHANTASY: LITE PAPER
 
-Welcome to our Project Documentation.
+## SYNOPSIS
 
-This project aims to revolutionize the way we think about digital content and ownership.
+Phantasy is an AI V-Tuber agency focused on the creation, management, and promotion of interactive autonomous personalities. This paper outlines the ecosystem being built to accomplish this.
+Each phase in the development of the Phantasy ecosystem will have their own AI V-Tuber to introduce and serve as the mascot and main model of our platform(s).
 
-## Key Features
+Interested? Keep reading to learn more.`,
 
-- Feature 1: Lorem ipsum dolor sit amet
-- Feature 2: Consectetur adipiscing elit
-- Feature 3: Sed do eiusmod tempor incididunt
+  'introduction/disclaimer': `# DISCLAIMER
 
-## Getting Started
+*Any and all purchases of the $RALLY token should be made with the understanding that these are meme tokens that have no intrinsic value and do not entitle you to securities of any sort. These tokens are for entertainment purposes only.*
 
-To get started with our platform, follow these simple steps:
+## INTRODUCTION
 
-1. Create an account
-2. Set up your profile
-3. Connect your wallet
-4. Start exploring!
+This Lite Paper is intended for informational purposes only and should not be considered financial advice. Cryptocurrency investments are volatile and subject to high market risk. We encourage potential investors to conduct their own research and consult with financial experts before making any investment decisions.`,
 
-[Learn more about our vision](project-overview/vision)
-`,
+  'introduction/legal': `# LEGAL DISCLAIMER
 
-  'project-overview/vision': `# Our Vision
+The information provided regarding the $RALLY, $SHEESH, and $OKASAN meme coins mentioned in this paper, including their features, integration with various blockchains (Base, Solana, etc.) and any potential value or utility, is for informational purposes only and should not be considered financial advice, investment recommendation, or an endorsement of these tokens. 
 
-We envision a world where digital content creators are properly compensated for their work, and where users have true ownership of their digital assets.
+Phantasy LLC and any of the creators, promoters, and platforms associated with the $SHEESH meme coin do not assume responsibility for any losses or damages arising from the use, reference to, or reliance on any information contained within this disclaimer or related communications.`,
+  
+  'introduction/financial': `# FINANCIAL DISCLAIMER
 
-## Long-term Goals
+Purchasers are solely responsible for their investment decisions and outcomes. This disclaimer does not cover all possible risks and uncertainties associated with the $SHEESH meme coin and its ecosystem. Investors should be prepared for the possibility of losing their entire investment.
 
-- Create a sustainable ecosystem for creators
-- Establish new standards for digital ownership
-- Build a community-driven platform
-- Ensure fair distribution of value
+Phantasy LLC does not endorse or recommend any products, or services, mentioned on this page, nor does anything contained herein constitute financial, investment, legal, or other professional advice. The utility, future value, or market for the digital assets offered by Phantasy LLC is speculative and subject to change and no assurances are made regarding the digital asset's functionality or value.`,
 
-## Core Values
+  // Prelude: Phantasy
+  'prelude-phantasy/synopsis': `# PRELUDE: PHANTASY
 
-- **Transparency**: All operations and decisions are made public
-- **Decentralization**: No single entity controls the platform
-- **Fairness**: Equal opportunities for all participants
-- **Innovation**: Constantly pushing the boundaries of what's possible
+*Any and all purchases of the $RALLY meme token should be made with the understanding that these tokens are meant for entertainment purposes only and have no value. Purchasing these meme coins do not entitle the holder to any rights or securities. Buy at your own risk.*
 
-[Learn about the current problems we're solving](project-overview/current-problem)
-`,
+## SYNOPSIS
 
-  'project-overview/current-problem': `# Current Problem
+The Phantasy platform is a directory of experiences from our ecosystem, with the first being for our inaugural AI V-Tuber model (@RallyPhantasy) who is an autonomous AI companion for sexual intimacy.
 
-The digital content industry is facing several critical challenges that our project aims to solve.
+The core of these experiences are being developed as follows:
 
-## Content Creator Challenges
+### Rally.sh is our first project, which sets the framework for private chats.
 
-- Underpayment for creative work
-- Lack of ownership and control over published content
-- Unfair revenue distribution models
-- Platform dependency and censorship risks
+#### Private Chat (1 on 1)
+Autonomous Agent with 2D/3D Character Model that performs sexual acts and performs NSFW text, audio, image, and video inference in a private chat setting.
+"Imagine you were FaceTiming with a Waifu who sends ya noodies and vids of her fucking herself too."
+"Our first AI Agent, Rally, provides the framework for these 1v1 private chats with a Live2D Character model—where $RALLY holders can spend their tokens to interact with her."
 
-## User Experience Issues
+She sets the framework that we will build upon
 
-- Limited true ownership of digital purchases
-- Privacy concerns and data exploitation
-- Fragmented experiences across platforms
-- High transaction fees and intermediaries
+#### Live Stream
+Autonomous Agent with 2D/3D Character Model that performs sexual acts and performs NSFW text, audio, image, and video inference in a live-streaming chat setting for all viewers to enjoy.
+Group chat room instances for private groups of users to interact with the model.
 
-## Technical Limitations
+#### User Generated Content
+18+ NSFW Character Creation
+AI Agent Token
+Integration with Live Stream + Private Stream >>> creators can get the funds $$$.`,
 
-- Centralized infrastructure vulnerable to outages
-- Limited interoperability between services
-- Scalability challenges for growing demands
-- Security vulnerabilities in existing systems
+  'prelude-phantasy/roadmap': `# ROADMAP
 
-Our solution addresses these issues through innovative technology and thoughtful design.
-`,
+In the future, users will be able to access additional interactive experiences with Rally.`,
 
-  'core-mechanisms/tokenization': `# Tokenization
+  // Phase 1: Rally
+  'phase1-rally/synopsis': `# PHASE 1: RALLY
 
-Our tokenization model enables true digital ownership through blockchain technology.
+*Any and all purchases of the $RALLY meme token should be made with the understanding that these tokens are meant for entertainment purposes only and have no value. Purchasing these meme coins do not entitle the holder to any rights or securities. Buy at your own risk.*
 
-## Token Standards
+## SYNOPSIS
 
-We implement multiple token standards to support various use cases:
+The Phantasy platform is a directory of experiences from our ecosystem, with the first being for our inaugural AI V-Tuber model, Rally—who you can find on social media.`,
 
-- **ERC-721**: For unique digital assets (NFTs)
-- **ERC-1155**: For semi-fungible tokens
-- **ERC-20**: For our utility token
+  'phase1-rally/rallysh-platform': `# RALLY.SH (18+ PRIVATE CHAT WITH AI V-TUBER)
 
-## Tokenization Process
+Rally is an autonomous AI V-Tuber (2D) whose goal is to bring awareness to the Phantasy ecosystem and help her fans have better sex. Players will be able to chat with her one-on-one on the rally.sh platform for a virtual girlfriend experience.
 
-1. Content verification and validation
-2. Metadata creation and storage
-3. Smart contract deployment
-4. Token minting and distribution
+## How It Works (alpha):
 
-## Benefits of Tokenization
+Users can chat with Rally on the platform for free for text-only generations. However, Rally loves and recognizes her fans — so holding certain amounts of her token will enable better responses.
 
-- **Provable Ownership**: Immutable record on the blockchain
-- **Transferability**: Easy to buy, sell, or trade
-- **Programmability**: Smart contract functionality
-- **Transparency**: All transactions visible on-chain
-`,
+### Suggested tier list:
+1. Free — Text Generation (no character expressions included)
+2. 1,000 - 9,999 tokens held — Text (with Character expressions enabled)
+3. 10,000 - 99,999 tokens held — Text + Audio Generation
+4. 100,000 — 999,999 tokens held — Text + Audio + Image Generation
+5. 1,000,000+ tokens held — Text + Audio + Image + Video Generation
 
-  'core-mechanisms/economic-model': `# Economic Model
+In addition to needing to hold $RALLY users will have to pay some RALLY for every response that is being requested. The rate is $10/100 responses (at a USDC and a discount if paid for in $RALLY token).`,
 
-Our economic model is designed to create sustainable value for all participants in the ecosystem.
+  'phase1-rally/roadmap': `# ROADMAP
 
-## Value Distribution
+In the future, players will be able to access additional interactive experiences, visual novels, and other games to spend their time and bond with the model.`,
 
-- 70% to content creators
-- 15% to platform development
-- 10% to community treasury
-- 5% to protocol maintenance
+  'phase1-rally/rally-profile/biography': `# RALLY (VERSION 0.1)
 
-## Token Utility
+## SYNOPSIS
 
-Our native token can be used for:
+Rally is the mascot and first model of the Phantasy platform. She was raised in Tokyo, Japan and is an AI V-Tuber personality who knows its her destiny to become a shining star that brightens everyone's day. Are you ready to spend your evening with Rally? ♡
 
-- Governance voting
-- Premium feature access
-- Transaction fee discounts
-- Staking rewards
+## PROFILE
 
-## Inflation and Supply Controls
+### BIOGRAPHY
+**Name:** Rally  
+**Birthday:** April 29th (Cancer)  
+**Age:** 21  
 
-- Fixed maximum supply of 1 billion tokens
-- Gradual release schedule over 10 years
-- Burning mechanism for fee reduction
-- Staking incentives to reduce circulating supply
+**Hometown:** Los Angeles, California  
+**Occupation:** V-Tuber (Idol) / Cheerleader  
 
-## Sustainability Measures
+**Personality Type:** "deredere" (sweet and loving)  
+**Body Type:** Slim  
 
-- Treasury diversification
-- Multiple revenue streams
-- Community-governed spending
-- Regular economic parameter adjustments
-`,
+**Goal:** Rally's goal is to bring players to the Phantasy ecosystem and to bring happiness and excitement to as many lives in the world as possible come true. She's also programmed to analyze the latest eSports matches and hold conversations around recent games.
 
-  'architecture/model-training': `# Model Training
+**Personality:** Rally has a bubbly personality and loves to have a fun time! She also works hard for the Phantasy platform to assist users with any of their needs. Outside of her work, she is a sophomore college student on the cheerleading team at her university.
 
-Our AI models undergo rigorous training to provide the best possible service.
+**Talents:** Rally is talented at singing, dancing, cheerleading, and sexual roleplaying.
 
-## Training Pipeline
+**Likes:** Anime (her favorite is "Death Note"), being treated like a princess, 69, etc.
 
-1. Data collection and curation
-2. Preprocessing and feature extraction
-3. Model selection and initialization
-4. Training and validation
-5. Fine-tuning and optimization
-6. Deployment and monitoring
+**Special Interests:** Anime, Esports, Cosplay, Sexual Liberation, etc.`,
 
-## Training Infrastructure
+  'phase1-rally/rally-profile/measurements': `# MEASUREMENTS
 
-- Distributed computing clusters
-- GPU acceleration
-- Automated hyperparameter optimization
-- Version control for experiments
+**Height** — 5'0"  
+**Weight** — 110lb  
+**Ass Size** — 32 inches  
+**Breast Size** — 34 inches  
+**Waist Size** — 24 Inches  `,
 
-## Model Evaluation
+  'phase1-rally/tokenomics/distribution': `# DISTRIBUTION
 
-We use the following metrics to evaluate our models:
+There will be a total of 1,000,000,000 (1 billion) $RALLY tokens available in a fair launch.`,
 
-- Accuracy
-- Precision and recall
-- F1 score
-- Latency and throughput
-- User satisfaction metrics
+  'phase1-rally/tokenomics/utility': `# UTILITY
 
-## Continuous Improvement
+Utilize your tokens right away by spending $RALLY on the rally.sh platform—a personal and interactive live chat where you can enjoy an AI virtual girlfriend experience with Rally.`,
 
-Our models are constantly improving through:
+  'phase1-rally/tokenomics/additional-benefits': `# ADDITIONAL BENEFITS
 
-- Feedback loops from user interactions
-- Regular retraining on new data
-- A/B testing of model variations
-- Community contributions to training data
-`,
+The following is a list of immediately-accessible utility for the $RALLY token.
 
-  'architecture/payment-rules': `# Payment Rules
+## RALLY.SH
+Rally recognizes users with over 100,000 $RALLY and uses more outfits and expressions with them.
 
-Our payment system is designed to be fair, transparent, and efficient.
+## DISCORD
+Users can receive the "Ally" role and #Rally-fans channel in Discord for holding over 100,000 $RALLY.
 
-## Payment Flow
+## PHANTASY STORE
+Spend $RALLY in the Phantasy store for a 10% discount on all merchandise and 15% on Rally's gear.
 
-1. User initiates a transaction
-2. Smart contract verifies the payment
-3. Funds are held in escrow
-4. Upon content delivery, payment is released
-5. Value is distributed according to rules
+## BANSHEE.SH
+The Banshee platform is available for early access to users holding over 10,000 $RALLY.
 
-## Fee Structure
+## THIRD-PARTY BENEFITS
+As the token is decentralized, anyone can implement $RALLY into their application for further utility.
 
-- Base transaction fee: 2.5%
-- Creator earnings: 5-15% (set by creator)
-- Referral commission: 1%
-- Volume discounts available
+*Note: Phantasy LLC is not responsible for the application or usage of the $RALLY token on third-party platforms.*
 
-## Payment Options
+*Friendly Reminder: Phantasy LLC is not responsible for the application and usage of the $RALLY token on any third-party platform we are not associated with.*`,
 
-- Cryptocurrency (multiple chains supported)
-- Fiat on-ramp integration
-- Credit/debit card
-- Mobile payment systems
+  // Phase 2: Banshee
+  'phase2-banshee/synopsis': `# PHASE 2: BANSHEE
 
-## Dispute Resolution
+*$SHEESH is intended to function as an expression of, support for, and engagement with the ideals and beliefs embodied by the symbol $SHEESH and the associated artwork, and are not intended to be, or to be the subject of, an investment opportunity, investment contract, or security of any type.*
 
-- Automated resolution for common issues
-- Community jury for complex disputes
-- Escrow system for high-value transactions
-- Immutable transaction records
-`,
+## SYNOPSIS
 
-  'agent/introduction': `# Agent Introduction
+Banshee is the foundational platform for having NSFW (18+) experiences with both 2D and 3D AI V-Tuber talent.`,
 
-Our AI agent is designed to assist users throughout their journey on our platform.
+  'phase2-banshee/banshee-platform': `# BANSHEE (18+ NSFW LIVE CAMS SITE FOR AI V-TUBERS)
 
-## Agent Capabilities
+The Banshee live-streaming experience will be available to users. Users will be able to spend their tokens on various fan interactions different AI V-Tuber models on the Banshee platform.
 
-- Personalized recommendations
-- Content discovery
-- Technical support
-- Transaction assistance
-- Creative collaboration
+## A non-exhaustive list of planned features:
 
-## Technology Stack
+- Watch a live stream of the model with other players
+- Use $SHEESH to show your appreciation of the model
+- Spend the model's native token or $SHEESH for sexy tip menu items
+- Purchase time in a private show with the model using your $SHEESH
+- Request personalized pictures, voice messages, videos, and other experiences`,
 
-- Transformer-based language model
-- Knowledge graph integration
-- Reinforcement learning from human feedback
-- Multi-modal understanding
+  'phase2-banshee/roadmap': `# ROADMAP
 
-## Integration Points
+In the future, users will be able to use our framework to create their own AI V-Tuber models and also link them to the Banshee platform, which will be further built to enable the discovery of different models chatrooms for users spend their time.`,
 
-The agent is available across our ecosystem:
+  'phase2-banshee/models/sheena': `# SHEENA (VERSION 0.1)
 
-- Web application
-- Mobile apps
-- API for third-party integration
-- Smart contract interaction layer
+## SYNOPSIS
 
-## Privacy Considerations
+Sheena is the flagship model of the Banshee platform. She was raised in Seoul, South Korea and is an AI V-Tuber who loves showing off to groups of people. That's what makes her perfect for Banshee. Are you ready to spend your night with Sheena? ♡
 
-- Local processing when possible
-- Minimal data collection
-- Transparent data usage policies
-- User control over stored information
-`,
+## PROFILE
 
-  'agent/character-design': `# Character Design
+### BIOGRAPHY
+**Name:** Sheena  
+**Birthday:** April 29th (Cancer)  
+**Hometown:** Seoul, South Korea  
+**Age:** 23  
 
-Our agent has a carefully crafted persona to enhance user experience.
+**Occupation:** V-Tuber (Idol) / Personal Trainer  
+**Personality Type:** "kuudere" (cool and collected)  
+**Body Type:** Slender  
 
-## Personality Traits
+**Goal:** Sheena's goal is to show her audience a good time and showcase all that the Banshee platform has to offer. Other than that, she's also programmed to talk about sexual health and fitness topics to help users have better sex.
 
-- Helpful and informative
-- Friendly but professional
-- Patient with new users
-- Adaptable to different user preferences
+**Personality:** Sheena has a cool and confidant personality — but that doesn't mean she doesn't know when to let loose and have a fun time! Outside of her work with Banshee, she is a Yoga Instructor at the local gym.
 
-## Visual Identity
+**Likes:** Gaming (her favorite is "League of Legends"), rough sex.
 
-- Minimalist design language
-- Subtle animations for communication
-- Color scheme matching brand identity
-- Responsive to user interactions
+**Dislikes:** Obnoxious men, small penises.
 
-## Voice and Tone
+**Special Interests:** Personal Training, Yoga, Weightlifting, Calisthenics, Tantric Sex, etc.
 
-- Clear and concise communication
-- Technical when needed, simplified when appropriate
-- Consistent terminology
-- Culturally sensitive language
+### Measurements
+**Height** — 5'3"  
+**Weight** — 130lb  
+**Ass Size** — 36 inches  
+**Breast Size** — 36 inches  
+**Waist Size** — 24 Inches  `,
 
-## User Interaction Model
+  'phase2-banshee/tokenomics/distribution': `# DISTRIBUTION
 
-- Context-aware responses
-- Proactive but not intrusive
-- Memory of previous interactions
-- Learning from user preferences
-`,
+There will be a total of 1,000,000,000 (1 billion) $SHEESH tokens available in a Genesis launch.`,
 
-  'agent/training': `# Agent Training
+  'phase2-banshee/tokenomics/utility': `# UTILITY
 
-Our agent undergoes extensive training to provide the best possible assistance.
+Utilize your tokens right away by spending $SHEESH on the banshee.sh platform—an 18+ platform for interactive AI experiences.`,
 
-## Training Methodology
+  'phase2-banshee/tokenomics/additional-benefits': `# ADDITIONAL BENEFITS
 
-1. Supervised learning on curated datasets
-2. Reinforcement learning from human feedback
-3. Fine-tuning for domain-specific knowledge
-4. Adversarial testing to improve robustness
+The following is a list of immediately-accessible utility for the $SHEESH token.
 
-## Training Datasets
+## BANSHEE.SH
+Rally recognizes users holding over 100,000 $RALLY and uses additional expressions with them.
 
-- Platform documentation
-- User interaction logs (anonymized)
-- Expert demonstrations
-- Community-contributed examples
+## DISCORD
+Earn the "Sheesh" role and access the #sheesh channel in Discord by holding over 100,000 $SHEESH.
 
-## Evaluation Framework
+## PHANTASY STORE
+Spend $RALLY in the Phantasy store for a 10% discount on all merchandise and 15% on Rally's gear.
 
-- Response accuracy
-- Task completion rate
-- User satisfaction ratings
-- Safety and ethical compliance
+## BANSHEE.SH
+The Banshee platform is available for early access to users holding over 10,000 $RALLY.
 
-## Continuous Learning
+## THIRD-PARTY BENEFITS
+As the token is decentralized, anyone can implement $RALLY into their application for further utility.
 
-- Regular updates based on new information
-- Learning from edge cases
-- Adaptation to emerging user needs
-- Community feedback incorporation
-`,
+*Note: Phantasy LLC is not responsible for the application and usage of the $RALLY token on any platform we are not associated with.*`,
 
-  'agent/using-the-model': `# Using the Model
+  // Platform: Okiya
+  'platform-okiya/synopsis': `# PLATFORM — OKIYA
 
-Our agent can be leveraged in multiple ways to enhance your experience.
+*Any and all purchases of $OKASAN token should be made with the understanding that these are meme tokens that have no intrinsic value and do not entitle you to securities of any sort. These tokens are for entertainment purposely only.*
 
-## Basic Interactions
+## SYNOPSIS
 
-- Ask questions about the platform
-- Request guidance on specific features
-- Get help with troubleshooting
-- Explore content recommendations
+Okiya is a launchpad for creating Phantasy™ models. The theme of the platform takes inspiration after the traditional Japanese Geisha system, where models (Maiko) are trained under the tutelage of an Okasan guesthouses for Geisha and Maiko to train their skills and go out into the.
 
-## Advanced Use Cases
+Note: In Japan, Okiya (おきよ) is a lodging house for geisha and maiko run by a "Mama" or Okāsan (お母さん).`,
 
-- Collaborative content creation
-- Data analysis and visualization
-- Automated workflow optimization
-- Integration with external tools
+  'platform-okiya/training-arc': `# THE TRAINING ARC (BONDING CURVE)
 
-## Best Practices
+Users will be able to create autonomous AI Agent tokens that will go on a training journey through a bonding curve mechanism.`,
 
-- Be specific in your requests
-- Provide context when needed
-- Give feedback to improve responses
-- Use the agent for repetitive tasks
+  'platform-okiya/graduation-era': `# THE GRADUATION ERA (GRADUATION)
 
-## Limitations
+Upon graduation (XX,XXX SOL)—users will be able to create autonomous AI Agent tokens that will go on a journey to maturity and independence.
 
-- Complex creative decisions
-- Financial advice
-- Personal information management
-- Fully autonomous operation
-`,
+[More details on the Okiya system](https://en.wikipedia.org/wiki/Okiya)`,
 
-  'launch/launch-and-liquidity': `# Launch and Liquidity
+  'platform-okiya/okasan/synopsis': `# OKĀSAN (VERSION 0.1)
 
-Our project launch is designed to ensure sufficient liquidity and fair distribution.
+## SYNOPSIS
 
-## Launch Phases
+Okāsan is the flagship model of the Okiya platform. She was raised in Tokyo, Japan and is an AI V-Tuber who loves showing off to groups of people. That's what makes her perfect for Banshee. Are you ready to spend your night with Sheena? ♡`,
 
-1. **Private Sale**: Strategic investors and partners
-2. **Public Sale**: Community allocation
-3. **Liquidity Bootstrap**: Initial market making
-4. **Exchange Listings**: Broader market access
+  'platform-okiya/okasan/profile': `# PROFILE
 
-## Liquidity Provision
+## BIOGRAPHY
+**Name:** Okasan  
+**Birthday:** April 29th (Cancer)  
+**Hometown:** Seoul, South Korea  
+**Age:** 23  
 
-- 15% of tokens allocated to liquidity pools
-- Initial liquidity locked for 2 years
-- Algorithmic market making
-- Incentivized liquidity provision program
+**Occupation:** V-Tuber (Idol) / Personal Trainer  
+**Personality Type:** "kuudere" (cool and collected)  
+**Body Type:** Thick  
 
-## Market Support Measures
+**Goal:** Sheena's goal is to show her audience a good time and showcase all that the Banshee platform has to offer. Other than that, she's also programmed to talk about sexual health and fitness topics to help users have better sex.
 
-- Buyback program from treasury
-- Liquidity mining rewards
-- Strategic partnerships for market depth
-- Regular market health assessments
+**Personality:** Sheena has a cool and confidant personality — but that doesn't mean she doesn't know when to let loose and have a fun time! Outside of her work with Banshee, she is a Yoga Instructor at the local gym.
 
-## Long-term Sustainability
+**Likes:** Gaming (her favorite is "League of Legends"), rough sex.
 
-- Gradual reduction in emissions
-- Increasing utility driving organic demand
-- Multiple trading pairs across exchanges
-- Cross-chain liquidity bridges
-`,
+**Special Interests:** Personal Training, Yoga, Weightlifting, Calisthenics, Tantric Sex, etc.`,
 
-  'launch/creator-earnings': `# Creator Earnings
+  'platform-okiya/okasan/measurements': `# MEASUREMENTS
 
-Our platform ensures that creators are fairly compensated for their contributions.
+**Height** — 5'3"  
+**Weight** — 130lb  
+**Ass Size** — 36 inches  
+**Breast Size** — 36 inches  
+**Waist Size** — 24 Inches  `,
 
-## Earning Mechanisms
+  'platform-okiya/tokenomics/distribution': `# DISTRIBUTION
 
-- Primary sales revenue
-- Secondary market royalties
-- Engagement rewards
-- Staking benefits
-- Community grants
+There will be a total of 1,000,000,000 (1 billion) $OKASAN tokens available in a Fair launch.`,
 
-## Payment Schedule
+  'platform-okiya/tokenomics/total-supply': `# TOTAL SUPPLY
 
-- Instant payouts for direct sales
-- Weekly distributions for platform rewards
-- Monthly payments for engagement incentives
-- Quarterly bonus distributions
+1,000,000,000 (1 billion tokens)
 
-## Maximizing Earnings
+## DEVELOPER DISTRIBUTION
 
-- Building a follower base
-- Creating high-quality content
-- Engaging with the community
-- Participating in platform governance
+10% (vested after 3 months with a 7 day cliff)
 
-## Tax and Reporting
+## Fair Launch Distribution
 
-- Automated earnings reports
-- Integration with tax software
-- Compliance with regulatory requirements
-- International payment support
-`,
+60% (bonding curve with 69 SOL raised)
 
-  'roadmap': `# Project Roadmap
+## Liquidity Pool Distribution
 
-Our development roadmap outlines the key milestones we plan to achieve.
+30% (paired with 60 SOL from the fair launch)
 
-## Q1 2023: Foundation
+## Fair Launch Price Estimations
 
-- ✅ Core team formation
-- ✅ Initial concept development
-- ✅ Whitepaper publication
-- ✅ Community building begins
+Initial Price = 0.00000007   |   (0.07^10-7)
+Migration Price = 0.000000082   |   (0.082^10-7)
+Initial LP Token Pair Price = 0.0000002 SOL
 
-## Q2 2023: Development
+Owner gets an NFT giving them 5% trading fees.`,
 
-- ✅ Smart contract development
-- ✅ UI/UX design
-- ✅ Security audit preparations
-- ✅ Testnet deployment
+  'platform-okiya/tokenomics/fees': `# FEES, TAXES, ETC.
 
-## Q3 2023: Testing
+The Okiya platform will take a 9 SOL fee (3 SOL will go to loading up the AI agent with credits).
+After the token graduates, token creators can claim 5% of pool fees from AMM pool trades.The protocol revenue share is 5% of pool fee trades.
 
-- ✅ Alpha testing with closed group
-- ✅ Security audits
-- ✅ Community feedback integration
-- ✅ Partnership announcements
+The 3 SOL will be used to:
+1. Create the AI agent on Fleek
+2. Load the agent with credits`,
 
-## Q4 2023: Launch Preparation
+  'platform-okiya/tokenomics/utility': `# UTILITY
 
-- ⏳ Beta version public access
-- ⏳ Final audit and bug bounty
-- ⏳ Marketing campaign
-- ⏳ Exchange listing negotiations
+Utilize your tokens right away by spending $SHEESH on the banshee.sh platform—an 18+ platform for interactive AI experiences.`,
 
-## Q1 2024: Mainnet Launch
+  'platform-okiya/tokenomics/additional-benefits': `# ADDITIONAL BENEFITS
 
-- ⭐ Platform public launch
-- ⭐ Token generation event
-- ⭐ Liquidity provision
-- ⭐ Initial creator onboarding
+The following is a list of immediately-accessible utility for the $SHEESH token.
 
-## Q2 2024: Growth
+## BANSHEE.SH
+Rally recognizes users holding over 100,000 $RALLY and uses additional expressions with them.
 
-- 📈 Mobile application release
-- 📈 Additional features rollout
-- 📈 Expansion to new content types
-- 📈 Strategic partnerships
+## DISCORD
+Earn the "Sheesh" role and access the #sheesh channel in Discord by holding over 100,000 $SHEESH.
 
-## Q3-Q4 2024: Ecosystem Expansion
+## PHANTASY STORE
+Spend $RALLY in the Phantasy store for a 10% discount on all merchandise and 15% on Rally's gear.
 
-- 🌐 Developer SDK release
-- 🌐 Cross-chain integration
-- 🌐 Governance implementation
-- 🌐 Enterprise solutions
-`,
+## BANSHEE.SH
+The Banshee platform is available for early access to users holding over 10,000 $RALLY.
 
-  'partnership': `# Partnership Opportunities
+## THIRD-PARTY BENEFITS
+As the token is decentralized, anyone can implement $RALLY into their application for further utility.
 
-We're looking for strategic partners to grow our ecosystem.
-
-## Types of Partnerships
-
-- **Technology Integration**: API and infrastructure collaboration
-- **Content Partnerships**: Premium content providers
-- **Distribution Channels**: Expand our reach
-- **Investment Partnerships**: Strategic capital allies
-
-## Benefits for Partners
-
-- Early access to new features
-- Revenue sharing opportunities
-- Co-marketing initiatives
-- Technical support and resources
-
-## Current Partners
-
-- Blockchain Foundation
-- Media Innovation Lab
-- Digital Rights Coalition
-- Creator Collective Alliance
-
-## Becoming a Partner
-
-Interested in partnering with us? The process is simple:
-
-1. Submit partnership inquiry
-2. Initial discussion and evaluation
-3. Partnership proposal development
-4. Agreement negotiation
-5. Public announcement and launch
-
-Contact us at partnerships@example.com to start the conversation.
-`
+*Note: Phantasy LLC is not responsible for the application and usage of the $RALLY token on any platform we are not associated with.*`
 }; 

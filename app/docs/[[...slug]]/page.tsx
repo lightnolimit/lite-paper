@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import Navigation from '../../components/Navigation';
 import FileTree from '../../components/FileTree';
@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function DocumentationPage() {
   const params = useParams<{ slug?: string[] }>();
+  const router = useRouter();
   const [currentPath, setCurrentPath] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [sidebarVisible, setSidebarVisible] = useState(true); // Always show sidebar by default
@@ -48,7 +49,7 @@ export default function DocumentationPage() {
   useEffect(() => {
     // Set default path if none provided
     if (!params.slug || params.slug.length === 0) {
-      setCurrentPath('project-overview/introduction');
+      setCurrentPath('introduction/synopsis');
     } else {
       setCurrentPath(params.slug.join('/'));
     }
@@ -94,8 +95,8 @@ export default function DocumentationPage() {
     if (item.type === 'file') {
       setCurrentPath(item.path);
       
-      // Update the URL to match the current content
-      window.history.pushState({}, '', `/docs/${item.path}`);
+      // Use Next.js router for client-side navigation
+      router.push(`/docs/${item.path}`);
       
       // Close sidebar on mobile after selection
       if (typeof window !== 'undefined' && window.innerWidth < 768) {
@@ -162,12 +163,15 @@ export default function DocumentationPage() {
                   x: -100,
                   position: isMobile ? 'fixed' : 'sticky',
                 }}
-                className="w-[90%] md:w-72 lg:w-80 shrink-0 doc-card file-tree-panel p-4 h-[calc(100vh-64px)] top-16 overflow-y-auto z-20 border-r"
+                className="w-[90%] md:w-72 lg:w-80 shrink-0 doc-card file-tree-panel p-4 h-[calc(100vh-64px)] top-16 overflow-y-auto z-20 border-r scrollbar-hide"
                 style={{
                   left: isMobile ? '0' : 'auto',
                   borderTopRightRadius: 0,
                   borderBottomRightRadius: 0,
                   borderBottomLeftRadius: 0,
+                  overflowY: 'auto',
+                  msOverflowStyle: 'none',  /* IE and Edge */
+                  scrollbarWidth: 'none',  /* Firefox */
                 }}
               >
                 <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--text-color)' }}>
