@@ -1,132 +1,212 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
+import { marked } from 'marked';
+import { documentationTree } from '../data/documentation';
+import { FileItem } from './FileTree';
+import { applyMarkdownStyles, processLinks, processWalletAddresses } from '../utils/contentProcessor';
+
+/**
+ * Props for the ContentRenderer component
+ * 
+ * @typedef {Object} ContentRendererProps
+ * @property {string} content - The markdown content to render
+ * @property {string} path - The current document path
+ */
 type ContentRendererProps = {
   content: string;
   path: string;
 };
 
-export default function ContentRenderer({ content, path }: ContentRendererProps) {
+/**
+ * Type definition for adjacent page navigation
+ * 
+ * @typedef {Object} AdjacentPage
+ * @property {string} path - The path to the adjacent document
+ * @property {string} title - The title of the adjacent document
+ */
+type AdjacentPage = {
+  path: string;
+  title: string;
+};
+
+/**
+ * Find the previous and next pages based on the current path
+ * 
+ * @param {string} currentPath - The current document path
+ * @returns {Object} Object containing previous and next page information
+ */
+const findAdjacentPages = (currentPath: string): { prevPage?: AdjacentPage, nextPage?: AdjacentPage } => {
+  // Flatten the documentation tree to get all file items in order
+  const flattenedItems: { path: string, name: string }[] = [];
+  
+  function flattenTree(items: FileItem[]) {
+    items.forEach(item => {
+      if (item.type === 'file') {
+        flattenedItems.push({ 
+          path: item.path,
+          name: item.name.replace(/\.md$/, '')
+        });
+      } else if (item.type === 'directory' && item.children) {
+        flattenTree(item.children);
+      }
+    });
+  }
+  
+  flattenTree(documentationTree);
+  
+  // Find the current item index
+  const currentIndex = flattenedItems.findIndex(item => item.path === currentPath);
+  
+  // If not found, return empty result
+  if (currentIndex === -1) {
+    return {};
+  }
+  
+  // Get previous and next pages
+  const prevPage = currentIndex > 0 
+    ? { 
+        path: flattenedItems[currentIndex - 1].path,
+        title: flattenedItems[currentIndex - 1].name
+      } 
+    : undefined;
+  
+  const nextPage = currentIndex < flattenedItems.length - 1 
+    ? { 
+        path: flattenedItems[currentIndex + 1].path,
+        title: flattenedItems[currentIndex + 1].name
+      } 
+    : undefined;
+  
+  return { prevPage, nextPage };
+};
+
+/**
+ * Process DOM elements after content has been rendered
+ * 
+ * @param {React.RefObject<HTMLDivElement>} contentRef - Reference to the content container
+ * @param {string} content - The markdown content
+ */
+const useProcessDomElements = (contentRef: React.RefObject<HTMLDivElement>, content: string): void => {
+  useEffect(() => {
+    const currentRef = contentRef.current;
+    if (!currentRef) return;
+
+    // Process links and wallet addresses
+    processLinks(currentRef as HTMLElement);
+    processWalletAddresses(currentRef as HTMLElement);
+    
+    // Cleanup function
+    return () => {
+      // Remove event listeners from links if needed
+      const links = currentRef.querySelectorAll('a');
+      links.forEach(link => {
+        link.removeEventListener('keydown', () => {});
+      });
+    };
+  }, [content, contentRef]); // Re-run when content changes
+};
+
+/**
+ * ContentRenderer component that renders markdown content with styling and navigation
+ * 
+ * Features:
+ * - Renders markdown with syntax highlighting
+ * - Processes links and wallet addresses for interactivity
+ * - Provides navigation between adjacent pages
+ * - Adds special styling for synopsis pages
+ * 
+ * @param {ContentRendererProps} props - Component props
+ * @returns {React.ReactElement} Rendered component
+ */
+export default function ContentRenderer({ content = '', path = '' }: ContentRendererProps): React.ReactElement {
   const contentRef = useRef<HTMLDivElement>(null);
   
-  // Process links after render to add tabindex and other accessibility attributes
-  useEffect(() => {
-    if (contentRef.current) {
-      // Find all links in the rendered content
-      const links = contentRef.current.querySelectorAll('a');
-      links.forEach(link => {
-        // Add tabindex to make links focusable in tab order
-        link.setAttribute('tabindex', '0');
-        
-        // Add keyboard event listener for Enter key
-        link.addEventListener('keydown', (e: KeyboardEvent) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            link.click();
-          }
-        });
+  // Get previous and next pages using useMemo
+  const { prevPage, nextPage } = useMemo(() => findAdjacentPages(path), [path]);
+  
+  // Process DOM elements after render
+  useProcessDomElements(contentRef, content);
+  
+  // Render markdown with memoization
+  const contentHtml = useMemo(() => {
+    if (!content) return '<p>No content available.</p>';
+
+    try {
+      // Configure marked to handle markdown properly
+      marked.setOptions({
+        gfm: true,
+        breaks: true,
+        pedantic: false
       });
+
+      // Parse markdown into HTML and apply styling
+      const html = marked.parse(content) as string;
+      return applyMarkdownStyles(html);
+    } catch (error: unknown) {
+      console.error('Error rendering markdown:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      return `<p>Error rendering content: ${errorMessage}</p>`;
     }
   }, [content]);
   
-  // Basic markdown rendering (you would use a proper markdown library in a real app)
-  const contentHtml = content
-    // Headers with Yeezy font
-    .replace(/^# (.*$)/gim, '<h1 class="font-yeezy font-heavy text-2xl font-bold my-4" tabindex="0">$1</h1>')
-    .replace(/^## (.*$)/gim, '<h2 class="font-yeezy font-bold text-xl font-bold my-3" tabindex="0">$1</h2>')
-    .replace(/^### (.*$)/gim, '<h3 class="font-yeezy text-lg font-medium my-2" tabindex="0">$1</h3>')
-    // Paragraphs
-    .replace(/^\s*(\n)?(.+)/gim, function(m) {
-      return /\<(\/)?(h|ul|ol|li|blockquote|code|hr)/gim.test(m) ? m : '<p class="font-yeezy font-light my-2">$2</p>';
-    })
-    // Links - now the tabindex will be added by JavaScript after render
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a class="font-yeezy text-primary-color hover:underline focus:outline-none focus:ring-2 focus:ring-primary-color" style="color: var(--primary-color);" href="$2">$1</a>')
-    // Bold
-    .replace(/\*\*(.*)\*\*/gim, '<strong class="font-bold">$1</strong>')
-    // Italic
-    .replace(/\*(.*)\*/gim, '<em>$1</em>')
-    // Code blocks
-    .replace(/```([\s\S]*?)```/g, '<pre class="p-4 rounded-md my-4 overflow-x-auto" style="background-color: var(--card-color); border: 1px solid var(--border-color);" tabindex="0"><code>$1</code></pre>')
-    // Inline code
-    .replace(/`([^`]+)`/g, '<code class="px-1 rounded" style="background-color: var(--card-color); border: 1px solid var(--border-color);">$1</code>');
+  // Check if this is a synopsis page to show banner
+  const isSynopsisPage = path.toLowerCase().includes('synopsis');
   
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0.9, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.15 }}
       className="w-full py-0 md:py-4"
     >
-      <div className="doc-card p-6 md:p-8 relative" role="article">
-        <div 
+      <div className="doc-card p-6 md:p-8 relative" role="article" style={{ maxWidth: '100%', width: '100%' }}>
+        {/* Banner for synopsis pages */}
+        {isSynopsisPage && (
+          <div className="w-full mb-6 overflow-hidden rounded-lg relative">
+            <Image 
+              src="/assets/banners/phantasy-banner.png" 
+              alt="Phantasy Banner" 
+              width={1200} 
+              height={400}
+              className="w-full object-cover"
+              priority
+            />
+          </div>
+        )}
+        
+        {/* Main content area */}
+        <div
           ref={contentRef}
-          className="prose max-w-none font-yeezy"
-          style={{ color: 'var(--text-color)' }}
+          className="markdown-content"
           dangerouslySetInnerHTML={{ __html: contentHtml }}
         />
         
-        {/* Document footer with breadcrumbs and navigation */}
-        <div className="mt-12 pt-6 border-t" style={{ borderColor: 'var(--border-color)' }}>
-          {/* Breadcrumbs */}
-          <div className="text-sm mb-6 flex flex-wrap items-center font-yeezy font-light" style={{ color: 'var(--muted-color)' }}>
-            <span className="mr-2 font-medium">Path:</span>
-            {path.split('/').map((part, index, array) => (
-              <React.Fragment key={index}>
-                <span className="px-1">{part}</span>
-                {index < array.length - 1 && (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-1">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
+        {/* Navigation between pages */}
+        <div className="flex justify-between mt-12 pt-6 border-t border-gray-200 dark:border-gray-800">
+          {prevPage ? (
+            <a href={`/docs/${prevPage.path}`} className="flex items-center text-primary-color hover:underline">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+              {prevPage.title}
+            </a>
+          ) : (
+            <div></div>
+          )}
           
-          {/* Pagination links - prev/next */}
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-4">
-            <a 
-              href={`/docs/project-overview/introduction`}
-              className="font-yeezy flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
-              style={{ 
-                backgroundColor: 'var(--card-color)',
-                color: 'var(--text-color)',
-                border: '1px solid var(--border-color)'
-              }}
-              tabIndex={0}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-              </svg>
-              <span>
-                <span className="block text-xs opacity-75">Previous</span>
-                <span className="block font-medium">Introduction</span>
-              </span>
-            </a>
-            
-            <a 
-              href={`/docs/core-mechanisms/tokenization`}
-              className="font-yeezy flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
-              style={{ 
-                backgroundColor: 'var(--card-color)',
-                color: 'var(--text-color)',
-                border: '1px solid var(--border-color)'
-              }}
-              tabIndex={0}
-            >
-              <span>
-                <span className="block text-xs opacity-75">Next</span>
-                <span className="block font-medium">Tokenization</span>
-              </span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
+          {nextPage && (
+            <a href={`/docs/${nextPage.path}`} className="flex items-center text-primary-color hover:underline">
+              {nextPage.title}
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-2">
+                <polyline points="9 18 15 12 9 6"></polyline>
               </svg>
             </a>
-          </div>
+          )}
         </div>
       </div>
     </motion.div>
   );
-} 
+}

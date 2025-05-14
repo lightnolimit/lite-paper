@@ -1,22 +1,117 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import ThemeSwitcher from './ThemeSwitcher';
-import BackgroundSelector from './BackgroundSelector';
+import Image from 'next/image';
+import { useTheme } from '../providers/ThemeProvider';
+import SettingsMenu from './SettingsMenu';
 
-const navItems = [
-  { label: 'Discord', href: 'https://discord.com' },
-  { label: 'Github', href: 'https://github.com' },
+/**
+ * Props for the Navigation component
+ * 
+ * @typedef {Object} NavigationProps
+ * @property {string} [docsPath] - Current documentation path (optional)
+ * @property {Function} [onToggleSidebar] - Function to toggle the sidebar (optional)
+ * @property {boolean} [sidebarVisible] - Whether the sidebar is visible (optional)
+ */
+type NavigationProps = {
+  docsPath?: string;
+  onToggleSidebar?: () => void;
+  sidebarVisible?: boolean;
+};
+
+/**
+ * Navigation item type definition
+ */
+type NavItem = {
+  /** Display text for the navigation link */
+  label: string;
+  /** URL the navigation item links to */
+  href: string;
+};
+
+/**
+ * Main navigation links
+ */
+const navItems: NavItem[] = [
   { label: 'Docs', href: '/docs' },
   { label: 'API', href: '/api' },
-  { label: 'Playground', href: '/playground' }
+  { label: 'Rally', href: '/docs/phase1-rally' },
+  { label: 'Phantasy', href: '/docs/phase2-phantasy' },
+  { label: 'Banshee', href: '/docs/phase3-banshee' }
+  // { label: 'Rally', href: 'https://rally.sh' },
+  // { label: 'Phantasy', href: 'https://phantasy.bot' },
+  // { label: 'Banshee', href: 'https://banshee.sh' }
 ];
 
-export default function Navigation() {
+/**
+ * Social media links with icons
+ */
+const socialLinks = [
+  { 
+    name: 'Discord', 
+    href: 'https://discord.com', 
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M22 11V8h-1V6h-1V5h-2V4h-3v1H9V4H6v1H4v1H3v2H2v3H1v7h2v1h2v1h2v-2H6v-1h2v1h1v1h6v-1h1v-1h2v1h-1v2h2v-1h2v-1h2v-7ZM9 15H7v-1H6v-2h1v-1h2v1h1v2H9Zm9-1h-1v1h-2v-1h-1v-2h1v-1h2v1h1Z" strokeWidth="0.5" stroke="#000"/>
+      </svg>
+    )
+  },
+  { 
+    name: 'X', 
+    href: 'https://x.com', 
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M15.5 10V9h1V8h1V7h1V6h1V5h1V4h1V3h1V2h-3v1h-1v1h-1v1h-1v1h-1v1h-2V7h-1V6h-1V4h-1V3h-1V2h-7v1h1v1h1v1h1v2h1v1h1v2h1v1h1v2h1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h3v-1h1v-1h1v-1h1v-1h1v-1h2v1h1v1h1v2h1v1h1v1h7v-1h-1v-1h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1zm0 4v1h1v2h1v1h1v2h-3v-2h-1v-1h-1v-1h-1v-2h-1v-1h-1v-1h-1v-2h-1V9h-1V7h-1V6h-1V4h3v1h1v2h1v1h1v2h1v1h1v1h1v2z" strokeWidth="0.5" stroke="#000"/>
+      </svg>
+    )
+  },
+  { 
+    name: 'Twitch', 
+    href: 'https://twitch.tv', 
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M6 1v1H5v1H4v1H3v1H2v14h5v4h1v-1h1v-1h1v-1h1v-1h4v-1h1v-1h1v-1h1v-1h1V1Zm14 11h-1v1h-1v1h-5v1h-1v1h-1v1h-1v-3H7V3h13Z" strokeWidth="0.5" stroke="#000"/>
+        <path fill="currentColor" d="M16 5h2v5h-2zm-5 0h2v5h-2z" strokeWidth="0.5" stroke="#000"/>
+      </svg>
+    )
+  },
+  { 
+    name: 'YouTube', 
+    href: 'https://youtube.com', 
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M22 7V5h-2V4H4v1H2v2H1v10h1v2h2v1h16v-1h2v-2h1V7zm-10 8h-2V9h2v1h2v1h2v2h-2v1h-2z" strokeWidth="0.5" stroke="#000"/>
+      </svg>
+    )
+  }
+];
+
+/**
+ * Mobile menu animation variants for framer-motion
+ */
+const mobileMenuVariants = {
+  hidden: { opacity: 0, height: 0 },
+  visible: { opacity: 1, height: 'auto' },
+  exit: { opacity: 0, height: 0 }
+};
+
+/**
+ * Main navigation component for the application
+ * 
+ * Provides navigation links, theme switcher, background selector, and
+ * responsive mobile menu with animations.
+ * 
+ * @param {NavigationProps} props - Component props
+ * @returns {React.ReactElement} Rendered Navigation component
+ */
+export default function Navigation({ docsPath, onToggleSidebar, sidebarVisible }: NavigationProps): React.ReactElement {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { isDarkMode } = useTheme();
+  const isDocsPage = docsPath !== undefined;
   
   // Close mobile menu when window is resized to desktop size
   useEffect(() => {
@@ -30,24 +125,94 @@ export default function Navigation() {
     return () => window.removeEventListener('resize', handleResize);
   }, [mobileMenuOpen]);
   
+  /**
+   * Renders a navigation link with hover effects
+   * @param {NavItem} item - The navigation item to render
+   * @param {boolean} isMobile - Whether this is in the mobile menu
+   * @returns {React.ReactElement} A navigation link
+   */
+  const renderNavLink = (item: NavItem, isMobile = false): React.ReactElement => (
+    <Link 
+      key={item.label}
+      href={item.href}
+      className={`transition-colors nav-link ${isMobile ? 'py-2 px-4' : ''} relative`}
+      style={{ 
+        color: 'var(--text-color)',
+        fontFamily: 'var(--mono-font)',
+        ...(isMobile ? {} : { letterSpacing: '-0.5px', fontSize: '0.9rem' })
+      }}
+      onClick={isMobile ? () => {
+        setMobileMenuOpen(false);
+        setHoveredItem(null);
+      } : undefined}
+      onMouseEnter={() => setHoveredItem(item.label)}
+      onMouseLeave={() => setHoveredItem(null)}
+      tabIndex={0}
+    >
+      <div className="flex items-center">
+        <AnimatePresence mode="wait">
+          {hoveredItem === item.label ? (
+            <motion.span 
+              className="bracket-left absolute"
+              style={{ left: "-1.5rem" }}
+              key="bracket-left"
+              initial={{ opacity: 0, x: 5 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 5 }}
+              transition={{ 
+                duration: 0.2,
+                exit: { duration: 0.5 },
+                ease: "easeInOut" 
+              }}
+            >「</motion.span>
+          ) : null}
+        </AnimatePresence>
+        
+        <span className="px-2">{item.label}</span>
+        
+        <AnimatePresence mode="wait">
+          {hoveredItem === item.label ? (
+            <motion.span 
+              className="bracket-right absolute"
+              style={{ right: "-1.5rem" }}
+              key="bracket-right"
+              initial={{ opacity: 0, x: -5 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -5 }}
+              transition={{ 
+                duration: 0.2, 
+                exit: { duration: 0.5 },
+                ease: "easeInOut" 
+              }}
+            >」</motion.span>
+          ) : null}
+        </AnimatePresence>
+      </div>
+    </Link>
+  );
+  
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 backdrop-blur-sm border-b border-border-color" style={{ backgroundColor: 'var(--background-color)', borderColor: 'var(--border-color)' }}>
-      <div className="container max-w-5xl mx-auto px-4 md:px-6 flex items-center justify-between h-16">
+    <header className="fixed top-0 left-0 right-0 z-40 header-bar border-b" style={{ backgroundColor: 'var(--card-color)' }}>
+      <div className="max-w-full mx-auto px-5 md:px-8 flex items-center justify-between h-16">
+        {/* Logo and site title */}
         <Link 
           href="/"
-          className="font-yeezy font-bold text-xl flex items-center gap-2"
+          className="flex items-center gap-2"
           style={{ color: 'var(--text-color)' }}
-          tabIndex={0} // Make focusable with keyboard
+          tabIndex={0}
         >
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-color to-secondary-color" style={{ 
-            backgroundImage: `linear-gradient(to right, var(--primary-color), var(--secondary-color))`
-          }}>
-            PROJECT
-          </span>
-          <span>DOCS</span>
+          <Image 
+            src={isDarkMode ? "/assets/logo/phantasy-icon-pink.png" : "/assets/logo/phantasy-icon-black.png"}
+            alt="Phantasy Logo"
+            width={32}
+            height={32}
+            className="h-8 w-auto logo-image"
+          />
+          <span className="font-mono text-xl tracking-tighter" style={{ fontFamily: 'var(--mono-font)' }}>DOCS</span>
         </Link>
         
         <div className="flex items-center gap-2">
+          {/* Desktop navigation */}
           <nav className="hidden md:flex items-center gap-6">
             {navItems.map((item) => (
               <div 
@@ -56,50 +221,48 @@ export default function Navigation() {
                 onMouseEnter={() => setHoveredItem(item.label)}
                 onMouseLeave={() => setHoveredItem(null)}
               >
-                <Link 
-                  href={item.href}
-                  className="font-yeezy font-light transition-colors hover:text-primary-color"
-                  style={{ color: 'var(--muted-color)' }}
-                  tabIndex={0} // Make focusable with keyboard
-                >
-                  {item.label}
-                </Link>
-                {hoveredItem === item.label && (
-                  <motion.div 
-                    layoutId="underline"
-                    className="absolute bottom-0 left-0 right-0 h-0.5"
-                    style={{ backgroundColor: 'var(--primary-color)' }}
-                    initial={{ opacity: 0, width: '0%' }}
-                    animate={{ opacity: 1, width: '100%' }}
-                    exit={{ opacity: 0, width: '0%' }}
-                  />
-                )}
+                {renderNavLink(item)}
               </div>
             ))}
             
-            {/* Separator */}
-            <div className="h-6 w-px bg-gray-300 dark:bg-gray-700" aria-hidden="true"></div>
-            
-            {/* Background switcher */}
-            <BackgroundSelector />
-            
-            {/* Another separator */}
-            <div className="h-6 w-px bg-gray-300 dark:bg-gray-700" aria-hidden="true"></div>
-            
-            {/* Theme switcher in header for desktop */}
-            <ThemeSwitcher className="hover:text-primary-color" />
+            {/* Separator between nav links and social icons */}
+            <div className="h-6 w-px bg-gray-300 dark:bg-gray-700 ml-2 mr-2" aria-hidden="true"></div>
           </nav>
           
-          <div className="flex md:hidden items-center gap-3">
-            {/* Theme switcher in header for mobile */}
-            <ThemeSwitcher className="hover:text-primary-color" />
+          {/* Desktop Social Media Icons */}
+          <div className="hidden md:flex items-center gap-2">
+            {socialLinks.map(link => (
+              <a 
+                key={link.name}
+                href={link.href} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label={link.name} 
+                className="hover:opacity-80 transition-opacity"
+              >
+                {link.icon}
+              </a>
+            ))}
             
+            {/* Separator between social icons and settings */}
+            <div className="h-6 w-px bg-gray-300 dark:bg-gray-700 ml-2 mr-2" aria-hidden="true"></div>
+            
+            {/* Settings menu with theme and background options */}
+            <SettingsMenu className="hover:text-primary-color" />
+          </div>
+          
+          {/* Mobile menu toggle and settings */}
+          <div className="flex md:hidden items-center gap-3">
+            {/* Settings menu for mobile */}
+            <SettingsMenu className="hover:text-primary-color" isCompact={true} />
+            
+            {/* Mobile menu button */}
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               style={{ color: 'var(--text-color)' }}
               aria-label="Toggle mobile menu"
               aria-expanded={mobileMenuOpen}
-              tabIndex={0} // Make focusable with keyboard
+              tabIndex={0}
             >
               {mobileMenuOpen ? (
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -119,29 +282,76 @@ export default function Navigation() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={mobileMenuVariants}
+            transition={{ duration: 0.2 }}
             className="md:hidden"
           >
-            <nav className="flex flex-col gap-1 p-4 border-t shadow-lg" style={{ backgroundColor: 'var(--background-color)', borderColor: 'var(--border-color)' }}>
+            <nav className="flex flex-col gap-1 p-3 border-t shadow-lg" style={{ backgroundColor: 'var(--background-color)', borderColor: 'var(--border-color)' }}>
+              {/* Navigation links */}
               {navItems.map((item) => (
-                <Link 
-                  key={item.label}
-                  href={item.href}
-                  className="font-yeezy py-2 px-4 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
-                  style={{ color: 'var(--text-color)' }}
-                  onClick={() => setMobileMenuOpen(false)}
-                  tabIndex={0} // Make focusable with keyboard
-                >
-                  {item.label}
-                </Link>
+                <div key={item.label}>
+                  {renderNavLink(item, true)}
+                </div>
               ))}
               
-              {/* Background selector for mobile menu */}
-              <div className="py-2 px-4">
-                <div className="text-sm mb-2" style={{ color: 'var(--muted-color)' }}>Background:</div>
-                <BackgroundSelector />
+              {/* File tree toggle for mobile docs pages */}
+              {isDocsPage && onToggleSidebar && (
+                <div className="pt-4 pb-2 px-4 border-t mt-2 mb-0" style={{ borderColor: 'var(--border-color)' }}>
+                  <button
+                    onClick={() => {
+                      if (onToggleSidebar) {
+                        onToggleSidebar();
+                        setMobileMenuOpen(false);
+                      }
+                    }}
+                    className="flex items-center gap-2 py-0.5 w-full hover:text-primary-color transition-colors"
+                    style={{ color: 'var(--text-color)' }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-5 h-5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
+                      />
+                    </svg>
+                    <span style={{ paddingTop: '0px' }}>{sidebarVisible ? "Hide Documentation Tree" : "Show Documentation Tree"}</span>
+                  </button>
+                </div>
+              )}
+              
+              {/* Social links for mobile */}
+              <div className="pt-4 px-4 mt-1 border-t" style={{ borderColor: 'var(--border-color)' }}>
+                <div className="flex items-center mb-1">
+                  <span className="text-sm mr-3" style={{ color: 'var(--muted-color)', fontFamily: 'var(--mono-font)' }}>
+                    Follow Us:
+                  </span>
+                  <div className="flex flex-wrap gap-4">
+                    {socialLinks.map(link => (
+                      <a 
+                        key={link.name}
+                        href={link.href} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        aria-label={link.name} 
+                        className="hover:opacity-80 transition-opacity flex items-center gap-2"
+                        style={{ color: 'var(--text-color)' }}
+                      >
+                        {link.icon}
+                        <span>{link.name}</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
               </div>
             </nav>
           </motion.div>

@@ -3,6 +3,7 @@
 import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useTheme } from '../providers/ThemeProvider';
 
 // Debug state management
 type DebugState = {
@@ -65,6 +66,7 @@ type StarFieldProps = {
 const StarField = ({ count = 800, mouseX, mouseY, isDarkMode, showCursor }: StarFieldProps) => {
   const starsGroup = useRef<THREE.Group>(null);
   const cursorMesh = useRef<THREE.Mesh>(null);
+  const canvasRef = useRef<DOMRect | null>(null);
   
   // Create star instances
   const [starPositions, setStarPositions] = useState<Float32Array | null>(null);
@@ -113,10 +115,10 @@ const StarField = ({ count = 800, mouseX, mouseY, isDarkMode, showCursor }: Star
         colors[i * 3 + 1] = 0.4 + Math.random() * 0.3; // G
         colors[i * 3 + 2] = 0.7 + Math.random() * 0.3; // B
       } else {
-        // Green palette for light mode
-        colors[i * 3] = 0.3 + Math.random() * 0.2; // R
-        colors[i * 3 + 1] = 0.6 + Math.random() * 0.4; // G
-        colors[i * 3 + 2] = 0.3 + Math.random() * 0.2; // B
+        // Faded black palette for light mode
+        colors[i * 3] = 0.2 + Math.random() * 0.1; // R (darker)
+        colors[i * 3 + 1] = 0.2 + Math.random() * 0.1; // G (darker)
+        colors[i * 3 + 2] = 0.2 + Math.random() * 0.1; // B (darker)
       }
     }
     
@@ -133,9 +135,25 @@ const StarField = ({ count = 800, mouseX, mouseY, isDarkMode, showCursor }: Star
     
     const time = state.clock.getElapsedTime() * 0.1;
     
-    // Mouse normalization with reduced effect
-    const normalizedMouseX = (mouseX / window.innerWidth) * 2 - 1;
-    const normalizedMouseY = -(mouseY / window.innerHeight) * 2 + 1;
+    // Update canvas bounds for accurate mouse position
+    const canvas = document.querySelector('canvas');
+    if (canvas) {
+      canvasRef.current = canvas.getBoundingClientRect();
+    }
+    
+    // Calculate normalized mouse coordinates
+    let normalizedMouseX = 0;
+    let normalizedMouseY = 0;
+    
+    if (canvasRef.current) {
+      // Ensure mouse position is relative to the canvas
+      const relativeMouseX = mouseX - (canvasRef.current.left || 0);
+      const relativeMouseY = mouseY - (canvasRef.current.top || 0);
+      
+      // Normalize to range [-1, 1]
+      normalizedMouseX = (relativeMouseX / canvasRef.current.width) * 2 - 1;
+      normalizedMouseY = -(relativeMouseY / canvasRef.current.height) * 2 + 1;
+    }
     
     // Update cursor position if showing cursor
     if (cursorMesh.current && showCursor) {
@@ -240,98 +258,89 @@ const StarField = ({ count = 800, mouseX, mouseY, isDarkMode, showCursor }: Star
 
 export default function StarsBackground() {
   const ref = useRef<HTMLDivElement>(null);
+  const { isDarkMode } = useTheme();
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isDarkMode, setIsDarkMode] = useState(true);
-  const [showDebugCursor, setShowDebugCursor] = useState(false);
-  
-  // Initialize debug mode
+  const [showCursor, setShowCursor] = useState(false);
+  const [forceUpdate, setForceUpdate] = useState(0); // For forcing re-renders
+
+  // Setup debug mode
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      window.__DEBUG_MODE__ = window.__DEBUG_MODE__ || {
-        showCursor: false,
-        logging: false
-      };
+      // Initialize debug mode
+      if (!window.__DEBUG_MODE__) {
+        window.__DEBUG_MODE__ = {
+          showCursor: localStorage.getItem('debugCursor') === 'true',
+          logging: false
+        };
+      }
       
-      window.toggleDebugCursor = () => {
-        window.__DEBUG_MODE__!.showCursor = !window.__DEBUG_MODE__!.showCursor;
-        setShowDebugCursor(window.__DEBUG_MODE__!.showCursor);
-        console.log('Debug cursor:', window.__DEBUG_MODE__!.showCursor ? 'enabled' : 'disabled');
-      };
+      // Add key handler for debug mode toggling
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'd' && e.ctrlKey && e.shiftKey) {
+          window.__DEBUG_MODE__!.showCursor = !window.__DEBUG_MODE__!.showCursor;
+          localStorage.setItem('debugCursor', window.__DEBUG_MODE__!.showCursor.toString());
+          setShowCursor(window.__DEBUG_MODE__!.showCursor);
+        };
+        
+        // Initialize state from window.__DEBUG_MODE__
+        setShowCursor(window.__DEBUG_MODE__!.showCursor);
+      }
       
-      window.toggleDebugLogging = () => {
-        window.__DEBUG_MODE__!.logging = !window.__DEBUG_MODE__!.logging;
-        console.log('Debug logging:', window.__DEBUG_MODE__!.logging ? 'enabled' : 'disabled');
-      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
     }
   }, []);
   
-  // Track mouse position for interactive effects
+  // Effect for mouse tracking
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
+      // Store the actual mouse coordinates for the component to use
       setMousePos({
         x: e.clientX,
         y: e.clientY
       });
     };
     
+    // Handle window resize to reset canvas bounds
+    const handleResize = () => {
+      const canvas = document.querySelector('canvas');
+      if (canvas) {
+        // Reset the canvas
+        canvas.dispatchEvent(new Event('resize'));
+      }
+    };
+    
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('resize', handleResize);
     
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
   
-  // Check dark mode status from localStorage
+  // Force update when theme changes
   useEffect(() => {
-    const checkDarkMode = () => {
-      if (typeof window !== 'undefined') {
-        const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
-        setIsDarkMode(darkModeEnabled);
-        
-        // Ensure correct class is on the document element
-        if (darkModeEnabled) {
-          document.documentElement.classList.add('dark');
-          document.documentElement.classList.add('theme-transition');
-        } else {
-          document.documentElement.classList.remove('dark');
-          document.documentElement.classList.add('theme-transition');
-        }
-      }
-    };
-    
-    // Initial check
-    checkDarkMode();
-    
-    // Listen for changes (in case theme is toggled in another component)
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'darkMode') {
-        checkDarkMode();
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
-  
+    setForceUpdate(prev => prev + 1);
+  }, [isDarkMode]);
+
   return (
     <div 
-      ref={ref}
-      className="fixed inset-0 w-full h-full overflow-hidden pointer-events-none" 
-      style={{ zIndex: 0 }}
+      ref={ref} 
+      className="fixed inset-0 z-0 pointer-events-none"
     >
-      <Canvas 
-        camera={{ position: [0, 0, 20], fov: 75, near: 0.1, far: 1000 }}
+      <Canvas
+        key={`canvas-${isDarkMode}-${forceUpdate}`} // Force canvas recreation on theme change
         style={{ width: '100%', height: '100%' }}
+        dpr={[1, 2]}
+        camera={{ position: [0, 0, 50], fov: 60 }}
       >
-        <ambientLight intensity={0.5} />
-        <StarField 
-          mouseX={mousePos.x} 
-          mouseY={mousePos.y} 
+        <StarField
+          count={1000}
+          mouseX={mousePos.x}
+          mouseY={mousePos.y}
           isDarkMode={isDarkMode}
-          showCursor={showDebugCursor}
+          showCursor={showCursor}
         />
       </Canvas>
     </div>

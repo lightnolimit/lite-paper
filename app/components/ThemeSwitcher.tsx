@@ -1,77 +1,90 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../providers/ThemeProvider';
 
-export default function ThemeSwitcher({ className = "" }) {
-  const [isDarkMode, setIsDarkMode] = useState(false); // Default to light mode
+/**
+ * Props for the ThemeSwitcher component
+ * @typedef {Object} ThemeSwitcherProps
+ * @property {string} [className] - Optional CSS class name for styling
+ */
+type ThemeSwitcherProps = {
+  className?: string;
+};
 
-  // Effect to initialize the theme from localStorage or default to light mode
-  useEffect(() => {
-    // Check localStorage first
-    const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
-    
-    if (darkModeEnabled) {
-      setIsDarkMode(true);
-      document.documentElement.classList.add('dark');
-    } else {
-      // Default to light mode
-      setIsDarkMode(false);
-      document.documentElement.classList.remove('dark');
-      // Save the default to localStorage if not already set
-      if (localStorage.getItem('darkMode') === null) {
-        localStorage.setItem('darkMode', 'false');
-      }
-    }
-  }, []);
+/**
+ * ThemeSwitcher component that toggles between light and dark mode
+ * 
+ * Displays a sun icon in dark mode and a moon icon in light mode.
+ * Uses framer-motion for hover and tap animations.
+ * 
+ * @param {ThemeSwitcherProps} props - Component props
+ * @returns {React.ReactElement} Rendered ThemeSwitcher component
+ */
+export default function ThemeSwitcher({ className = "" }: ThemeSwitcherProps): React.ReactElement {
+  const { isDarkMode, toggleTheme } = useTheme();
 
-  // Effect to toggle the theme class on the html element
-  useEffect(() => {
-    const html = document.documentElement;
-    
+  // Animation settings for button
+  const buttonAnimations = {
+    whileHover: { scale: 1.1 },
+    whileTap: { scale: 0.95 }
+  };
+
+  // ARIA labels based on current mode
+  const ariaAttrs = {
+    'aria-label': isDarkMode ? "Switch to light mode" : "Switch to dark mode",
+    'title': isDarkMode ? "Switch to light mode" : "Switch to dark mode"
+  };
+
+  /**
+   * Renders the appropriate icon based on the current theme
+   * @returns {React.ReactElement} The sun or moon icon SVG
+   */
+  const renderThemeIcon = (): React.ReactElement => {
     if (isDarkMode) {
-      html.classList.add('dark');
-      localStorage.setItem('darkMode', 'true');
+      // Pixel Sun (light mode icon)
+      return (
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          width="20" 
+          height="20" 
+          viewBox="0 0 24 24" 
+          style={{ display: 'block' }}
+          aria-hidden="true"
+        >
+          <path fill="currentColor" d="M21 11v-1h1V9h1V7h-3V6h-2V4h-1V1h-2v1h-1v1h-1v1h-2V3h-1V2H9V1H7v3H6v2H4v1H1v2h1v1h1v1h1v2H3v1H2v1H1v2h3v1h2v2h1v3h2v-1h1v-1h1v-1h2v1h1v1h1v1h2v-3h1v-2h2v-1h3v-2h-1v-1h-1v-1h-1v-2zm-2 2v1h1v1h1v1h-3v1h-1v1h-1v3h-1v-1h-1v-1h-1v-1h-2v1h-1v1H9v1H8v-3H7v-1H6v-1H3v-1h1v-1h1v-1h1v-2H5v-1H4V9H3V8h3V7h1V6h1V3h1v1h1v1h1v1h2V5h1V4h1V3h1v2h1v2h1v1h3v1h-1v1h-1v1h-1v2z" strokeWidth="0.5" stroke="#000" />
+          <path fill="currentColor" d="M16 10V9h-1V8h-1V7h-4v1H9v1H8v1H7v4h1v1h1v1h1v1h4v-1h1v-1h1v-1h1v-4zm-1 4h-1v1h-4v-1H9v-4h1V9h4v1h1z" strokeWidth="0.5" stroke="#000" />
+        </svg>
+      );
     } else {
-      html.classList.remove('dark');
-      localStorage.setItem('darkMode', 'false');
+      // Pixel Moon (dark mode icon)
+      return (
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          width="20" 
+          height="20" 
+          viewBox="0 0 24 24" 
+          style={{ display: 'block' }}
+          aria-hidden="true"
+        >
+          <path fill="currentColor" d="M21 17v1h-2v1h-4v-1h-2v-1h-2v-1h-1v-2H9v-2H8V8h1V6h1V4h1V3h2V2h2V1h-5v1H8v1H6v1H5v1H4v2H3v2H2v6h1v2h1v2h1v1h1v1h2v1h2v1h6v-1h2v-1h2v-1h1v-1h1v-2zM8 20v-1H6v-2H5v-2H4V9h1V7h1V5h2v1H7v2H6v4h1v2h1v2h1v1h1v1h1v1h2v1h2v1h-5v-1z" strokeWidth="0.5" stroke="#000" />
+        </svg>
+      );
     }
-  }, [isDarkMode]);
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
   };
 
   return (
     <motion.button
       onClick={toggleTheme}
-      className={`p-2 rounded-full ${className}`}
-      style={{ 
-        color: 'var(--text-color)'
-      }}
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
-      aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
-      title={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+      className={`p-2 rounded-full flex items-center gap-2 ${className}`}
+      style={{ color: 'var(--text-color)' }}
+      {...buttonAnimations}
+      {...ariaAttrs}
       tabIndex={0}
     >
-      {isDarkMode ? (
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="5"></circle>
-          <line x1="12" y1="1" x2="12" y2="3"></line>
-          <line x1="12" y1="21" x2="12" y2="23"></line>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-          <line x1="1" y1="12" x2="3" y2="12"></line>
-          <line x1="21" y1="12" x2="23" y2="12"></line>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-        </svg>
-      ) : (
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-        </svg>
-      )}
+      {renderThemeIcon()}
+      <span className="text-sm">{isDarkMode ? "Light" : "Dark"}</span>
     </motion.button>
   );
 } 
