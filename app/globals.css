@@ -68,6 +68,7 @@
   --title-font: 'Yeezy T-Star', sans-serif;
   --body-font: 'Urbanist', sans-serif;
   --icon-color: #2E3A23; /* Icon color for light mode */
+  --primary-color-rgb: 103, 141, 88; /* RGB value of #678D58 */
 }
 
 .dark {
@@ -82,6 +83,7 @@
   --text-color: #F0F0F5;
   --muted-color: #9C9CAF;
   --icon-color: #F0F0F5; /* Icon color for dark mode */
+  --primary-color-rgb: 255, 133, 161; /* RGB value of #FF85A1 */
 }
 
 body {
@@ -502,7 +504,7 @@ code {
 }
 
 .doc-card ul, .doc-card ol {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   padding-left: 1.5rem;
 }
 
@@ -557,87 +559,151 @@ code {
   filter: invert(1);
 }
 
-/* Profile page specific styling */
-.doc-card [style*="display: flex; gap: 24px"] {
-  display: flex !important;
-  gap: 24px !important;
-  flex-wrap: wrap !important;
-  margin: 30px 0 !important;
+/* Clean up any conflicting old styles */
+.doc-card div[style*="display: flex"],
+.doc-card [style*="display: flex; gap: 24px"],
+.doc-card [style*="display: flex; margin-bottom: 8px"],
+.doc-card [style*="display: flex; align-items: center; margin: 5px"],
+.doc-card [style*="flex: 1; min-width: 250px; max-width: 50%"],
+.doc-card [style*="flex: 1; min-width: 250px;"],
+.doc-card [style*="flex-grow: 1; font-family: monospace;"],
+.doc-card [style*="display: flex; align-items: center; width: 100%;"],
+.doc-card [style*="margin: 30px 0"] {
+  /* Reset any conflicting styles */
+  all: unset;
 }
 
-.doc-card [style*="display: flex; margin-bottom: 8px"] {
-  display: flex !important;
-  margin-bottom: 8px !important;
+/* Profile container layout */
+.profile-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+  margin: 2rem 0;
 }
 
-.doc-card [style*="font-weight: bold; min-width"] {
-  font-weight: bold !important;
-  min-width: 140px !important;
+/* Profile image in the container */
+.profile-container > p {
+  flex: 0 1 250px;
+  margin: 0;
 }
 
-.doc-card [style*="display: flex; align-items: center; margin: 5px"] {
-  display: flex !important;
-  align-items: center !important;
-  margin: 5px 0 !important;
-}
-
-/* Fix for profile columns */
-.doc-card [style*="flex: 1; min-width: 250px; max-width: 50%"] {
-  flex: 1 !important;
-  min-width: 250px !important;
-  max-width: 50% !important;
-  display: flex !important;
-  align-items: flex-start !important;
-  justify-content: center !important;
-}
-
-.doc-card [style*="flex: 1; min-width: 250px;"] {
-  flex: 1 !important;
-  min-width: 250px !important;
-}
-
-/* Fix for profile picture */
-.doc-card img[style*="width: 100%; max-width: 300px; border-radius: 50%"] {
-  width: 100% !important;
-  max-width: 300px !important;
-  border-radius: 50% !important;
-  border: 4px solid var(--primary-color) !important;
-}
-
-/* Fix for copy buttons */
-.doc-card button[onclick*="navigator.clipboard.writeText"] {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer !important;
-  background: none !important;
-  border: none !important;
-  padding: 8px !important;
-}
-
-/* Fix for wallet display divs */
-.doc-card [style*="display: flex; align-items: center; width: 100%;"] {
-  display: flex !important;
-  align-items: center !important;
-  width: 100% !important;
-}
-
-.doc-card [style*="flex-grow: 1; font-family: monospace;"] {
-  flex-grow: 1 !important;
-  font-family: monospace !important;
-  background-color: rgba(255, 255, 255, 0.05) !important;
-  padding: 8px 12px !important;
-  border-radius: 4px !important;
-  border: 1px solid var(--border-color) !important;
-}
-
-/* Profile image styling */
-.doc-card > p > img:first-of-type {
-  display: block;
-  max-width: 300px;
+.profile-container > p > img {
+  width: 100%;
+  max-width: 250px;
+  height: auto;
   border-radius: 50%;
   border: 4px solid var(--primary-color);
-  margin: 2rem auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin: 0;
+}
+
+/* Profile details section */
+.profile-details {
+  flex: 1 1 300px;
+  margin-top: 1rem;
+}
+
+/* Remove profile image styling that's now handled by the container */
+.doc-card > p > img:first-of-type {
+  display: none;
+}
+
+/* Social media links inline styling */
+.social-links-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.social-links-inline a {
+  display: inline-flex;
+  align-items: center;
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.social-links-inline a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.social-links-inline img {
+  height: 20px;
+  width: auto;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* Wallet address styling */
+.wallet-address {
+  font-family: var(--mono-font);
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  position: relative;
+  display: inline-block;
+  margin: 0.3rem 0;
+}
+
+.dark .wallet-address {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--border-color);
+}
+
+/* Copy button styling */
+.copy-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: 8px;
+  border-radius: 4px;
+  vertical-align: middle;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.copy-button:hover {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark .copy-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.copy-button img {
+  vertical-align: middle;
+}
+
+/* Fix for profile info layout */
+.doc-card p strong {
+  font-weight: bold;
+  display: inline-block;
+  min-width: 140px;
+}
+
+/* Fix for image size in dark mode */
+.dark .doc-card img[src*="pixel"] {
+  filter: invert(1);
+}
+
+/* Style for regular code blocks */
+.doc-card code {
+  font-family: var(--mono-font);
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.dark .doc-card code {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Inline icons in headings */
@@ -646,36 +712,4 @@ code {
   width: auto;
   vertical-align: middle;
   margin-right: 8px;
-}
-
-/* Social media profiles */
-.doc-card p a img {
-  height: 20px;
-  width: auto;
-  vertical-align: middle;
-  margin-right: 6px;
-}
-
-/* Code blocks for wallet addresses */
-.doc-card code {
-  background: rgba(0, 0, 0, 0.05);
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
-  font-family: var(--mono-font);
-  display: inline-block;
-  margin: 0.5rem 0;
-}
-
-.dark .doc-card code {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-/* Add spacing after lists */
-.doc-card ul, .doc-card ol {
-  margin-bottom: 1.5rem;
-}
-
-/* Fix for image size in dark mode */
-.dark .doc-card img[src*="pixel"] {
-  filter: invert(1);
 }

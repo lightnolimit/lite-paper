@@ -1,8 +1,10 @@
 # RALLY (VERSION 0.1)
 
+<div class="profile-container">
+
 ![Rally Profile Picture](/assets/characters/rally/pfp.png)
 
-## PROFILE
+<div class="profile-details">
 
 **Name:** Rally  
 **Birthday:** April 29th (Cancer)  
@@ -11,6 +13,9 @@
 **Occupation:** V-Tuber (Idol) / Cheerleader  
 **Personality Type:** "deredere" (sweet and loving)  
 **Body Type:** Slim  
+
+</div>
+</div>
 
 ## SYNOPSIS
 
@@ -40,22 +45,21 @@ Anime, Esports, Cosplay, Sexual Liberation, etc.
 ## ![Wallet](/assets/icons/pixel-wallet-solid.svg) WALLET & TOKEN INFORMATION
 
 **Base Wallet:**  
-`0x1234...5678`
+`0x1234...5678` {.wallet-address data-address="0x1234...5678"}
 
 **Solana Wallet:**  
-`rally123...xyz`
+`rally123...xyz` {.wallet-address data-address="rally123...xyz"}
 
 **Token Contract:**  
-`0xABCD...6789`
+`0xABCD...6789` {.wallet-address data-address="0xABCD...6789"}
 
 ---
 
 ## ![Social](/assets/icons/pixel-star.svg) SOCIAL PROFILES
 
-[![X](/assets/icons/pixel-x.svg) @RallyPhantasy](https://twitter.com/rallyphantasy)
-
-[![Instagram](/assets/icons/pixel-instagram.svg) @RallyPhantasy](https://instagram.com/rallyphantasy)
-
-[![Twitch](/assets/icons/pixel-twitch.svg) RallyPhantasy](https://twitch.tv/rallyphantasy)
-
+<div class="social-links-inline">
+[![X](/assets/icons/pixel-x.svg) @RallyPhantasy](https://twitter.com/rallyphantasy) &nbsp;
+[![Instagram](/assets/icons/pixel-instagram.svg) @RallyPhantasy](https://instagram.com/rallyphantasy) &nbsp;
+[![Twitch](/assets/icons/pixel-twitch.svg) RallyPhantasy](https://twitch.tv/rallyphantasy) &nbsp;
 [![TikTok](/assets/icons/pixel-tiktok.svg) @rallyphantasy](https://tiktok.com/@rallyphantasy)
+</div>

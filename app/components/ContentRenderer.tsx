@@ -64,7 +64,7 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
   // Get previous and next pages using useMemo to avoid re-calculating on every render
   const { prevPage, nextPage } = React.useMemo(() => findAdjacentPages(path), [path]);
   
-  // Process links after render to add tabindex and other accessibility attributes
+  // Process links and add wallet copy buttons after render
   useEffect(() => {
     if (contentRef.current) {
       // Find all links in the rendered content
@@ -80,6 +80,35 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
             link.click();
           }
         });
+      });
+
+      // Add copy buttons to wallet addresses
+      const walletAddresses = contentRef.current.querySelectorAll('.wallet-address');
+      walletAddresses.forEach(walletElement => {
+        const address = walletElement.getAttribute('data-address');
+        if (!address) return;
+
+        // Create the copy button
+        const copyButton = document.createElement('button');
+        copyButton.className = 'copy-button';
+        copyButton.innerHTML = `<img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" width="16" height="16" />`;
+        copyButton.setAttribute('aria-label', 'Copy to clipboard');
+        copyButton.setAttribute('title', 'Copy to clipboard');
+        
+        // Add click handler
+        copyButton.addEventListener('click', () => {
+          navigator.clipboard.writeText(address).then(() => {
+            // Success feedback
+            copyButton.innerHTML = `<img src="/assets/icons/pixel-check-circle-solid.svg" alt="Copied" width="16" height="16" />`;
+            setTimeout(() => {
+              copyButton.innerHTML = `<img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" width="16" height="16" />`;
+            }, 1500);
+          });
+        });
+        
+        // Add button after the wallet address
+        walletElement.appendChild(document.createTextNode(' '));
+        walletElement.appendChild(copyButton);
       });
     }
   }, [content]);
@@ -101,6 +130,9 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
       
       // Apply basic styling for images
       html = html.replace(/<img([^>]*)>/g, '<img$1 class="rounded-lg max-w-full my-4" style="max-height: 300px; object-fit: contain;" />');
+      
+      // Convert {.wallet-address data-address="xxx"} to proper attribute
+      html = html.replace(/\{\.wallet-address data-address="([^"]+)"\}/g, 'class="wallet-address" data-address="$1"');
       
       // Style for code blocks
       html = html.replace(/<code>/g, '<code class="font-mono bg-opacity-10 bg-gray-200 dark:bg-gray-700 dark:bg-opacity-20 px-1 py-0.5 rounded">');
