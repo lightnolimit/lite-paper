@@ -1,25 +1,6 @@
+# This is a static site with no Workers
 name = "test-docs"
 compatibility_date = "2023-12-01"
-compatibility_flags = ["nodejs_compat"]
-
-# Configure worker settings
-[build]
-command = "npm run pages:build"
 
 [site]
-bucket = "out"
-
-# Pages configuration
-pages_build_output_dir = "out"
-
-# Environment variables
-[vars]
-NEXT_PUBLIC_BACKGROUND_TYPE = "wave"
-NEXT_PUBLIC_SITE_URL = "https://docs.phantasy.bot"
-
-# Production environment
-[env.production]
-name = "test-docs-production"
-routes = [
-  { pattern = "docs.phantasy.bot", custom_domain = true }
-] 
+bucket = "./out"
