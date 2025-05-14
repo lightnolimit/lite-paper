@@ -36,11 +36,14 @@ type NavItem = {
  * Main navigation links
  */
 const navItems: NavItem[] = [
-  { label: 'Discord', href: 'https://discord.com' },
-  { label: 'Github', href: 'https://github.com' },
   { label: 'Docs', href: '/docs' },
   { label: 'API', href: '/api' },
-  { label: 'Playground', href: '/playground' }
+  { label: 'Rally', href: '/docs/phase1-rally' },
+  { label: 'Phantasy', href: '/docs/phase2-phantasy' },
+  { label: 'Banshee', href: '/docs/phase3-banshee' }
+  // { label: 'Rally', href: 'https://rally.sh' },
+  // { label: 'Phantasy', href: 'https://phantasy.bot' },
+  // { label: 'Banshee', href: 'https://banshee.sh' }
 ];
 
 /**
@@ -154,89 +157,87 @@ export default function Navigation({ docsPath, onToggleSidebar, sidebarVisible }
   
   return (
     <header className="fixed top-0 left-0 right-0 z-40 header-bar border-b" style={{ backgroundColor: 'var(--card-color)' }}>
-      <div className="w-full mx-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 flex items-center justify-between h-16">
-          {/* Logo and site title */}
-          <Link 
-            href="/"
-            className="flex items-center gap-2"
-            style={{ color: 'var(--text-color)' }}
-            tabIndex={0}
-          >
-            <Image 
-              src={isDarkMode ? "/assets/logo/phantasy-icon-pink.png" : "/assets/logo/phantasy-icon-black.png"}
-              alt="Phantasy Logo"
-              width={32}
-              height={32}
-              className="h-8 w-auto logo-image"
-            />
-            <span className="font-mono text-xl tracking-tighter" style={{ fontFamily: 'var(--mono-font)' }}>DOCS</span>
-          </Link>
-          
-          <div className="flex items-center gap-2">
-            {/* Desktop navigation */}
-            <nav className="hidden md:flex items-center gap-6">
-              {navItems.map((item) => (
-                <div 
-                  key={item.label} 
-                  className="relative"
-                  onMouseEnter={() => setHoveredItem(item.label)}
-                  onMouseLeave={() => setHoveredItem(null)}
-                >
-                  {renderNavLink(item)}
-                </div>
-              ))}
-              
-              {/* Separator between nav links and social icons */}
-              <div className="h-6 w-px bg-gray-300 dark:bg-gray-700 ml-2" aria-hidden="true"></div>
-            </nav>
-            
-            {/* Desktop Social Media Icons */}
-            <div className="hidden md:flex items-center gap-2 ml-4">
-              {socialLinks.map(link => (
-                <a 
-                  key={link.name}
-                  href={link.href} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  aria-label={link.name} 
-                  className="hover:opacity-80 transition-opacity"
-                >
-                  {link.icon}
-                </a>
-              ))}
-              
-              {/* Separator between social icons and settings */}
-              <div className="h-6 w-px bg-gray-300 dark:bg-gray-700 ml-1 mr-2" aria-hidden="true"></div>
-              
-              {/* Settings menu with theme and background options */}
-              <SettingsMenu className="hover:text-primary-color" />
-            </div>
-            
-            {/* Mobile menu toggle and settings */}
-            <div className="flex md:hidden items-center gap-3">
-              {/* Settings menu for mobile */}
-              <SettingsMenu className="hover:text-primary-color" isCompact={true} />
-              
-              {/* Mobile menu button */}
-              <button 
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                style={{ color: 'var(--text-color)' }}
-                aria-label="Toggle mobile menu"
-                aria-expanded={mobileMenuOpen}
-                tabIndex={0}
+      <div className="max-w-full mx-auto px-5 md:px-8 flex items-center justify-between h-16">
+        {/* Logo and site title */}
+        <Link 
+          href="/"
+          className="flex items-center gap-2"
+          style={{ color: 'var(--text-color)' }}
+          tabIndex={0}
+        >
+          <Image 
+            src={isDarkMode ? "/assets/logo/phantasy-icon-pink.png" : "/assets/logo/phantasy-icon-black.png"}
+            alt="Phantasy Logo"
+            width={32}
+            height={32}
+            className="h-8 w-auto logo-image"
+          />
+          <span className="font-mono text-xl tracking-tighter" style={{ fontFamily: 'var(--mono-font)' }}>DOCS</span>
+        </Link>
+        
+        <div className="flex items-center gap-2">
+          {/* Desktop navigation */}
+          <nav className="hidden md:flex items-center gap-6">
+            {navItems.map((item) => (
+              <div 
+                key={item.label} 
+                className="relative"
+                onMouseEnter={() => setHoveredItem(item.label)}
+                onMouseLeave={() => setHoveredItem(null)}
               >
-                {mobileMenuOpen ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                  </svg>
-                )}
-              </button>
-            </div>
+                {renderNavLink(item)}
+              </div>
+            ))}
+            
+            {/* Separator between nav links and social icons */}
+            <div className="h-6 w-px bg-gray-300 dark:bg-gray-700 ml-2 mr-2" aria-hidden="true"></div>
+          </nav>
+          
+          {/* Desktop Social Media Icons */}
+          <div className="hidden md:flex items-center gap-2">
+            {socialLinks.map(link => (
+              <a 
+                key={link.name}
+                href={link.href} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label={link.name} 
+                className="hover:opacity-80 transition-opacity"
+              >
+                {link.icon}
+              </a>
+            ))}
+            
+            {/* Separator between social icons and settings */}
+            <div className="h-6 w-px bg-gray-300 dark:bg-gray-700 ml-2 mr-2" aria-hidden="true"></div>
+            
+            {/* Settings menu with theme and background options */}
+            <SettingsMenu className="hover:text-primary-color" />
+          </div>
+          
+          {/* Mobile menu toggle and settings */}
+          <div className="flex md:hidden items-center gap-3">
+            {/* Settings menu for mobile */}
+            <SettingsMenu className="hover:text-primary-color" isCompact={true} />
+            
+            {/* Mobile menu button */}
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              style={{ color: 'var(--text-color)' }}
+              aria-label="Toggle mobile menu"
+              aria-expanded={mobileMenuOpen}
+              tabIndex={0}
+            >
+              {mobileMenuOpen ? (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+              )}
+            </button>
           </div>
         </div>
       </div>
@@ -252,7 +253,7 @@ export default function Navigation({ docsPath, onToggleSidebar, sidebarVisible }
             transition={{ duration: 0.2 }}
             className="md:hidden"
           >
-            <nav className="flex flex-col gap-1 p-4 border-t shadow-lg" style={{ backgroundColor: 'var(--background-color)', borderColor: 'var(--border-color)' }}>
+            <nav className="flex flex-col gap-1 p-3 border-t shadow-lg" style={{ backgroundColor: 'var(--background-color)', borderColor: 'var(--border-color)' }}>
               {/* Navigation links */}
               {navItems.map((item) => (
                 <div key={item.label}>
@@ -262,7 +263,7 @@ export default function Navigation({ docsPath, onToggleSidebar, sidebarVisible }
               
               {/* File tree toggle for mobile docs pages */}
               {isDocsPage && onToggleSidebar && (
-                <div className="py-2 px-4 border-t mt-2" style={{ borderColor: 'var(--border-color)' }}>
+                <div className="pt-4 pb-2 px-4 border-t mt-2 mb-0" style={{ borderColor: 'var(--border-color)' }}>
                   <button
                     onClick={() => {
                       if (onToggleSidebar) {
@@ -270,7 +271,7 @@ export default function Navigation({ docsPath, onToggleSidebar, sidebarVisible }
                         setMobileMenuOpen(false);
                       }
                     }}
-                    className="flex items-center gap-2 py-2 w-full hover:text-primary-color transition-colors"
+                    className="flex items-center gap-2 py-0.5 w-full hover:text-primary-color transition-colors"
                     style={{ color: 'var(--text-color)' }}
                   >
                     <svg
@@ -287,31 +288,33 @@ export default function Navigation({ docsPath, onToggleSidebar, sidebarVisible }
                         d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
                       />
                     </svg>
-                    <span>{sidebarVisible ? "Hide Documentation Tree" : "Show Documentation Tree"}</span>
+                    <span style={{ paddingTop: '0px' }}>{sidebarVisible ? "Hide Documentation Tree" : "Show Documentation Tree"}</span>
                   </button>
                 </div>
               )}
               
               {/* Social links for mobile */}
-              <div className="py-4 px-4 mt-2 border-t" style={{ borderColor: 'var(--border-color)' }}>
-                <div className="text-sm mb-2" style={{ color: 'var(--muted-color)', fontFamily: 'var(--mono-font)' }}>
-                  Follow Us:
-                </div>
-                <div className="flex flex-wrap gap-4">
-                  {socialLinks.map(link => (
-                    <a 
-                      key={link.name}
-                      href={link.href} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      aria-label={link.name} 
-                      className="hover:opacity-80 transition-opacity flex items-center gap-2"
-                      style={{ color: 'var(--text-color)' }}
-                    >
-                      {link.icon}
-                      <span>{link.name}</span>
-                    </a>
-                  ))}
+              <div className="pt-4 px-4 mt-1 border-t" style={{ borderColor: 'var(--border-color)' }}>
+                <div className="flex items-center mb-1">
+                  <span className="text-sm mr-3" style={{ color: 'var(--muted-color)', fontFamily: 'var(--mono-font)' }}>
+                    Follow Us:
+                  </span>
+                  <div className="flex flex-wrap gap-4">
+                    {socialLinks.map(link => (
+                      <a 
+                        key={link.name}
+                        href={link.href} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        aria-label={link.name} 
+                        className="hover:opacity-80 transition-opacity flex items-center gap-2"
+                        style={{ color: 'var(--text-color)' }}
+                      >
+                        {link.icon}
+                        <span>{link.name}</span>
+                      </a>
+                    ))}
+                  </div>
                 </div>
               </div>
             </nav>

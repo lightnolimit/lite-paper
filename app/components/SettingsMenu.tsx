@@ -115,7 +115,7 @@ export default function SettingsMenu({
             exit="exit"
             variants={menuVariants}
             transition={{ duration: 0.2 }}
-            className={`absolute z-50 mt-2 p-4 rounded-lg shadow-lg border doc-card ${
+            className={`absolute z-50 mt-2 p-3 rounded-lg shadow-lg border doc-card ${
               isCompact 
                 ? 'right-0 top-full' 
                 : 'right-0 top-full'
@@ -131,11 +131,11 @@ export default function SettingsMenu({
             aria-orientation="vertical"
             aria-labelledby="settings-menu-button"
           >
-            <div className="space-y-3 pt-0">
+            <div className="flex flex-col items-start justify-start space-y-2">
               {/* Theme section */}
-              <div>
-                <h3 className="text-sm font-medium mb-2" style={{ color: 'var(--muted-color)', fontFamily: 'var(--mono-font)' }}>
-                  Appearance
+              <div className="w-full">
+                <h3 className="text-sm font-medium mb-1" style={{ color: 'var(--muted-color)', fontFamily: 'var(--mono-font)', marginTop: '0' }}>
+                  APPEARANCE
                 </h3>
                 <div className="flex items-center justify-between">
                   <span className="text-sm" style={{ color: 'var(--text-color)' }}>Theme</span>
@@ -145,8 +145,8 @@ export default function SettingsMenu({
               
               {/* Background section */}
               <div>
-                <h3 className="text-sm font-medium mb-2" style={{ color: 'var(--muted-color)', fontFamily: 'var(--mono-font)' }}>
-                  Background
+                <h3 className="text-sm font-medium mb-1" style={{ color: 'var(--muted-color)', fontFamily: 'var(--mono-font)', marginTop: '0' }}>
+                  BACKGROUND
                 </h3>
                 <BackgroundSelector className="w-full justify-between" />
               </div>

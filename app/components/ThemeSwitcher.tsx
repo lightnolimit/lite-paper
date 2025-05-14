@@ -77,13 +77,14 @@ export default function ThemeSwitcher({ className = "" }: ThemeSwitcherProps): R
   return (
     <motion.button
       onClick={toggleTheme}
-      className={`p-2 rounded-full ${className}`}
+      className={`p-2 rounded-full flex items-center gap-2 ${className}`}
       style={{ color: 'var(--text-color)' }}
       {...buttonAnimations}
       {...ariaAttrs}
       tabIndex={0}
     >
       {renderThemeIcon()}
+      <span className="text-sm">{isDarkMode ? "Light" : "Dark"}</span>
     </motion.button>
   );
 } 
