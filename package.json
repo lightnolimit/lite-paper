@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "pages:build": "next build",
+    "pages:deploy": "npm run pages:build && wrangler pages deploy .vercel/output/static",
+    "deploy:production": "npm run pages:build && wrangler pages deploy .vercel/output/static --env production"
   },
   "dependencies": {
     "@react-three/drei": "^10.0.7",
@@ -22,6 +25,7 @@
     "three": "^0.176.0"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.13.12",
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
     "@types/react": "^19",

@@ -19,20 +19,20 @@ const nextConfig = {
         hostname: '**.phantasy.io',
       },
     ],
+    unoptimized: process.env.NODE_ENV === 'production', // For Cloudflare Pages compatibility
   },
   
   /**
    * Output configuration
-   * - Using 'standalone' for optimized production build
+   * - Using 'export' for Cloudflare Pages compatibility
    */
-  output: 'standalone',
+  output: 'export',
   
   /**
    * Enable React strict mode
    */
   reactStrictMode: true,
   
-
   /**
    * Trailing slash configuration - consistent URL handling
    */

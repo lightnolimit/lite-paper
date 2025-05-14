@@ -1,0 +1,22 @@
+[name = "test-docs"]
+compatibility_date = "2023-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Configure worker settings
+[build]
+command = "npm run pages:build"
+
+[site]
+bucket = ".vercel/output/static"
+
+# Environment variables
+[vars]
+NEXT_PUBLIC_BACKGROUND_TYPE = "wave"
+NEXT_PUBLIC_SITE_URL = "https://phantasy-docs.example.com"
+
+# Production environment
+[env.production]
+name = "test-docs-production"
+routes = [
+  { pattern = "phantasy-docs.example.com", custom_domain = true }
+] 
