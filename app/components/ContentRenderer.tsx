@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { marked } from 'marked';
 import { documentationTree } from '../data/documentation';
 import { FileItem } from './FileTree';
 
@@ -83,106 +84,59 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
     }
   }, [content]);
   
-  // Basic markdown rendering (you would use a proper markdown library in a real app)
-  const renderMarkdown = (text: string) => {
+  // Basic markdown rendering
+  const renderMarkdown = (text: string): string => {
     if (!text) return '<p>No content available.</p>';
-    
-    // Process the content step by step
-    let html = text;
-    
-    // Temporarily replace notification divs to preserve them
-    const notificationDivs: string[] = [];
-    html = html.replace(/<div class="notification[^>]*>[\s\S]*?<\/div>/g, (match) => {
-      notificationDivs.push(match);
-      return `###NOTIFICATION_PLACEHOLDER_${notificationDivs.length - 1}###`;
+
+    // Configure marked to handle HTML properly
+    marked.setOptions({
+      gfm: true,
+      breaks: true
     });
-    
-    // Process notification divs to add icons
-    const processedNotificationDivs: string[] = notificationDivs.map((div) => {
-      // Add icon based on notification type
-      if (div.includes('notification-info')) {
-        return div.replace('<div class="notification notification-info">', 
-          '<div class="notification notification-info"><img src="/assets/icons/pixel-info-circle-solid.svg" alt="Info" width="24" height="24" class="inline-block mr-2" /> ');
-      } else if (div.includes('notification-warning')) {
-        return div.replace('<div class="notification notification-warning">', 
-          '<div class="notification notification-warning"><img src="/assets/icons/pixel-exclamation-triangle-solid.svg" alt="Warning" width="24" height="24" class="inline-block mr-2" /> ');
-      } else if (div.includes('notification-error')) {
-        return div.replace('<div class="notification notification-error">', 
-          '<div class="notification notification-error"><img src="/assets/icons/pixel-times-circle-solid.svg" alt="Error" width="24" height="24" class="inline-block mr-2" /> ');
-      } else if (div.includes('notification-success')) {
-        return div.replace('<div class="notification notification-success">', 
-          '<div class="notification notification-success"><img src="/assets/icons/pixel-check-circle-solid.svg" alt="Success" width="24" height="24" class="inline-block mr-2" /> ');
-      }
-      return div;
+
+    // Process HTML blocks separately before passing to marked
+    // This regex finds HTML div blocks and replaces them with placeholders
+    const htmlBlocks: string[] = [];
+    const processedText = text.replace(/<div[\s\S]*?<\/div>/g, (match) => {
+      htmlBlocks.push(match);
+      return `___HTML_BLOCK_${htmlBlocks.length - 1}___`;
     });
-    
-    // Handle headers
-    html = html.replace(/^# (.*$)/gim, '<h1 class="font-title font-heavy text-2xl font-bold my-4" tabindex="0">$1</h1>');
-    html = html.replace(/^## (.*$)/gim, '<h2 class="font-title font-bold text-xl my-3" tabindex="0">$1</h2>');
-    html = html.replace(/^### (.*$)/gim, '<h3 class="font-title font-bold text-lg my-2" tabindex="0">$1</h3>');
-    html = html.replace(/^#### (.*$)/gim, '<h4 class="font-title font-bold my-2" tabindex="0">$1</h4>');
-    html = html.replace(/^##### (.*$)/gim, '<h5 class="font-title text-sm font-medium my-2" tabindex="0">$1</h5>');
-    html = html.replace(/^###### (.*$)/gim, '<h6 class="font-title text-xs font-medium my-2" tabindex="0">$1</h6>');
-    
-    // Handle code blocks first
-    html = html.replace(/```([\s\S]*?)```/g, (match, code) => {
-      return `<pre class="p-4 rounded-md my-4 overflow-x-auto" style="background-color: var(--card-color); border: 1px solid var(--border-color); font-family: var(--mono-font);" tabindex="0"><code>${code}</code></pre>`;
+
+    // Parse with marked
+    let parsedHtml = marked.parse(processedText) as string;
+
+    // Restore HTML blocks
+    htmlBlocks.forEach((block, index) => {
+      parsedHtml = parsedHtml.replace(`___HTML_BLOCK_${index}___`, block);
     });
+
+    // Process notification blocks to add icons
+    parsedHtml = parsedHtml.replace(/<div class="notification notification-info">/g,
+      '<div class="notification notification-info"><img src="/assets/icons/pixel-info-circle-solid.svg" alt="Info" width="24" height="24" class="inline-block mr-2" />');
     
-    // Handle inline code
-    html = html.replace(/`([^`]+)`/g, '<code class="px-1 rounded" style="background-color: var(--card-color); border: 1px solid var(--border-color); font-family: var(--mono-font);">$1</code>');
+    parsedHtml = parsedHtml.replace(/<div class="notification notification-warning">/g,
+      '<div class="notification notification-warning"><img src="/assets/icons/pixel-exclamation-triangle-solid.svg" alt="Warning" width="24" height="24" class="inline-block mr-2" />');
     
-    // Process links
-    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/gim, 
-      '<a class="font-body text-primary-color hover:underline focus:outline-none focus:ring-2 focus:ring-primary-color" style="color: var(--primary-color); font-family: var(--body-font);" href="$2">$1</a>');
+    parsedHtml = parsedHtml.replace(/<div class="notification notification-error">/g,
+      '<div class="notification notification-error"><img src="/assets/icons/pixel-times-circle-solid.svg" alt="Error" width="24" height="24" class="inline-block mr-2" />');
     
-    // Process styling
-    html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold font-body">$1</strong>');
-    html = html.replace(/\*(.*?)\*/g, '<em class="font-body">$1</em>');
-    
-    // Process lists
-    html = html.replace(/^\s*-\s+(.*)/gim, '<li class="font-body ml-4" style="font-family: var(--body-font); text-transform: none;">$1</li>');
-    html = html.replace(/^\s*\d+\.\s+(.*)/gim, '<li class="font-body ml-4" style="font-family: var(--body-font); text-transform: none;">$1</li>');
-    
-    // Wrap consecutive <li> elements with <ul> or <ol>
-    html = html.replace(/(<li.*?>.*?<\/li>)(\s*\n\s*)?(<li)/g, '$1$3');
-    html = html.replace(/(<li[^>]*>.*?<\/li>(\s*\n\s*)?)+/g, '<ul class="list-disc pl-5 my-3 font-body">$&</ul>');
-    
-    // Process paragraphs (lines that aren't already wrapped in HTML tags)
-    const paragraphLines = html.split('\n');
-    let processedHtml = '';
-    
-    for (let line of paragraphLines) {
-      line = line.trim();
-      if (line.length === 0) {
-        processedHtml += '\n';
-        continue;
-      }
-      
-      // Skip lines that are already HTML elements or inside HTML blocks
-      if (line.startsWith('<') && !line.startsWith('</')) {
-        processedHtml += line + '\n';
-        continue;
-      }
-      
-      // Skip notification placeholders
-      if (line.includes('###NOTIFICATION_PLACEHOLDER_')) {
-        processedHtml += line + '\n';
-        continue;
-      }
-      
-      // Wrap remaining text in paragraphs
-      processedHtml += `<p class="font-body my-2" style="font-family: var(--body-font); text-transform: none;">${line}</p>\n`;
-    }
-    
-    // Restore notification divs
-    processedNotificationDivs.forEach((div, index) => {
-      processedHtml = processedHtml.replace(`###NOTIFICATION_PLACEHOLDER_${index}###`, div);
-    });
-    
-    return processedHtml;
+    parsedHtml = parsedHtml.replace(/<div class="notification notification-success">/g,
+      '<div class="notification notification-success"><img src="/assets/icons/pixel-check-circle-solid.svg" alt="Success" width="24" height="24" class="inline-block mr-2" />');
+
+    // Apply font styles to headings and paragraphs
+    parsedHtml = parsedHtml
+      .replace(/<h1([^>]*)>/g, '<h1$1 class="font-title text-3xl mb-6 mt-8">')
+      .replace(/<h2([^>]*)>/g, '<h2$1 class="font-title text-2xl mb-4 mt-6">')
+      .replace(/<h3([^>]*)>/g, '<h3$1 class="font-title text-xl mb-3 mt-5">')
+      .replace(/<h4([^>]*)>/g, '<h4$1 class="font-title text-lg mb-2 mt-4">')
+      .replace(/<h5([^>]*)>/g, '<h5$1 class="font-title text-base mb-2 mt-3">')
+      .replace(/<h6([^>]*)>/g, '<h6$1 class="font-title text-sm mb-2 mt-3">')
+      .replace(/<p([^>]*)>/g, '<p$1 class="font-body mb-4">')
+      .replace(/<a([^>]*)>/g, '<a$1 class="text-primary-color hover:underline">');
+
+    return parsedHtml;
   };
-  
+
   const contentHtml = renderMarkdown(content);
   
   // Check if this is a synopsis page to show banner
@@ -219,7 +173,7 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
         
         <div 
           ref={contentRef}
-          className="prose max-w-none font-body"
+          className="max-w-none font-body"
           style={{ color: 'var(--text-color)' }}
           dangerouslySetInnerHTML={{ __html: contentHtml }}
         />

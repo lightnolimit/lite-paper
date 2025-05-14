@@ -442,3 +442,140 @@ code {
     font-size: 0.85rem;
   }
 }
+
+/* Markdown content styling */
+.doc-card h1, .doc-card h2, .doc-card h3, .doc-card h4, .doc-card h5, .doc-card h6 {
+  font-family: var(--title-font);
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.doc-card h1 {
+  font-size: 2.5rem;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.doc-card h2 {
+  font-size: 2rem;
+  border-bottom: 1px solid var(--border-soft);
+  padding-bottom: 0.3rem;
+}
+
+.doc-card h3 {
+  font-size: 1.5rem;
+}
+
+.doc-card h4 {
+  font-size: 1.25rem;
+}
+
+.doc-card h5 {
+  font-size: 1.1rem;
+}
+
+.doc-card h6 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.doc-card p {
+  font-family: var(--body-font);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.doc-card a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.doc-card a:hover {
+  text-decoration: underline;
+  opacity: 0.9;
+}
+
+.doc-card ul, .doc-card ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.doc-card li {
+  margin-bottom: 0.25rem;
+  font-family: var(--body-font);
+}
+
+.doc-card blockquote {
+  border-left: 4px solid var(--primary-color);
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 1rem;
+  color: var(--muted-color);
+  font-style: italic;
+}
+
+.doc-card hr {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid var(--border-color);
+}
+
+.doc-card table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+  font-family: var(--body-font);
+}
+
+.doc-card th, .doc-card td {
+  border: 1px solid var(--border-color);
+  padding: 0.5rem;
+}
+
+.doc-card th {
+  background-color: rgba(0, 0, 0, 0.05);
+  font-weight: bold;
+  text-align: left;
+}
+
+.dark .doc-card th {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Fix for social media icons in dark mode */
+.dark img[src*="pixel-instagram"],
+.dark img[src*="pixel-twitch"],
+.dark img[src*="pixel-tiktok"],
+.dark img[src*="pixel-x"] {
+  filter: invert(1);
+}
+
+/* Ensure divs don't get rendered as code blocks */
+.doc-card > div > div:not(.notification):not(.pagination-links):not(.nav-button) {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  font-family: inherit;
+}
+
+/* Style fixes for profile sections */
+.doc-card [style*="display: flex; gap: 24px;"],
+.doc-card [style*="display: flex; margin-bottom: 8px;"],
+.doc-card [style*="display: flex; align-items: center; margin: 5px 0;"] {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-family: inherit !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+}
