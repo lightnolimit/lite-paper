@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ThemeSwitcher from './ThemeSwitcher';
 import BackgroundSelector from './BackgroundSelector';
 import Image from 'next/image';
+import { useTheme } from '../providers/ThemeProvider';
 
 const navItems = [
   { label: 'Discord', href: 'https://discord.com' },
@@ -18,42 +19,7 @@ const navItems = [
 export default function Navigation() {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  
-  // Check dark mode
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const checkDarkMode = () => {
-        const darkModeEnabled = localStorage.getItem('darkMode') === 'true' ||
-          document.documentElement.classList.contains('dark');
-        setIsDarkMode(darkModeEnabled);
-      };
-      
-      checkDarkMode();
-      
-      window.addEventListener('themeChange', checkDarkMode);
-      window.addEventListener('storage', (e) => {
-        if (e.key === 'darkMode') checkDarkMode();
-      });
-      
-      // MutationObserver to watch for dark mode changes
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach(mutation => {
-          if (mutation.attributeName === 'class' && 
-              mutation.target === document.documentElement) {
-            checkDarkMode();
-          }
-        });
-      });
-      
-      observer.observe(document.documentElement, { attributes: true });
-      
-      return () => {
-        window.removeEventListener('themeChange', checkDarkMode);
-        observer.disconnect();
-      };
-    }
-  }, []);
+  const { isDarkMode } = useTheme();
   
   // Close mobile menu when window is resized to desktop size
   useEffect(() => {

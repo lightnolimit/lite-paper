@@ -3,6 +3,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useTheme } from '../providers/ThemeProvider';
 
 // Debug state management
 type DebugState = {
@@ -81,21 +82,19 @@ const Waves = ({ mouseX, mouseY, isDarkMode, showCursor = false }: WavesProps) =
       canvasRef.current = canvas.getBoundingClientRect();
     }
 
-    // Get relative mouse position to the canvas
-    let relativeMouseX = mouseX;
-    let relativeMouseY = mouseY;
+    // Calculate normalized mouse coordinates
+    let normalizedMouseX = 0;
+    let normalizedMouseY = 0;
     
     if (canvasRef.current) {
-      relativeMouseX = mouseX - canvasRef.current.left;
-      relativeMouseY = mouseY - canvasRef.current.top;
+      // Get mouse position relative to canvas
+      const relativeMouseX = mouseX - (canvasRef.current.left || 0);
+      const relativeMouseY = mouseY - (canvasRef.current.top || 0);
+      
+      // Normalize to range [-1, 1]
+      normalizedMouseX = (relativeMouseX / canvasRef.current.width) * 2 - 1;
+      normalizedMouseY = -(relativeMouseY / canvasRef.current.height) * 2 + 1;
     }
-
-    // Normalize mouse coordinates to [-1, 1] based on canvas dimensions
-    const canvasWidth = canvasRef.current?.width || window.innerWidth;
-    const canvasHeight = canvasRef.current?.height || window.innerHeight;
-    
-    const normalizedMouseX = (relativeMouseX / canvasWidth) * 2 - 1;
-    const normalizedMouseY = -(relativeMouseY / canvasHeight) * 2 + 1;
 
     // Update cursor position if showing cursor
     if (cursorRef.current && showCursor) {
@@ -106,6 +105,7 @@ const Waves = ({ mouseX, mouseY, isDarkMode, showCursor = false }: WavesProps) =
     } else if (cursorRef.current) {
       cursorRef.current.visible = false;
     }
+    
     // Calculate which line is closest to the cursor (vertical lines)
     const mouseXWorld = normalizedMouseX * (width / 2);
     let closestLine = 0;
@@ -184,37 +184,42 @@ const Waves = ({ mouseX, mouseY, isDarkMode, showCursor = false }: WavesProps) =
 
 export default function WaveBackground() {
   const ref = useRef<HTMLDivElement>(null);
+  const { isDarkMode } = useTheme();
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [showDebugCursor, setShowDebugCursor] = useState(false);
+  const [showCursor, setShowCursor] = useState(false);
   
   // Setup debug mode
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // Check for debug cursor in env or localStorage
-      const debugCursorEnabled = process.env.NEXT_PUBLIC_DEBUG_CURSOR === 'true' || 
-                                 localStorage.getItem('debugCursor') === 'true';
+      // Initialize debug mode
+      if (!window.__DEBUG_MODE__) {
+        window.__DEBUG_MODE__ = {
+          showCursor: localStorage.getItem('debugCursor') === 'true',
+          logging: false
+        };
+      }
       
-      window.__DEBUG_MODE__ = window.__DEBUG_MODE__ || {
-        showCursor: debugCursorEnabled,
-        logging: process.env.NEXT_PUBLIC_DEBUG_LOGGING === 'true'
-      };
+      // Add key handler for debug mode toggling
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'd' && e.ctrlKey && e.shiftKey) {
+          window.__DEBUG_MODE__!.showCursor = !window.__DEBUG_MODE__!.showCursor;
+          localStorage.setItem('debugCursor', window.__DEBUG_MODE__!.showCursor.toString());
+          setShowCursor(window.__DEBUG_MODE__!.showCursor);
+        };
+        
+        // Initialize state from window.__DEBUG_MODE__
+        setShowCursor(window.__DEBUG_MODE__!.showCursor);
+      }
       
-      // Add debug toggle functions to window for development
-      window.toggleDebugCursor = () => {
-        window.__DEBUG_MODE__!.showCursor = !window.__DEBUG_MODE__!.showCursor;
-        localStorage.setItem('debugCursor', window.__DEBUG_MODE__!.showCursor.toString());
-        setShowDebugCursor(window.__DEBUG_MODE__!.showCursor);
-      };
-      
-      // Initialize state from window.__DEBUG_MODE__
-      setShowDebugCursor(window.__DEBUG_MODE__.showCursor);
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
     }
   }, []);
   
-  // Track mouse position
+  // Effect for mouse tracking
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
+      // Store the actual mouse coordinates for the component to use
       setMousePos({
         x: e.clientX,
         y: e.clientY
@@ -239,63 +244,21 @@ export default function WaveBackground() {
     };
   }, []);
   
-  // Check dark mode from localStorage
-  useEffect(() => {
-    const checkDarkMode = () => {
-      if (typeof window !== 'undefined') {
-        const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
-        setIsDarkMode(darkModeEnabled);
-      }
-    };
-    
-    // Initial check
-    checkDarkMode();
-    
-    // Listen for theme changes
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'darkMode') {
-        checkDarkMode();
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Also set up a MutationObserver to catch theme changes in the DOM
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach(mutation => {
-        if (mutation.attributeName === 'class' && 
-            mutation.target === document.documentElement) {
-          const isDark = document.documentElement.classList.contains('dark');
-          setIsDarkMode(isDark);
-        }
-      });
-    });
-    
-    observer.observe(document.documentElement, { attributes: true });
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      observer.disconnect();
-    };
-  }, []);
-  
   return (
     <div 
-      ref={ref}
-      className="fixed inset-0 w-full h-full overflow-hidden pointer-events-none" 
-      style={{ zIndex: 0 }}
+      ref={ref} 
+      className="fixed inset-0 z-0 pointer-events-none"
     >
-      <Canvas 
-        camera={{ position: [0, 0, 10], fov: 75, near: 0.1, far: 1000 }}
+      <Canvas
         style={{ width: '100%', height: '100%' }}
+        dpr={[1, 2]}
+        camera={{ position: [0, 0, 100], fov: 7 }}
       >
-        <ambientLight intensity={0.8} />
-        <directionalLight position={[0, 5, 5]} intensity={0.5} />
-        <Waves 
-          mouseX={mousePos.x} 
-          mouseY={mousePos.y} 
+        <Waves
+          mouseX={mousePos.x}
+          mouseY={mousePos.y}
           isDarkMode={isDarkMode}
-          showCursor={showDebugCursor}
+          showCursor={showCursor}
         />
       </Canvas>
     </div>

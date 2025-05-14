@@ -3,6 +3,7 @@
 import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useTheme } from '../providers/ThemeProvider';
 
 // Debug state management
 type DebugState = {
@@ -190,38 +191,31 @@ const DitherPattern = ({
       materialRef.current.uniforms.u_resolution.value.set(canvas.width, canvas.height);
     }
     
-    // Calculate relative mouse position in canvas pixel coordinates
-    const relativeMouseX = mouseX;
-    const relativeMouseY = mouseY;
-    
-    // Update mouse uniform - fix the offset by adjusting the position
+    // Calculate normalized mouse position
     if (canvasRef.current && materialRef.current) {
+      // Ensure mouse position is relative to the canvas
+      const relativeMouseX = mouseX - (canvasRef.current.left || 0);
+      const relativeMouseY = mouseY - (canvasRef.current.top || 0);
+      
+      // Update mouse uniform - y needs to be flipped in WebGL
       materialRef.current.uniforms.u_mouse.value.set(
         relativeMouseX, 
         canvasRef.current.height - relativeMouseY
       );
-    }
-    
-    // Update cursor position if showing
-    if (cursorRef.current && showCursor) {
-      // Get screen size to handle scaling on 4K displays
-      const canvasWidth = window.innerWidth;
-      const canvasHeight = window.innerHeight;
       
-      // Normalize mouse coordinates to [-1, 1] with screen size awareness
-      const normalizedMouseX = (mouseX / canvasWidth) * 2 - 1;
-      const normalizedMouseY = -(mouseY / canvasHeight) * 2 + 1;
-      
-      // Adjust position scaling for different screen sizes
-      const scaleFactorX = Math.max(5, canvasWidth / 400);
-      const scaleFactorY = Math.max(3, canvasHeight / 400);
-      
-      cursorRef.current.position.x = normalizedMouseX * scaleFactorX;
-      cursorRef.current.position.y = normalizedMouseY * scaleFactorY;
-      cursorRef.current.position.z = 0.2;
-      cursorRef.current.visible = true;
-    } else if (cursorRef.current) {
-      cursorRef.current.visible = false;
+      // Update debug cursor with normalized coordinates
+      if (cursorRef.current && showCursor) {
+        // Normalized coordinates in range [-1, 1]
+        const normalizedX = (relativeMouseX / canvasRef.current.width) * 2 - 1;
+        const normalizedY = -(relativeMouseY / canvasRef.current.height) * 2 + 1;
+        
+        cursorRef.current.position.x = normalizedX * 5;
+        cursorRef.current.position.y = normalizedY * 5;
+        cursorRef.current.position.z = 0.2;
+        cursorRef.current.visible = true;
+      } else if (cursorRef.current) {
+        cursorRef.current.visible = false;
+      }
     }
   });
 
@@ -253,104 +247,88 @@ const DitherPattern = ({
 
 export default function DitherBackground() {
   const ref = useRef<HTMLDivElement>(null);
+  const { isDarkMode } = useTheme();
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [showDebugCursor, setShowDebugCursor] = useState(false);
-  
+  const [showCursor, setShowCursor] = useState(false);
+  const [forceUpdate, setForceUpdate] = useState(0); // For forcing re-renders
+
   // Setup debug mode
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // Check for debug cursor in env or localStorage
-      const debugCursorEnabled = process.env.NEXT_PUBLIC_DEBUG_CURSOR === 'true' || 
-                                localStorage.getItem('debugCursor') === 'true';
+      // Initialize debug mode
+      if (!window.__DEBUG_MODE__) {
+        window.__DEBUG_MODE__ = {
+          showCursor: localStorage.getItem('debugCursor') === 'true',
+          logging: false
+        };
+      }
       
-      window.__DEBUG_MODE__ = window.__DEBUG_MODE__ || {
-        showCursor: debugCursorEnabled,
-        logging: process.env.NEXT_PUBLIC_DEBUG_LOGGING === 'true'
-      };
+      // Add key handler for debug mode toggling
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'd' && e.ctrlKey && e.shiftKey) {
+          window.__DEBUG_MODE__!.showCursor = !window.__DEBUG_MODE__!.showCursor;
+          localStorage.setItem('debugCursor', window.__DEBUG_MODE__!.showCursor.toString());
+          setShowCursor(window.__DEBUG_MODE__!.showCursor);
+        };
+        
+        // Initialize state from window.__DEBUG_MODE__
+        setShowCursor(window.__DEBUG_MODE__!.showCursor);
+      }
       
-      // Initialize state from window.__DEBUG_MODE__
-      setShowDebugCursor(window.__DEBUG_MODE__.showCursor);
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
     }
   }, []);
   
-  // Track mouse position
+  // Effect for mouse tracking
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
+      // Store the actual mouse coordinates for the component to use
       setMousePos({
         x: e.clientX,
         y: e.clientY
       });
     };
     
+    // Handle window resize to reset canvas bounds
+    const handleResize = () => {
+      const canvas = document.querySelector('canvas');
+      if (canvas) {
+        // Reset the canvas
+        canvas.dispatchEvent(new Event('resize'));
+      }
+    };
+    
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('resize', handleResize);
     
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
   
-  // Check dark mode from localStorage and listen for theme changes
+  // Force update when theme changes
   useEffect(() => {
-    const checkDarkMode = () => {
-      if (typeof window !== 'undefined') {
-        const darkModeEnabled = localStorage.getItem('darkMode') === 'true' ||
-          document.documentElement.classList.contains('dark');
-        setIsDarkMode(darkModeEnabled);
-      }
-    };
-    
-    // Initial check
-    checkDarkMode();
-    
-    // Listen for storage changes
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'darkMode') {
-        checkDarkMode();
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Set up a MutationObserver to catch theme changes in the DOM
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach(mutation => {
-        if (mutation.attributeName === 'class' && 
-            mutation.target === document.documentElement) {
-          const isDark = document.documentElement.classList.contains('dark');
-          setIsDarkMode(isDark);
-        }
-      });
-    });
-    
-    observer.observe(document.documentElement, { attributes: true });
-    
-    // Add event listener for custom theme change event
-    window.addEventListener('themeChange', checkDarkMode);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('themeChange', checkDarkMode);
-      observer.disconnect();
-    };
-  }, []);
-  
+    setForceUpdate(prev => prev + 1);
+  }, [isDarkMode]);
+
   return (
     <div 
-      ref={ref}
-      className="fixed inset-0 w-full h-full overflow-hidden pointer-events-none" 
-      style={{ zIndex: 0 }}
+      ref={ref} 
+      className="fixed inset-0 z-0 pointer-events-none"
     >
-      <Canvas 
-        camera={{ position: [0, 0, 10], fov: 75, near: 0.1, far: 1000 }}
+      <Canvas
+        key={`canvas-${isDarkMode}-${forceUpdate}`} // Force canvas recreation on theme change
         style={{ width: '100%', height: '100%' }}
+        dpr={[1, 2]}
+        camera={{ position: [0, 0, 5], fov: 75 }}
       >
-        <ambientLight intensity={0.8} />
-        <DitherPattern 
-          mouseX={mousePos.x} 
-          mouseY={mousePos.y} 
+        <DitherPattern
+          mouseX={mousePos.x}
+          mouseY={mousePos.y}
           isDarkMode={isDarkMode}
-          showCursor={showDebugCursor}
+          showCursor={showCursor}
         />
       </Canvas>
     </div>

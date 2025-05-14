@@ -1,68 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../providers/ThemeProvider';
 
 export default function ThemeSwitcher({ className = "" }) {
-  const [isDarkMode, setIsDarkMode] = useState(false); // Default to light mode
-
-  // Effect to initialize the theme from localStorage or default to light mode
-  useEffect(() => {
-    // Check localStorage first
-    const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
-    
-    if (darkModeEnabled) {
-      setIsDarkMode(true);
-      document.documentElement.classList.add('dark');
-    } else {
-      // Default to light mode
-      setIsDarkMode(false);
-      document.documentElement.classList.remove('dark');
-      // Save the default to localStorage if not already set
-      if (localStorage.getItem('darkMode') === null) {
-        localStorage.setItem('darkMode', 'false');
-      }
-    }
-
-    // Listen for storage events from other tabs/windows
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'darkMode') {
-        const newDarkMode = e.newValue === 'true';
-        setIsDarkMode(newDarkMode);
-        if (newDarkMode) {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
-  // Effect to toggle the theme class on the html element
-  useEffect(() => {
-    const html = document.documentElement;
-    
-    if (isDarkMode) {
-      html.classList.add('dark');
-      localStorage.setItem('darkMode', 'true');
-    } else {
-      html.classList.remove('dark');
-      localStorage.setItem('darkMode', 'false');
-    }
-    
-    // Dispatch a custom event for theme change
-    const themeChangeEvent = new CustomEvent('themeChange', { 
-      detail: { isDarkMode }
-    });
-    window.dispatchEvent(themeChangeEvent);
-  }, [isDarkMode]);
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
+  const { isDarkMode, toggleTheme } = useTheme();
 
   return (
     <motion.button

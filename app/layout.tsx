@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ThemeProvider } from "./providers/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "Documentation | Your Project Name",
@@ -19,41 +20,13 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
-                  // Function to apply theme (used both initially and during navigation)
-                  function applyTheme() {
-                    var darkModeEnabled = localStorage.getItem('darkMode') === 'true';
-                    if (darkModeEnabled) {
-                      document.documentElement.classList.add('dark');
-                    } else {
-                      document.documentElement.classList.remove('dark');
-                      if (localStorage.getItem('darkMode') === null) {
-                        localStorage.setItem('darkMode', 'false');
-                      }
-                    }
+                  // Initial theme application (will be replaced by React after hydration)
+                  var darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+                  if (darkModeEnabled) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
                   }
-                  
-                  // Apply theme immediately
-                  applyTheme();
-                  
-                  // Create observer to watch for SPA navigation
-                  var observer = new MutationObserver(function(mutations) {
-                    applyTheme();
-                  });
-                  
-                  // Start observing when DOM is loaded
-                  document.addEventListener('DOMContentLoaded', function() {
-                    observer.observe(document.body, {
-                      childList: true,
-                      subtree: true
-                    });
-                  });
-                  
-                  // Listen for theme changes from ThemeSwitcher component
-                  window.addEventListener('themeChange', applyTheme);
-                  
-                  // Apply theme on page load and navigation
-                  window.addEventListener('load', applyTheme);
-                  document.addEventListener('visibilitychange', applyTheme);
                 } catch (e) {
                   console.log('Error accessing localStorage', e);
                 }
@@ -63,7 +36,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen font-yeezy">
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );
