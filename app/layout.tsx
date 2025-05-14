@@ -20,15 +20,19 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
-                  // Initial theme application (will be replaced by React after hydration)
-                  var darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+                  // Apply theme before React hydrates to prevent flash
+                  var storedPreference = localStorage.getItem('darkMode');
+                  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  var darkModeEnabled = storedPreference === 'true' || 
+                    (storedPreference === null && prefersDark);
+                  
                   if (darkModeEnabled) {
                     document.documentElement.classList.add('dark');
                   } else {
                     document.documentElement.classList.remove('dark');
                   }
                 } catch (e) {
-                  console.log('Error accessing localStorage', e);
+                  console.log('Error applying initial theme', e);
                 }
               })();
             `,

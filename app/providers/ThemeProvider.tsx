@@ -15,56 +15,43 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   // Initialize theme from localStorage or system preference
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const initializeTheme = () => {
-        // Check localStorage first
-        const storedPreference = localStorage.getItem('darkMode');
-        
-        if (storedPreference !== null) {
-          // Use stored preference if available
-          const darkModeEnabled = storedPreference === 'true';
-          setIsDarkMode(darkModeEnabled);
-          
-          // Apply theme class
-          if (darkModeEnabled) {
-            document.documentElement.classList.add('dark');
-          } else {
-            document.documentElement.classList.remove('dark');
-          }
-        } else {
-          // Use system preference as fallback
-          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          setIsDarkMode(prefersDark);
-          localStorage.setItem('darkMode', prefersDark ? 'true' : 'false');
-          
-          // Apply theme class
-          if (prefersDark) {
-            document.documentElement.classList.add('dark');
-          } else {
-            document.documentElement.classList.remove('dark');
-          }
-        }
-        
-        setIsInitialized(true);
-      };
-      
-      initializeTheme();
+    if (typeof window === 'undefined') return;
+    
+    // Check localStorage first
+    const storedPreference = localStorage.getItem('darkMode');
+    
+    // Apply theme based on stored preference or system preference
+    const darkModeEnabled = storedPreference === 'true' || 
+      (storedPreference === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    
+    setIsDarkMode(darkModeEnabled);
+    applyTheme(darkModeEnabled);
+    
+    if (storedPreference === null) {
+      localStorage.setItem('darkMode', darkModeEnabled.toString());
     }
+    
+    setIsInitialized(true);
   }, []);
+  
+  // Apply theme to document and localStorage
+  const applyTheme = (darkMode: boolean) => {
+    const html = document.documentElement;
+    
+    if (darkMode) {
+      html.classList.add('dark');
+    } else {
+      html.classList.remove('dark');
+    }
+    
+    localStorage.setItem('darkMode', darkMode.toString());
+  };
   
   // Effect to apply theme changes
   useEffect(() => {
     if (!isInitialized || typeof window === 'undefined') return;
     
-    const html = document.documentElement;
-    
-    if (isDarkMode) {
-      html.classList.add('dark');
-      localStorage.setItem('darkMode', 'true');
-    } else {
-      html.classList.remove('dark');
-      localStorage.setItem('darkMode', 'false');
-    }
+    applyTheme(isDarkMode);
     
     // Dispatch a custom event for theme change
     const themeChangeEvent = new CustomEvent('themeChange', { 
