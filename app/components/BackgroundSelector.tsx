@@ -11,7 +11,7 @@ export default function BackgroundSelector({ className = "" }) {
     if (typeof window !== 'undefined') {
       // Get from localStorage first for persistence
       const storedType = localStorage.getItem('backgroundType');
-      if (storedType === 'wave' || storedType === 'stars') {
+      if (storedType === 'wave' || storedType === 'stars' || storedType === 'dither') {
         setBackgroundType(storedType);
       } else {
         // Use default from Next.js config/env
@@ -24,7 +24,7 @@ export default function BackgroundSelector({ className = "" }) {
   
   // Update when changed
   const handleBackgroundChange = (type: string) => {
-    if (type === 'wave' || type === 'stars') {
+    if (type === 'wave' || type === 'stars' || type === 'dither') {
       setBackgroundType(type);
       localStorage.setItem('backgroundType', type);
       
@@ -63,6 +63,21 @@ export default function BackgroundSelector({ className = "" }) {
         title="Switch to stars background"
       >
         Stars
+      </motion.button>
+      
+      <motion.button
+        onClick={() => handleBackgroundChange('dither')}
+        className={`px-2 py-1 rounded text-sm ${backgroundType === 'dither' ? 'bg-primary-color text-background-color' : 'bg-card-color'}`}
+        style={{ 
+          border: '1px solid var(--border-color)',
+          color: backgroundType === 'dither' ? 'var(--background-color)' : 'var(--text-color)'
+        }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        aria-label="Switch to dither background"
+        title="Switch to dither background"
+      >
+        Dither
       </motion.button>
     </div>
   );

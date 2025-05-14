@@ -41,8 +41,10 @@ export default function DocumentationPage() {
   // Dynamically import the correct background component
   const BackgroundComponent = dynamic(() => 
     backgroundType === 'stars' 
-      ? import('../../components/StarsBackground') 
-      : import('../../components/WaveBackground'),
+      ? import('../../components/StarsBackground')
+      : backgroundType === 'dither'
+        ? import('../../components/DitherBackground') 
+        : import('../../components/WaveBackground'),
     { ssr: false }
   );
   
