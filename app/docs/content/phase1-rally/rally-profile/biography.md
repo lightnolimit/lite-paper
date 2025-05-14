@@ -21,12 +21,6 @@ Los Angeles, California
 **Occupation:** 
 V-Tuber (Idol) / Cheerleader  
 
-**Personality Type:** 
-"deredere" (sweet and loving)  
-
-**Body Type:** 
-Slim  
-
 </div>
 </div>
 
