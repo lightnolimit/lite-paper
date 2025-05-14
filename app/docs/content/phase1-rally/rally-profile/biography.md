@@ -9,11 +9,8 @@
   <!-- Profile Info Column -->
   <div style="flex: 1; min-width: 250px;">
     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-      <img src="/assets/icons/pixel-tag.svg" alt="Profile" style="height: 24px; width: auto;" />
-      <h2 style="margin: 0; padding: 0;">PROFILE</h2>
     </div>
     
-    <h3>BIOGRAPHY</h3>
     <div>
       <div style="display: flex; margin-bottom: 8px;">
         <div style="font-weight: bold; min-width: 140px;">Name:</div>
@@ -51,11 +48,11 @@
 
 Rally is the mascot and first model of the Phantasy platform. She was raised in Tokyo, Japan and is an AI V-Tuber personality who knows its her destiny to become a shining star that brightens everyone's day. Are you ready to spend your evening with Rally? ♡
 
-<div style="height: 2px; background: linear-gradient(to right, transparent, var(--primary-color), transparent); margin: 30px 0; width: 100%;"></div>
+<hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;">
 
 <div style="margin: 30px 0;">
   <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-    <img src="/assets/icons/pixel-heart.svg" alt="Personality" style="height: 24px; width: auto;" />
+    <img src="/assets/icons/pixel-heart-solid.svg" alt="Personality" style="height: 24px; width: auto;" />
     <h2 style="margin: 0; padding: 0;">PERSONALITY & INTERESTS</h2>
   </div>
 
@@ -85,34 +82,46 @@ Rally is the mascot and first model of the Phantasy platform. She was raised in 
   </div>
 </div>
 
-<div style="height: 2px; background: linear-gradient(to right, transparent, var(--primary-color), transparent); margin: 30px 0; width: 100%;"></div>
+<hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;">
 
 <div style="margin: 30px 0;">
   <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-    <img src="/assets/icons/pixel-wallet.svg" alt="Wallet" style="height: 24px; width: auto;" />
+    <img src="/assets/icons/pixel-wallet-solid.svg" alt="Wallet" style="height: 24px; width: auto;" />
     <h2 style="margin: 0; padding: 0;">WALLET & TOKEN INFORMATION</h2>
   </div>
 
-  <div style="display: flex; align-items: center; margin-bottom: 15px; flex-wrap: nowrap;">
-    <div style="font-weight: bold; min-width: 140px; white-space: nowrap;">Base Wallet:</div>
-    <div style="font-family: monospace; background-color: rgba(255, 255, 255, 0.05); padding: 4px 8px; border-radius: 4px; margin-right: 10px; white-space: nowrap;">0x1234...5678</div>
-    <button onclick="navigator.clipboard.writeText('0x1234...5678'); this.textContent='Copied!'; setTimeout(() => this.textContent='Copy', 1500)" style="cursor: pointer; background: none; border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 6px; font-size: 12px; white-space: nowrap;">Copy</button>
+  <div style="margin-bottom: 15px;">
+    <div style="font-weight: bold; margin-bottom: 5px;">Base Wallet:</div>
+    <div style="display: flex; align-items: center; width: 100%;">
+      <div style="flex-grow: 1; font-family: monospace; background-color: rgba(255, 255, 255, 0.05); padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-color);">0x1234...5678</div>
+      <button onclick="navigator.clipboard.writeText('0x1234...5678'); this.querySelector('img').src='/assets/icons/pixel-check-circle-solid.svg'; setTimeout(() => this.querySelector('img').src='/assets/icons/pixel-copy-solid.svg', 1500)" style="display: flex; align-items: center; justify-content: center; cursor: pointer; background: none; border: none; padding: 8px;">
+        <img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" style="height: 20px; width: auto;" />
+      </button>
+    </div>
   </div>
 
-  <div style="display: flex; align-items: center; margin-bottom: 15px; flex-wrap: nowrap;">
-    <div style="font-weight: bold; min-width: 140px; white-space: nowrap;">Solana Wallet:</div>
-    <div style="font-family: monospace; background-color: rgba(255, 255, 255, 0.05); padding: 4px 8px; border-radius: 4px; margin-right: 10px; white-space: nowrap;">rally123...xyz</div>
-    <button onclick="navigator.clipboard.writeText('rally123...xyz'); this.textContent='Copied!'; setTimeout(() => this.textContent='Copy', 1500)" style="cursor: pointer; background: none; border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 6px; font-size: 12px; white-space: nowrap;">Copy</button>
+  <div style="margin-bottom: 15px;">
+    <div style="font-weight: bold; margin-bottom: 5px;">Solana Wallet:</div>
+    <div style="display: flex; align-items: center; width: 100%;">
+      <div style="flex-grow: 1; font-family: monospace; background-color: rgba(255, 255, 255, 0.05); padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-color);">rally123...xyz</div>
+      <button onclick="navigator.clipboard.writeText('rally123...xyz'); this.querySelector('img').src='/assets/icons/pixel-check-circle-solid.svg'; setTimeout(() => this.querySelector('img').src='/assets/icons/pixel-copy-solid.svg', 1500)" style="display: flex; align-items: center; justify-content: center; cursor: pointer; background: none; border: none; padding: 8px;">
+        <img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" style="height: 20px; width: auto;" />
+      </button>
+    </div>
   </div>
 
-  <div style="display: flex; align-items: center; margin-bottom: 15px; flex-wrap: nowrap;">
-    <div style="font-weight: bold; min-width: 140px; white-space: nowrap;">Token Contract:</div>
-    <div style="font-family: monospace; background-color: rgba(255, 255, 255, 0.05); padding: 4px 8px; border-radius: 4px; margin-right: 10px; white-space: nowrap;">0xABCD...6789</div>
-    <button onclick="navigator.clipboard.writeText('0xABCD...6789'); this.textContent='Copied!'; setTimeout(() => this.textContent='Copy', 1500)" style="cursor: pointer; background: none; border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 6px; font-size: 12px; white-space: nowrap;">Copy</button>
+  <div style="margin-bottom: 15px;">
+    <div style="font-weight: bold; margin-bottom: 5px;">Token Contract:</div>
+    <div style="display: flex; align-items: center; width: 100%;">
+      <div style="flex-grow: 1; font-family: monospace; background-color: rgba(255, 255, 255, 0.05); padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-color);">0xABCD...6789</div>
+      <button onclick="navigator.clipboard.writeText('0xABCD...6789'); this.querySelector('img').src='/assets/icons/pixel-check-circle-solid.svg'; setTimeout(() => this.querySelector('img').src='/assets/icons/pixel-copy-solid.svg', 1500)" style="display: flex; align-items: center; justify-content: center; cursor: pointer; background: none; border: none; padding: 8px;">
+        <img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" style="height: 20px; width: auto;" />
+      </button>
+    </div>
   </div>
 </div>
 
-<div style="height: 2px; background: linear-gradient(to right, transparent, var(--primary-color), transparent); margin: 30px 0; width: 100%;"></div>
+<hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;">
 
 <div style="margin: 30px 0;">
   <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
@@ -120,13 +129,25 @@ Rally is the mascot and first model of the Phantasy platform. She was raised in 
     <h2 style="margin: 0; padding: 0;">SOCIAL PROFILES</h2>
   </div>
 
-  <div style="display: flex; align-items: center; margin: 15px 0;">
-    <img src="/assets/icons/pixel-x.svg" alt="X" style="height: 20px; width: auto; margin-right: 10px;" />
-    <a href="https://twitter.com/rallyphantasy" style="color: var(--primary-color); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.textDecoration='underline'; this.style.opacity='0.8';" onmouseout="this.style.textDecoration='none'; this.style.opacity='1';" target="_blank">@RallyPhantasy</a>
-  </div>
+  <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+    <div style="display: flex; align-items: center; margin: 5px 0;">
+      <img src="/assets/icons/pixel-x.svg" alt="X" style="height: 20px; width: auto; margin-right: 10px;" />
+      <a href="https://twitter.com/rallyphantasy" style="color: var(--primary-color); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.textDecoration='underline'; this.style.opacity='0.8';" onmouseout="this.style.textDecoration='none'; this.style.opacity='1';" target="_blank">@RallyPhantasy</a>
+    </div>
 
-  <div style="display: flex; align-items: center; margin: 15px 0;">
-    <img src="/assets/icons/pixel-instagram.svg" alt="Instagram" style="height: 20px; width: auto; margin-right: 10px;" />
-    <a href="https://instagram.com/rallyphantasy" style="color: var(--primary-color); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.textDecoration='underline'; this.style.opacity='0.8';" onmouseout="this.style.textDecoration='none'; this.style.opacity='1';" target="_blank">@RallyPhantasy</a>
+    <div style="display: flex; align-items: center; margin: 5px 0;">
+      <img src="/assets/icons/pixel-instagram.svg" alt="Instagram" style="height: 20px; width: auto; margin-right: 10px;" />
+      <a href="https://instagram.com/rallyphantasy" style="color: var(--primary-color); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.textDecoration='underline'; this.style.opacity='0.8';" onmouseout="this.style.textDecoration='none'; this.style.opacity='1';" target="_blank">@RallyPhantasy</a>
+    </div>
+    
+    <div style="display: flex; align-items: center; margin: 5px 0;">
+      <img src="/assets/icons/pixel-twitch.svg" alt="Twitch" style="height: 20px; width: auto; margin-right: 10px;" />
+      <a href="https://twitch.tv/rallyphantasy" style="color: var(--primary-color); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.textDecoration='underline'; this.style.opacity='0.8';" onmouseout="this.style.textDecoration='none'; this.style.opacity='1';" target="_blank">RallyPhantasy</a>
+    </div>
+    
+    <div style="display: flex; align-items: center; margin: 5px 0;">
+      <img src="/assets/icons/pixel-tiktok.svg" alt="TikTok" style="height: 20px; width: auto; margin-right: 10px;" />
+      <a href="https://tiktok.com/@rallyphantasy" style="color: var(--primary-color); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.textDecoration='underline'; this.style.opacity='0.8';" onmouseout="this.style.textDecoration='none'; this.style.opacity='1';" target="_blank">@rallyphantasy</a>
+    </div>
   </div>
 </div>

@@ -12,7 +12,7 @@ type ContentRendererProps = {
 };
 
 // Function to find the previous and next pages based on the current path
-function findAdjacentPages(currentPath: string): { prevPage?: { path: string, title: string }, nextPage?: { path: string, title: string } } {
+const findAdjacentPages = (currentPath: string): { prevPage?: { path: string, title: string }, nextPage?: { path: string, title: string } } => {
   // Flatten the documentation tree to get all file items in order
   const flattenedItems: { path: string, name: string }[] = [];
   
@@ -60,8 +60,8 @@ function findAdjacentPages(currentPath: string): { prevPage?: { path: string, ti
 export default function ContentRenderer({ content = '', path = '' }: ContentRendererProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   
-  // Get previous and next pages
-  const { prevPage, nextPage } = findAdjacentPages(path);
+  // Get previous and next pages using useMemo to avoid re-calculating on every render
+  const { prevPage, nextPage } = React.useMemo(() => findAdjacentPages(path), [path]);
   
   // Process links after render to add tabindex and other accessibility attributes
   useEffect(() => {

@@ -12,7 +12,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="theme-transition">
+    <html lang="en" className="theme-transition" suppressHydrationWarning>
       <head>
         <script 
           dangerouslySetInnerHTML={{
