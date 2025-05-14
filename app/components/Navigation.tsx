@@ -64,7 +64,7 @@ const socialLinks = [
     href: 'https://x.com', 
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
-        <path fill="currentColor" d="M15.5 10V9h1V8h1V7h1V6h1V5h1V4h1V3h1V2h-3v1h-1v1h-1v1h-1v1h-1v1h-2V7h-1V6h-1V4h-1V3h-1V2h-7v1h1v1h1v1h1v2h1v1h1v2h1v1h1v2h1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h3v-1h1v-1h1v-1h1v-1h1v-1h2v1h1v1h1v2h1v1h1v1h7v-1h-1v-1h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1zm0 4v1h1v2h1v1h1v2h-3v-2h-1v-1h-1v-1h-1v-2h-1v-1h-1v-1h-1v-2h-1V9h-1V7h-1V6h-1V4h3v1h1v2h1v1h1v2h1v1h1v1h1v2z" strokeWidth="0.5" stroke="#000"/>
+        <path fill="currentColor" d="M15.5 10V9h1V8h1V7h1V6h1V5h1V4h1V3h1V2h-3v1h-1v1h-1v1h-1v1h-1v1h-2V7h-1V6h-1V4h-1V3h-1V2h-7v1h1v1h1v1h1v2h1v1h1v2h1v1h1v2h1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h3v-1h1v-1h1v-1h1v-1h1v-1h2v1h1v1h1v2h1v1h1v1h7v-1h-1v-1h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1zm0 4v1h1v2h1v1h1v2h-3v-2h-1v-1h-1v-1h-1v-2h-1v-1h-1v-1h-1v-2h-1V9h-1V7h-1V6h-1V4h3v1h1v2h1v1h1v2h1v1h1v1h1v2z" strokeWidth="0.5" stroke="#000"/>
       </svg>
     )
   },
@@ -135,7 +135,7 @@ export default function Navigation({ docsPath, onToggleSidebar, sidebarVisible }
     <Link 
       key={item.label}
       href={item.href}
-      className={`transition-colors nav-link ${isMobile ? 'py-2 px-4' : ''}`}
+      className={`transition-colors nav-link ${isMobile ? 'py-2 px-4' : ''} relative`}
       style={{ 
         color: 'var(--text-color)',
         fontFamily: 'var(--mono-font)',
@@ -150,27 +150,43 @@ export default function Navigation({ docsPath, onToggleSidebar, sidebarVisible }
       tabIndex={0}
     >
       <div className="flex items-center">
-        <motion.span 
-          className="bracket-left mr-0.5"
-          initial={{ opacity: 0, x: 5 }}
-          animate={{ 
-            opacity: hoveredItem === item.label ? 1 : 0,
-            x: hoveredItem === item.label ? 0 : 5 
-          }}
-          transition={{ duration: 0.2 }}
-        >「</motion.span>
+        <AnimatePresence mode="wait">
+          {hoveredItem === item.label ? (
+            <motion.span 
+              className="bracket-left absolute"
+              style={{ left: "-1.5rem" }}
+              key="bracket-left"
+              initial={{ opacity: 0, x: 5 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 5 }}
+              transition={{ 
+                duration: 0.2,
+                exit: { duration: 0.5 },
+                ease: "easeInOut" 
+              }}
+            >「</motion.span>
+          ) : null}
+        </AnimatePresence>
         
-        {item.label}
+        <span className="px-2">{item.label}</span>
         
-        <motion.span 
-          className="bracket-right ml-0.5"
-          initial={{ opacity: 0, x: -5 }}
-          animate={{ 
-            opacity: hoveredItem === item.label ? 1 : 0,
-            x: hoveredItem === item.label ? 0 : -5 
-          }}
-          transition={{ duration: 0.2 }}
-        >」</motion.span>
+        <AnimatePresence mode="wait">
+          {hoveredItem === item.label ? (
+            <motion.span 
+              className="bracket-right absolute"
+              style={{ right: "-1.5rem" }}
+              key="bracket-right"
+              initial={{ opacity: 0, x: -5 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -5 }}
+              transition={{ 
+                duration: 0.2, 
+                exit: { duration: 0.5 },
+                ease: "easeInOut" 
+              }}
+            >」</motion.span>
+          ) : null}
+        </AnimatePresence>
       </div>
     </Link>
   );
