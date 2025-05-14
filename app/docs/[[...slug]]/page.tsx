@@ -95,8 +95,8 @@ export default function DocumentationPage() {
     if (item.type === 'file') {
       setCurrentPath(item.path);
       
-      // Use Next.js router for client-side navigation
-      router.push(`/docs/${item.path}`);
+      // Use Next.js router for client-side navigation without animation for seamless experience
+      router.push(`/docs/${item.path}`, { scroll: false });
       
       // Close sidebar on mobile after selection
       if (typeof window !== 'undefined' && window.innerWidth < 768) {
@@ -149,8 +149,8 @@ export default function DocumentationPage() {
             {sidebarVisible && (
               <motion.aside 
                 initial={{ 
-                  opacity: 0, 
-                  x: -100,
+                  opacity: isMobile ? 0 : 1, 
+                  x: isMobile ? -100 : 0,
                   position: isMobile ? 'fixed' : 'sticky', 
                 }}
                 animate={{ 
@@ -159,9 +159,12 @@ export default function DocumentationPage() {
                   position: isMobile ? 'fixed' : 'sticky', 
                 }}
                 exit={{ 
-                  opacity: 0, 
-                  x: -100,
+                  opacity: isMobile ? 0 : 1, 
+                  x: isMobile ? -100 : 0,
                   position: isMobile ? 'fixed' : 'sticky',
+                }}
+                transition={{
+                  duration: isMobile ? 0.3 : 0
                 }}
                 className="w-[90%] md:w-72 lg:w-80 shrink-0 doc-card file-tree-panel p-4 h-[calc(100vh-64px)] top-16 overflow-y-auto z-20 border-r scrollbar-hide"
                 style={{
@@ -174,9 +177,6 @@ export default function DocumentationPage() {
                   scrollbarWidth: 'none',  /* Firefox */
                 }}
               >
-                <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--text-color)' }}>
-                  Documentation
-                </h2>
                 <FileTree 
                   items={documentationTree} 
                   onSelect={handleSelectFile}

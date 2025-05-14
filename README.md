@@ -45,12 +45,29 @@ This project uses environment variables to configure certain features:
 | Variable | Options | Default | Description |
 |----------|---------|---------|-------------|
 | `NEXT_PUBLIC_BACKGROUND_TYPE` | `wave`, `stars` | `wave` | Sets the background animation type |
+| `NEXT_PUBLIC_DEBUG_CURSOR` | `true`, `false` | `false` | Shows a cursor indicator on the wave animation for debugging |
+| `NEXT_PUBLIC_DEBUG_LOGGING` | `true`, `false` | `false` | Enables additional console logging for debugging |
 
 You can set these variables using a `.env.local` file in the project root:
 
 ```
 NEXT_PUBLIC_BACKGROUND_TYPE=stars
+NEXT_PUBLIC_DEBUG_CURSOR=true
 ```
+
+## Developer Utilities
+
+### Debug Mode
+
+This project includes built-in debugging tools:
+
+- To toggle the cursor visibility for the wave animation, set `NEXT_PUBLIC_DEBUG_CURSOR=true` in your `.env.local` file or use `localStorage.setItem('debugCursor', 'true')` in your browser console.
+- You can also toggle it dynamically by running `window.toggleDebugCursor()` in your browser console.
+- For additional debug logging, set `NEXT_PUBLIC_DEBUG_LOGGING=true` in your environment variables.
+
+### Debugging Wave Animation
+
+The wave animation includes a cursor indicator (hidden by default) that helps visualize where the hover effect is being triggered. When visible, it appears as a small colored sphere that follows your mouse movements.
 
 ## Project Structure
 

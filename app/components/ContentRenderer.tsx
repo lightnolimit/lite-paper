@@ -94,9 +94,9 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
   
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0.9, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.15 }}
       className="w-full py-0 md:py-4"
     >
       <div className="doc-card p-6 md:p-8 relative" role="article" style={{ maxWidth: '100%', width: '100%' }}>
@@ -128,7 +128,7 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-4">
             <a 
               href={`/docs/introduction/synopsis`}
-              className="font-yeezy flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="font-yeezy flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 nav-button"
               style={{ 
                 backgroundColor: 'var(--card-color)',
                 color: 'var(--text-color)',
@@ -148,7 +148,7 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
             
             <a 
               href={`/docs/prelude-phantasy/synopsis`}
-              className="font-yeezy flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="font-yeezy flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 nav-button"
               style={{ 
                 backgroundColor: 'var(--card-color)',
                 color: 'var(--text-color)',

@@ -39,6 +39,7 @@ type WavesProps = {
 const Waves = ({ mouseX, mouseY, isDarkMode, showCursor = false }: WavesProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const cursorRef = useRef<THREE.Mesh>(null);
+  const canvasRef = useRef<DOMRect | null>(null);
 
   // Parameters for the grid
   const numLines = 72; // Even more vertical lines for thinner gaps
@@ -61,15 +62,41 @@ const Waves = ({ mouseX, mouseY, isDarkMode, showCursor = false }: WavesProps) =
       }
       originalYPositions.current.push(linePoints);
     }
+
+    // Get canvas element bounds for accurate mouse positioning
+    const canvas = document.querySelector('canvas');
+    if (canvas) {
+      canvasRef.current = canvas.getBoundingClientRect();
+    }
   }, []);
 
   // Animation
   useFrame((state) => {
     if (!groupRef.current) return;
     const time = state.clock.getElapsedTime();
-    // Normalize mouse coordinates to [-1, 1]
-    const normalizedMouseX = (mouseX / window.innerWidth) * 2 - 1;
-    const normalizedMouseY = -(mouseY / window.innerHeight) * 2 + 1;
+
+    // Update canvas bounds on each frame for maximum accuracy
+    const canvas = document.querySelector('canvas');
+    if (canvas) {
+      canvasRef.current = canvas.getBoundingClientRect();
+    }
+
+    // Get relative mouse position to the canvas
+    let relativeMouseX = mouseX;
+    let relativeMouseY = mouseY;
+    
+    if (canvasRef.current) {
+      relativeMouseX = mouseX - canvasRef.current.left;
+      relativeMouseY = mouseY - canvasRef.current.top;
+    }
+
+    // Normalize mouse coordinates to [-1, 1] based on canvas dimensions
+    const canvasWidth = canvasRef.current?.width || window.innerWidth;
+    const canvasHeight = canvasRef.current?.height || window.innerHeight;
+    
+    const normalizedMouseX = (relativeMouseX / canvasWidth) * 2 - 1;
+    const normalizedMouseY = -(relativeMouseY / canvasHeight) * 2 + 1;
+
     // Update cursor position if showing cursor
     if (cursorRef.current && showCursor) {
       cursorRef.current.position.x = normalizedMouseX * (width / 2);
@@ -142,11 +169,13 @@ const Waves = ({ mouseX, mouseY, isDarkMode, showCursor = false }: WavesProps) =
       {lines}
       {/* Cursor visualization for debug */}
       <mesh ref={cursorRef} position={[0, 0, 0.2]} visible={showCursor}>
-        <sphereGeometry args={[0.3, 16, 16]} />
+        <sphereGeometry args={[0.4, 32, 32]} />
         <meshStandardMaterial 
-          color={isDarkMode ? '#FFC4DD' : '#A3C9A8'} 
-          emissive={isDarkMode ? '#FF4989' : '#557153'}
-          emissiveIntensity={0.5}
+          color={isDarkMode ? '#FF4989' : '#ff0000'} 
+          emissive={isDarkMode ? '#FF85A1' : '#ff6666'}
+          emissiveIntensity={0.8}
+          transparent={true}
+          opacity={0.8}
         />
       </mesh>
     </group>
@@ -162,16 +191,24 @@ export default function WaveBackground() {
   // Setup debug mode
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      // Check for debug cursor in env or localStorage
+      const debugCursorEnabled = process.env.NEXT_PUBLIC_DEBUG_CURSOR === 'true' || 
+                                 localStorage.getItem('debugCursor') === 'true';
+      
       window.__DEBUG_MODE__ = window.__DEBUG_MODE__ || {
-        showCursor: false,
-        logging: false
+        showCursor: debugCursorEnabled,
+        logging: process.env.NEXT_PUBLIC_DEBUG_LOGGING === 'true'
       };
       
       // Add debug toggle functions to window for development
       window.toggleDebugCursor = () => {
         window.__DEBUG_MODE__!.showCursor = !window.__DEBUG_MODE__!.showCursor;
+        localStorage.setItem('debugCursor', window.__DEBUG_MODE__!.showCursor.toString());
         setShowDebugCursor(window.__DEBUG_MODE__!.showCursor);
       };
+      
+      // Initialize state from window.__DEBUG_MODE__
+      setShowDebugCursor(window.__DEBUG_MODE__.showCursor);
     }
   }, []);
   
@@ -184,10 +221,21 @@ export default function WaveBackground() {
       });
     };
     
+    // Handle window resize to reset canvas bounds
+    const handleResize = () => {
+      const canvas = document.querySelector('canvas');
+      if (canvas) {
+        // Reset the canvasRef in the Waves component
+        canvas.dispatchEvent(new Event('resize'));
+      }
+    };
+    
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('resize', handleResize);
     
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
   
