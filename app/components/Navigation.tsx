@@ -97,27 +97,19 @@ export default function Navigation() {
               >
                 <Link 
                   href={item.href}
-                  className="transition-colors hover:text-primary-color"
+                  className="transition-colors nav-link"
                   style={{ 
-                    color: 'var(--muted-color)', 
+                    color: 'var(--text-color)', 
                     fontFamily: 'var(--mono-font)',
                     letterSpacing: '-0.5px',
                     fontSize: '0.9rem'
                   }}
                   tabIndex={0}
                 >
+                  <span className="bracket-left">{hoveredItem === item.label ? '「' : ''}</span>
                   {item.label}
+                  <span className="bracket-right">{hoveredItem === item.label ? '」' : ''}</span>
                 </Link>
-                {hoveredItem === item.label && (
-                  <motion.div 
-                    layoutId="underline"
-                    className="absolute bottom-0 left-0 right-0 h-0.5"
-                    style={{ backgroundColor: 'var(--primary-color)' }}
-                    initial={{ opacity: 0, width: '0%' }}
-                    animate={{ opacity: 1, width: '100%' }}
-                    exit={{ opacity: 0, width: '0%' }}
-                  />
-                )}
               </div>
             ))}
             
@@ -166,7 +158,7 @@ export default function Navigation() {
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><path fill="currentColor" d="M15.5 10V9h1V8h1V7h1V6h1V5h1V4h1V3h1V2h-3v1h-1v1h-1v1h-1v1h-1v1h-1v1h-2V7h-1V6h-1V4h-1V3h-1V2h-7v1h1v1h1v1h1v2h1v1h1v2h1v1h1v2h1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h3v-1h1v-1h1v-1h1v-1h1v-1h2v1h1v1h1v2h1v1h1v1h7v-1h-1v-1h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1zm0 4v1h1v2h1v1h1v2h-3v-2h-1v-1h-1v-1h-1v-2h-1v-1h-1v-1h-1v-2h-1V9h-1V7h-1V6h-1V4h3v1h1v2h1v1h1v2h1v1h1v1h1v2z" strokeWidth="0.5" stroke="#000"/></svg>
             </a>
             <a href="https://twitch.tv" target="_blank" rel="noopener noreferrer" aria-label="Twitch" className="hover:opacity-80 transition-opacity">
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><path fill="currentColor" d="M6 1v1H5v1H4v1H3v1H2v14h5v4h1v-1h1v-1h1v-1h1v-1h4v-1h1v-1h1v-1h1v-1h1v-1h1V1Zm14 11h-1v1h-1v1h-5v1h-1v1h-1v1h-1v-3H7V3h13Z" strokeWidth="0.5" stroke="#000"/><path fill="currentColor" d="M16 5h2v5h-2zm-5 0h2v5h-2z" strokeWidth="0.5" stroke="#000"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><path fill="currentColor" d="M6 1v1H5v1H4v1H3v1H2v14h5v4h1v-1h1v-1h1v-1h1v-1h4v-1h1v-1h1v-1h1v-1h1V1Zm14 11h-1v1h-1v1h-5v1h-1v1h-1v1h-1v-3H7V3h13Z" strokeWidth="0.5" stroke="#000"/><path fill="currentColor" d="M16 5h2v5h-2zm-5 0h2v5h-2z" strokeWidth="0.5" stroke="#000"/></svg>
             </a>
             <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="hover:opacity-80 transition-opacity">
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"><path fill="currentColor" d="M22 7V5h-2V4H4v1H2v2H1v10h1v2h2v1h16v-1h2v-2h1V7zm-10 8h-2V9h2v1h2v1h2v2h-2v1h-2z" strokeWidth="0.5" stroke="#000"/></svg>
@@ -189,15 +181,22 @@ export default function Navigation() {
                 <Link 
                   key={item.label}
                   href={item.href}
-                  className="py-2 px-4 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="py-2 px-4 transition-colors nav-link"
                   style={{ 
                     color: 'var(--text-color)',
                     fontFamily: 'var(--mono-font)' 
                   }}
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setHoveredItem(null);
+                  }}
+                  onMouseEnter={() => setHoveredItem(item.label)}
+                  onMouseLeave={() => setHoveredItem(null)}
                   tabIndex={0}
                 >
+                  <span className="bracket-left">{hoveredItem === item.label ? '「' : ''}</span>
                   {item.label}
+                  <span className="bracket-right">{hoveredItem === item.label ? '」' : ''}</span>
                 </Link>
               ))}
               
