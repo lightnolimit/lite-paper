@@ -44,6 +44,7 @@ This project uses environment variables to configure certain features:
 
 | Variable | Options | Default | Description |
 |----------|---------|---------|-------------|
+| `NEXT_PUBLIC_SITE_URL` | URL string | `https://phantasy-docs.example.com` | The base URL of the site used for metadata and SEO |
 | `NEXT_PUBLIC_BACKGROUND_TYPE` | `wave`, `stars` | `wave` | Sets the background animation type |
 | `NEXT_PUBLIC_DEBUG_CURSOR` | `true`, `false` | `false` | Shows a cursor indicator on the wave animation for debugging |
 | `NEXT_PUBLIC_DEBUG_LOGGING` | `true`, `false` | `false` | Enables additional console logging for debugging |
@@ -51,6 +52,7 @@ This project uses environment variables to configure certain features:
 You can set these variables using a `.env.local` file in the project root:
 
 ```
+NEXT_PUBLIC_SITE_URL=https://docs.yoursite.com
 NEXT_PUBLIC_BACKGROUND_TYPE=stars
 NEXT_PUBLIC_DEBUG_CURSOR=true
 ```
@@ -96,6 +98,9 @@ To edit or add new documentation:
 - **Responsive Design**: Mobile-friendly layout
 - **Client-side Navigation**: Fast page transitions with client-side routing
 - **Smooth Animations**: Using Framer Motion for smooth UI transitions
+- **SEO Optimized**: Complete metadata configuration for search engines
+- **Production-Ready**: Performance optimized with proper caching headers
+- **PWA Support**: Web app manifest and icons for installation
 
 ## Customization
 
@@ -113,6 +118,28 @@ The main colors are defined in `/app/globals.css`:
 ### Documentation Content
 
 Edit the markdown content in the `documentationContent` object in `/app/data/documentation.ts`.
+
+### SEO Configuration
+
+The project includes comprehensive SEO configuration in the `/app/layout.tsx` file. Key SEO features include:
+
+- Complete OpenGraph metadata for social sharing
+- Twitter card support
+- Structured JSON-LD data
+- Robots.txt and sitemap.xml generation
+- Appropriate meta tags for search engines
+
+### Favicons
+
+The project includes a complete set of favicons and app icons in the `/public/favicon/` directory:
+
+- favicon.ico - Browser tab icon (16x16, 32x32)
+- favicon-16x16.png - 16x16 PNG icon
+- favicon-32x32.png - 32x32 PNG icon
+- apple-touch-icon.png - 180x180 icon for iOS devices
+- android-chrome-192x192.png - 192x192 icon for Android devices
+- android-chrome-512x512.png - 512x512 icon for Android devices
+- site.webmanifest - Web app manifest for PWA support
 
 ## License
 

@@ -1,0 +1,6 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: ${process.env.NEXT_PUBLIC_SITE_URL || 'https://phantasy-docs.example.com'}/sitemap.xml 
