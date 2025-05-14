@@ -291,14 +291,8 @@ export default function StarsBackground() {
         setIsDarkMode(darkModeEnabled);
         setForceUpdate(prev => prev + 1); // Force re-render when theme changes
         
-        // Ensure correct class is on the document element
-        if (darkModeEnabled) {
-          document.documentElement.classList.add('dark');
-          document.documentElement.classList.add('theme-transition');
-        } else {
-          document.documentElement.classList.remove('dark');
-          document.documentElement.classList.add('theme-transition');
-        }
+        // Don't modify document classes - only read them
+        // This prevents conflicts with ThemeSwitcher
       }
     };
     

@@ -106,6 +106,11 @@ export const documentationTree: FileItem[] = [
         children: [
           {
             type: 'file',
+            name: 'Index.md',
+            path: 'phase1-rally/tokenomics/index'
+          },
+          {
+            type: 'file',
             name: 'Distribution.md',
             path: 'phase1-rally/tokenomics/distribution'
           },
@@ -113,11 +118,6 @@ export const documentationTree: FileItem[] = [
             type: 'file',
             name: 'Utility.md',
             path: 'phase1-rally/tokenomics/utility'
-          },
-          {
-            type: 'file',
-            name: 'Additional Benefits.md',
-            path: 'phase1-rally/tokenomics/additional-benefits'
           }
         ]
       }

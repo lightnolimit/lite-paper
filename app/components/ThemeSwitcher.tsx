@@ -23,6 +23,22 @@ export default function ThemeSwitcher({ className = "" }) {
         localStorage.setItem('darkMode', 'false');
       }
     }
+
+    // Listen for storage events from other tabs/windows
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'darkMode') {
+        const newDarkMode = e.newValue === 'true';
+        setIsDarkMode(newDarkMode);
+        if (newDarkMode) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   // Effect to toggle the theme class on the html element
@@ -38,7 +54,9 @@ export default function ThemeSwitcher({ className = "" }) {
     }
     
     // Dispatch a custom event for theme change
-    const themeChangeEvent = new Event('themeChange');
+    const themeChangeEvent = new CustomEvent('themeChange', { 
+      detail: { isDarkMode }
+    });
     window.dispatchEvent(themeChangeEvent);
   }, [isDarkMode]);
 

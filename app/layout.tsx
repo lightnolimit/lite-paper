@@ -19,15 +19,41 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
-                  var darkModeEnabled = localStorage.getItem('darkMode') === 'true';
-                  if (darkModeEnabled) {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                    if (localStorage.getItem('darkMode') === null) {
-                      localStorage.setItem('darkMode', 'false');
+                  // Function to apply theme (used both initially and during navigation)
+                  function applyTheme() {
+                    var darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+                    if (darkModeEnabled) {
+                      document.documentElement.classList.add('dark');
+                    } else {
+                      document.documentElement.classList.remove('dark');
+                      if (localStorage.getItem('darkMode') === null) {
+                        localStorage.setItem('darkMode', 'false');
+                      }
                     }
                   }
+                  
+                  // Apply theme immediately
+                  applyTheme();
+                  
+                  // Create observer to watch for SPA navigation
+                  var observer = new MutationObserver(function(mutations) {
+                    applyTheme();
+                  });
+                  
+                  // Start observing when DOM is loaded
+                  document.addEventListener('DOMContentLoaded', function() {
+                    observer.observe(document.body, {
+                      childList: true,
+                      subtree: true
+                    });
+                  });
+                  
+                  // Listen for theme changes from ThemeSwitcher component
+                  window.addEventListener('themeChange', applyTheme);
+                  
+                  // Apply theme on page load and navigation
+                  window.addEventListener('load', applyTheme);
+                  document.addEventListener('visibilitychange', applyTheme);
                 } catch (e) {
                   console.log('Error accessing localStorage', e);
                 }
