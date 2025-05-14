@@ -42,7 +42,8 @@
   --accent-color: #557153;
   --background-color: #F3F5F0;
   --card-color: #FFFFFF;
-  --border-color: #D7E4C0;
+  --border-color: #222; /* Main card border (full brightness) */
+  --border-soft: #f2f2f2; /* Even lighter border for header/sidebar */
   --text-color: #2E3A23;
   --muted-color: #6E7D61;
 }
@@ -54,7 +55,8 @@
   --accent-color: #FF4989;
   --background-color: #0F0F12;
   --card-color: #1A1A1F;
-  --border-color: #2E2E3A;
+  --border-color: #bbb; /* Main card border (full brightness) */
+  --border-soft: #23232a; /* Softer border for header/sidebar */
   --text-color: #F0F0F5;
   --muted-color: #9C9CAF;
 }
@@ -79,25 +81,34 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--primary-color);
+  background: #000;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-color);
+  background: #222;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #fff;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #fff;
 }
 
 /* Documentation card */
 .doc-card {
   background-color: var(--card-color);
   border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  max-width: 100%;
 }
 
 /* File Tree */
@@ -155,4 +166,20 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.header-bar {
+  background-color: var(--card-color);
+  border-bottom: 1px solid var(--border-soft);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.file-tree-panel {
+  background-color: var(--card-color);
+  border-right: 1px solid var(--border-soft);
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-radius: 0 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }

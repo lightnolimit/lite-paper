@@ -59,6 +59,37 @@ function FileTreeItem({ item, onSelect, currentPath, level }: FileTreeItemProps)
     }
   };
   
+  // Helper: choose icon for folder state
+  const getFolderIcon = () => {
+    if (item.type === 'directory') {
+      if (isOpen && isActive) {
+        // Open and active
+        return (
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M2 16H1V3h1V2h7v1h1v1h9v1h1v4H5v1H4v2H3v2H2z" strokeWidth="0.5" stroke="#000"/><path fill="currentColor" d="M23 10v2h-1v2h-1v2h-1v2h-1v3h-1v1H3v-1H2v-3h1v-2h1v-2h1v-2h1v-2z" strokeWidth="0.5" stroke="#000"/></svg>
+        );
+      } else if (isOpen) {
+        // Open
+        return (
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M6 10v2H5v2H4v2H3v2H2v3h1v1h15v-1h1v-3h1v-2h1v-2h1v-2h1v-2zm14 4h-1v2h-1v2h-1v2H4v-2h1v-2h1v-2h1v-2h13z" strokeWidth="0.5" stroke="#000"/><path fill="currentColor" d="M20 5v4h-2V6H9V5H8V4H3v10H2v2H1V3h1V2h7v1h1v1h9v1z" strokeWidth="0.5" stroke="#000"/></svg>
+        );
+      } else if (isActive) {
+        // Closed but active
+        return (
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M23 6v15h-1v1H2v-1H1V3h1V2h9v1h1v1h1v1h9v1z" strokeWidth="0.5" stroke="#000"/></svg>
+        );
+      } else {
+        // Closed
+        return (
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M22 6V5h-9V4h-1V3h-1V2H2v1H1v18h1v1h20v-1h1V6zm-1 14H3V4h7v1h1v1h1v1h9z" strokeWidth="0.5" stroke="#000"/></svg>
+        );
+      }
+    }
+    // File icon
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M3 22h18V8h-2V6h-2v2h-2V6h2V4h-2V2H3zm2-2V4h8v6h6v10z" strokeWidth="0.5" stroke="#000"/></svg>
+    );
+  };
+  
   return (
     <div>
       <div 
@@ -71,29 +102,7 @@ function FileTreeItem({ item, onSelect, currentPath, level }: FileTreeItemProps)
         aria-expanded={item.type === 'directory' ? isOpen : undefined}
         aria-current={isActive ? 'page' : undefined}
       >
-        {item.type === 'directory' ? (
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 20 20" 
-            fill="currentColor" 
-            className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-90' : ''}`}
-            aria-hidden="true"
-          >
-            <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
-          </svg>
-        ) : (
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            fill="none" 
-            viewBox="0 0 24 24" 
-            strokeWidth={1.5} 
-            stroke="currentColor" 
-            className="w-4 h-4 text-gray-400 group-hover:text-[#8a56ff]"
-            aria-hidden="true"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-          </svg>
-        )}
+        {getFolderIcon()}
         <span className="text-sm">{item.name}</span>
       </div>
       

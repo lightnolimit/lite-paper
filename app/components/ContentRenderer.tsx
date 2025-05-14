@@ -58,7 +58,7 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
       transition={{ duration: 0.3 }}
       className="w-full py-0 md:py-4"
     >
-      <div className="doc-card p-6 md:p-8 relative" role="article">
+      <div className="doc-card p-6 md:p-8 relative" role="article" style={{ maxWidth: '100%', width: '100%' }}>
         <div 
           ref={contentRef}
           className="prose max-w-none font-yeezy"

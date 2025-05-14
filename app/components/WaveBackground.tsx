@@ -28,11 +28,6 @@ declare global {
   }
 }
 
-// Custom types to handle the originalPositions property
-interface CustomPlaneGeometry extends THREE.PlaneGeometry {
-  originalPositions: Float32Array;
-}
-
 // Wave animation with interactive cursor, like nyko.cool
 type WavesProps = {
   mouseX: number;
@@ -42,110 +37,109 @@ type WavesProps = {
 };
 
 const Waves = ({ mouseX, mouseY, isDarkMode, showCursor = false }: WavesProps) => {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const groupRef = useRef<THREE.Group>(null);
   const cursorRef = useRef<THREE.Mesh>(null);
-  
-  // Create geometry
+
+  // Parameters for the grid
+  const numLines = 72; // Even more vertical lines for thinner gaps
+  const pointsPerLine = 100; // More points per line for smoother lines
+  const width = 40;
+  const height = 20;
+
+  // Store original Y positions for elasticity
+  const originalYPositions = useRef<number[][]>([]);
+
+  // Initialize lines and store original Y positions
   useEffect(() => {
-    if (!meshRef.current) return;
-    
-    const geometry = meshRef.current.geometry as CustomPlaneGeometry;
-    const position = geometry.attributes.position;
-    const count = position.count;
-    
-    // Store original positions
-    const originalPositions = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      originalPositions[i * 3] = position.getX(i);
-      originalPositions[i * 3 + 1] = position.getY(i);
-      originalPositions[i * 3 + 2] = position.getZ(i);
+    if (!groupRef.current) return;
+    originalYPositions.current = [];
+    for (let i = 0; i < numLines; i++) {
+      const y = (i / (numLines - 1) - 0.5) * height;
+      const linePoints: number[] = [];
+      for (let j = 0; j < pointsPerLine; j++) {
+        linePoints.push(y);
+      }
+      originalYPositions.current.push(linePoints);
     }
-    
-    // Attach to the geometry for use in animation
-    geometry.originalPositions = originalPositions;
   }, []);
-  
+
   // Animation
   useFrame((state) => {
-    if (!meshRef.current) return;
-    
-    const mesh = meshRef.current;
-    const geometry = mesh.geometry as CustomPlaneGeometry;
-    const position = geometry.attributes.position;
-    const originalPositions = geometry.originalPositions;
-    const count = position.count;
-    
-    if (!originalPositions) return;
-    
+    if (!groupRef.current) return;
     const time = state.clock.getElapsedTime();
-    
     // Normalize mouse coordinates to [-1, 1]
     const normalizedMouseX = (mouseX / window.innerWidth) * 2 - 1;
     const normalizedMouseY = -(mouseY / window.innerHeight) * 2 + 1;
-    
     // Update cursor position if showing cursor
     if (cursorRef.current && showCursor) {
-      cursorRef.current.position.x = normalizedMouseX * 10;
-      cursorRef.current.position.y = normalizedMouseY * 5;
+      cursorRef.current.position.x = normalizedMouseX * (width / 2);
+      cursorRef.current.position.y = normalizedMouseY * (height / 2);
       cursorRef.current.position.z = 0.2;
       cursorRef.current.visible = true;
     } else if (cursorRef.current) {
       cursorRef.current.visible = false;
     }
-    
-    // Animate wave vertices
-    for (let i = 0; i < count; i++) {
-      const x = originalPositions[i * 3];
-      const y = originalPositions[i * 3 + 1];
-      
-      // Basic wave motion
-      const waveX = Math.sin(x * 0.5 + time * 0.7) * 0.2;
-      const waveY = Math.sin(y * 0.5 + time * 0.8) * 0.2;
-      
-      // Mouse influence (stronger effect when closer to mouse)
-      const mouseInfluenceX = normalizedMouseX * 10;
-      const mouseInfluenceY = normalizedMouseY * 5;
-      
-      const distanceToMouse = Math.sqrt(
-        Math.pow(x - mouseInfluenceX, 2) + 
-        Math.pow(y - mouseInfluenceY, 2)
-      );
-      
-      let mouseEffect = 0;
-      if (distanceToMouse < 5) {
-        mouseEffect = (1 - distanceToMouse / 5) * 0.8;
+    // Calculate which line is closest to the cursor (vertical lines)
+    const mouseXWorld = normalizedMouseX * (width / 2);
+    let closestLine = 0;
+    let minDist = Infinity;
+    for (let i = 0; i < numLines; i++) {
+      const x = (i / (numLines - 1) - 0.5) * width;
+      const dist = Math.abs(x - mouseXWorld);
+      if (dist < minDist) {
+        minDist = dist;
+        closestLine = i;
       }
-      
-      // Combine animations
-      position.setZ(i, waveX + waveY + mouseEffect);
     }
-    
-    position.needsUpdate = true;
+    // Animate each line
+    groupRef.current.children.forEach((lineMesh, i) => {
+      const x = (i / (numLines - 1) - 0.5) * width;
+      const geometry = (lineMesh as THREE.Line).geometry as THREE.BufferGeometry;
+      const positions = geometry.attributes.position.array as Float32Array;
+      // Calculate reverberation strength for this line
+      const lineDistance = Math.abs(i - closestLine);
+      const lineReverbStrength = lineDistance === 0 ? 1 : 0; // Only the closest line gets the effect
+      for (let j = 0; j < pointsPerLine; j++) {
+        const y = (j / (pointsPerLine - 1) - 0.5) * height;
+        // Slower, subtle base wave (animate X)
+        let elastic = Math.sin(y * 0.25 + time * 1.1) * 0.22;
+        // Cursor influence (elastic strum + reverberation)
+        const mouseYWorld = normalizedMouseY * (height / 2);
+        const distToCursor = Math.sqrt(
+          Math.pow(y - mouseYWorld, 2) + Math.pow(x - mouseXWorld, 2)
+        );
+        if (distToCursor < 1.2) { // More precise, smaller threshold
+          // Strong elastic burst, only for the closest line/point
+          const strum = Math.sin(time * 10 - distToCursor * 2) * (1 - distToCursor / 1.2) * 2.2 * lineReverbStrength;
+          elastic += strum;
+        }
+        positions[j * 3 + 0] = x + elastic; // Only X is animated
+      }
+      geometry.attributes.position.needsUpdate = true;
+    });
   });
-  
+
+  // Create vertical lines
+  const lines = [];
+  for (let i = 0; i < numLines; i++) {
+    const x = (i / (numLines - 1) - 0.5) * width;
+    const points = [];
+    for (let j = 0; j < pointsPerLine; j++) {
+      const y = (j / (pointsPerLine - 1) - 0.5) * height;
+      points.push(new THREE.Vector3(x, y, 0));
+    }
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    lines.push(
+      <line key={i}>
+        <bufferGeometry attach="geometry" {...geometry} />
+        <lineBasicMaterial attach="material" color={isDarkMode ? '#FF85A1' : '#678D58'} linewidth={2} />
+      </line>
+    );
+  }
+
   return (
-    <>
-      <mesh ref={meshRef} rotation={[-Math.PI * 0.1, 0, 0]}>
-        <planeGeometry args={[40, 20, 32, 32]} />
-        <meshStandardMaterial 
-          color={isDarkMode ? '#FF85A1' : '#678D58'} 
-          wireframe={true}
-          transparent={true}
-          opacity={0.6}
-        />
-      </mesh>
-      
-      {/* Secondary mesh for depth */}
-      <mesh rotation={[-Math.PI * 0.1, 0, 0]} position={[0, 0, -1]}>
-        <planeGeometry args={[40, 20, 16, 16]} />
-        <meshStandardMaterial 
-          color={isDarkMode ? '#FF4989' : '#557153'} 
-          wireframe={true}
-          transparent={true}
-          opacity={0.3}
-        />
-      </mesh>
-      
+    <group ref={groupRef}>
+      {lines}
       {/* Cursor visualization for debug */}
       <mesh ref={cursorRef} position={[0, 0, 0.2]} visible={showCursor}>
         <sphereGeometry args={[0.3, 16, 16]} />
@@ -155,7 +149,7 @@ const Waves = ({ mouseX, mouseY, isDarkMode, showCursor = false }: WavesProps) =
           emissiveIntensity={0.5}
         />
       </mesh>
-    </>
+    </group>
   );
 };
 

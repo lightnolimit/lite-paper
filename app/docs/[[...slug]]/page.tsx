@@ -14,8 +14,9 @@ export default function DocumentationPage() {
   const params = useParams<{ slug?: string[] }>();
   const [currentPath, setCurrentPath] = useState<string>('');
   const [content, setContent] = useState<string>('');
-  const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [sidebarVisible, setSidebarVisible] = useState(true); // Always show sidebar by default
   const [backgroundType, setBackgroundType] = useState<string>('wave');
+  const [isMobile, setIsMobile] = useState(false);
   
   // Effect to load the saved background preference
   useEffect(() => {
@@ -30,6 +31,9 @@ export default function DocumentationPage() {
       } else {
         setBackgroundType(envDefault);
       }
+      
+      // Set initial mobile state
+      setIsMobile(window.innerWidth < 768);
     }
   }, []);
   
@@ -58,15 +62,24 @@ export default function DocumentationPage() {
     }
     
     // On mobile, close sidebar when a document is selected
-    if (window.innerWidth < 768) {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
       setSidebarVisible(false);
     }
   }, [currentPath]);
   
-  // Initialize sidebar visibility based on screen size
+  // Handle mobile behavior for sidebar based on screen size
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     const handleResize = () => {
-      setSidebarVisible(window.innerWidth >= 768);
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      
+      if (!mobile) {
+        setSidebarVisible(true); // Always visible on desktop
+      } else if (mobile && sidebarVisible) {
+        setSidebarVisible(false); // Hide on mobile by default
+      }
     };
     
     // Set initial state
@@ -75,7 +88,7 @@ export default function DocumentationPage() {
     // Add resize listener
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [sidebarVisible]);
   
   const handleSelectFile = (item: FileItem) => {
     if (item.type === 'file') {
@@ -85,7 +98,7 @@ export default function DocumentationPage() {
       window.history.pushState({}, '', `/docs/${item.path}`);
       
       // Close sidebar on mobile after selection
-      if (window.innerWidth < 768) {
+      if (typeof window !== 'undefined' && window.innerWidth < 768) {
         setSidebarVisible(false);
       }
     }
@@ -96,7 +109,7 @@ export default function DocumentationPage() {
       <BackgroundComponent />
       <Navigation />
       
-      <div className="container max-w-5xl mx-auto px-4 md:px-6 flex flex-1 z-10">
+      <div className="w-full flex flex-1 z-10 pt-16">
         {/* Mobile sidebar toggle button */}
         <div className="md:hidden fixed bottom-4 left-4 z-30">
           <button 
@@ -129,29 +142,32 @@ export default function DocumentationPage() {
           </button>
         </div>
         
-        <div className="flex flex-col md:flex-row w-full gap-4 relative">
-          {/* Sidebar - conditionally visible on mobile */}
+        <div className="flex w-full">
+          {/* Sidebar */}
           <AnimatePresence>
             {sidebarVisible && (
               <motion.aside 
                 initial={{ 
                   opacity: 0, 
                   x: -100,
-                  position: window.innerWidth < 768 ? 'fixed' : 'sticky', 
+                  position: isMobile ? 'fixed' : 'sticky', 
                 }}
                 animate={{ 
                   opacity: 1, 
                   x: 0,
-                  position: window.innerWidth < 768 ? 'fixed' : 'sticky', 
+                  position: isMobile ? 'fixed' : 'sticky', 
                 }}
                 exit={{ 
                   opacity: 0, 
                   x: -100,
-                  position: window.innerWidth < 768 ? 'fixed' : 'sticky',
+                  position: isMobile ? 'fixed' : 'sticky',
                 }}
-                className="w-[90%] md:w-64 lg:w-72 shrink-0 doc-card p-4 h-[calc(100vh-120px)] top-20 overflow-y-auto z-20"
+                className="w-[90%] md:w-72 lg:w-80 shrink-0 doc-card file-tree-panel p-4 h-[calc(100vh-64px)] top-16 overflow-y-auto z-20 border-r"
                 style={{
-                  left: window.innerWidth < 768 ? '0' : 'auto',
+                  left: isMobile ? '0' : 'auto',
+                  borderTopRightRadius: 0,
+                  borderBottomRightRadius: 0,
+                  borderBottomLeftRadius: 0,
                 }}
               >
                 <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--text-color)' }}>
@@ -167,8 +183,14 @@ export default function DocumentationPage() {
           </AnimatePresence>
           
           {/* Content */}
-          <div className={`flex-1 min-w-0 ${sidebarVisible && window.innerWidth < 768 ? 'opacity-50' : 'opacity-100'}`}>
-            <ContentRenderer content={content} path={currentPath} />
+          <div 
+            className={`flex-1 py-8 px-6 md:px-8 lg:px-16 ${
+              sidebarVisible && isMobile ? 'opacity-50' : 'opacity-100'
+            }`}
+          >
+            <div className="max-w-6xl mx-auto">
+              <ContentRenderer content={content} path={currentPath} />
+            </div>
           </div>
         </div>
       </div>
