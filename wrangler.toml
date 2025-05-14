@@ -1,4 +1,4 @@
-[name = "test-docs"]
+name = "test-docs"
 compatibility_date = "2023-12-01"
 compatibility_flags = ["nodejs_compat"]
 
@@ -7,16 +7,19 @@ compatibility_flags = ["nodejs_compat"]
 command = "npm run pages:build"
 
 [site]
-bucket = ".vercel/output/static"
+bucket = "out"
+
+# Pages configuration
+pages_build_output_dir = "out"
 
 # Environment variables
 [vars]
 NEXT_PUBLIC_BACKGROUND_TYPE = "wave"
-NEXT_PUBLIC_SITE_URL = "https://phantasy-docs.example.com"
+NEXT_PUBLIC_SITE_URL = "https://docs.phantasy.bot"
 
 # Production environment
 [env.production]
 name = "test-docs-production"
 routes = [
-  { pattern = "phantasy-docs.example.com", custom_domain = true }
+  { pattern = "docs.phantasy.bot", custom_domain = true }
 ] 

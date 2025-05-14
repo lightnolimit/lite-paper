@@ -2,6 +2,9 @@ import { MetadataRoute } from 'next';
 import fs from 'fs';
 import path from 'path';
 
+// Required for static export
+export const dynamic = 'force-static';
+
 /**
  * Get all content paths for documentation pages
  * 
