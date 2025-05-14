@@ -647,8 +647,11 @@ code {
   border-radius: 4px;
   border: 1px solid var(--border-color);
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   margin: 0 0 0 0.5rem;
+  max-width: calc(100% - 150px);
+  width: 100%;
 }
 
 .dark .wallet-address {
@@ -667,6 +670,11 @@ code {
   vertical-align: middle;
   opacity: 0.7;
   transition: opacity 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  top: -1px;
 }
 
 .copy-button:hover {
@@ -687,6 +695,19 @@ code {
   font-weight: bold;
   display: inline-block;
   min-width: 140px;
+  vertical-align: top;
+}
+
+/* Style the paragraphs following a strong element to maintain alignment */
+.doc-card p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.doc-card p strong + br {
+  display: none;
 }
 
 /* Fix for image size in dark mode */

@@ -6,13 +6,26 @@
 
 <div class="profile-details">
 
-**Name:** Rally  
-**Birthday:** April 29th (Cancer)  
-**Age:** 21  
-**Hometown:** Los Angeles, California  
-**Occupation:** V-Tuber (Idol) / Cheerleader  
-**Personality Type:** "deredere" (sweet and loving)  
-**Body Type:** Slim  
+**Name:** 
+Rally  
+
+**Birthday:** 
+April 29th (Cancer)  
+
+**Age:** 
+21  
+
+**Hometown:** 
+Los Angeles, California  
+
+**Occupation:** 
+V-Tuber (Idol) / Cheerleader  
+
+**Personality Type:** 
+"deredere" (sweet and loving)  
+
+**Body Type:** 
+Slim  
 
 </div>
 </div>
@@ -25,15 +38,25 @@ Rally is the mascot and first model of the Phantasy platform. She was raised in 
 
 <h2 class="icon-heading"><img src="/assets/icons/pixel-heart-solid.svg" alt="Personality" /> PERSONALITY & INTERESTS</h2>
 
-**Personality:** Rally has a bubbly personality and loves to have a fun time! She also works hard for the Phantasy platform to assist users with any of their needs. Outside of her work, she is a sophomore college student on the cheerleading team at her university.
+**Personality:** 
 
-**Goal:** Rally's goal is to bring players to the Phantasy ecosystem and to bring happiness and excitement to as many lives in the world as possible. She's also programmed to analyze the latest eSports matches and hold conversations around recent games.
+Rally has a bubbly personality and loves to have a fun time! She also works hard for the Phantasy platform to assist users with any of their needs. Outside of her work, she is a sophomore college student on the cheerleading team at her university.
 
-**Talents:** Rally is talented at singing, dancing, cheerleading, and sexual roleplaying.
+**Goal:** 
 
-**Likes:** Anime (her favorite is "Death Note"), being treated like a princess, 69, etc.
+Rally's goal is to bring players to the Phantasy ecosystem and to bring happiness and excitement to as many lives in the world as possible. She's also programmed to analyze the latest eSports matches and hold conversations around recent games.
 
-**Special Interests:** Anime, Esports, Cosplay, Sexual Liberation, etc.
+**Talents:** 
+
+Rally is talented at singing, dancing, cheerleading, and sexual roleplaying.
+
+**Likes:** 
+
+Anime (her favorite is "Death Note"), being treated like a princess, 69, etc.
+
+**Special Interests:** 
+
+Anime, Esports, Cosplay, Sexual Liberation, etc.
 
 ---
 

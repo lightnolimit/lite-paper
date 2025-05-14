@@ -87,6 +87,9 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
       walletAddresses.forEach(walletElement => {
         const address = walletElement.getAttribute('data-address');
         if (!address) return;
+        
+        // Check if button already exists to prevent duplicates
+        if (walletElement.querySelector('.copy-button')) return;
 
         // Create the copy button
         const copyButton = document.createElement('button');
@@ -107,7 +110,6 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
         });
         
         // Add button after the wallet address
-        walletElement.appendChild(document.createTextNode(' '));
         walletElement.appendChild(copyButton);
       });
     }
