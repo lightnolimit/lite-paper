@@ -18,21 +18,13 @@ export const loadMarkdownContent = cache(async (docPath: string): Promise<string
     // Read the file content
     const content = await fs.readFile(filePath, 'utf-8');
     
-    // Process and return content
-    return preprocessMarkdown(content);
+    // Return the content directly - we'll let marked handle it
+    return content;
   } catch (error) {
     console.error(`Error loading markdown file: ${docPath}`, error);
     return `# Error Loading Content\n\nThe requested documentation page could not be found. Please try again later or contact support if the problem persists.`;
   }
 });
-
-/**
- * Preprocess markdown content to handle HTML blocks better
- */
-function preprocessMarkdown(content: string): string {
-  // Add a special comment at the beginning of HTML blocks to preserve them during markdown parsing
-  return content.replace(/(<div[\s\S]*?<\/div>)/g, '\n\n$1\n\n');
-}
 
 /**
  * Load all markdown files from a directory

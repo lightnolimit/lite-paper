@@ -88,53 +88,59 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
   const renderMarkdown = (text: string): string => {
     if (!text) return '<p>No content available.</p>';
 
-    // Configure marked to handle HTML properly
-    marked.setOptions({
-      gfm: true,
-      breaks: true
-    });
+    try {
+      // Configure marked to handle markdown properly
+      marked.setOptions({
+        gfm: true,
+        breaks: true,
+        pedantic: false
+      });
 
-    // Process HTML blocks separately before passing to marked
-    // This regex finds HTML div blocks and replaces them with placeholders
-    const htmlBlocks: string[] = [];
-    const processedText = text.replace(/<div[\s\S]*?<\/div>/g, (match) => {
-      htmlBlocks.push(match);
-      return `___HTML_BLOCK_${htmlBlocks.length - 1}___`;
-    });
+      // Parse markdown into HTML
+      let html = marked.parse(text) as string;
+      
+      // Apply basic styling for images
+      html = html.replace(/<img([^>]*)>/g, '<img$1 class="rounded-lg max-w-full my-4" style="max-height: 300px; object-fit: contain;" />');
+      
+      // Style for code blocks
+      html = html.replace(/<code>/g, '<code class="font-mono bg-opacity-10 bg-gray-200 dark:bg-gray-700 dark:bg-opacity-20 px-1 py-0.5 rounded">');
+      
+      // Apply styling for tables
+      html = html.replace(/<table>/g, '<table class="w-full border-collapse my-4">');
+      html = html.replace(/<th>/g, '<th class="border border-gray-300 dark:border-gray-700 px-4 py-2 bg-gray-100 dark:bg-gray-800">');
+      html = html.replace(/<td>/g, '<td class="border border-gray-300 dark:border-gray-700 px-4 py-2">');
+      
+      // Style for blockquotes
+      html = html.replace(/<blockquote>/g, '<blockquote class="border-l-4 border-primary-color pl-4 italic text-gray-600 dark:text-gray-400 my-4">');
+      
+      // Style headings
+      html = html.replace(/<h1([^>]*)>/g, '<h1$1 class="font-title text-3xl mb-6 mt-8">')
+        .replace(/<h2([^>]*)>/g, '<h2$1 class="font-title text-2xl mb-4 mt-6">')
+        .replace(/<h3([^>]*)>/g, '<h3$1 class="font-title text-xl mb-3 mt-5">')
+        .replace(/<h4([^>]*)>/g, '<h4$1 class="font-title text-lg mb-2 mt-4">')
+        .replace(/<h5([^>]*)>/g, '<h5$1 class="font-title text-base mb-2 mt-3">')
+        .replace(/<h6([^>]*)>/g, '<h6$1 class="font-title text-sm mb-2 mt-3">');
+      
+      // Style for paragraphs
+      html = html.replace(/<p([^>]*)>/g, '<p$1 class="font-body mb-4">');
+      
+      // Style for links
+      html = html.replace(/<a([^>]*)>/g, '<a$1 class="text-primary-color hover:underline">');
+      
+      // Style for lists
+      html = html.replace(/<ul([^>]*)>/g, '<ul$1 class="list-disc pl-6 mb-4">')
+        .replace(/<ol([^>]*)>/g, '<ol$1 class="list-decimal pl-6 mb-4">')
+        .replace(/<li([^>]*)>/g, '<li$1 class="mb-1">');
 
-    // Parse with marked
-    let parsedHtml = marked.parse(processedText) as string;
+      // Add styling for horizontal rules
+      html = html.replace(/<hr>/g, '<hr class="my-8 border-t border-gray-300 dark:border-gray-700">');
 
-    // Restore HTML blocks
-    htmlBlocks.forEach((block, index) => {
-      parsedHtml = parsedHtml.replace(`___HTML_BLOCK_${index}___`, block);
-    });
-
-    // Process notification blocks to add icons
-    parsedHtml = parsedHtml.replace(/<div class="notification notification-info">/g,
-      '<div class="notification notification-info"><img src="/assets/icons/pixel-info-circle-solid.svg" alt="Info" width="24" height="24" class="inline-block mr-2" />');
-    
-    parsedHtml = parsedHtml.replace(/<div class="notification notification-warning">/g,
-      '<div class="notification notification-warning"><img src="/assets/icons/pixel-exclamation-triangle-solid.svg" alt="Warning" width="24" height="24" class="inline-block mr-2" />');
-    
-    parsedHtml = parsedHtml.replace(/<div class="notification notification-error">/g,
-      '<div class="notification notification-error"><img src="/assets/icons/pixel-times-circle-solid.svg" alt="Error" width="24" height="24" class="inline-block mr-2" />');
-    
-    parsedHtml = parsedHtml.replace(/<div class="notification notification-success">/g,
-      '<div class="notification notification-success"><img src="/assets/icons/pixel-check-circle-solid.svg" alt="Success" width="24" height="24" class="inline-block mr-2" />');
-
-    // Apply font styles to headings and paragraphs
-    parsedHtml = parsedHtml
-      .replace(/<h1([^>]*)>/g, '<h1$1 class="font-title text-3xl mb-6 mt-8">')
-      .replace(/<h2([^>]*)>/g, '<h2$1 class="font-title text-2xl mb-4 mt-6">')
-      .replace(/<h3([^>]*)>/g, '<h3$1 class="font-title text-xl mb-3 mt-5">')
-      .replace(/<h4([^>]*)>/g, '<h4$1 class="font-title text-lg mb-2 mt-4">')
-      .replace(/<h5([^>]*)>/g, '<h5$1 class="font-title text-base mb-2 mt-3">')
-      .replace(/<h6([^>]*)>/g, '<h6$1 class="font-title text-sm mb-2 mt-3">')
-      .replace(/<p([^>]*)>/g, '<p$1 class="font-body mb-4">')
-      .replace(/<a([^>]*)>/g, '<a$1 class="text-primary-color hover:underline">');
-
-    return parsedHtml;
+      return html;
+    } catch (error: unknown) {
+      console.error('Error rendering markdown:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      return `<p>Error rendering content: ${errorMessage}</p>`;
+    }
   };
 
   const contentHtml = renderMarkdown(content);
