@@ -123,19 +123,14 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
         gfm: true,
         breaks: true,
         pedantic: false
+        // Note: Using HTML directly in the markdown file instead of sanitize option
       });
 
       // Parse markdown into HTML
       let html = marked.parse(text) as string;
-      
-      // Apply basic styling for images
-      html = html.replace(/<img([^>]*)>/g, '<img$1 class="rounded-lg max-w-full my-4" style="max-height: 300px; object-fit: contain;" />');
-      
-      // Convert {.wallet-address data-address="xxx"} to proper attribute
-      html = html.replace(/\{\.wallet-address data-address="([^"]+)"\}/g, 'class="wallet-address" data-address="$1"');
-      
-      // Style for code blocks
-      html = html.replace(/<code>/g, '<code class="font-mono bg-opacity-10 bg-gray-200 dark:bg-gray-700 dark:bg-opacity-20 px-1 py-0.5 rounded">');
+
+      // Style for code blocks (but not wallet addresses)
+      html = html.replace(/<code(?! class="wallet-address")/g, '<code class="font-mono bg-opacity-10 bg-gray-200 dark:bg-gray-700 dark:bg-opacity-20 px-1 py-0.5 rounded"');
       
       // Apply styling for tables
       html = html.replace(/<table>/g, '<table class="w-full border-collapse my-4">');
@@ -145,19 +140,19 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
       // Style for blockquotes
       html = html.replace(/<blockquote>/g, '<blockquote class="border-l-4 border-primary-color pl-4 italic text-gray-600 dark:text-gray-400 my-4">');
       
-      // Style headings
-      html = html.replace(/<h1([^>]*)>/g, '<h1$1 class="font-title text-3xl mb-6 mt-8">')
-        .replace(/<h2([^>]*)>/g, '<h2$1 class="font-title text-2xl mb-4 mt-6">')
-        .replace(/<h3([^>]*)>/g, '<h3$1 class="font-title text-xl mb-3 mt-5">')
-        .replace(/<h4([^>]*)>/g, '<h4$1 class="font-title text-lg mb-2 mt-4">')
-        .replace(/<h5([^>]*)>/g, '<h5$1 class="font-title text-base mb-2 mt-3">')
-        .replace(/<h6([^>]*)>/g, '<h6$1 class="font-title text-sm mb-2 mt-3">');
+      // Style for regular headings (not icon headings)
+      html = html.replace(/<h1(?! class="icon-heading")([^>]*)>/g, '<h1$1 class="font-title text-3xl mb-6 mt-8">')
+        .replace(/<h2(?! class="icon-heading")([^>]*)>/g, '<h2$1 class="font-title text-2xl mb-4 mt-6">')
+        .replace(/<h3(?! class="icon-heading")([^>]*)>/g, '<h3$1 class="font-title text-xl mb-3 mt-5">')
+        .replace(/<h4(?! class="icon-heading")([^>]*)>/g, '<h4$1 class="font-title text-lg mb-2 mt-4">')
+        .replace(/<h5(?! class="icon-heading")([^>]*)>/g, '<h5$1 class="font-title text-base mb-2 mt-3">')
+        .replace(/<h6(?! class="icon-heading")([^>]*)>/g, '<h6$1 class="font-title text-sm mb-2 mt-3">');
       
       // Style for paragraphs
       html = html.replace(/<p([^>]*)>/g, '<p$1 class="font-body mb-4">');
       
       // Style for links
-      html = html.replace(/<a([^>]*)>/g, '<a$1 class="text-primary-color hover:underline">');
+      html = html.replace(/<a(?! class="social)([^>]*)>/g, '<a$1 class="text-primary-color hover:underline">');
       
       // Style for lists
       html = html.replace(/<ul([^>]*)>/g, '<ul$1 class="list-disc pl-6 mb-4">')

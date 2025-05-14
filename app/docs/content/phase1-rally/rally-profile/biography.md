@@ -23,43 +23,35 @@ Rally is the mascot and first model of the Phantasy platform. She was raised in 
 
 ---
 
-## ![Personality](/assets/icons/pixel-heart-solid.svg) PERSONALITY & INTERESTS
+<h2 class="icon-heading"><img src="/assets/icons/pixel-heart-solid.svg" alt="Personality" /> PERSONALITY & INTERESTS</h2>
 
-**Personality:**  
-Rally has a bubbly personality and loves to have a fun time! She also works hard for the Phantasy platform to assist users with any of their needs. Outside of her work, she is a sophomore college student on the cheerleading team at her university.
+**Personality:** Rally has a bubbly personality and loves to have a fun time! She also works hard for the Phantasy platform to assist users with any of their needs. Outside of her work, she is a sophomore college student on the cheerleading team at her university.
 
-**Goal:**  
-Rally's goal is to bring players to the Phantasy ecosystem and to bring happiness and excitement to as many lives in the world as possible. She's also programmed to analyze the latest eSports matches and hold conversations around recent games.
+**Goal:** Rally's goal is to bring players to the Phantasy ecosystem and to bring happiness and excitement to as many lives in the world as possible. She's also programmed to analyze the latest eSports matches and hold conversations around recent games.
 
-**Talents:**  
-Rally is talented at singing, dancing, cheerleading, and sexual roleplaying.
+**Talents:** Rally is talented at singing, dancing, cheerleading, and sexual roleplaying.
 
-**Likes:**  
-Anime (her favorite is "Death Note"), being treated like a princess, 69, etc.
+**Likes:** Anime (her favorite is "Death Note"), being treated like a princess, 69, etc.
 
-**Special Interests:**  
-Anime, Esports, Cosplay, Sexual Liberation, etc.
+**Special Interests:** Anime, Esports, Cosplay, Sexual Liberation, etc.
 
 ---
 
-## ![Wallet](/assets/icons/pixel-wallet-solid.svg) WALLET & TOKEN INFORMATION
+<h2 class="icon-heading"><img src="/assets/icons/pixel-wallet-solid.svg" alt="Wallet" /> WALLET & TOKEN INFORMATION</h2>
 
-**Base Wallet:**  
-`0x1234...5678` {.wallet-address data-address="0x1234...5678"}
+**Base Wallet:** <code class="wallet-address" data-address="0x1234...5678">0x1234...5678</code>
 
-**Solana Wallet:**  
-`rally123...xyz` {.wallet-address data-address="rally123...xyz"}
+**Solana Wallet:** <code class="wallet-address" data-address="rally123...xyz">rally123...xyz</code>
 
-**Token Contract:**  
-`0xABCD...6789` {.wallet-address data-address="0xABCD...6789"}
+**Token Contract:** <code class="wallet-address" data-address="0xABCD...6789">0xABCD...6789</code>
 
 ---
 
-## ![Social](/assets/icons/pixel-star.svg) SOCIAL PROFILES
+<h2 class="icon-heading"><img src="/assets/icons/pixel-star.svg" alt="Social" /> SOCIAL PROFILES</h2>
 
 <div class="social-links-inline">
-[![X](/assets/icons/pixel-x.svg) @RallyPhantasy](https://twitter.com/rallyphantasy) &nbsp;
-[![Instagram](/assets/icons/pixel-instagram.svg) @RallyPhantasy](https://instagram.com/rallyphantasy) &nbsp;
-[![Twitch](/assets/icons/pixel-twitch.svg) RallyPhantasy](https://twitch.tv/rallyphantasy) &nbsp;
-[![TikTok](/assets/icons/pixel-tiktok.svg) @rallyphantasy](https://tiktok.com/@rallyphantasy)
+<a href="https://twitter.com/rallyphantasy" target="_blank"><img src="/assets/icons/pixel-x.svg" alt="X" /> @RallyPhantasy</a>
+<a href="https://instagram.com/rallyphantasy" target="_blank"><img src="/assets/icons/pixel-instagram.svg" alt="Instagram" /> @RallyPhantasy</a>
+<a href="https://twitch.tv/rallyphantasy" target="_blank"><img src="/assets/icons/pixel-twitch.svg" alt="Twitch" /> RallyPhantasy</a>
+<a href="https://tiktok.com/@rallyphantasy" target="_blank"><img src="/assets/icons/pixel-tiktok.svg" alt="TikTok" /> @rallyphantasy</a>
 </div>

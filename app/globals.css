@@ -614,8 +614,8 @@ code {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 1rem;
-  margin: 1rem 0;
+  gap: 1.5rem;
+  margin: 1.2rem 0;
 }
 
 .social-links-inline a {
@@ -624,6 +624,7 @@ code {
   color: var(--primary-color);
   text-decoration: none;
   transition: all 0.2s ease;
+  font-family: var(--body-font);
 }
 
 .social-links-inline a:hover {
@@ -634,7 +635,7 @@ code {
 .social-links-inline img {
   height: 20px;
   width: auto;
-  margin-right: 6px;
+  margin-right: 8px;
   vertical-align: middle;
 }
 
@@ -647,7 +648,7 @@ code {
   border: 1px solid var(--border-color);
   position: relative;
   display: inline-block;
-  margin: 0.3rem 0;
+  margin: 0 0 0 0.5rem;
 }
 
 .dark .wallet-address {
@@ -660,8 +661,8 @@ code {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px;
-  margin-left: 8px;
+  padding: 4px 8px;
+  margin-left: 6px;
   border-radius: 4px;
   vertical-align: middle;
   opacity: 0.7;
@@ -712,4 +713,20 @@ code {
   width: auto;
   vertical-align: middle;
   margin-right: 8px;
+}
+
+/* Icon heading styling */
+.icon-heading {
+  display: flex;
+  align-items: center;
+  font-family: var(--title-font);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  margin-top: 1.5rem;
+}
+
+.icon-heading img {
+  height: 24px;
+  width: auto;
+  margin-right: 10px;
 }
