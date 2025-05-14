@@ -63,11 +63,12 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
     });
     
     // Handle headers
-    html = html.replace(/^# (.*$)/gim, '<h1 class="font-yeezy font-heavy text-2xl font-bold my-4" tabindex="0">$1</h1>');
-    html = html.replace(/^## (.*$)/gim, '<h2 class="font-yeezy font-bold text-xl font-bold my-3" tabindex="0">$1</h2>');
-    html = html.replace(/^### (.*$)/gim, '<h3 class="font-yeezy text-lg font-medium my-2" tabindex="0">$1</h3>');
-    html = html.replace(/^#### (.*$)/gim, '<h4 class="font-yeezy text-md font-medium my-2" tabindex="0">$1</h4>');
-    html = html.replace(/^##### (.*$)/gim, '<h5 class="font-yeezy text-sm font-medium my-2" tabindex="0">$1</h5>');
+    html = html.replace(/^# (.*$)/gim, '<h1 class="font-title font-heavy text-2xl font-bold my-4" tabindex="0">$1</h1>');
+    html = html.replace(/^## (.*$)/gim, '<h2 class="font-title font-bold text-xl my-3" tabindex="0">$1</h2>');
+    html = html.replace(/^### (.*$)/gim, '<h3 class="font-title font-bold text-lg my-2" tabindex="0">$1</h3>');
+    html = html.replace(/^#### (.*$)/gim, '<h4 class="font-title font-bold my-2" tabindex="0">$1</h4>');
+    html = html.replace(/^##### (.*$)/gim, '<h5 class="font-title text-sm font-medium my-2" tabindex="0">$1</h5>');
+    html = html.replace(/^###### (.*$)/gim, '<h6 class="font-title text-xs font-medium my-2" tabindex="0">$1</h6>');
     
     // Handle code blocks first
     html = html.replace(/```([\s\S]*?)```/g, (match, code) => {
@@ -117,7 +118,7 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
       }
       
       // Wrap remaining text in paragraphs
-      processedHtml += `<p class="font-yeezy font-light my-2">${line}</p>\n`;
+      processedHtml += `<p class="font-body my-2">${line}</p>\n`;
     }
     
     // Restore notification divs
@@ -155,6 +156,13 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
           </div>
         )}
         
+        {isSynopsisPage && (
+          <div className="bg-gradient-to-r from-primary-color to-secondary-color text-white p-4 rounded-lg mb-8">
+            <h2 className="font-title text-xl mb-2">Synopsis</h2>
+            <p className="font-body">This document provides an overview of the key concepts and features.</p>
+          </div>
+        )}
+        
         <div 
           ref={contentRef}
           className="prose max-w-none font-yeezy"
@@ -165,7 +173,7 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
         {/* Document footer with breadcrumbs and navigation */}
         <div className="mt-12 pt-6 border-t" style={{ borderColor: 'var(--border-color)' }}>
           {/* Breadcrumbs */}
-          <div className="text-sm mb-6 flex flex-wrap items-center font-yeezy font-light" style={{ color: 'var(--muted-color)' }}>
+          <div className="text-sm mb-6 flex flex-wrap items-center font-title" style={{ color: 'var(--muted-color)' }}>
             <span className="mr-2 font-medium">Path:</span>
             {path.split('/').map((part, index, array) => (
               <React.Fragment key={index}>
@@ -180,10 +188,10 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
           </div>
           
           {/* Pagination links - prev/next */}
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-4">
+          <div className="pagination-links mt-4">
             <a 
               href={`/docs/introduction/synopsis`}
-              className="font-yeezy flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 nav-button"
+              className="font-title flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 nav-button"
               style={{ 
                 backgroundColor: 'var(--card-color)',
                 color: 'var(--text-color)',
@@ -203,7 +211,7 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
             
             <a 
               href={`/docs/prelude-phantasy/synopsis`}
-              className="font-yeezy flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 nav-button"
+              className="font-title flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 nav-button"
               style={{ 
                 backgroundColor: 'var(--card-color)',
                 color: 'var(--text-color)',

@@ -35,6 +35,15 @@
   font-display: swap;
 }
 
+/* Import Urbanist font */
+@font-face {
+  font-family: 'Urbanist';
+  src: url('/fonts/Urbanist-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Import VCR OSD MONO font for monospace text */
 @font-face {
   font-family: 'VCR OSD Mono';
@@ -56,6 +65,8 @@
   --text-color: #2E3A23;
   --muted-color: #6E7D61;
   --mono-font: 'VCR OSD Mono', monospace;
+  --title-font: 'Yeezy T-Star', sans-serif;
+  --body-font: 'Urbanist', sans-serif;
   --icon-color: #2E3A23; /* Icon color for light mode */
 }
 
@@ -77,6 +88,12 @@ body {
   color: var(--text-color);
   background-color: var(--background-color);
   transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: var(--body-font);
+}
+
+h1, h2, h3, h4, h5, h6, 
+.font-title {
+  font-family: var(--title-font);
 }
 
 /* Theme toggle transition */
@@ -233,6 +250,7 @@ body {
   overflow: hidden;
   transition: color 0.3s ease;
   z-index: 1;
+  font-family: var(--title-font);
 }
 
 .nav-button::before {
@@ -312,6 +330,7 @@ body {
   max-width: 100%;
   word-break: break-word;
   box-sizing: border-box;
+  text-transform: uppercase;
 }
 
 .dark .notification {
@@ -388,6 +407,20 @@ pre {
 
 code {
   font-size: 0.9rem;
+}
+
+/* Pagination links styling */
+.pagination-links {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+.pagination-links a {
+  flex: 1;
+  min-width: 0;
 }
 
 @media (max-width: 640px) {
