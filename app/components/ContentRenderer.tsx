@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 type ContentRendererProps = {
   content: string;
   path: string;
@@ -35,6 +36,32 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
     // Process the content step by step
     let html = text;
     
+    // Temporarily replace notification divs to preserve them
+    const notificationDivs: string[] = [];
+    html = html.replace(/<div class="notification[^>]*>[\s\S]*?<\/div>/g, (match) => {
+      notificationDivs.push(match);
+      return `###NOTIFICATION_PLACEHOLDER_${notificationDivs.length - 1}###`;
+    });
+    
+    // Process notification divs to add icons
+    const processedNotificationDivs: string[] = notificationDivs.map((div) => {
+      // Add icon based on notification type
+      if (div.includes('notification-info')) {
+        return div.replace('<div class="notification notification-info">', 
+          '<div class="notification notification-info"><img src="/assets/icons/pixel-info-circle-solid.svg" alt="Info" width="24" height="24" class="inline-block mr-2" /> ');
+      } else if (div.includes('notification-warning')) {
+        return div.replace('<div class="notification notification-warning">', 
+          '<div class="notification notification-warning"><img src="/assets/icons/pixel-exclamation-triangle-solid.svg" alt="Warning" width="24" height="24" class="inline-block mr-2" /> ');
+      } else if (div.includes('notification-error')) {
+        return div.replace('<div class="notification notification-error">', 
+          '<div class="notification notification-error"><img src="/assets/icons/pixel-times-circle-solid.svg" alt="Error" width="24" height="24" class="inline-block mr-2" /> ');
+      } else if (div.includes('notification-success')) {
+        return div.replace('<div class="notification notification-success">', 
+          '<div class="notification notification-success"><img src="/assets/icons/pixel-check-circle-solid.svg" alt="Success" width="24" height="24" class="inline-block mr-2" /> ');
+      }
+      return div;
+    });
+    
     // Handle headers
     html = html.replace(/^# (.*$)/gim, '<h1 class="font-yeezy font-heavy text-2xl font-bold my-4" tabindex="0">$1</h1>');
     html = html.replace(/^## (.*$)/gim, '<h2 class="font-yeezy font-bold text-xl font-bold my-3" tabindex="0">$1</h2>');
@@ -44,11 +71,11 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
     
     // Handle code blocks first
     html = html.replace(/```([\s\S]*?)```/g, (match, code) => {
-      return `<pre class="p-4 rounded-md my-4 overflow-x-auto" style="background-color: var(--card-color); border: 1px solid var(--border-color);" tabindex="0"><code>${code}</code></pre>`;
+      return `<pre class="p-4 rounded-md my-4 overflow-x-auto" style="background-color: var(--card-color); border: 1px solid var(--border-color); font-family: var(--mono-font);" tabindex="0"><code>${code}</code></pre>`;
     });
     
     // Handle inline code
-    html = html.replace(/`([^`]+)`/g, '<code class="px-1 rounded" style="background-color: var(--card-color); border: 1px solid var(--border-color);">$1</code>');
+    html = html.replace(/`([^`]+)`/g, '<code class="px-1 rounded" style="background-color: var(--card-color); border: 1px solid var(--border-color); font-family: var(--mono-font);">$1</code>');
     
     // Process links
     html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/gim, 
@@ -83,14 +110,28 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
         continue;
       }
       
+      // Skip notification placeholders
+      if (line.includes('###NOTIFICATION_PLACEHOLDER_')) {
+        processedHtml += line + '\n';
+        continue;
+      }
+      
       // Wrap remaining text in paragraphs
       processedHtml += `<p class="font-yeezy font-light my-2">${line}</p>\n`;
     }
+    
+    // Restore notification divs
+    processedNotificationDivs.forEach((div, index) => {
+      processedHtml = processedHtml.replace(`###NOTIFICATION_PLACEHOLDER_${index}###`, div);
+    });
     
     return processedHtml;
   };
   
   const contentHtml = renderMarkdown(content);
+  
+  // Check if this is a synopsis page to show banner
+  const isSynopsisPage = path.toLowerCase().includes('synopsis');
   
   return (
     <motion.div
@@ -100,6 +141,20 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
       className="w-full py-0 md:py-4"
     >
       <div className="doc-card p-6 md:p-8 relative" role="article" style={{ maxWidth: '100%', width: '100%' }}>
+        {/* Banner for synopsis pages */}
+        {isSynopsisPage && (
+          <div className="w-full mb-6 overflow-hidden rounded-lg relative">
+            <Image 
+              src="/assets/banners/phantasy-banner.png" 
+              alt="Phantasy Banner" 
+              width={1200} 
+              height={400}
+              className="w-full h-auto"
+              priority
+            />
+          </div>
+        )}
+        
         <div 
           ref={contentRef}
           className="prose max-w-none font-yeezy"

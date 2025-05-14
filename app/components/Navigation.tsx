@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeSwitcher from './ThemeSwitcher';
 import BackgroundSelector from './BackgroundSelector';
+import Image from 'next/image';
 
 const navItems = [
   { label: 'Discord', href: 'https://discord.com' },
@@ -17,6 +18,42 @@ const navItems = [
 export default function Navigation() {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  
+  // Check dark mode
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const checkDarkMode = () => {
+        const darkModeEnabled = localStorage.getItem('darkMode') === 'true' ||
+          document.documentElement.classList.contains('dark');
+        setIsDarkMode(darkModeEnabled);
+      };
+      
+      checkDarkMode();
+      
+      window.addEventListener('themeChange', checkDarkMode);
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'darkMode') checkDarkMode();
+      });
+      
+      // MutationObserver to watch for dark mode changes
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach(mutation => {
+          if (mutation.attributeName === 'class' && 
+              mutation.target === document.documentElement) {
+            checkDarkMode();
+          }
+        });
+      });
+      
+      observer.observe(document.documentElement, { attributes: true });
+      
+      return () => {
+        window.removeEventListener('themeChange', checkDarkMode);
+        observer.disconnect();
+      };
+    }
+  }, []);
   
   // Close mobile menu when window is resized to desktop size
   useEffect(() => {
@@ -35,16 +72,18 @@ export default function Navigation() {
       <div className="w-full px-4 md:px-8 flex items-center justify-between h-16">
         <Link 
           href="/"
-          className="font-yeezy font-bold text-xl flex items-center gap-2"
+          className="flex items-center gap-2"
           style={{ color: 'var(--text-color)' }}
-          tabIndex={0} // Make focusable with keyboard
+          tabIndex={0}
         >
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-color to-secondary-color" style={{ 
-            backgroundImage: `linear-gradient(to right, var(--primary-color), var(--secondary-color))`
-          }}>
-            PROJECT
-          </span>
-          <span>DOCS</span>
+          <Image 
+            src={isDarkMode ? "/assets/logo/phantasy-icon-pink.png" : "/assets/logo/phantasy-icon-black.png"}
+            alt="Phantasy Logo"
+            width={32}
+            height={32}
+            className="h-8 w-auto"
+          />
+          <span className="font-mono text-xl tracking-tighter" style={{ fontFamily: 'var(--mono-font)' }}>DOCS</span>
         </Link>
         
         <div className="flex items-center gap-2">
@@ -58,9 +97,14 @@ export default function Navigation() {
               >
                 <Link 
                   href={item.href}
-                  className="font-yeezy font-light transition-colors hover:text-primary-color"
-                  style={{ color: 'var(--muted-color)' }}
-                  tabIndex={0} // Make focusable with keyboard
+                  className="transition-colors hover:text-primary-color"
+                  style={{ 
+                    color: 'var(--muted-color)', 
+                    fontFamily: 'var(--mono-font)',
+                    letterSpacing: '-0.5px',
+                    fontSize: '0.9rem'
+                  }}
+                  tabIndex={0}
                 >
                   {item.label}
                 </Link>
@@ -99,7 +143,7 @@ export default function Navigation() {
               style={{ color: 'var(--text-color)' }}
               aria-label="Toggle mobile menu"
               aria-expanded={mobileMenuOpen}
-              tabIndex={0} // Make focusable with keyboard
+              tabIndex={0}
             >
               {mobileMenuOpen ? (
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -145,10 +189,13 @@ export default function Navigation() {
                 <Link 
                   key={item.label}
                   href={item.href}
-                  className="font-yeezy py-2 px-4 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
-                  style={{ color: 'var(--text-color)' }}
+                  className="py-2 px-4 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+                  style={{ 
+                    color: 'var(--text-color)',
+                    fontFamily: 'var(--mono-font)' 
+                  }}
                   onClick={() => setMobileMenuOpen(false)}
-                  tabIndex={0} // Make focusable with keyboard
+                  tabIndex={0}
                 >
                   {item.label}
                 </Link>
@@ -156,7 +203,7 @@ export default function Navigation() {
               
               {/* Background selector for mobile menu */}
               <div className="py-2 px-4">
-                <div className="text-sm mb-2" style={{ color: 'var(--muted-color)' }}>Background:</div>
+                <div className="text-sm mb-2" style={{ color: 'var(--muted-color)', fontFamily: 'var(--mono-font)' }}>Background:</div>
                 <BackgroundSelector />
               </div>
             </nav>

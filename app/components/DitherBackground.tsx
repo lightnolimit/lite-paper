@@ -38,13 +38,13 @@ const DitherPattern = ({
     u_time: { value: 0 },
     u_resolution: { value: new THREE.Vector2() },
     u_mouse: { value: new THREE.Vector2() },
-    u_color1: { value: new THREE.Color(isDarkMode ? '#373737' : '#678D58') },
+    u_color1: { value: new THREE.Color(isDarkMode ? '#555555' : '#678D58') },
     u_color2: { value: new THREE.Color(isDarkMode ? '#1A1A1F' : '#F3F5F0') },
-    u_accent: { value: new THREE.Color(isDarkMode ? '#8a56ff' : '#557153') },
-    u_pattern_scale: { value: 100.0 },
-    u_noise_scale: { value: 2.0 },
+    u_accent: { value: new THREE.Color(isDarkMode ? '#ffffff' : '#557153') },
+    u_pattern_scale: { value: 60.0 },
+    u_noise_scale: { value: 3.0 },
     u_noise_time: { value: 0.0 },
-    u_dither_size: { value: 8.0 }
+    u_dither_size: { value: 6.0 }
   }), [isDarkMode]);
 
   // Dithering pattern shader
@@ -65,11 +65,13 @@ const DitherPattern = ({
       return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
     }
 
-    // Noise function
+    // Improved noise function for better visual pattern
     float noise(vec2 p) {
       vec2 i = floor(p);
       vec2 f = fract(p);
-      f = f * f * (3.0 - 2.0 * f); // Smooth interpolation
+      
+      // Smoother interpolation
+      f = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
       
       float a = hash(i);
       float b = hash(i + vec2(1.0, 0.0));
@@ -79,23 +81,19 @@ const DitherPattern = ({
       return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
     }
 
-    // Ordered dithering function
+    // Ordered dithering function with modified pattern
     bool dither(vec2 pos, float value) {
-      // 8x8 Bayer matrix for ordered dithering
-      const float bayerMatrix[64] = float[64](
-        0.0/64.0, 32.0/64.0, 8.0/64.0, 40.0/64.0, 2.0/64.0, 34.0/64.0, 10.0/64.0, 42.0/64.0,
-        48.0/64.0, 16.0/64.0, 56.0/64.0, 24.0/64.0, 50.0/64.0, 18.0/64.0, 58.0/64.0, 26.0/64.0,
-        12.0/64.0, 44.0/64.0, 4.0/64.0, 36.0/64.0, 14.0/64.0, 46.0/64.0, 6.0/64.0, 38.0/64.0,
-        60.0/64.0, 28.0/64.0, 52.0/64.0, 20.0/64.0, 62.0/64.0, 30.0/64.0, 54.0/64.0, 22.0/64.0,
-        3.0/64.0, 35.0/64.0, 11.0/64.0, 43.0/64.0, 1.0/64.0, 33.0/64.0, 9.0/64.0, 41.0/64.0,
-        51.0/64.0, 19.0/64.0, 59.0/64.0, 27.0/64.0, 49.0/64.0, 17.0/64.0, 57.0/64.0, 25.0/64.0,
-        15.0/64.0, 47.0/64.0, 7.0/64.0, 39.0/64.0, 13.0/64.0, 45.0/64.0, 5.0/64.0, 37.0/64.0,
-        63.0/64.0, 31.0/64.0, 55.0/64.0, 23.0/64.0, 61.0/64.0, 29.0/64.0, 53.0/64.0, 21.0/64.0
+      // 4x4 Bayer matrix for more aesthetic dithering
+      const float bayerMatrix[16] = float[16](
+        0.0/16.0, 8.0/16.0, 2.0/16.0, 10.0/16.0,
+        12.0/16.0, 4.0/16.0, 14.0/16.0, 6.0/16.0,
+        3.0/16.0, 11.0/16.0, 1.0/16.0, 9.0/16.0,
+        15.0/16.0, 7.0/16.0, 13.0/16.0, 5.0/16.0
       );
       
-      int x = int(mod(pos.x, 8.0));
-      int y = int(mod(pos.y, 8.0));
-      float threshold = bayerMatrix[y * 8 + x];
+      int x = int(mod(pos.x, 4.0));
+      int y = int(mod(pos.y, 4.0));
+      float threshold = bayerMatrix[y * 4 + x];
       
       return value > threshold;
     }
@@ -113,29 +111,31 @@ const DitherPattern = ({
       mousePos = mousePos * 2.0 - 1.0;
       mousePos.x *= u_resolution.x / u_resolution.y;
       
-      // Distance from mouse
-      float mouseDist = length(position - mousePos);
+      // Distance from mouse - improved calculation for better tracking
+      float mouseDist = length(position - vec2(mousePos.x, -mousePos.y));
       
-      // Base pattern with moving noise
-      float n = noise(position * u_pattern_scale + u_noise_time);
+      // Base pattern with moving noise and better visual texture
+      float n = noise(position * u_pattern_scale + vec2(u_noise_time, u_noise_time * 0.5));
+      float n2 = noise(position * u_pattern_scale * 0.5 - vec2(u_noise_time * 0.3, u_noise_time * 0.7));
+      float basePattern = mix(n, n2, 0.3); // Blend two noise patterns for better texture
       
-      // Create waves emanating from mouse with stronger effect
-      float wave = sin(mouseDist * 10.0 - u_time * 2.0) * 0.5 + 0.5;
-      wave *= smoothstep(2.0, 0.0, mouseDist * 3.0); // Stronger fade with distance
+      // Stronger and closer waves emanating from mouse
+      float wave = sin(mouseDist * 20.0 - u_time * 2.0) * 0.5 + 0.5;
+      wave *= smoothstep(0.3, 0.0, mouseDist); // Even more concentrated effect at cursor
       
-      // Combine noise with mouse interaction - emphasize mouse effect
-      float pattern = n * 0.6 + wave * 0.8;
+      // Combine noise with mouse interaction
+      float pattern = basePattern * 0.3 + wave * 2.0; // Increase wave influence
       
-      // Apply dithering at different scales
+      // Apply dithering at different scales for better visual
       vec2 ditherPos = gl_FragCoord.xy / u_dither_size;
       bool dith = dither(ditherPos, pattern);
       
       // Choose color based on dithering
       vec3 color = dith ? u_color1 : u_color2;
       
-      // Add stronger accent color near mouse
-      float mouseHighlight = smoothstep(0.5, 0.0, mouseDist);
-      color = mix(color, u_accent, mouseHighlight * 0.5); 
+      // Add stronger and more concentrated accent color near mouse
+      float mouseHighlight = smoothstep(0.15, 0.0, mouseDist); // Smaller radius for more concentrated effect
+      color = mix(color, u_accent, mouseHighlight * 1.2); // Stronger accent influence
       
       gl_FragColor = vec4(color, 1.0);
     }
@@ -164,29 +164,34 @@ const DitherPattern = ({
       uniforms.u_resolution.value.set(canvas.width, canvas.height);
     }
     
-    // Calculate relative mouse position
-    let relativeMouseX = mouseX;
-    let relativeMouseY = mouseY;
+    // Calculate relative mouse position in canvas pixel coordinates
+    const relativeMouseX = mouseX;
+    const relativeMouseY = mouseY;
     
+    // Update mouse uniform - fix the offset by adjusting the position
     if (canvasRef.current) {
-      relativeMouseX = mouseX;
-      relativeMouseY = window.innerHeight - mouseY;
+      uniforms.u_mouse.value.set(
+        relativeMouseX, 
+        canvasRef.current.height - relativeMouseY
+      );
     }
-    
-    // Update mouse uniform
-    uniforms.u_mouse.value.set(relativeMouseX, relativeMouseY);
     
     // Update cursor position if showing
     if (cursorRef.current && showCursor) {
-      // Normalize mouse coordinates to [-1, 1]
+      // Get screen size to handle scaling on 4K displays
       const canvasWidth = window.innerWidth;
       const canvasHeight = window.innerHeight;
       
+      // Normalize mouse coordinates to [-1, 1] with screen size awareness
       const normalizedMouseX = (mouseX / canvasWidth) * 2 - 1;
       const normalizedMouseY = -(mouseY / canvasHeight) * 2 + 1;
       
-      cursorRef.current.position.x = normalizedMouseX * 5;
-      cursorRef.current.position.y = normalizedMouseY * 3;
+      // Adjust position scaling for different screen sizes
+      const scaleFactorX = Math.max(5, canvasWidth / 400);
+      const scaleFactorY = Math.max(3, canvasHeight / 400);
+      
+      cursorRef.current.position.x = normalizedMouseX * scaleFactorX;
+      cursorRef.current.position.y = normalizedMouseY * scaleFactorY;
       cursorRef.current.position.z = 0.2;
       cursorRef.current.visible = true;
     } else if (cursorRef.current) {
@@ -196,15 +201,17 @@ const DitherPattern = ({
 
   // Update uniforms when dark mode changes
   useEffect(() => {
-    uniforms.u_color1.value.set(isDarkMode ? '#373737' : '#678D58');
-    uniforms.u_color2.value.set(isDarkMode ? '#1A1A1F' : '#F3F5F0');
-    uniforms.u_accent.value.set(isDarkMode ? '#8a56ff' : '#557153');
+    if (uniforms && uniforms.u_color1 && uniforms.u_color2 && uniforms.u_accent) {
+      uniforms.u_color1.value.set(isDarkMode ? '#555555' : '#678D58');
+      uniforms.u_color2.value.set(isDarkMode ? '#1A1A1F' : '#F3F5F0');
+      uniforms.u_accent.value.set(isDarkMode ? '#ffffff' : '#557153');
+    }
   }, [isDarkMode, uniforms]);
 
   return (
     <>
       <mesh ref={meshRef} position={[0, 0, 0]}>
-        <planeGeometry args={[30, 20]} />
+        <planeGeometry args={[100, 80]} />
         <shaderMaterial
           vertexShader={vertexShader}
           fragmentShader={fragmentShader}
@@ -216,8 +223,8 @@ const DitherPattern = ({
       <mesh ref={cursorRef} position={[0, 0, 0.2]} visible={showCursor}>
         <sphereGeometry args={[0.4, 32, 32]} />
         <meshStandardMaterial 
-          color={isDarkMode ? '#FF4989' : '#ff0000'} 
-          emissive={isDarkMode ? '#FF85A1' : '#ff6666'}
+          color={isDarkMode ? '#ffffff' : '#ff0000'} 
+          emissive={isDarkMode ? '#ffffff' : '#ff6666'}
           emissiveIntensity={0.8}
           transparent={true}
           opacity={0.8}
@@ -270,7 +277,8 @@ export default function DitherBackground() {
   useEffect(() => {
     const checkDarkMode = () => {
       if (typeof window !== 'undefined') {
-        const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+        const darkModeEnabled = localStorage.getItem('darkMode') === 'true' ||
+          document.documentElement.classList.contains('dark');
         setIsDarkMode(darkModeEnabled);
       }
     };
@@ -300,8 +308,12 @@ export default function DitherBackground() {
     
     observer.observe(document.documentElement, { attributes: true });
     
+    // Add event listener for theme change from other components
+    window.addEventListener('themeChange', checkDarkMode);
+    
     return () => {
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('themeChange', checkDarkMode);
       observer.disconnect();
     };
   }, []);
@@ -313,7 +325,7 @@ export default function DitherBackground() {
       style={{ zIndex: 0 }}
     >
       <Canvas 
-        camera={{ position: [0, 0, 5], fov: 75, near: 0.1, far: 1000 }}
+        camera={{ position: [0, 0, 10], fov: 75, near: 0.1, far: 1000 }}
         style={{ width: '100%', height: '100%' }}
       >
         <ambientLight intensity={0.8} />

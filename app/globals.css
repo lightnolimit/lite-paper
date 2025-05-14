@@ -5,7 +5,7 @@
 /* Import Yeezy T-Star fonts */
 @font-face {
   font-family: 'Yeezy T-Star';
-  src: url('/fonts/yeezy_tstar-regular-webfont.woff') format('woff');
+  src: url('/fonts/yeezy_tstar-regular-webfont.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -13,7 +13,7 @@
 
 @font-face {
   font-family: 'Yeezy T-Star';
-  src: url('/fonts/yeezy_tstar-light-webfont.woff') format('woff');
+  src: url('/fonts/yeezy_tstar-light-webfont.woff2') format('woff2');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -21,7 +21,7 @@
 
 @font-face {
   font-family: 'Yeezy T-Star';
-  src: url('/fonts/yeezy_tstar-bold-webfont.woff') format('woff');
+  src: url('/fonts/yeezy_tstar-bold-webfont.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -29,8 +29,17 @@
 
 @font-face {
   font-family: 'Yeezy T-Star';
-  src: url('/fonts/yeezy_tstar-heavy-webfont.woff') format('woff');
+  src: url('/fonts/yeezy_tstar-heavy-webfont.woff2') format('woff2');
   font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Import VCR OSD MONO font for monospace text */
+@font-face {
+  font-family: 'VCR OSD Mono';
+  src: url('/fonts/VCR_OSD_MONO.woff2') format('woff2');
+  font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
@@ -46,6 +55,7 @@
   --border-soft: #f2f2f2; /* Even lighter border for header/sidebar */
   --text-color: #2E3A23;
   --muted-color: #6E7D61;
+  --mono-font: 'VCR OSD Mono', monospace;
 }
 
 .dark {
@@ -76,8 +86,8 @@ body {
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -85,20 +95,21 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #000;
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #222;
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.4);
 }
 
 /* Documentation card */
@@ -115,6 +126,8 @@ body {
 .file-tree {
   padding-left: 0.5rem;
   transition: all 0.3s ease;
+  font-family: var(--mono-font);
+  letter-spacing: -0.5px;
 }
 
 .file-tree-item {
@@ -220,4 +233,45 @@ body {
 
 .nav-button:hover {
   color: var(--primary-color);
+}
+
+/* Code formatting */
+pre, code {
+  font-family: var(--mono-font) !important;
+  letter-spacing: -0.5px;
+}
+
+/* Notification styles */
+.notification {
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+  border-left: 4px solid;
+  font-family: var(--mono-font);
+  display: flex;
+  align-items: flex-start;
+}
+
+.notification img {
+  margin-top: 2px;
+}
+
+.notification-info {
+  background-color: rgba(0, 149, 255, 0.1);
+  border-left-color: #0095ff;
+}
+
+.notification-warning {
+  background-color: rgba(255, 192, 0, 0.1);
+  border-left-color: #ffc000;
+}
+
+.notification-error {
+  background-color: rgba(255, 71, 87, 0.1);
+  border-left-color: #ff4757;
+}
+
+.notification-success {
+  background-color: rgba(46, 213, 115, 0.1);
+  border-left-color: #2ed573;
 }
