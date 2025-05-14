@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "pages:build": "next build"
+    "pages:build": "next build",
+    "deploy": "wrangler pages deploy out"
   },
   "engines": {
     "node": ">=16.0.0"

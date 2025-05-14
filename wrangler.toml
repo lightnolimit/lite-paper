@@ -2,5 +2,9 @@
 name = "test-docs"
 compatibility_date = "2023-12-01"
 
+# Static site assets
 [site]
 bucket = "./out"
+
+# Skip requiring a worker entry point
+main = "./index.js"
