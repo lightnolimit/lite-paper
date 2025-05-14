@@ -80,15 +80,15 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
     
     // Process links
     html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/gim, 
-      '<a class="font-yeezy text-primary-color hover:underline focus:outline-none focus:ring-2 focus:ring-primary-color" style="color: var(--primary-color);" href="$2">$1</a>');
+      '<a class="font-body text-primary-color hover:underline focus:outline-none focus:ring-2 focus:ring-primary-color" style="color: var(--primary-color);" href="$2">$1</a>');
     
     // Process styling
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold">$1</strong>');
     html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
     
     // Process lists
-    html = html.replace(/^\s*-\s+(.*)/gim, '<li class="font-yeezy ml-4">$1</li>');
-    html = html.replace(/^\s*\d+\.\s+(.*)/gim, '<li class="font-yeezy ml-4">$1</li>');
+    html = html.replace(/^\s*-\s+(.*)/gim, '<li class="font-body ml-4">$1</li>');
+    html = html.replace(/^\s*\d+\.\s+(.*)/gim, '<li class="font-body ml-4">$1</li>');
     
     // Wrap consecutive <li> elements with <ul> or <ol>
     html = html.replace(/(<li.*?>.*?<\/li>)(\s*\n\s*)?(<li)/g, '$1$3');
@@ -165,7 +165,7 @@ export default function ContentRenderer({ content, path }: ContentRendererProps)
         
         <div 
           ref={contentRef}
-          className="prose max-w-none font-yeezy"
+          className="prose max-w-none font-body"
           style={{ color: 'var(--text-color)' }}
           dangerouslySetInnerHTML={{ __html: contentHtml }}
         />
