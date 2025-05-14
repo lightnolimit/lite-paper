@@ -3,13 +3,65 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { documentationTree } from '../data/documentation';
+import { FileItem } from './FileTree';
+
 type ContentRendererProps = {
   content: string;
   path: string;
 };
 
+// Function to find the previous and next pages based on the current path
+function findAdjacentPages(currentPath: string): { prevPage?: { path: string, title: string }, nextPage?: { path: string, title: string } } {
+  // Flatten the documentation tree to get all file items in order
+  const flattenedItems: { path: string, name: string }[] = [];
+  
+  function flattenTree(items: FileItem[]) {
+    items.forEach(item => {
+      if (item.type === 'file') {
+        flattenedItems.push({ 
+          path: item.path,
+          name: item.name.replace(/\.md$/, '')
+        });
+      } else if (item.type === 'directory' && item.children) {
+        flattenTree(item.children);
+      }
+    });
+  }
+  
+  flattenTree(documentationTree);
+  
+  // Find the current item index
+  const currentIndex = flattenedItems.findIndex(item => item.path === currentPath);
+  
+  // If not found, return empty result
+  if (currentIndex === -1) {
+    return {};
+  }
+  
+  // Get previous and next pages
+  const prevPage = currentIndex > 0 
+    ? { 
+        path: flattenedItems[currentIndex - 1].path,
+        title: flattenedItems[currentIndex - 1].name
+      } 
+    : undefined;
+  
+  const nextPage = currentIndex < flattenedItems.length - 1 
+    ? { 
+        path: flattenedItems[currentIndex + 1].path,
+        title: flattenedItems[currentIndex + 1].name
+      } 
+    : undefined;
+  
+  return { prevPage, nextPage };
+}
+
 export default function ContentRenderer({ content = '', path = '' }: ContentRendererProps) {
   const contentRef = useRef<HTMLDivElement>(null);
+  
+  // Get previous and next pages
+  const { prevPage, nextPage } = findAdjacentPages(path);
   
   // Process links after render to add tabindex and other accessibility attributes
   useEffect(() => {
@@ -191,45 +243,53 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
           
           {/* Pagination links - prev/next */}
           <div className="pagination-links mt-4 flex justify-between">
-            <a 
-              href={`/docs/introduction/synopsis`}
-              className="font-title flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 nav-button"
-              style={{ 
-                backgroundColor: 'var(--card-color)',
-                color: 'var(--text-color)',
-                border: '1px solid var(--border-color)'
-              }}
-              tabIndex={0}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-              </svg>
-              <span>
-                <span className="block text-xs opacity-75">Home</span>
-                <span className="block font-medium">Introduction</span>
-              </span>
-            </a>
+            {prevPage ? (
+              <a 
+                href={`/docs/${prevPage.path}`}
+                className="font-title flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 nav-button"
+                style={{ 
+                  backgroundColor: 'var(--card-color)',
+                  color: 'var(--text-color)',
+                  border: '1px solid var(--border-color)'
+                }}
+                tabIndex={0}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>
+                  <span className="block text-xs opacity-75">Previous</span>
+                  <span className="block font-medium">{prevPage.title}</span>
+                </span>
+              </a>
+            ) : (
+              <span className="invisible"></span> /* Empty placeholder to maintain flexbox spacing */
+            )}
             
-            <a 
-              href={`/docs/prelude-phantasy/synopsis`}
-              className="font-title flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 nav-button ml-auto"
-              style={{ 
-                backgroundColor: 'var(--card-color)',
-                color: 'var(--text-color)',
-                border: '1px solid var(--border-color)'
-              }}
-              tabIndex={0}
-            >
-              <span className="text-right">
-                <span className="block text-xs opacity-75">Next</span>
-                <span className="block font-medium">Phantasy Platform</span>
-              </span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </a>
+            {nextPage ? (
+              <a 
+                href={`/docs/${nextPage.path}`}
+                className="font-title flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 nav-button ml-auto"
+                style={{ 
+                  backgroundColor: 'var(--card-color)',
+                  color: 'var(--text-color)',
+                  border: '1px solid var(--border-color)'
+                }}
+                tabIndex={0}
+              >
+                <span className="text-right">
+                  <span className="block text-xs opacity-75">Next</span>
+                  <span className="block font-medium">{nextPage.title}</span>
+                </span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+            ) : (
+              <span className="invisible"></span> /* Empty placeholder to maintain flexbox spacing */
+            )}
           </div>
         </div>
       </div>
