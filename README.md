@@ -38,6 +38,40 @@ yarn dev
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
 
+### Deploying to Cloudflare Pages
+
+This project is configured for deployment on Cloudflare Pages using static site generation.
+
+#### Manual Deployment
+
+1. Build the project:
+```bash
+npm run pages:build
+```
+
+2. Deploy to Cloudflare Pages:
+```bash
+npm run deploy
+```
+
+#### Setting up CI/CD with Cloudflare Pages
+
+1. Connect your GitHub repository to Cloudflare Pages in the Cloudflare dashboard.
+
+2. Configure the build settings:
+   - Build command: `npm run pages:build`
+   - Build output directory: `out`
+   - Node.js version: 18 (or your preferred version)
+
+3. Set any required environment variables in the Cloudflare Pages dashboard.
+
+4. Deploy! Cloudflare Pages will automatically build and deploy your site when you push to your designated branch.
+
+#### Configuration Files
+
+- `wrangler.toml`: Contains Cloudflare Pages configuration
+- `package.json`: Contains build and deploy scripts
+
 ## Environment Variables
 
 This project uses environment variables to configure certain features:
