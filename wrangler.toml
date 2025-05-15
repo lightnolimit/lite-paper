@@ -1,4 +1,7 @@
 # Static site configuration for Cloudflare Pages
 name = "docs"
+compatibility_date = "2025-05-15"
+[assets]
+directory = "./out"
 
 # No worker script needed for static sites
