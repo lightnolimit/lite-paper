@@ -1,8 +1,4 @@
-# Static site configuration
-name = "test-docs"
-compatibility_date = "2023-12-01"
-main = "./index.js"
+# Static site configuration for Cloudflare Pages
+name = "docs"
 
-# Static site assets
-[site]
-bucket = "./out"
+# No worker script needed for static sites
