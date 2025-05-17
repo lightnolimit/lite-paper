@@ -138,7 +138,7 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
       // Configure marked to handle markdown properly
       marked.setOptions({
         gfm: true,
-        breaks: true,
+        breaks: false,
         pedantic: false
       });
 

@@ -691,7 +691,7 @@ code {
 }
 
 /* Fix for profile info layout */
-.doc-card p strong {
+.doc-card p.profile-info strong {
   font-weight: bold;
   display: inline-block;
   min-width: 140px;
@@ -699,15 +699,25 @@ code {
 }
 
 /* Style the paragraphs following a strong element to maintain alignment */
-.doc-card p {
+.doc-card p.profile-info {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   margin-bottom: 1rem;
 }
 
-.doc-card p strong + br {
+.doc-card p.profile-info strong + br {
   display: none;
+}
+
+/* Regular strong/bold text */
+.doc-card p strong {
+  font-weight: bold;
+}
+
+/* Reset flexbox for regular paragraphs */
+.doc-card p:not(.profile-info) {
+  display: block;
 }
 
 /* Fix for image size in dark mode */
@@ -751,4 +761,10 @@ code {
   height: 24px;
   width: auto;
   margin-right: 10px;
+}
+
+/* Add rounded border to all markdown images */
+.markdown-content img {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
 }

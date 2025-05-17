@@ -13,19 +13,9 @@ export const documentationTree: FileItem[] = [
       },
       {
         type: 'file',
-        name: 'Disclaimer.md',
-        path: 'introduction/disclaimer'
+        name: 'Disclaimers.md',
+        path: 'introduction/disclaimers'
       },
-      {
-        type: 'file',
-        name: 'Legal.md',
-        path: 'introduction/legal'
-      },
-      {
-        type: 'file',
-        name: 'Financial.md',
-        path: 'introduction/financial'
-      }
     ]
   },
   {
