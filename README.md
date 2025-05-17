@@ -180,7 +180,5 @@ The project includes a complete set of favicons and app icons in the `/public/fa
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgments
-
-- Design inspired by [nyko.cool](https://www.nyko.cool/)
 - Built with [Next.js](https://nextjs.org/)
 - 3D rendering with [Three.js](https://threejs.org/) and [React Three Fiber](https://docs.pmnd.rs/react-three-fiber/)
