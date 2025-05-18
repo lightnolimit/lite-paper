@@ -82,6 +82,9 @@ const FileTreeItem: React.FC<FileTreeItemProps> = ({
   const iconSrc = isDirectory 
     ? (item.expanded ? (iconData as FolderIcons).open : (iconData as FolderIcons).closed)
     : iconData as string;
+    
+  // Check if this is a custom PNG icon (not an SVG)
+  const isCustomIcon = iconSrc.endsWith('.png');
   
   // Use standard depth for the container, but add extra indent for files inside folders  
   return (
@@ -131,7 +134,11 @@ const FileTreeItem: React.FC<FileTreeItemProps> = ({
             alt={isDirectory ? (item.expanded ? "Folder Open" : "Folder") : "File"} 
             width={16} 
             height={16} 
-            className="inline"
+            className={`inline ${isCustomIcon ? 'rounded-sm border dark:border-white border-black' : ''}`}
+            style={{
+              borderWidth: isCustomIcon ? '1px' : '0px',
+              overflow: 'hidden'
+            }}
           />
         </span>
         
