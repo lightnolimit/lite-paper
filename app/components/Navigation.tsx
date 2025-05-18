@@ -36,11 +36,11 @@ type NavItem = {
  * Main navigation links
  */
 const navItems: NavItem[] = [
-  { label: 'Docs', href: '/docs' },
-  { label: 'API', href: '/api' },
-  { label: 'Rally', href: '/docs/phase1-rally' },
-  { label: 'Phantasy', href: '/docs/phase2-phantasy' },
-  { label: 'Banshee', href: '/docs/phase3-banshee' }
+  // { label: 'Docs', href: '/docs' },
+  // { label: 'API', href: '/api' },
+  { label: 'Rally', href: '/docs/rally.sh' },
+  { label: 'Banshee', href: '/docs/banshee.sh' },
+  { label: 'Phantasy', href: '/docs/phantasy.bot' },
   // { label: 'Rally', href: 'https://rally.sh' },
   // { label: 'Phantasy', href: 'https://phantasy.bot' },
   // { label: 'Banshee', href: 'https://banshee.sh' }
@@ -64,7 +64,7 @@ const socialLinks = [
     href: 'https://x.com', 
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
-        <path fill="currentColor" d="M15.5 10V9h1V8h1V7h1V6h1V5h1V4h1V3h1V2h-3v1h-1v1h-1v1h-1v1h-1v1h-2V7h-1V6h-1V4h-1V3h-1V2h-7v1h1v1h1v1h1v2h1v1h1v2h1v1h1v2h1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h3v-1h1v-1h1v-1h1v-1h1v-1h2v1h1v1h1v2h1v1h1v1h7v-1h-1v-1h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1zm0 4v1h1v2h1v1h1v2h-3v-2h-1v-1h-1v-1h-1v-2h-1v-1h-1v-1h-1v-2h-1V9h-1V7h-1V6h-1V4h3v1h1v2h1v1h1v2h1v1h1v1h1v2z" strokeWidth="0.5" stroke="#000"/>
+        <path fill="currentColor" d="M15.5 10V9h1V8h1V7h1V6h1V5h1V4h1V3h1V2h-3v1h-1v1h-1v1h-1v1h-1v1h-2V7h-1V6h-1V4h-1V3h-1V2h-7v1h1v1h1v1h1v2h1v1h1v2h1v1h1v2h1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1h3v-1h1v-1h1v-1h1v-1h1v-1h2v1h1v1h1v2h1v1h1v1h7v-1h-1v-1h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1h-1v-2h-1v-1zm0 4v1h1v2h1v1h1v2h-3v-2h-1v-1h-1v-1h-1v-2h-1v-1h-1v-1h-1v-2h-1V9h-1V7h-1V6h-1V4h3v1h1v2h1v1h1v2h1v1h1v1h1v2z" strokeWidth="0.5" stroke="#000"/>
       </svg>
     )
   },
@@ -149,20 +149,76 @@ export default function Navigation({ docsPath, onToggleSidebar, sidebarVisible }
       onMouseLeave={() => setHoveredItem(null)}
       tabIndex={0}
     >
-      <div className="flex items-center">
-        <AnimatePresence mode="wait">
+      <div className="flex items-center relative">
+        <AnimatePresence>
           {hoveredItem === item.label ? (
             <motion.span 
-              className="bracket-left absolute"
+              className="bracket-left"
               style={{ left: "-1.5rem" }}
               key="bracket-left"
-              initial={{ opacity: 0, x: 5 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 5 }}
-              transition={{ 
-                duration: 0.2,
-                exit: { duration: 0.5 },
-                ease: "easeInOut" 
+              initial={{ 
+                opacity: 0, 
+                x: -10, // Starting far left
+                color: 'var(--primary-color)',
+              }}
+              animate={{
+                opacity: [0, 0.4, 0, 0.7, 0, 1, 0, 0, 0, 0.5, 1], // Reversed exit opacity
+                x: [-10, -9, -7, -5, -4, -2, 0, 0, 0, 0, 0], // Reversed exit x positions
+                scale: [1, 1.2, 0.8, 1.1, 0.9, 1.0, 0.95, 1.1, 0.9, 1.0, 1],
+                color: [
+                  'var(--primary-color)',
+                  'transparent',
+                  isDarkMode ? '#FFF' : '#000',
+                  'transparent',
+                  'transparent',
+                  'var(--primary-color)',
+                  'transparent',
+                  'transparent',
+                  'transparent',
+                  isDarkMode ? '#FFF' : '#000',
+                  'var(--primary-color)'
+                ],
+                transition: {
+                  duration: 0.4,
+                  scale: {
+                    duration: 0.4,
+                    times: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+                    ease: "easeInOut"
+                  },
+                  opacity: {
+                    duration: 0.4,
+                    times: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+                    ease: "linear"
+                  },
+                  color: {
+                    duration: 0.4,
+                    times: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+                    ease: "linear"
+                  },
+                  x: {
+                    duration: 0.4,
+                    times: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+                    ease: "easeOut"
+                  }
+                }
+              }}
+              exit={{ 
+                opacity: [1, 0, 0.7, 0, 0.4, 0],  // Flashing during exit
+                x: [-2, -4, -5, -7, -9, -10],     // Move left (outward) for left bracket
+                color: 'var(--primary-color)',
+                transition: { 
+                  duration: 0.3,
+                  opacity: {
+                    duration: 0.3,
+                    times: [0, 0.2, 0.4, 0.6, 0.8, 1],
+                    ease: "linear"
+                  },
+                  x: {
+                    duration: 0.3,
+                    times: [0, 0.2, 0.4, 0.6, 0.8, 1],
+                    ease: "easeOut"
+                  }
+                } 
               }}
             >「</motion.span>
           ) : null}
@@ -170,19 +226,75 @@ export default function Navigation({ docsPath, onToggleSidebar, sidebarVisible }
         
         <span className="px-2">{item.label}</span>
         
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           {hoveredItem === item.label ? (
             <motion.span 
-              className="bracket-right absolute"
+              className="bracket-right"
               style={{ right: "-1.5rem" }}
               key="bracket-right"
-              initial={{ opacity: 0, x: -5 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -5 }}
-              transition={{ 
-                duration: 0.2, 
-                exit: { duration: 0.5 },
-                ease: "easeInOut" 
+              initial={{ 
+                opacity: 0, 
+                x: 10, // Starting far right
+                color: 'var(--primary-color)',
+              }}
+              animate={{
+                opacity: [0, 0.4, 0, 0.7, 0, 1, 0, 0, 0, 0.5, 1], // Reversed exit opacity
+                x: [10, 9, 7, 5, 4, 2, 0, 0, 0, 0, 0], // Reversed exit x positions
+                scale: [1, 1.2, 0.8, 1.1, 0.9, 1.0, 0.95, 1.1, 0.9, 1.0, 1],
+                color: [
+                  'var(--primary-color)',
+                  'transparent',
+                  isDarkMode ? '#FFF' : '#000',
+                  'transparent',
+                  'transparent',
+                  'var(--primary-color)',
+                  'transparent',
+                  'transparent',
+                  'transparent',
+                  isDarkMode ? '#FFF' : '#000',
+                  'var(--primary-color)'
+                ],
+                transition: {
+                  duration: 0.4,
+                  scale: {
+                    duration: 0.4,
+                    times: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+                    ease: "easeInOut"
+                  },
+                  opacity: {
+                    duration: 0.4,
+                    times: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+                    ease: "linear"
+                  },
+                  color: {
+                    duration: 0.4,
+                    times: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+                    ease: "linear"
+                  },
+                  x: {
+                    duration: 0.4,
+                    times: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+                    ease: "easeOut"
+                  }
+                }
+              }}
+              exit={{ 
+                opacity: [1, 0, 0.7, 0, 0.4, 0],  // Flashing during exit
+                x: [2, 4, 5, 7, 9, 10],           // Move right (outward) for right bracket
+                color: 'var(--primary-color)',
+                transition: { 
+                  duration: 0.3,
+                  opacity: {
+                    duration: 0.3,
+                    times: [0, 0.2, 0.4, 0.6, 0.8, 1],
+                    ease: "linear"
+                  },
+                  x: {
+                    duration: 0.3,
+                    times: [0, 0.2, 0.4, 0.6, 0.8, 1],
+                    ease: "easeOut"
+                  }
+                } 
               }}
             >」</motion.span>
           ) : null}
@@ -208,7 +320,7 @@ export default function Navigation({ docsPath, onToggleSidebar, sidebarVisible }
             height={32}
             className="h-8 w-auto logo-image"
           />
-          <span className="font-mono text-xl tracking-tighter" style={{ fontFamily: 'var(--mono-font)' }}>DOCS</span>
+          <span className="font-mono text-xl tracking-tighter uppercase" style={{ fontFamily: 'var(--mono-font)' }}>LITE PAPER</span>
         </Link>
         
         <div className="flex items-center gap-2">
