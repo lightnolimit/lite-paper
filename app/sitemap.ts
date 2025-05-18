@@ -1,6 +1,10 @@
 import { MetadataRoute } from 'next';
 import fs from 'fs';
 import path from 'path';
+import logger from './utils/logger';
+
+// Sitemap-specific logger
+const sitemapLogger = logger;
 
 // Required for static export
 export const dynamic = 'force-static';
@@ -17,6 +21,8 @@ async function getDocsPaths(): Promise<string[]> {
   const contentDir = path.join(process.cwd(), 'app/docs/content');
   const paths: string[] = [];
   
+  sitemapLogger.debug(`Gathering docs paths from directory: ${contentDir}`);
+  
   // Recursive function to traverse directories
   async function traverse(dir: string, urlPath = '') {
     const files = await fs.promises.readdir(dir);
@@ -27,19 +33,23 @@ async function getDocsPaths(): Promise<string[]> {
       
       if (stat.isDirectory()) {
         // If it's a directory, traverse it recursively
+        sitemapLogger.debug(`Traversing subdirectory: ${file}`);
         await traverse(filePath, `${urlPath}/${file}`);
       } else if (file.endsWith('.md')) {
         // If it's a markdown file, add it to paths
         const pathWithoutExt = file.replace(/\.md$/, '');
-        paths.push(`/docs${urlPath}/${pathWithoutExt}`);
+        const urlPathItem = `/docs${urlPath}/${pathWithoutExt}`;
+        paths.push(urlPathItem);
+        sitemapLogger.debug(`Added docs path: ${urlPathItem}`);
       }
     }
   }
   
   try {
     await traverse(contentDir);
+    sitemapLogger.info(`Found ${paths.length} documentation pages for sitemap`);
   } catch (error) {
-    console.error('Error generating sitemap paths:', error);
+    sitemapLogger.error('Error generating sitemap paths:', error);
   }
   
   return paths;

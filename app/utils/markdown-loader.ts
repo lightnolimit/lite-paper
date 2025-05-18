@@ -3,6 +3,10 @@ import path from 'path';
 import { documentationTree } from '../data/documentation';
 import { FileItem } from '../components/FileTree';
 import { cache } from 'react';
+import logger from './logger';
+
+// Markdown loader specific logger
+const markdownLogger = logger;
 
 // Mark this module as server-only
 import 'server-only';
@@ -24,18 +28,21 @@ export const loadMarkdownContent = cache(async (docPath: string): Promise<string
   try {
     // Construct the file path
     const filePath = path.join(process.cwd(), 'app/docs/content', `${docPath}.md`);
+    markdownLogger.debug(`Loading markdown file: ${filePath}`);
     
     // Read the file content
     const content = await fs.readFile(filePath, 'utf-8');
     
     if (!content) {
+      markdownLogger.warn(`Empty markdown file: ${docPath}`);
       throw new MarkdownLoadError(docPath, new Error('Empty file content'));
     }
     
+    markdownLogger.debug(`Successfully loaded markdown file: ${docPath}`);
     // Return the content directly - we'll let marked handle it
     return content;
   } catch (error) {
-    console.error(`Error loading markdown file: ${docPath}`, error);
+    markdownLogger.error(`Error loading markdown file: ${docPath}`, error);
     
     // Create appropriate error message based on error type
     const errorMessage = error instanceof Error 
@@ -59,6 +66,8 @@ export async function getAllMarkdownContent(): Promise<Record<string, string>> {
   const result: Record<string, string> = {};
   let hasErrors = false;
   
+  markdownLogger.info('Beginning to load all markdown content');
+  
   /**
    * Recursively process file items
    */
@@ -67,15 +76,17 @@ export async function getAllMarkdownContent(): Promise<Record<string, string>> {
       if (item.type === 'file') {
         // This is a file, try to load it
         try {
+          markdownLogger.debug(`Processing file: ${item.path}`);
           const content = await loadMarkdownContent(item.path);
           result[item.path] = content;
         } catch (error) {
           hasErrors = true;
-          console.error(`Failed to load file: ${item.path}`, error);
+          markdownLogger.error(`Failed to load file: ${item.path}`, error);
           result[item.path] = `# Error Loading ${item.name}\n\nThis file could not be loaded.`;
         }
       } else if (item.type === 'directory' && item.children) {
         // Process all children in this directory
+        markdownLogger.debug(`Processing directory: ${item.path}`);
         await processFileItems(item.children);
       }
     }
@@ -85,7 +96,9 @@ export async function getAllMarkdownContent(): Promise<Record<string, string>> {
   await processFileItems(documentationTree);
   
   if (hasErrors) {
-    console.warn('Some documentation files failed to load. Check the logs for details.');
+    markdownLogger.warn('Some documentation files failed to load. Check the logs for details.');
+  } else {
+    markdownLogger.info(`Successfully loaded ${Object.keys(result).length} markdown files`);
   }
   
   return result;

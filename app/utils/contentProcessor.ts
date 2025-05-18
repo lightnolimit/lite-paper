@@ -1,3 +1,8 @@
+import logger from './logger';
+
+// Create a utility-specific logger instance
+const processorLogger = logger;
+
 /**
  * Add accessibility features to links in the document
  * 
@@ -5,6 +10,8 @@
  */
 export const processLinks = (element: HTMLElement): void => {
   const links = element.querySelectorAll('a');
+  processorLogger.debug(`Processing ${links.length} links for accessibility`);
+  
   links.forEach(link => {
     // Add tabindex to make links focusable in tab order
     link.setAttribute('tabindex', '0');
@@ -26,14 +33,23 @@ export const processLinks = (element: HTMLElement): void => {
  */
 export const processWalletAddresses = (element: HTMLElement): void => {
   const walletAddresses = element.querySelectorAll('.wallet-address');
+  processorLogger.debug(`Processing ${walletAddresses.length} wallet addresses`);
   
   walletAddresses.forEach((walletElement) => {
     const address = walletElement.getAttribute('data-address');
-    if (!address) return;
+    if (!address) {
+      processorLogger.warn('Wallet element without data-address attribute found');
+      return;
+    }
     
     // Check if button already exists to prevent duplicates
-    if (walletElement.querySelector('.copy-button')) return;
+    if (walletElement.querySelector('.copy-button')) {
+      processorLogger.debug('Copy button already exists, skipping');
+      return;
+    }
 
+    processorLogger.debug(`Adding copy button for address: ${address.substring(0, 4)}...`);
+    
     // Create the copy button
     const copyButton = document.createElement('button');
     copyButton.className = 'copy-button';
@@ -47,6 +63,8 @@ export const processWalletAddresses = (element: HTMLElement): void => {
     copyButton.addEventListener('click', (e) => {
       e.stopPropagation(); // Prevent event from bubbling
       navigator.clipboard.writeText(address).then(() => {
+        processorLogger.debug(`Copied address to clipboard: ${address.substring(0, 4)}...`);
+        
         // Success feedback
         copyButton.innerHTML = `<img src="/assets/icons/pixel-check-circle-solid.svg" alt="Copied" width="14" height="14" />`;
         
@@ -82,6 +100,8 @@ export const processWalletAddresses = (element: HTMLElement): void => {
             document.body.removeChild(toast);
           }, 300);
         }, 1500);
+      }).catch(error => {
+        processorLogger.error('Failed to copy to clipboard:', error);
       });
     });
     
@@ -97,6 +117,8 @@ export const processWalletAddresses = (element: HTMLElement): void => {
  * @returns Styled HTML string
  */
 export const applyMarkdownStyles = (html: string): string => {
+  processorLogger.debug('Applying styles to markdown HTML');
+  
   const styleMap = {
     code: '<code class="font-mono bg-opacity-10 bg-gray-200 dark:bg-gray-700 dark:bg-opacity-20 px-1 py-0.5 rounded"',
     table: '<table class="w-full border-collapse my-4">',
@@ -150,5 +172,6 @@ export const applyMarkdownStyles = (html: string): string => {
   // Add styling for horizontal rules
   html = html.replace(/<hr>/g, styleMap.hr);
 
+  processorLogger.debug('Finished applying styles to markdown HTML');
   return html;
 }; 

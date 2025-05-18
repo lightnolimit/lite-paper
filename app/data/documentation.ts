@@ -4,17 +4,17 @@ export const documentationTree: FileItem[] = [
   {
     type: 'directory',
     name: 'Intro',
-    path: '0-intro',
+    path: 'intro',
     children: [
       {
         type: 'file',
         name: 'Synopsis.md',
-        path: '0-intro/synopsis'
+        path: 'intro/synopsis'
       },
       {
         type: 'file',
         name: 'Disclaimers.md',
-        path: '0-intro/disclaimers'
+        path: 'intro/disclaimers'
       },
     ]
   },
@@ -38,22 +38,22 @@ export const documentationTree: FileItem[] = [
   {
     type: 'directory',
     name: 'Phase 1: Rally.sh',
-    path: 'phase1-rally',
+    path: 'rally.sh',
     children: [
       {
         type: 'file',
         name: 'Platform.md',
-        path: '1-rally.sh/platform'
+        path: 'rally.sh/platform'
       },
       {
         type: 'file',
         name: 'Strategy.md',
-        path: '1-rally.sh/blueprint'
+        path: 'rally.sh/blueprint'
       },
       {
         type: 'directory',
         name: '@Rally',
-        path: '1-rally.sh/rally-profile',
+        path: 'rally.sh/rally-profile',
         children: [
           {
             type: 'file',

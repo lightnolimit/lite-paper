@@ -7,6 +7,10 @@ import { marked } from 'marked';
 import { documentationTree } from '../data/documentation';
 import { FileItem } from './FileTree';
 import { applyMarkdownStyles, processLinks, processWalletAddresses } from '../utils/contentProcessor';
+import logger from '../utils/logger';
+
+// Create a component-specific logger
+const componentLogger = logger;
 
 /**
  * Props for the ContentRenderer component
@@ -91,18 +95,30 @@ const findAdjacentPages = (currentPath: string): { prevPage?: AdjacentPage, next
  */
 const useProcessDomElements = (contentRef: React.RefObject<HTMLDivElement | null>, content: string): void => {
   useEffect(() => {
+    componentLogger.debug('ContentRenderer useEffect running');
     const currentRef = contentRef.current;
-    if (!currentRef) return;
+    if (!currentRef) {
+      componentLogger.debug('No content ref found, skipping DOM processing');
+      return;
+    }
 
+    componentLogger.debug('Scheduling DOM processing');
+    
     // Run with a slight delay to ensure the DOM is fully rendered
     setTimeout(() => {
       // Process links and wallet addresses
+      componentLogger.debug('Processing links');
       processLinks(currentRef as HTMLElement);
+      
+      componentLogger.debug('Processing wallet addresses');
       processWalletAddresses(currentRef as HTMLElement);
+      
+      componentLogger.debug('DOM processing complete');
     }, 100);
     
     // Cleanup function
     return () => {
+      componentLogger.debug('Running cleanup function for ContentRenderer');
       // Remove event listeners from links if needed
       const links = currentRef.querySelectorAll('a');
       links.forEach(link => {
@@ -149,7 +165,7 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
       const html = marked.parse(content) as string;
       return applyMarkdownStyles(html);
     } catch (error: unknown) {
-      console.error('Error rendering markdown:', error);
+      componentLogger.error('Error rendering markdown:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       return `<p>Error rendering content: ${errorMessage}</p>`;
     }
