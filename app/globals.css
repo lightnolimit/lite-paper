@@ -165,6 +165,14 @@ h1, h2, h3, h4, h5, h6,
   box-shadow: 0 4px 16px rgba(0,0,0,0.07);
   transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
   max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media (min-width: 1200px) {
+  .doc-card {
+    max-width: 1080px;
+  }
 }
 
 /* File Tree */
@@ -538,14 +546,60 @@ code {
   font-family: var(--body-font);
 }
 
+/* Style for blockquotes with custom quote icons */
 .doc-card blockquote {
+  position: relative;
   border-left: 4px solid var(--primary-color);
-  padding-left: 1rem;
-  margin-left: 0;
-  margin-right: 0;
-  margin-bottom: 1rem;
-  color: var(--muted-color);
-  font-style: italic;
+  padding: 1.5rem 2.5rem 1.5rem 3rem;
+  margin: 1.5rem 0;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  font-style: normal;
+  color: var(--text-color);
+  overflow: visible;
+}
+
+.dark .doc-card blockquote {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.doc-card blockquote::before {
+  content: "";
+  position: absolute;
+  top: 1.5rem;
+  left: 0.75rem;
+  width: 24px;
+  height: 24px;
+  background-image: url('/assets/icons/pixel-quote-left-solid.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.7;
+  filter: brightness(0.2);
+}
+
+.dark .doc-card blockquote::before {
+  filter: brightness(2.5);
+  opacity: 0.6;
+}
+
+/* Right quote removed */
+
+.doc-card blockquote p {
+  margin-bottom: 0.5rem;
+}
+
+.doc-card blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.doc-card blockquote cite {
+  display: block;
+  text-align: right;
+  font-style: normal;
+  font-weight: bold;
+  margin-top: 0.5rem;
+  font-family: var(--mono-font);
+  font-size: 0.9rem;
 }
 
 .doc-card hr {
@@ -793,8 +847,92 @@ code {
   margin-right: 10px;
 }
 
+/* Resources and Citations section styling */
+.resources-section {
+  font-family: var(--mono-font);
+  background-color: rgba(0, 0, 0, 0.05);
+  border-left: 4px solid var(--primary-color);
+  padding: 1rem;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+.dark .resources-section {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.resources-section h3, 
+.resources-section h4 {
+  font-family: var(--mono-font);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
+
+.resources-section ul {
+  margin-bottom: 0.5rem;
+}
+
+.resources-section ol {
+  margin-bottom: 0.5rem;
+  counter-reset: item;
+}
+
+.resources-section ol li {
+  display: block;
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.resources-section ol li:before {
+  content: counter(item) ".";
+  counter-increment: item;
+  font-weight: 700;
+  position: absolute;
+  left: 0;
+  width: 1.5rem;
+}
+
+.resources-section li {
+  font-family: var(--mono-font);
+  margin-bottom: 0.5rem;
+}
+
+.resources-section a {
+  word-break: break-all;
+}
+
+@media (max-width: 640px) {
+  .resources-section {
+    padding: 1rem 0.75rem;
+    font-size: 0.85rem;
+  }
+  
+  .resources-section ol li {
+    padding-left: 1.5rem;
+  }
+  
+  .resources-section ol li:before {
+    width: 1.2rem;
+  }
+}
+
 /* Add rounded border to all markdown images */
 .markdown-content img {
   border: 1px solid var(--border-color);
   border-radius: 8px;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
+  margin: 1.5rem auto;
 }
