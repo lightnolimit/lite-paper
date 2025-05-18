@@ -74,7 +74,7 @@ export const documentationTree: FileItem[] = [
       },
       {
         type: 'directory',
-        name: 'Rally Profile',
+        name: '@Rally',
         path: 'phase1-rally/rally-profile',
         children: [
           {

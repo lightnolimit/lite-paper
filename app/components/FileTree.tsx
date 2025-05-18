@@ -36,6 +36,7 @@ const FileTreeItem: React.FC<FileTreeItemProps> = ({
   const isDirectory = item.type === 'directory';
   const hasChildren = isDirectory && item.children && item.children.length > 0;
   
+  // Use standard depth for the container, but add extra indent for files inside folders  
   return (
     <div style={{ paddingLeft: `${depth * 12}px` }}>
       <div 
@@ -111,7 +112,7 @@ const FileTreeItem: React.FC<FileTreeItemProps> = ({
       </div>
       
       {isDirectory && item.expanded && item.children && (
-        <div className="file-tree-children">
+        <div className="file-tree-children pl-2">
           {item.children.map((child) => (
             <FileTreeItem
               key={child.path}
