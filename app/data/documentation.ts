@@ -3,18 +3,18 @@ import { FileItem } from "../components/FileTree";
 export const documentationTree: FileItem[] = [
   {
     type: 'directory',
-    name: 'Intro',
-    path: 'intro',
+    name: 'Prelude',
+    path: 'prelude',
     children: [
       {
         type: 'file',
         name: 'Synopsis.md',
-        path: 'intro/synopsis'
+        path: 'prelude/synopsis'
       },
       {
         type: 'file',
         name: 'Disclaimers.md',
-        path: 'intro/disclaimers'
+        path: 'prelude/disclaimers'
       },
     ]
   },
@@ -98,13 +98,13 @@ export const documentationTree: FileItem[] = [
     children: [
       {
         type: 'file',
-        name: 'Synopsis.md',
-        path: '2-banshee.sh/synopsis'
+        name: 'Platform.md',
+        path: 'banshee.sh/platform'
       },
       {
         type: 'file',
-        name: 'Banshee Platform.md',
-        path: '2-banshee.sh/banshee-platform'
+        name: 'Strategy.md',
+        path: 'banshee.sh/blueprint'
       },
       {
         type: 'file',
@@ -113,35 +113,45 @@ export const documentationTree: FileItem[] = [
       },
       {
         type: 'directory',
-        name: 'Models',
-        path: 'phase2-banshee/models',
+        name: '@Sheena',
+        path: 'phase2-banshee/sheena',
         children: [
           {
             type: 'file',
-            name: 'Sheena.md',
-            path: 'phase2-banshee/models/sheena'
+            name: 'Bio.md',
+            path: 'banshee.sh/sheena/bio'
+          },
+          {
+            type: 'file',
+            name: 'Privacy.md',
+            path: 'banshee.sh/sheena/privacy'
+          },
+          {
+            type: 'file',
+            name: 'Measurements.md',
+            path: 'banshee.sh/sheena/measurements'
           }
         ]
       },
       {
         type: 'directory',
         name: 'Tokenomics',
-        path: 'phase2-banshee/tokenomics',
+        path: 'banshee.sh/tokenomics',
         children: [
           {
             type: 'file',
             name: 'Distribution.md',
-            path: 'phase2-banshee/tokenomics/distribution'
+            path: 'banshee.sh/tokenomics/distribution'
           },
           {
             type: 'file',
             name: 'Utility.md',
-            path: 'phase2-banshee/tokenomics/utility'
+            path: 'banshee.sh/tokenomics/utility'
           },
           {
             type: 'file',
             name: 'Additional Benefits.md',
-            path: 'phase2-banshee/tokenomics/additional-benefits'
+            path: 'banshee.sh/tokenomics/additional-benefits'
           }
         ]
       }
@@ -149,50 +159,50 @@ export const documentationTree: FileItem[] = [
   },
   {
     type: 'directory',
-    name: 'Phase 3: Phantasy.bot',
+    name: 'Phase 3: Okiya.fun',
     path: 'platform-okiya',
     children: [
       {
         type: 'file',
-        name: 'Synopsis.md',
-        path: 'platform-okiya/synopsis'
+        name: 'Platform.md',
+        path: 'okiya.fun/platform'
       },
       {
         type: 'file',
-        name: 'Platform.md',
-        path: 'phantasy-bot/platform'
+        name: 'Strategy.md',
+        path: 'okiya.fun/blueprint'
       },
       {
         type: 'file',
         name: 'Roadmap.md',
-        path: 'platform-okiya/roadmap'
+        path: 'okiya.fun/roadmap'
       },
       {
         type: 'directory',
         name: 'Okāsan',
-        path: 'platform-okiya/okasan',
+        path: 'okiya.fun/okasan',
         children: [
           {
             type: 'file',
-            name: 'Synopsis.md',
-            path: 'platform-okiya/okasan/synopsis'
+            name: 'Bio.md',
+            path: 'okiya.fun/okasan/bio'
           },
           {
             type: 'file',
             name: 'Profile.md',
-            path: 'platform-okiya/okasan/profile'
+            path: 'okiya.fun/okasan/profile'
           },
           {
             type: 'file',
             name: 'Measurements.md',
-            path: 'platform-okiya/okasan/measurements'
+            path: 'okiya.fun/okasan/measurements'
           }
         ]
       },
       {
         type: 'directory',
         name: 'Tokenomics',
-        path: 'platform-okiya/tokenomics',
+        path: 'okiya.fun/tokenomics',
         children: [
           {
             type: 'file',

@@ -25,6 +25,14 @@ type FileTreeItemProps = {
   currentPath?: string;
 };
 
+// Define types for icon paths
+type FolderIcons = {
+  open: string;
+  closed: string;
+};
+
+type FileOrFolderIcon = string | FolderIcons;
+
 const FileTreeItem: React.FC<FileTreeItemProps> = ({ 
   item, 
   onSelect, 
@@ -35,6 +43,45 @@ const FileTreeItem: React.FC<FileTreeItemProps> = ({
   const isActive = currentPath === item.path;
   const isDirectory = item.type === 'directory';
   const hasChildren = isDirectory && item.children && item.children.length > 0;
+  
+  // Determine custom icons based on path and name
+  const getCustomIcon = (): FileOrFolderIcon => {
+    if (isDirectory) {
+      // Custom folder icon for @rally (case insensitive)
+      if (item.name.toLowerCase() === '@rally') {
+        return {
+          open: "/assets/icons/pfp-rally-icon.png",
+          closed: "/assets/icons/pfp-rally-icon.png"
+        };
+      }
+      
+      // Default folder icons
+      return {
+        open: "/assets/icons/pixel-folder-open.svg",
+        closed: "/assets/icons/pixel-folder.svg"
+      };
+    } else {
+      // Custom file icons for Platform.md in each Phase
+      if (item.name === 'Platform.md') {
+        // Check for Phase in the path
+        if (item.path.includes('rally.sh/platform') || item.path.includes('1-rally.sh')) {
+          return "/assets/icons/sh-rally-icon.png";
+        } else if (item.path.includes('banshee.sh/platform') || item.path.includes('2-banshee.sh')) {
+          return "/assets/icons/sh-banshee-icon.png";
+        } else if (item.path.includes('okiya.fun/platform') || item.path.includes('3-okiya.fun')) {
+          return "/assets/icons/sh-okiya-icon.png";
+        }
+      }
+      
+      // Default file icon
+      return "/assets/icons/pixel-file.svg";
+    }
+  };
+  
+  const iconData = getCustomIcon();
+  const iconSrc = isDirectory 
+    ? (item.expanded ? (iconData as FolderIcons).open : (iconData as FolderIcons).closed)
+    : iconData as string;
   
   // Use standard depth for the container, but add extra indent for files inside folders  
   return (
@@ -79,33 +126,13 @@ const FileTreeItem: React.FC<FileTreeItemProps> = ({
         )}
         
         <span className="mr-2 flex items-center">
-          {isDirectory ? (
-            item.expanded ? (
-              <Image 
-                src="/assets/icons/pixel-folder-open.svg" 
-                alt="Folder Open" 
-                width={16} 
-                height={16} 
-                className="inline"
-              />
-            ) : (
-              <Image 
-                src="/assets/icons/pixel-folder.svg" 
-                alt="Folder" 
-                width={16} 
-                height={16} 
-                className="inline"
-              />
-            )
-          ) : (
-            <Image 
-              src="/assets/icons/pixel-file.svg" 
-              alt="File" 
-              width={16} 
-              height={16} 
-              className="inline"
-            />
-          )}
+          <Image 
+            src={iconSrc}
+            alt={isDirectory ? (item.expanded ? "Folder Open" : "Folder") : "File"} 
+            width={16} 
+            height={16} 
+            className="inline"
+          />
         </span>
         
         <span className="truncate">{item.name}</span>
