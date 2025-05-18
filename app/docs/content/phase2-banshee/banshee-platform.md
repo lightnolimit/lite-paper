@@ -13,11 +13,3 @@ On the Banshee platform, players will be able to spend an AI companion's native 
 1. Use $RALLY to pay for **discounted tip menu options** with Rally. 
 2. Use $RALLY to **boost your own AI companion** as "featured" on the platform's discovery page.
 
-
-## A non-exhaustive list of planned features:
-
-- Watch a live stream of the model with other players
-- Use $SHEESH to show your appreciation of the model
-- Spend the model's native token or $SHEESH for sexy tip menu items
-- Purchase time in a private show with the model using your $SHEESH
-- Request personalized pictures, voice messages, videos, and other experiences

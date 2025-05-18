@@ -936,3 +936,13 @@ code {
   display: block;
   margin: 1.5rem auto;
 }
+
+.doc-card ol {
+  font-family: var(--mono-font);
+  margin-bottom: 1rem;
+}
+
+.doc-card ol li {
+  font-family: var(--mono-font);
+  margin-bottom: 0.5rem;
+}

@@ -42,7 +42,7 @@ const DitherPattern = ({
     u_mouse: { value: new THREE.Vector2() },
     u_color1: { value: new THREE.Color(isDarkMode ? '#555555' : '#678D58') },
     u_color2: { value: new THREE.Color(isDarkMode ? '#1A1A1F' : '#F3F5F0') },
-    u_accent: { value: new THREE.Color(isDarkMode ? '#ffffff' : '#557153') },
+    u_accent: { value: new THREE.Color(isDarkMode ? '#FFC4DD' : '#557153') },
     u_pattern_scale: { value: 60.0 },
     u_noise_scale: { value: 3.0 },
     u_noise_time: { value: 0.0 },
@@ -163,7 +163,7 @@ const DitherPattern = ({
         u_mouse: { value: new THREE.Vector2() },
         u_color1: { value: new THREE.Color(isDarkMode ? '#555555' : '#678D58') },
         u_color2: { value: new THREE.Color(isDarkMode ? '#1A1A1F' : '#F3F5F0') },
-        u_accent: { value: new THREE.Color(isDarkMode ? '#ffffff' : '#557153') },
+        u_accent: { value: new THREE.Color(isDarkMode ? '#FFC4DD' : '#557153') },
         u_pattern_scale: { value: 60.0 },
         u_noise_scale: { value: 3.0 },
         u_noise_time: { value: timeRef.current * 0.2 },
@@ -234,8 +234,8 @@ const DitherPattern = ({
       <mesh ref={cursorRef} position={[0, 0, 0.2]} visible={showCursor}>
         <sphereGeometry args={[0.4, 32, 32]} />
         <meshStandardMaterial 
-          color={isDarkMode ? '#ffffff' : '#ff0000'} 
-          emissive={isDarkMode ? '#ffffff' : '#ff6666'}
+          color={isDarkMode ? '#FFC4DD' : '#ff0000'} 
+          emissive={isDarkMode ? '#FFC4DD' : '#ff6666'}
           emissiveIntensity={0.8}
           transparent={true}
           opacity={0.8}
