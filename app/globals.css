@@ -44,6 +44,30 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Urbanist';
+  src: url('/fonts/Urbanist-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Urbanist';
+  src: url('/fonts/Urbanist-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Urbanist';
+  src: url('/fonts/Urbanist-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Import VCR OSD MONO font for monospace text */
 @font-face {
   font-family: 'VCR OSD Mono';
@@ -525,7 +549,7 @@ code {
 }
 
 .doc-card hr {
-  margin: 2rem 0;
+  margin: 1rem 0 2rem 0;
   border: 0;
   border-top: 1px solid var(--border-color);
 }
@@ -712,7 +736,13 @@ code {
 
 /* Regular strong/bold text */
 .doc-card p strong {
-  font-weight: bold;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.doc-card strong {
+  font-weight: 700;
+  color: var(--text-color);
 }
 
 /* Reset flexbox for regular paragraphs */

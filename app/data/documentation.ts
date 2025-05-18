@@ -86,6 +86,11 @@ export const documentationTree: FileItem[] = [
             type: 'file',
             name: 'Measurements.md',
             path: 'phase1-rally/rally-profile/measurements'
+          },
+          {
+            type: 'file',
+            name: 'Technology.md',
+            path: 'phase1-rally/rally-profile/technology'
           }
         ]
       },
