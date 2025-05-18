@@ -56,11 +56,11 @@ Anime, Esports, Cosplay, Sexual Liberation, etc.
 
 <h2 class="icon-heading"><img src="/assets/icons/pixel-wallet-solid.svg" alt="Wallet" /> WALLET & TOKEN INFORMATION</h2>
 
-**Base Wallet:** <code class="wallet-address" data-address="0x1234...5678">0x1234...5678</code>
-
-**Solana Wallet:** <code class="wallet-address" data-address="rally123...xyz">rally123...xyz</code>
-
-**Token Contract:** <code class="wallet-address" data-address="0xABCD...6789">0xABCD...6789</code>
+<div class="wallet-info">
+<p><strong>Base Wallet:</strong> <code class="wallet-address" data-address="0x1234...5678">0x1234...5678</code></p>
+<p><strong>Solana Wallet:</strong> <code class="wallet-address" data-address="rally123...xyz">rally123...xyz</code></p>
+<p><strong>Token Contract:</strong> <code class="wallet-address" data-address="0xABCD...6789">0xABCD...6789</code></p>
+</div>
 
 ---
 

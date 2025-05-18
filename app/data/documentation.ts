@@ -3,116 +3,89 @@ import { FileItem } from "../components/FileTree";
 export const documentationTree: FileItem[] = [
   {
     type: 'directory',
-    name: 'Introduction',
-    path: 'introduction',
+    name: 'Intro',
+    path: '0-intro',
     children: [
       {
         type: 'file',
         name: 'Synopsis.md',
-        path: 'introduction/synopsis'
+        path: '0-intro/synopsis'
       },
       {
         type: 'file',
         name: 'Disclaimers.md',
-        path: 'introduction/disclaimers'
+        path: '0-intro/disclaimers'
       },
     ]
   },
+  // {
+  //   type: 'directory',
+  //   name: 'Developer Guides',
+  //   path: 'developer-guides',
+  //   children: [
+  //     {
+  //       type: 'file',
+  //       name: 'Code Examples.md',
+  //       path: 'developer-guides/code-examples'
+  //     },
+  //     {
+  //       type: 'file',
+  //       name: 'Notification Components.md',
+  //       path: 'developer-guides/notification-components'
+  //     }
+  //   ]
+  // },
   {
     type: 'directory',
-    name: 'Prelude: Phantasy',
-    path: 'prelude-phantasy',
-    children: [
-      {
-        type: 'file',
-        name: 'Synopsis.md',
-        path: 'prelude-phantasy/synopsis'
-      },
-      {
-        type: 'file',
-        name: 'Roadmap.md',
-        path: 'prelude-phantasy/roadmap'
-      }
-    ]
-  },
-  {
-    type: 'directory',
-    name: 'Developer Guides',
-    path: 'developer-guides',
-    children: [
-      {
-        type: 'file',
-        name: 'Code Examples.md',
-        path: 'developer-guides/code-examples'
-      },
-      {
-        type: 'file',
-        name: 'Notification Components.md',
-        path: 'developer-guides/notification-components'
-      }
-    ]
-  },
-  {
-    type: 'directory',
-    name: 'Phase 1: Rally',
+    name: 'Phase 1: Rally.sh',
     path: 'phase1-rally',
     children: [
       {
         type: 'file',
-        name: 'Synopsis.md',
-        path: 'phase1-rally/synopsis'
+        name: 'Platform.md',
+        path: '1-rally.sh/platform'
       },
       {
         type: 'file',
-        name: 'Rally.sh Platform.md',
-        path: 'phase1-rally/rallysh-platform'
-      },
-      {
-        type: 'file',
-        name: 'Roadmap.md',
-        path: 'phase1-rally/roadmap'
+        name: 'Strategy.md',
+        path: '1-rally.sh/blueprint'
       },
       {
         type: 'directory',
         name: '@Rally',
-        path: 'phase1-rally/rally-profile',
+        path: '1-rally.sh/rally-profile',
         children: [
           {
             type: 'file',
-            name: 'Biography.md',
-            path: 'phase1-rally/rally-profile/biography'
+            name: 'Bio.md',
+            path: '1-rally.sh/rally/bio'
           },
           {
             type: 'file',
-            name: 'Measurements.md',
-            path: 'phase1-rally/rally-profile/measurements'
+            name: 'Privacy.md',
+            path: '1-rally.sh/rally/privacy'
           },
-          {
-            type: 'file',
-            name: 'Technology.md',
-            path: 'phase1-rally/rally-profile/technology'
-          }
         ]
       },
       {
         type: 'directory',
         name: 'Tokenomics',
-        path: 'phase1-rally/tokenomics',
+        path: '1-rally.sh/tokenomics',
         children: [
           {
             type: 'file',
             name: 'Index.md',
-            path: 'phase1-rally/tokenomics/index'
+            path: '1-rally.sh/tokenomics/index'
           },
           {
             type: 'file',
             name: 'Distribution.md',
-            path: 'phase1-rally/tokenomics/distribution'
+            path: '1-rally.sh/tokenomics/distribution'
           },
           {
             type: 'file',
             name: 'Utility.md',
-            path: 'phase1-rally/tokenomics/utility'
+            path: '1-rally.sh/tokenomics/utility'
           }
         ]
       }
@@ -120,23 +93,23 @@ export const documentationTree: FileItem[] = [
   },
   {
     type: 'directory',
-    name: 'Phase 2: Banshee',
+    name: 'Phase 2: Banshee.sh',
     path: 'phase2-banshee',
     children: [
       {
         type: 'file',
         name: 'Synopsis.md',
-        path: 'phase2-banshee/synopsis'
+        path: '2-banshee.sh/synopsis'
       },
       {
         type: 'file',
         name: 'Banshee Platform.md',
-        path: 'phase2-banshee/banshee-platform'
+        path: '2-banshee.sh/banshee-platform'
       },
       {
         type: 'file',
         name: 'Roadmap.md',
-        path: 'phase2-banshee/roadmap'
+        path: '2-banshee.sh/roadmap'
       },
       {
         type: 'directory',
@@ -176,7 +149,7 @@ export const documentationTree: FileItem[] = [
   },
   {
     type: 'directory',
-    name: 'Platform: Okiya',
+    name: 'Phase 3: Phantasy.bot',
     path: 'platform-okiya',
     children: [
       {
@@ -186,13 +159,13 @@ export const documentationTree: FileItem[] = [
       },
       {
         type: 'file',
-        name: 'Training Arc.md',
-        path: 'platform-okiya/training-arc'
+        name: 'Platform.md',
+        path: 'phantasy-bot/platform'
       },
       {
         type: 'file',
-        name: 'Graduation Era.md',
-        path: 'platform-okiya/graduation-era'
+        name: 'Roadmap.md',
+        path: 'platform-okiya/roadmap'
       },
       {
         type: 'directory',

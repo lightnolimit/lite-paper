@@ -1,3 +1,11 @@
+<br/>
+
+# INTRODUCTION
+
+Phantasy is an AI VTuber/Lewdtuber agency focused on the creation, management, and promotion of interactive autonomous personalities (Phantasy Bots).
+
+Our first **PHANTASY BOT** and the mascot of the Phantasy platform is [@RallyPhantasy](https://x.com/@rallyphantasy)—a live streamer who loves to have a good time with her fans! Aside from interacting with her on stream and social media, users can also enjoy a **private virtual girlfriend experience** with [Rally on her website](https://rally.sh).
+
 # PRELUDE: PHANTASY
 
 *Any and all purchases of the $RALLY meme token should be made with the understanding that these tokens are meant for entertainment purposes only and have no value. Purchasing these meme coins do not entitle the holder to any rights or securities. Buy at your own risk.*

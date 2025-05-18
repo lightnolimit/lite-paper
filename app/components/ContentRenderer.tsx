@@ -94,9 +94,12 @@ const useProcessDomElements = (contentRef: React.RefObject<HTMLDivElement | null
     const currentRef = contentRef.current;
     if (!currentRef) return;
 
-    // Process links and wallet addresses
-    processLinks(currentRef as HTMLElement);
-    processWalletAddresses(currentRef as HTMLElement);
+    // Run with a slight delay to ensure the DOM is fully rendered
+    setTimeout(() => {
+      // Process links and wallet addresses
+      processLinks(currentRef as HTMLElement);
+      processWalletAddresses(currentRef as HTMLElement);
+    }, 100);
     
     // Cleanup function
     return () => {

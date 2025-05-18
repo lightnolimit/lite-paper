@@ -27,41 +27,25 @@ export const processLinks = (element: HTMLElement): void => {
 export const processWalletAddresses = (element: HTMLElement): void => {
   const walletAddresses = element.querySelectorAll('.wallet-address');
   
-  walletAddresses.forEach(walletElement => {
+  walletAddresses.forEach((walletElement) => {
     const address = walletElement.getAttribute('data-address');
     if (!address) return;
     
     // Check if button already exists to prevent duplicates
     if (walletElement.querySelector('.copy-button')) return;
 
-    // Add styles to the wallet address element
-    const walletEl = walletElement as HTMLElement;
-    walletEl.style.position = 'relative';
-    walletEl.style.paddingRight = '30px';
-    walletEl.style.display = 'inline-flex';
-    walletEl.style.alignItems = 'center';
-    
     // Create the copy button
     const copyButton = document.createElement('button');
     copyButton.className = 'copy-button';
-    copyButton.style.position = 'absolute';
-    copyButton.style.right = '5px';
-    copyButton.style.display = 'flex';
-    copyButton.style.alignItems = 'center';
-    copyButton.style.justifyContent = 'center';
-    copyButton.style.cursor = 'pointer';
-    copyButton.style.padding = '2px';
-    copyButton.style.borderRadius = '4px';
-    copyButton.style.backgroundColor = 'var(--card-color)';
-    copyButton.style.border = '1px solid var(--border-color)';
-    
-    // Add the copy icon
-    copyButton.innerHTML = `<img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" width="14" height="14" />`;
     copyButton.setAttribute('aria-label', 'Copy to clipboard');
     copyButton.setAttribute('title', 'Copy to clipboard');
     
+    // Add the copy icon
+    copyButton.innerHTML = `<img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" width="14" height="14" />`;
+    
     // Add click handler
-    copyButton.addEventListener('click', () => {
+    copyButton.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent event from bubbling
       navigator.clipboard.writeText(address).then(() => {
         // Success feedback
         copyButton.innerHTML = `<img src="/assets/icons/pixel-check-circle-solid.svg" alt="Copied" width="14" height="14" />`;

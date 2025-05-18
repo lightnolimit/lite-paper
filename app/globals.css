@@ -704,6 +704,7 @@ code {
   text-decoration: none;
   transition: all 0.2s ease;
   font-family: var(--body-font);
+  gap: 12px;
 }
 
 .social-links-inline a:hover {
@@ -714,54 +715,88 @@ code {
 .social-links-inline img {
   height: 20px;
   width: auto;
-  margin-right: 8px;
   vertical-align: middle;
 }
 
+/* Wallet info container */
+.wallet-info {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.wallet-info p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  width: 100%;
+  position: relative;
+}
+
+.wallet-info p strong {
+  min-width: 140px;
+  font-weight: bold;
+  display: inline-block;
+  flex: 0 0 140px;
+}
+
+.wallet-info .wallet-address {
+  flex: 1;
+  min-width: 200px;
+  margin: 0;
+}
+
 /* Wallet address styling */
-.wallet-address {
+code.wallet-address {
   font-family: var(--mono-font);
   background-color: rgba(0, 0, 0, 0.05);
   padding: 0.4rem 0.8rem;
+  padding-right: 2.5rem;
   border-radius: 4px;
   border: 1px solid var(--border-color);
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 0 0 0 0.5rem;
-  max-width: calc(100% - 150px);
+  display: inline-block;
   width: 100%;
+  box-sizing: border-box;
 }
 
-.dark .wallet-address {
+.dark code.wallet-address {
   background-color: rgba(255, 255, 255, 0.1);
   border-color: var(--border-color);
 }
 
 /* Copy button styling */
 .copy-button {
-  background: none;
-  border: none;
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
   cursor: pointer;
   padding: 4px 8px;
-  margin-left: auto;
   border-radius: 4px;
-  vertical-align: middle;
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
-  display: inline-flex;
+  opacity: 0.9;
+  transition: all 0.2s ease;
+  display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.dark .copy-button {
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .copy-button:hover {
   opacity: 1;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.15);
 }
 
 .dark .copy-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.25);
 }
 
 .copy-button img {
@@ -782,26 +817,7 @@ code {
   flex-wrap: wrap;
   align-items: flex-start;
   margin-bottom: 1rem;
-}
-
-.doc-card p.profile-info strong + br {
-  display: none;
-}
-
-/* Regular strong/bold text */
-.doc-card p strong {
-  font-weight: 700;
-  color: var(--text-color);
-}
-
-.doc-card strong {
-  font-weight: 700;
-  color: var(--text-color);
-}
-
-/* Reset flexbox for regular paragraphs */
-.doc-card p:not(.profile-info) {
-  display: block;
+  width: 100%;
 }
 
 /* Fix for image size in dark mode */
@@ -834,11 +850,14 @@ code {
 .icon-heading {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   font-family: var(--title-font);
   font-size: 1.5rem;
   margin-bottom: 1rem;
   margin-top: 1.5rem;
   border-bottom: none;
+  text-align: left;
+  width: 100%;
 }
 
 .icon-heading img {
@@ -926,8 +945,8 @@ code {
   }
 }
 
-/* Add rounded border to all markdown images */
-.markdown-content img {
+/* Add rounded border to all markdown images except icons */
+.markdown-content img:not([src*="pixel-"]) {
   border: 1px solid var(--border-color);
   border-radius: 8px;
   width: 100%;
@@ -935,6 +954,16 @@ code {
   max-width: 100%;
   display: block;
   margin: 1.5rem auto;
+}
+
+/* Ensure icon images don't get the markdown image styling */
+.icon-heading img,
+.social-links-inline img {
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  width: auto;
+  display: inline;
 }
 
 .doc-card ol {
