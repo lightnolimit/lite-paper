@@ -11,7 +11,7 @@ We are creating multiple interactive applications and games where players can in
 
 Our first **"PHANTASY BOT"** and the mascot of the Phantasy platform is [@Rally](https://x.com/@rallyphantasy)—a loving companion with a bubbly "cheerleader" personality who is positive and cheers on her players, providing them with as much *pleasure* as possible.
 
-She is also meant to spread brand awareness for the Phantasy ecosystem by showcasing the different applications in the Phantasy ecosystem—such as a **[private virtual girlfriend experience](https://rally.sh)**, **[group live cam shows](https://rally.sh)**, and other **[NSFW apps and games](https://rally.sh)**—powered by her native agent token, **$RALLY**. 
+She is also an influencer who is meant to spread brand awareness for the Phantasy ecosystem by showcasing the different applications in the Phantasy ecosystem—such as a **[private virtual girlfriend experience](https://rally.sh)**, **[group live cam shows](https://rally.sh)**, and other **[NSFW apps and games](https://rally.sh)**—powered by her native agent token, **$RALLY**. Later, she'll also be available for sponsorships and brand deals like other influencers.
 
 ### Private Interactive Chat Experiences
 The first phase is creating 18+ NSFW private chat experiences, where players can interact with an autonomous AI companion animated through a Live2D or 3D model with emotional text-to-speech and nude-sending technology. We will be building out these features on the Rally.sh platform and perfect the framework for creating these experiences.

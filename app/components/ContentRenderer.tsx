@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { marked } from 'marked';
@@ -36,6 +36,34 @@ type AdjacentPage = {
   title: string;
 };
 
+// Memoized flatten function to avoid recreation
+const flattenDocumentationTree = (() => {
+  let cachedFlattened: { path: string, name: string }[] | null = null;
+  
+  return (): { path: string, name: string }[] => {
+    if (cachedFlattened) return cachedFlattened;
+    
+    const flattenedItems: { path: string, name: string }[] = [];
+    
+    function flattenTree(items: FileItem[]) {
+      items.forEach(item => {
+        if (item.type === 'file') {
+          flattenedItems.push({ 
+            path: item.path,
+            name: item.name.replace(/\.md$/, '')
+          });
+        } else if (item.type === 'directory' && item.children) {
+          flattenTree(item.children);
+        }
+      });
+    }
+    
+    flattenTree(documentationTree);
+    cachedFlattened = flattenedItems;
+    return flattenedItems;
+  };
+})();
+
 /**
  * Find the previous and next pages based on the current path
  * 
@@ -43,23 +71,7 @@ type AdjacentPage = {
  * @returns {Object} Object containing previous and next page information
  */
 const findAdjacentPages = (currentPath: string): { prevPage?: AdjacentPage, nextPage?: AdjacentPage } => {
-  // Flatten the documentation tree to get all file items in order
-  const flattenedItems: { path: string, name: string }[] = [];
-  
-  function flattenTree(items: FileItem[]) {
-    items.forEach(item => {
-      if (item.type === 'file') {
-        flattenedItems.push({ 
-          path: item.path,
-          name: item.name.replace(/\.md$/, '')
-        });
-      } else if (item.type === 'directory' && item.children) {
-        flattenTree(item.children);
-      }
-    });
-  }
-  
-  flattenTree(documentationTree);
+  const flattenedItems = flattenDocumentationTree();
   
   // Find the current item index
   const currentIndex = flattenedItems.findIndex(item => item.path === currentPath);
@@ -94,38 +106,43 @@ const findAdjacentPages = (currentPath: string): { prevPage?: AdjacentPage, next
  * @param {string} content - The markdown content
  */
 const useProcessDomElements = (contentRef: React.RefObject<HTMLDivElement | null>, content: string): void => {
-  useEffect(() => {
-    componentLogger.debug('ContentRenderer useEffect running');
+  const processDOM = useCallback(() => {
     const currentRef = contentRef.current;
     if (!currentRef) {
       componentLogger.debug('No content ref found, skipping DOM processing');
       return;
     }
 
-    componentLogger.debug('Scheduling DOM processing');
+    componentLogger.debug('Processing DOM elements');
     
-    // Run with a slight delay to ensure the DOM is fully rendered
-    setTimeout(() => {
-      // Process links and wallet addresses
-      componentLogger.debug('Processing links');
-      processLinks(currentRef as HTMLElement);
-      
-      componentLogger.debug('Processing wallet addresses');
-      processWalletAddresses(currentRef as HTMLElement);
-      
-      componentLogger.debug('DOM processing complete');
-    }, 100);
+    // Process links and wallet addresses immediately
+    processLinks(currentRef as HTMLElement);
+    processWalletAddresses(currentRef as HTMLElement);
+    
+    componentLogger.debug('DOM processing complete');
+  }, [contentRef]);
+
+  useEffect(() => {
+    // Use requestAnimationFrame for better performance instead of setTimeout
+    const rafId = requestAnimationFrame(processDOM);
     
     // Cleanup function
     return () => {
+      cancelAnimationFrame(rafId);
+      
       componentLogger.debug('Running cleanup function for ContentRenderer');
-      // Remove event listeners from links if needed
-      const links = currentRef.querySelectorAll('a');
-      links.forEach(link => {
-        link.removeEventListener('keydown', () => {});
-      });
+      const currentRef = contentRef.current;
+      if (currentRef) {
+        // Remove event listeners from links if needed
+        const links = currentRef.querySelectorAll('a');
+        links.forEach(link => {
+          // Only remove our custom keydown listeners
+          const clonedLink = link.cloneNode(true);
+          link.parentNode?.replaceChild(clonedLink, link);
+        });
+      }
     };
-  }, [content, contentRef]); // Re-run when content changes
+  }, [processDOM, content]);
 };
 
 /**
@@ -143,7 +160,7 @@ const useProcessDomElements = (contentRef: React.RefObject<HTMLDivElement | null
 export default function ContentRenderer({ content = '', path = '' }: ContentRendererProps): React.ReactElement {
   const contentRef = useRef<HTMLDivElement>(null);
   
-  // Get previous and next pages using useMemo
+  // Memoize adjacent pages to prevent recalculation
   const { prevPage, nextPage } = useMemo(() => findAdjacentPages(path), [path]);
   
   // Process DOM elements after render
@@ -172,7 +189,7 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
   }, [content]);
   
   // Check if this is a synopsis page to show banner
-  const isSynopsisPage = path.toLowerCase().includes('synopsis');
+  const isSynopsisPage = useMemo(() => path.toLowerCase().includes('synopsis'), [path]);
   
   return (
     <motion.div

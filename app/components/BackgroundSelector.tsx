@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 
 /**
@@ -25,7 +25,7 @@ type BackgroundSelectorProps = {
  * @param {BackgroundSelectorProps} props - Component props
  * @returns {React.ReactElement} Rendered BackgroundSelector component
  */
-export default function BackgroundSelector({ className = "" }: BackgroundSelectorProps) {
+const BackgroundSelector = React.memo(({ className = "" }: BackgroundSelectorProps) => {
   const [backgroundType, setBackgroundType] = useState<BackgroundType>('wave');
   
   /**
@@ -61,58 +61,73 @@ export default function BackgroundSelector({ className = "" }: BackgroundSelecto
    * 
    * @param {BackgroundType} type - The selected background type
    */
-  const handleBackgroundChange = (type: BackgroundType) => {
+  const handleBackgroundChange = useCallback((type: BackgroundType) => {
     setBackgroundType(type);
     localStorage.setItem('backgroundType', type);
     
     // Force a page reload to apply the change
     window.location.reload();
-  };
-  
-  // Common button styling
-  const getButtonStyles = (type: BackgroundType) => ({
-    className: `px-2 py-1 rounded text-sm ${backgroundType === type ? 'active-bg-button' : 'bg-card-color hover:bg-gray-200 dark:hover:bg-gray-700'}`,
-    style: { 
-      border: '1px solid var(--border-color)',
-      color: backgroundType === type ? 'var(--background-color)' : 'var(--text-color)',
-      backgroundColor: backgroundType === type ? 'var(--primary-color)' : ''
-    },
+  }, []);
+
+  // Memoized animation variants
+  const buttonAnimations = useMemo(() => ({
     whileHover: { scale: 1.05 },
-    whileTap: { scale: 0.95 },
-    'aria-label': `Switch to ${type} background`,
-    title: `Switch to ${type} background`,
-    'aria-pressed': backgroundType === type
-  });
+    whileTap: { scale: 0.95 }
+  }), []);
+
+  // Memoized base styles for active and inactive states
+  const baseButtonStyles = useMemo(() => ({
+    border: '1px solid var(--border-color)',
+  }), []);
+
+  const activeButtonStyles = useMemo(() => ({
+    ...baseButtonStyles,
+    color: 'var(--background-color)',
+    backgroundColor: 'var(--primary-color)'
+  }), [baseButtonStyles]);
+
+  const inactiveButtonStyles = useMemo(() => ({
+    ...baseButtonStyles,
+    color: 'var(--text-color)',
+    backgroundColor: ''
+  }), [baseButtonStyles]);
+  
+  // Optimized button style generator
+  const getButtonStyles = useCallback((type: BackgroundType) => {
+    const isActive = backgroundType === type;
+    return {
+      className: `px-2 py-1 rounded text-sm ${isActive ? 'active-bg-button' : 'bg-card-color hover:bg-gray-200 dark:hover:bg-gray-700'}`,
+      style: isActive ? activeButtonStyles : inactiveButtonStyles,
+      ...buttonAnimations,
+      'aria-label': `Switch to ${type} background`,
+      title: `Switch to ${type} background`,
+      'aria-pressed': isActive
+    };
+  }, [backgroundType, activeButtonStyles, inactiveButtonStyles, buttonAnimations]);
+
+  // Memoized button configurations
+  const buttonConfigs = useMemo(() => [
+    { type: 'wave' as BackgroundType, label: 'Wave' },
+    { type: 'stars' as BackgroundType, label: 'Stars' },
+    { type: 'dither' as BackgroundType, label: 'Dither' },
+    { type: 'solid' as BackgroundType, label: 'Solid' }
+  ], []);
   
   return (
     <div className={`flex flex-wrap items-center gap-2 ${className}`}>
-      <motion.button
-        onClick={() => handleBackgroundChange('wave')}
-        {...getButtonStyles('wave')}
-      >
-        Wave
-      </motion.button>
-      
-      <motion.button
-        onClick={() => handleBackgroundChange('stars')}
-        {...getButtonStyles('stars')}
-      >
-        Stars
-      </motion.button>
-      
-      <motion.button
-        onClick={() => handleBackgroundChange('dither')}
-        {...getButtonStyles('dither')}
-      >
-        Dither
-      </motion.button>
-      
-      <motion.button
-        onClick={() => handleBackgroundChange('solid')}
-        {...getButtonStyles('solid')}
-      >
-        Solid
-      </motion.button>
+      {buttonConfigs.map(({ type, label }) => (
+        <motion.button
+          key={type}
+          onClick={() => handleBackgroundChange(type)}
+          {...getButtonStyles(type)}
+        >
+          {label}
+        </motion.button>
+      ))}
     </div>
   );
-} 
+});
+
+BackgroundSelector.displayName = 'BackgroundSelector';
+
+export default BackgroundSelector; 

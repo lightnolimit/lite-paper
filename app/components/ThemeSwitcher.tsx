@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../providers/ThemeProvider';
 
@@ -22,26 +22,36 @@ type ThemeSwitcherProps = {
  * @param {ThemeSwitcherProps} props - Component props
  * @returns {React.ReactElement} Rendered ThemeSwitcher component
  */
-export default function ThemeSwitcher({ className = "" }: ThemeSwitcherProps): React.ReactElement {
+const ThemeSwitcher = React.memo(({ className = "" }: ThemeSwitcherProps): React.ReactElement => {
   const { isDarkMode, toggleTheme } = useTheme();
 
-  // Animation settings for button
-  const buttonAnimations = {
+  // Memoized animation settings for button
+  const buttonAnimations = useMemo(() => ({
     whileHover: { scale: 1.1 },
     whileTap: { scale: 0.95 }
-  };
+  }), []);
 
-  // ARIA labels based on current mode
-  const ariaAttrs = {
+  // Memoized ARIA labels based on current mode
+  const ariaAttrs = useMemo(() => ({
     'aria-label': isDarkMode ? "Switch to light mode" : "Switch to dark mode",
     'title': isDarkMode ? "Switch to light mode" : "Switch to dark mode"
-  };
+  }), [isDarkMode]);
+
+  // Memoized style object
+  const buttonStyle = useMemo(() => ({
+    color: 'var(--text-color)'
+  }), []);
+
+  // Optimized theme toggle handler
+  const handleToggleTheme = useCallback(() => {
+    toggleTheme();
+  }, [toggleTheme]);
 
   /**
    * Renders the appropriate icon based on the current theme
    * @returns {React.ReactElement} The sun or moon icon SVG
    */
-  const renderThemeIcon = (): React.ReactElement => {
+  const renderThemeIcon = useCallback((): React.ReactElement => {
     if (isDarkMode) {
       // Pixel Sun (light mode icon)
       return (
@@ -72,19 +82,28 @@ export default function ThemeSwitcher({ className = "" }: ThemeSwitcherProps): R
         </svg>
       );
     }
-  };
+  }, [isDarkMode]);
+
+  // Memoized text display
+  const displayText = useMemo(() => {
+    return isDarkMode ? "Light" : "Dark";
+  }, [isDarkMode]);
 
   return (
     <motion.button
-      onClick={toggleTheme}
+      onClick={handleToggleTheme}
       className={`p-2 rounded-full flex items-center gap-2 ${className}`}
-      style={{ color: 'var(--text-color)' }}
+      style={buttonStyle}
       {...buttonAnimations}
       {...ariaAttrs}
       tabIndex={0}
     >
       {renderThemeIcon()}
-      <span className="text-sm">{isDarkMode ? "Light" : "Dark"}</span>
+      <span className="text-sm">{displayText}</span>
     </motion.button>
   );
-} 
+});
+
+ThemeSwitcher.displayName = 'ThemeSwitcher';
+
+export default ThemeSwitcher; 

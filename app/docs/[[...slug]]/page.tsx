@@ -19,7 +19,7 @@ export async function generateStaticParams() {
   const paths: { slug: string[] }[] = [];
   
   // Add the default path
-  paths.push({ slug: ['introduction', 'synopsis'] });
+  paths.push({ slug: ['prelude', 'synopsis'] });
   
   // Recursive function to traverse directories
   async function traverse(dir: string, currentPath: string[] = []) {
@@ -53,10 +53,10 @@ export default async function DocPage({ params }: PageProps) {
   const resolvedParams = await params;
   const slug = resolvedParams?.slug;
 
-  // Safely determine slugPath
+  // Safely determine slugPath - use a path that actually exists
   const slugPath = (Array.isArray(slug) && slug.length > 0) 
     ? slug.join('/') 
-    : 'introduction/synopsis';
+    : 'prelude/synopsis';
   
   // Load the content for this document
   const content = await loadMarkdownContent(slugPath);

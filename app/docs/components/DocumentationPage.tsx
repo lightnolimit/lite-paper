@@ -19,30 +19,28 @@ export default function DocumentationPage({ initialContent, currentPath }: Docum
   const router = useRouter();
   const [content, setContent] = useState<string>(initialContent);
   const [path, setPath] = useState<string>(currentPath);
-  const [sidebarVisible, setSidebarVisible] = useState(false); // Default to hidden on mobile, shown on desktop
+  const [sidebarVisible, setSidebarVisible] = useState(false);
   const [backgroundType, setBackgroundType] = useState<string>('wave');
   const [isMobile, setIsMobile] = useState(false);
   
-  // Effect to load the saved background preference
+  // Effect to initialize component state
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      // Get the background type from localStorage if available
-      const savedBackground = localStorage.getItem('backgroundType');
-      
-      // Use the saved value or fall back to the env var or default
-      const envDefault = process.env.NEXT_PUBLIC_BACKGROUND_TYPE || 'wave';
-      const validBackgrounds = ['wave', 'stars', 'dither', 'solid'];
-      
-      if (savedBackground && validBackgrounds.includes(savedBackground)) {
-        setBackgroundType(savedBackground);
-      } else {
-        setBackgroundType(envDefault);
-      }
-      
-      // Set initial mobile state
-      setIsMobile(window.innerWidth < 768);
-      // Set initial sidebar state based on screen size
-      setSidebarVisible(window.innerWidth >= 768);
+    if (typeof window === 'undefined') return;
+    
+    // Initialize mobile state and sidebar visibility
+    const mobile = window.innerWidth < 768;
+    setIsMobile(mobile);
+    setSidebarVisible(!mobile); // Show on desktop, hide on mobile by default
+    
+    // Load background preference
+    const savedBackground = localStorage.getItem('backgroundType');
+    const envDefault = process.env.NEXT_PUBLIC_BACKGROUND_TYPE || 'wave';
+    const validBackgrounds = ['wave', 'stars', 'dither', 'solid'];
+    
+    if (savedBackground && validBackgrounds.includes(savedBackground)) {
+      setBackgroundType(savedBackground);
+    } else {
+      setBackgroundType(envDefault);
     }
   }, []);
   
@@ -66,7 +64,7 @@ export default function DocumentationPage({ initialContent, currentPath }: Docum
     }
   }, { ssr: false });
   
-  // Handle mobile behavior for sidebar based on screen size
+  // Handle window resize
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
@@ -74,33 +72,27 @@ export default function DocumentationPage({ initialContent, currentPath }: Docum
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
       
+      // Auto-show on desktop, auto-hide on mobile
       if (!mobile) {
-        setSidebarVisible(true); // Always visible on desktop
+        setSidebarVisible(true);
       } else if (mobile && sidebarVisible) {
-        setSidebarVisible(false); // Hide on mobile by default
+        setSidebarVisible(false);
       }
     };
     
-    // Set initial state
-    handleResize();
-    
-    // Add resize listener
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [sidebarVisible]);
   
-  // Handle sidebar layout clicks
+  // Handle outside clicks on mobile
   useEffect(() => {
-    // For mobile, add a click handler to close sidebar when clicking outside
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || !isMobile || !sidebarVisible) return;
     
     const handleOutsideClick = (e: MouseEvent) => {
-      if (isMobile && sidebarVisible) {
-        const sidebarEl = document.querySelector('.file-tree-panel');
-        const target = e.target as Node;
-        if (sidebarEl && !sidebarEl.contains(target)) {
-          setSidebarVisible(false);
-        }
+      const sidebarEl = document.querySelector('.file-tree-panel');
+      const target = e.target as Node;
+      if (sidebarEl && !sidebarEl.contains(target)) {
+        setSidebarVisible(false);
       }
     };
     
@@ -110,11 +102,10 @@ export default function DocumentationPage({ initialContent, currentPath }: Docum
   
   const handleSelectFile = (item: FileItem) => {
     if (item.type === 'file') {
-      // Use Next.js router for client-side navigation without animation
       router.push(`/docs/${item.path}`, { scroll: false });
       
       // Close sidebar on mobile after selection
-      if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      if (isMobile) {
         setSidebarVisible(false);
       }
     }
