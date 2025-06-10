@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, useContext, ReactNode, useMemo, useCallback } from 'react';
 
 type ThemeContextType = {
   isDarkMode: boolean;
@@ -34,8 +34,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setIsInitialized(true);
   }, []);
   
-  // Apply theme to document and localStorage
-  const applyTheme = (darkMode: boolean) => {
+  // Memoized theme application function
+  const applyTheme = useCallback((darkMode: boolean) => {
     const html = document.documentElement;
     
     if (darkMode) {
@@ -45,7 +45,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
     
     localStorage.setItem('darkMode', darkMode.toString());
-  };
+  }, []);
   
   // Effect to apply theme changes
   useEffect(() => {
@@ -58,15 +58,21 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       detail: { isDarkMode }
     });
     window.dispatchEvent(themeChangeEvent);
-  }, [isDarkMode, isInitialized]);
+  }, [isDarkMode, isInitialized, applyTheme]);
   
-  // Toggle theme function
-  const toggleTheme = () => {
+  // Memoized toggle theme function to prevent unnecessary re-renders
+  const toggleTheme = useCallback(() => {
     setIsDarkMode(prev => !prev);
-  };
+  }, []);
+
+  // Memoized context value to prevent re-renders when children don't need to update
+  const contextValue = useMemo(() => ({
+    isDarkMode,
+    toggleTheme
+  }), [isDarkMode, toggleTheme]);
   
   return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+    <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>
   );
