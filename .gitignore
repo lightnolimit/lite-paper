@@ -43,3 +43,6 @@ next-env.d.ts
 # lock files 
 pnpm-lock.yaml
 package-lock.yaml
+
+# forks
+phantasy-docs/
