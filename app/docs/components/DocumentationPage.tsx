@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import Navigation from '../../components/Navigation';
 import FileTree from '../../components/FileTree';
 import ContentRenderer from '../../components/ContentRenderer';
+import DocumentationGraph from '../../components/DocumentationGraph';
 import { documentationTree } from '../../data/documentation';
 import { FileItem } from '../../components/FileTree';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -30,6 +31,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [backgroundType, setBackgroundType] = useState<string>('wave');
   const [isMobile, setIsMobile] = useState(false);
+  const [graphViewVisible, setGraphViewVisible] = useState(false);
   
   // Memoized animation variants
   const sidebarAnimationVariants = useMemo(() => ({
@@ -86,6 +88,16 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
     setContent(initialContent);
     setPath(currentPath);
   }, [initialContent, currentPath]);
+
+  // Listen for graph view toggle events
+  useEffect(() => {
+    const handleGraphViewToggle = () => {
+      setGraphViewVisible(!graphViewVisible);
+    };
+
+    window.addEventListener('toggleGraphView', handleGraphViewToggle);
+    return () => window.removeEventListener('toggleGraphView', handleGraphViewToggle);
+  }, [graphViewVisible]);
   
   // Memoized background component selection
   const BackgroundComponent = useMemo(() => {
@@ -239,7 +251,17 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
             )}
             
             <div className="max-w-6xl mx-auto">
-              <ContentRenderer content={content} path={path} />
+              {graphViewVisible ? (
+                <DocumentationGraph 
+                  currentPath={path}
+                  onNodeClick={(nodePath) => {
+                    router.push(`/docs/${nodePath}`, { scroll: false });
+                  }}
+                  className="w-full"
+                />
+              ) : (
+                <ContentRenderer content={content} path={path} />
+              )}
             </div>
           </div>
         </div>

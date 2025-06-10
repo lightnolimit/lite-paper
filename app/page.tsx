@@ -19,5 +19,5 @@ export const metadata: Metadata = {
  * @returns {null} No direct render as this redirects
  */
 export default function Home() {
-  redirect('/docs/prelude/synopsis');
+  redirect('/docs/getting-started/introduction');
 }

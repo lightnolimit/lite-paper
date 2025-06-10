@@ -36,14 +36,10 @@ type NavItem = {
  * Main navigation links
  */
 const navItems: NavItem[] = [
-  // { label: 'Docs', href: '/docs' },
-  // { label: 'API', href: '/api' },
-  { label: 'Rally', href: '/docs/rally.sh' },
-  { label: 'Banshee', href: '/docs/banshee.sh' },
-  { label: 'Phantasy', href: '/docs/phantasy.bot' },
-  // { label: 'Rally', href: 'https://rally.sh' },
-  // { label: 'Phantasy', href: 'https://phantasy.bot' },
-  // { label: 'Banshee', href: 'https://banshee.sh' }
+  { label: 'Docs', href: '/docs/getting-started/introduction' },
+  { label: 'API', href: '/docs/api-reference/overview' },
+  { label: 'Guide', href: '/docs/user-guide/basic-usage' },
+  { label: 'Deploy', href: '/docs/deployment/overview' }
 ];
 
 /**
