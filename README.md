@@ -1,184 +1,167 @@
-# Project Documentation Site
+# Documentation Site Template
 
-A modern documentation site built with Next.js, inspired by the design of nyko.cool. This project provides a clean, responsive interface for documentation with features like:
+A modern, responsive documentation site built with Next.js 15, TypeScript, and Tailwind CSS. Perfect for creating beautiful documentation for your projects.
 
-- Interactive background animations (waves or stars) using Three.js
-- File tree navigation for documentation structure
-- Responsive design for all devices
-- Dark mode with beautiful animations
+## ✨ Features
 
-## Getting Started
+- 🎨 **Modern Design**: Clean, responsive interface with dark/light mode support
+- 📱 **Mobile-First**: Optimized for all screen sizes
+- 🔍 **Fast Search**: Instant search across all documentation
+- 📖 **File Tree Navigation**: Intuitive sidebar navigation
+- 🎯 **TypeScript**: Full type safety throughout
+- 🚀 **Fast Performance**: Built on Next.js 15 with optimizations
+- 📝 **Markdown Support**: Write content in Markdown with syntax highlighting
+- 🎨 **Customizable**: Easy to theme and customize
+- ☁️ **Deploy Anywhere**: Works on Vercel, Netlify, Cloudflare Pages, and more
 
-### Prerequisites
+## 🚀 Quick Start
 
-- Node.js 18.0 or later
-- npm or yarn
+### 1. Fork this repository
+Click the "Fork" button on GitHub to create your own copy.
 
-### Installation
-
-1. Clone the repository:
+### 2. Clone your fork
 ```bash
-git clone <repository-url>
-cd project-docs
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+cd YOUR_REPO_NAME
 ```
 
-2. Install dependencies:
+### 3. Install dependencies
 ```bash
 npm install
+# or
+pnpm install
 # or
 yarn install
 ```
 
-3. Run the development server:
+### 4. Customize your documentation structure
+Edit `app/data/documentation.ts` to define your documentation structure:
+
+```typescript
+export const documentationTree: FileItem[] = [
+  {
+    type: 'directory',
+    name: 'Your Section',
+    path: 'your-section',
+    children: [
+      {
+        type: 'file',
+        name: 'Your Page.md',
+        path: 'your-section/your-page'
+      }
+    ]
+  }
+];
+```
+
+### 5. Add your content
+Create Markdown files in the structure you defined. The file paths in `documentation.ts` correspond to your content structure.
+
+### 6. Run the development server
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see your documentation site.
 
-### Deploying to Cloudflare Pages
+## 📁 Project Structure
 
-This project is configured for deployment on Cloudflare Pages using static site generation.
+```
+├── app/
+│   ├── components/          # React components
+│   │   ├── FileTree.tsx    # Navigation sidebar
+│   │   ├── SearchBar.tsx   # Search functionality
+│   │   └── ...
+│   ├── data/
+│   │   └── documentation.ts # Your documentation structure
+│   ├── globals.css         # Global styles
+│   └── layout.tsx          # App layout
+├── public/                 # Static assets
+├── types/                  # TypeScript type definitions
+└── ...
+```
 
-#### Manual Deployment
+## 🎨 Customization
 
-1. Build the project:
+### Styling
+- The site uses Tailwind CSS for styling
+- Customize colors, fonts, and layout in `tailwind.config.js`
+- Override styles in `app/globals.css`
+
+### Navigation Structure
+- Define your documentation structure in `app/data/documentation.ts`
+- Supports nested directories and files
+- Each entry maps to a route in your application
+
+### Content
+- Write your documentation in Markdown
+- Files are loaded dynamically based on the structure you define
+- Supports syntax highlighting and rich formatting
+
+## 📦 Deployment
+
+### Cloudflare Pages
+1. Connect your GitHub repository to Cloudflare Pages
+2. Set build command: `npm run build`
+3. Set output directory: `out`
+4. Deploy!
+
+### Vercel
+1. Connect your GitHub repository to Vercel
+2. Deploy with default settings
+
+### Netlify
+1. Connect your GitHub repository to Netlify
+2. Set build command: `npm run build`
+3. Set publish directory: `out`
+4. Deploy!
+
+## 🔄 Keeping Your Fork Updated
+
+To receive updates from the template while keeping your content:
+
+### Setup upstream remote (one-time setup)
 ```bash
-npm run pages:build
+git remote add upstream https://github.com/ORIGINAL_OWNER/ORIGINAL_REPO.git
 ```
 
-2. Deploy to Cloudflare Pages:
+### Update from upstream
 ```bash
-npm run deploy
+# Fetch latest changes from upstream
+git fetch upstream
+
+# Merge upstream changes (this will update code, not your content)
+git merge upstream/main
+
+# Resolve any conflicts and commit
+git commit -m "Merge upstream changes"
+
+# Push to your fork
+git push origin main
 ```
 
-#### Setting up CI/CD with Cloudflare Pages
+## 🤝 Contributing
 
-1. Connect your GitHub repository to Cloudflare Pages in the Cloudflare dashboard.
+Contributions to improve the template are welcome! Please:
 
-2. Configure the build settings:
-   - Build command: `npm run pages:build`
-   - Build output directory: `out`
-   - Node.js version: 18 (or your preferred version)
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
-3. Set any required environment variables in the Cloudflare Pages dashboard.
+## 📄 License
 
-4. Deploy! Cloudflare Pages will automatically build and deploy your site when you push to your designated branch.
+This project is open source and available under the [MIT License](LICENSE).
 
-#### Configuration Files
+## 🆘 Support
 
-- `wrangler.toml`: Contains Cloudflare Pages configuration
-- `package.json`: Contains build and deploy scripts
+If you have questions or need help:
 
-## Environment Variables
+1. Check the documentation structure in `app/data/documentation.ts`
+2. Look at the example components in `app/components/`
+3. Open an issue on GitHub
 
-This project uses environment variables to configure certain features:
+---
 
-| Variable | Options | Default | Description |
-|----------|---------|---------|-------------|
-| `NEXT_PUBLIC_SITE_URL` | URL string | `https://phantasy-docs.example.com` | The base URL of the site used for metadata and SEO |
-| `NEXT_PUBLIC_BACKGROUND_TYPE` | `wave`, `stars` | `wave` | Sets the background animation type |
-| `NEXT_PUBLIC_DEBUG_CURSOR` | `true`, `false` | `false` | Shows a cursor indicator on the wave animation for debugging |
-| `NEXT_PUBLIC_DEBUG_LOGGING` | `true`, `false` | `false` | Enables additional console logging for debugging |
-
-You can set these variables using a `.env.local` file in the project root:
-
-```
-NEXT_PUBLIC_SITE_URL=https://docs.yoursite.com
-NEXT_PUBLIC_BACKGROUND_TYPE=stars
-NEXT_PUBLIC_DEBUG_CURSOR=true
-```
-
-## Developer Utilities
-
-### Debug Mode
-
-This project includes built-in debugging tools:
-
-- To toggle the cursor visibility for the wave animation, set `NEXT_PUBLIC_DEBUG_CURSOR=true` in your `.env.local` file or use `localStorage.setItem('debugCursor', 'true')` in your browser console.
-- You can also toggle it dynamically by running `window.toggleDebugCursor()` in your browser console.
-- For additional debug logging, set `NEXT_PUBLIC_DEBUG_LOGGING=true` in your environment variables.
-
-### Debugging Wave Animation
-
-The wave animation includes a cursor indicator (hidden by default) that helps visualize where the hover effect is being triggered. When visible, it appears as a small colored sphere that follows your mouse movements.
-
-## Project Structure
-
-- `/app`: Next.js app router pages and components
-- `/app/components`: Reusable UI components
-- `/app/data`: Documentation content and structure
-- `/app/docs/[[...slug]]`: Dynamic routes for documentation pages
-- `/public`: Static assets
-
-## Documentation Structure
-
-The documentation is structured as a file tree with nested categories and documents in markdown format. The structure is defined in `/app/data/documentation.ts`.
-
-To edit or add new documentation:
-
-1. Add your markdown content to the `documentationContent` object in `/app/data/documentation.ts`
-2. Update the file tree structure in the `documentationTree` array if needed
-
-## Features
-
-- **Interactive Backgrounds**:
-  - Wave animation: Interactive curved line grid that responds to cursor movements
-  - Star animation: Interactive star field with subtle movement and cursor reactivity
-- **Dynamic Navigation**: File tree structure with expandable sections
-- **Markdown Rendering**: Built-in markdown parsing for documentation
-- **Responsive Design**: Mobile-friendly layout
-- **Client-side Navigation**: Fast page transitions with client-side routing
-- **Smooth Animations**: Using Framer Motion for smooth UI transitions
-- **SEO Optimized**: Complete metadata configuration for search engines
-- **Production-Ready**: Performance optimized with proper caching headers
-- **PWA Support**: Web app manifest and icons for installation
-
-## Customization
-
-### Theme Colors
-
-The main colors are defined in `/app/globals.css`:
-
-```css
-:root {
-  --primary-color: #8a56ff;
-  --secondary-color: #61dafb;
-}
-```
-
-### Documentation Content
-
-Edit the markdown content in the `documentationContent` object in `/app/data/documentation.ts`.
-
-### SEO Configuration
-
-The project includes comprehensive SEO configuration in the `/app/layout.tsx` file. Key SEO features include:
-
-- Complete OpenGraph metadata for social sharing
-- Twitter card support
-- Structured JSON-LD data
-- Robots.txt and sitemap.xml generation
-- Appropriate meta tags for search engines
-
-### Favicons
-
-The project includes a complete set of favicons and app icons in the `/public/favicon/` directory:
-
-- favicon.ico - Browser tab icon (16x16, 32x32)
-- favicon-16x16.png - 16x16 PNG icon
-- favicon-32x32.png - 32x32 PNG icon
-- apple-touch-icon.png - 180x180 icon for iOS devices
-- android-chrome-192x192.png - 192x192 icon for Android devices
-- android-chrome-512x512.png - 512x512 icon for Android devices
-- site.webmanifest - Web app manifest for PWA support
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-- Built with [Next.js](https://nextjs.org/)
-- 3D rendering with [Three.js](https://threejs.org/) and [React Three Fiber](https://docs.pmnd.rs/react-three-fiber/)
+**Happy documenting!** 📚✨
