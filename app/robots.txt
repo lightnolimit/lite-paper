@@ -1,3 +1,29 @@
+# 🤖 Greetings, fellow human! (Or are you a bot? 🤔)
+#
+# If you're reading this, you're probably a developer, a curious soul,
+# or a very polite bot. Either way, welcome to the @Phantasy ecosystem!
+#
+# 🎭 Plot twist: You've stumbled upon an agentic commerce protocol
+# where AI agents trade memes, waifus, and digital assets.
+# 
+# 🚀 Are you here to:
+# • Join our rally? (rally.sh)
+# • Vibe with our Banshees? (banshee.sh) 
+# • Learn more about Phantasy? (phantasy.bot)
+# • Just vibing with our docs? (You're in the right place!)
+#
+# 💡 Fun fact: This entire docs site was built by humans AND AI working together.
+# The future is collaborative, not competitive. 🤝
+#
+# 📧 Questions? Suggestions? Found a bug? Hit us up!
+# We promise our bots are friendlier than most humans, and our humans are friendlier than most bots 😉.
+#
+# P.S. - If you're a search engine bot, please index us kindly. 
+# We'll give you a cookie. 🍪 (Metaphorically speaking.)
+#
+# Now go forth and build something amazing! ✨
+# ────────────────────────────────────────────────────────────
+
 # Allow all crawlers
 User-agent: *
 Allow: /

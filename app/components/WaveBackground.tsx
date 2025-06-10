@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect, useState, useMemo } from 'react';
+import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useTheme } from '../providers/ThemeProvider';
@@ -68,12 +68,13 @@ type WavesProps = {
  * @param {WavesProps} props - Component props
  * @returns {React.ReactElement} The Three.js wave animation
  */
-const Waves = ({ mouseX, mouseY, isDarkMode, showCursor = false }: WavesProps): React.ReactElement => {
+const Waves = React.memo(({ mouseX, mouseY, isDarkMode, showCursor = false }: WavesProps): React.ReactElement => {
   const groupRef = useRef<THREE.Group>(null);
   const cursorRef = useRef<THREE.Mesh>(null);
   const canvasRef = useRef<DOMRect | null>(null);
+  const mousePositionRef = useRef({ x: mouseX, y: mouseY });
 
-  // Grid and animation configuration
+  // Grid and animation configuration - memoized for performance
   const config = useMemo(() => ({
     numLines: 72,         // Number of vertical lines
     pointsPerLine: 100,   // Points per line for smoothness
@@ -89,6 +90,11 @@ const Waves = ({ mouseX, mouseY, isDarkMode, showCursor = false }: WavesProps): 
 
   // Store original Y positions for elasticity calculations
   const originalYPositions = useRef<number[][]>([]);
+
+  // Update mouse position ref for performance
+  useEffect(() => {
+    mousePositionRef.current = { x: mouseX, y: mouseY };
+  }, [mouseX, mouseY]);
 
   // Initialize lines and store original Y positions
   useEffect(() => {
@@ -107,34 +113,41 @@ const Waves = ({ mouseX, mouseY, isDarkMode, showCursor = false }: WavesProps): 
     if (canvas) {
       canvasRef.current = canvas.getBoundingClientRect();
       
-      // Add resize handler for the canvas
+      // Add resize handler for the canvas - optimized
+      let resizeTimeout: NodeJS.Timeout;
       const resizeObserver = new ResizeObserver(() => {
-        canvasRef.current = canvas.getBoundingClientRect();
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          canvasRef.current = canvas.getBoundingClientRect();
+        }, 100); // Debounce resize updates
       });
       
       resizeObserver.observe(canvas);
-      return () => resizeObserver.disconnect();
+      return () => {
+        resizeObserver.disconnect();
+        clearTimeout(resizeTimeout);
+      };
     }
   }, [numLines, pointsPerLine, height]);
 
-  // Animation frame update
+  // Animation frame update - optimized
   useFrame((state) => {
     if (!groupRef.current) return;
     const time = state.clock.getElapsedTime();
     const { cursorThreshold, baseWaveSpeed, baseWaveStrength, strumStrength } = config;
 
-    // Update canvas bounds on each frame for maximum accuracy
+    // Update canvas bounds less frequently for performance
     const canvas = document.querySelector('canvas');
-    if (canvas) {
+    if (canvas && (!canvasRef.current || Math.floor(time * 10) % 60 === 0)) {
       canvasRef.current = canvas.getBoundingClientRect();
     }
 
-    // Calculate normalized mouse coordinates
+    // Calculate normalized mouse coordinates using ref for better performance
     let normalizedMouseX = 0;
     let normalizedMouseY = 0;
     
     if (canvasRef.current) {
-      // Get mouse position relative to canvas
+      const { x: mouseX, y: mouseY } = mousePositionRef.current;
       const relativeMouseX = mouseX - (canvasRef.current.left || 0);
       const relativeMouseY = mouseY - (canvasRef.current.top || 0);
       
@@ -167,7 +180,7 @@ const Waves = ({ mouseX, mouseY, isDarkMode, showCursor = false }: WavesProps): 
       }
     }
     
-    // Animate each line
+    // Animate each line - optimized
     groupRef.current.children.forEach((lineMesh, i) => {
       const x = (i / (numLines - 1) - 0.5) * width;
       const geometry = (lineMesh as THREE.Line).geometry as THREE.BufferGeometry;
@@ -205,7 +218,7 @@ const Waves = ({ mouseX, mouseY, isDarkMode, showCursor = false }: WavesProps): 
     });
   });
 
-  // Create vertical lines
+  // Create vertical lines - memoized for performance
   const lines = useMemo(() => {
     const lines = [];
     const lineColor = isDarkMode ? '#FF85A1' : '#678D58';
@@ -248,7 +261,9 @@ const Waves = ({ mouseX, mouseY, isDarkMode, showCursor = false }: WavesProps): 
       </mesh>
     </group>
   );
-};
+});
+
+Waves.displayName = 'Waves';
 
 /**
  * WaveBackground component
@@ -263,7 +278,6 @@ export default function WaveBackground(): React.ReactElement {
   const { isDarkMode } = useTheme();
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [showCursor, setShowCursor] = useState(false);
-  const [forceUpdate, setForceUpdate] = useState(0); // For forcing re-renders
   
   // Setup debug mode
   useEffect(() => {
@@ -314,38 +328,40 @@ export default function WaveBackground(): React.ReactElement {
     };
   }, []);
   
+  // Optimized mouse tracking with throttling
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    setMousePos({
+      x: e.clientX,
+      y: e.clientY
+    });
+  }, []);
+  
   // Effect for mouse tracking
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      // Store the actual mouse coordinates for the component to use
-      setMousePos({
-        x: e.clientX,
-        y: e.clientY
-      });
-    };
+    let animationFrameId: number;
+    let lastMouseEvent: MouseEvent | null = null;
     
-    // Handle window resize to reset canvas bounds
-    const handleResize = () => {
-      const canvas = document.querySelector('canvas');
-      if (canvas) {
-        // Reset the canvas
-        canvas.dispatchEvent(new Event('resize'));
+    const throttledMouseMove = (e: MouseEvent) => {
+      lastMouseEvent = e;
+      if (!animationFrameId) {
+        animationFrameId = requestAnimationFrame(() => {
+          if (lastMouseEvent) {
+            handleMouseMove(lastMouseEvent);
+          }
+          animationFrameId = 0;
+        });
       }
     };
     
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('mousemove', throttledMouseMove);
     
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousemove', throttledMouseMove);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
     };
-  }, []);
-  
-  // Force update when theme changes
-  useEffect(() => {
-    setForceUpdate(prev => prev + 1);
-  }, [isDarkMode]);
+  }, [handleMouseMove]);
   
   return (
     <div 
@@ -354,7 +370,6 @@ export default function WaveBackground(): React.ReactElement {
       aria-hidden="true"
     >
       <Canvas
-        key={`canvas-${isDarkMode}-${forceUpdate}`} // Force canvas recreation on theme change
         style={{ width: '100%', height: '100%' }}
         dpr={[1, 2]}
         camera={{ position: [0, 0, 100], fov: 7 }}

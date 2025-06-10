@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import Navigation from '../../components/Navigation';
@@ -15,34 +15,69 @@ interface DocumentationPageProps {
   currentPath: string;
 }
 
-export default function DocumentationPage({ initialContent, currentPath }: DocumentationPageProps) {
+// Memoized dynamic imports to prevent recreating on every render
+const BackgroundComponents = {
+  wave: dynamic(() => import('../../components/WaveBackground'), { ssr: false }),
+  stars: dynamic(() => import('../../components/StarsBackground'), { ssr: false }),
+  dither: dynamic(() => import('../../components/DitherBackground'), { ssr: false }),
+  solid: dynamic(() => import('../../components/SolidBackground'), { ssr: false })
+};
+
+const DocumentationPage = React.memo(({ initialContent, currentPath }: DocumentationPageProps) => {
   const router = useRouter();
   const [content, setContent] = useState<string>(initialContent);
   const [path, setPath] = useState<string>(currentPath);
-  const [sidebarVisible, setSidebarVisible] = useState(false); // Default to hidden on mobile, shown on desktop
+  const [sidebarVisible, setSidebarVisible] = useState(false);
   const [backgroundType, setBackgroundType] = useState<string>('wave');
   const [isMobile, setIsMobile] = useState(false);
   
-  // Effect to load the saved background preference
+  // Memoized animation variants
+  const sidebarAnimationVariants = useMemo(() => ({
+    mobile: {
+      initial: { opacity: 0, x: -100, position: 'fixed' as const },
+      animate: { opacity: 1, x: 0, position: 'fixed' as const },
+      exit: { opacity: 0, x: -100, position: 'fixed' as const }
+    },
+    desktop: {
+      initial: { opacity: 1, x: 0, position: 'sticky' as const },
+      animate: { opacity: 1, x: 0, position: 'sticky' as const },
+      exit: { opacity: 1, x: 0, position: 'sticky' as const }
+    }
+  }), []);
+
+  // Memoized transition config
+  const transitionConfig = useMemo(() => ({
+    duration: 0.3
+  }), []);
+
+  // Memoized button animation config
+  const buttonAnimationConfig = useMemo(() => ({
+    whileHover: { scale: 1.1 },
+    whileTap: { scale: 0.9 },
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: 20 },
+    transition: { duration: 0.2 }
+  }), []);
+
+  // Effect to initialize component state
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      // Get the background type from localStorage if available
-      const savedBackground = localStorage.getItem('backgroundType');
-      
-      // Use the saved value or fall back to the env var or default
-      const envDefault = process.env.NEXT_PUBLIC_BACKGROUND_TYPE || 'wave';
-      const validBackgrounds = ['wave', 'stars', 'dither', 'solid'];
-      
-      if (savedBackground && validBackgrounds.includes(savedBackground)) {
-        setBackgroundType(savedBackground);
-      } else {
-        setBackgroundType(envDefault);
-      }
-      
-      // Set initial mobile state
-      setIsMobile(window.innerWidth < 768);
-      // Set initial sidebar state based on screen size
-      setSidebarVisible(window.innerWidth >= 768);
+    if (typeof window === 'undefined') return;
+    
+    // Initialize mobile state and sidebar visibility
+    const mobile = window.innerWidth < 768;
+    setIsMobile(mobile);
+    setSidebarVisible(!mobile); // Show on desktop, hide on mobile by default
+    
+    // Load background preference
+    const savedBackground = localStorage.getItem('backgroundType');
+    const envDefault = process.env.NEXT_PUBLIC_BACKGROUND_TYPE || 'wave';
+    const validBackgrounds = ['wave', 'stars', 'dither', 'solid'];
+    
+    if (savedBackground && validBackgrounds.includes(savedBackground)) {
+      setBackgroundType(savedBackground);
+    } else {
+      setBackgroundType(envDefault);
     }
   }, []);
   
@@ -52,78 +87,88 @@ export default function DocumentationPage({ initialContent, currentPath }: Docum
     setPath(currentPath);
   }, [initialContent, currentPath]);
   
-  // Dynamically import the correct background component
-  const BackgroundComponent = dynamic(() => {
-    switch (backgroundType) {
-      case 'stars':
-        return import('../../components/StarsBackground');
-      case 'dither':
-        return import('../../components/DitherBackground');
-      case 'solid':
-        return import('../../components/SolidBackground');
-      default:
-        return import('../../components/WaveBackground');
-    }
-  }, { ssr: false });
+  // Memoized background component selection
+  const BackgroundComponent = useMemo(() => {
+    return BackgroundComponents[backgroundType as keyof typeof BackgroundComponents] || BackgroundComponents.wave;
+  }, [backgroundType]);
   
-  // Handle mobile behavior for sidebar based on screen size
+  // Optimized resize handler with useCallback
+  const handleResize = useCallback(() => {
+    const mobile = window.innerWidth < 768;
+    setIsMobile(mobile);
+    
+    // Auto-show on desktop, auto-hide on mobile
+    if (!mobile) {
+      setSidebarVisible(true);
+    } else if (mobile && sidebarVisible) {
+      setSidebarVisible(false);
+    }
+  }, [sidebarVisible]);
+
+  // Handle window resize
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
-    const handleResize = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-      
-      if (!mobile) {
-        setSidebarVisible(true); // Always visible on desktop
-      } else if (mobile && sidebarVisible) {
-        setSidebarVisible(false); // Hide on mobile by default
-      }
-    };
-    
-    // Set initial state
-    handleResize();
-    
-    // Add resize listener
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [sidebarVisible]);
+  }, [handleResize]);
   
-  // Handle sidebar layout clicks
+  // Optimized outside click handler with useCallback
+  const handleOutsideClick = useCallback((e: MouseEvent) => {
+    const sidebarEl = document.querySelector('.file-tree-panel');
+    const target = e.target as Node;
+    if (sidebarEl && !sidebarEl.contains(target)) {
+      setSidebarVisible(false);
+    }
+  }, []);
+
+  // Handle outside clicks on mobile
   useEffect(() => {
-    // For mobile, add a click handler to close sidebar when clicking outside
-    if (typeof window === 'undefined') return;
-    
-    const handleOutsideClick = (e: MouseEvent) => {
-      if (isMobile && sidebarVisible) {
-        const sidebarEl = document.querySelector('.file-tree-panel');
-        const target = e.target as Node;
-        if (sidebarEl && !sidebarEl.contains(target)) {
-          setSidebarVisible(false);
-        }
-      }
-    };
+    if (typeof window === 'undefined' || !isMobile || !sidebarVisible) return;
     
     document.addEventListener('mousedown', handleOutsideClick);
     return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, [isMobile, sidebarVisible]);
+  }, [isMobile, sidebarVisible, handleOutsideClick]);
   
-  const handleSelectFile = (item: FileItem) => {
+  // Optimized file selection handler
+  const handleSelectFile = useCallback((item: FileItem) => {
     if (item.type === 'file') {
-      // Use Next.js router for client-side navigation without animation
       router.push(`/docs/${item.path}`, { scroll: false });
       
       // Close sidebar on mobile after selection
-      if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      if (isMobile) {
         setSidebarVisible(false);
       }
     }
-  };
+  }, [router, isMobile]);
   
-  // Toggle sidebar visibility
-  const toggleSidebar = () => {
+  // Optimized sidebar toggle function
+  const toggleSidebar = useCallback(() => {
     setSidebarVisible(!sidebarVisible);
-  };
+  }, [sidebarVisible]);
+
+  // Memoized style objects
+  const sidebarStyle = useMemo(() => ({
+    left: isMobile ? '0' : 'auto',
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+    borderBottomLeftRadius: 0,
+    overflowY: 'auto' as const,
+  }), [isMobile]);
+
+  const contentOpacityClass = useMemo(() => 
+    sidebarVisible && isMobile ? 'opacity-50' : 'opacity-100'
+  , [sidebarVisible, isMobile]);
+
+  const buttonStyle = useMemo(() => ({
+    backgroundColor: 'var(--background-color)', 
+    borderColor: 'var(--border-color)',
+    border: '1px solid'
+  }), []);
+
+  const iconStyle = useMemo(() => ({
+    color: 'var(--text-color)'
+  }), []);
   
   return (
     <main className="flex min-h-screen flex-col">
@@ -136,34 +181,12 @@ export default function DocumentationPage({ initialContent, currentPath }: Docum
           <AnimatePresence>
             {sidebarVisible && (
               <motion.aside 
-                initial={{ 
-                  opacity: isMobile ? 0 : 1, 
-                  x: isMobile ? -100 : 0,
-                  position: isMobile ? 'fixed' : 'sticky', 
-                }}
-                animate={{ 
-                  opacity: 1, 
-                  x: 0,
-                  position: isMobile ? 'fixed' : 'sticky', 
-                }}
-                exit={{ 
-                  opacity: isMobile ? 0 : 1, 
-                  x: isMobile ? -100 : 0,
-                  position: isMobile ? 'fixed' : 'sticky',
-                }}
-                transition={{
-                  duration: isMobile ? 0.3 : 0
-                }}
+                initial={isMobile ? sidebarAnimationVariants.mobile.initial : sidebarAnimationVariants.desktop.initial}
+                animate={isMobile ? sidebarAnimationVariants.mobile.animate : sidebarAnimationVariants.desktop.animate}
+                exit={isMobile ? sidebarAnimationVariants.mobile.exit : sidebarAnimationVariants.desktop.exit}
+                transition={isMobile ? transitionConfig : { duration: 0 }}
                 className="w-full md:w-72 lg:w-80 shrink-0 doc-card file-tree-panel p-4 h-[calc(100vh-64px)] top-16 overflow-y-auto z-20 border-r scrollbar-hide"
-                style={{
-                  left: isMobile ? '0' : 'auto',
-                  borderTopRightRadius: 0,
-                  borderBottomRightRadius: 0,
-                  borderBottomLeftRadius: 0,
-                  overflowY: 'auto',
-                  msOverflowStyle: 'none',  /* IE and Edge */
-                  scrollbarWidth: 'none',  /* Firefox */
-                }}
+                style={sidebarStyle}
               >
                 <div className="flex justify-between items-center mb-3 md:hidden">
                   <div></div>
@@ -187,28 +210,15 @@ export default function DocumentationPage({ initialContent, currentPath }: Docum
           </AnimatePresence>
           
           {/* Content */}
-          <div 
-            className={`flex-1 py-8 px-6 md:px-8 lg:px-16 ${
-              sidebarVisible && isMobile ? 'opacity-50' : 'opacity-100'
-            }`}
-          >
+          <div className={`flex-1 py-8 px-6 md:px-8 lg:px-16 ${contentOpacityClass}`}>
             {/* Mobile file tree toggle button - only visible on mobile when sidebar is hidden */}
             {isMobile && !sidebarVisible && (
               <motion.button
                 onClick={toggleSidebar}
                 className="fixed z-30 bottom-6 left-6 rounded p-3 shadow-lg"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.2 }}
+                {...buttonAnimationConfig}
                 aria-label="Show documentation tree"
-                style={{ 
-                  backgroundColor: 'var(--background-color)', 
-                  borderColor: 'var(--border-color)',
-                  border: '1px solid'
-                }}
+                style={buttonStyle}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -217,7 +227,7 @@ export default function DocumentationPage({ initialContent, currentPath }: Docum
                   strokeWidth={1.5}
                   stroke="currentColor"
                   className="w-5 h-5"
-                  style={{ color: 'var(--text-color)' }}
+                  style={iconStyle}
                 >
                   <path
                     strokeLinecap="round"
@@ -236,4 +246,8 @@ export default function DocumentationPage({ initialContent, currentPath }: Docum
       </div>
     </main>
   );
-} 
+});
+
+DocumentationPage.displayName = 'DocumentationPage';
+
+export default DocumentationPage; 

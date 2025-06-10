@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeSwitcher from './ThemeSwitcher';
 import BackgroundSelector from './BackgroundSelector';
@@ -26,15 +26,15 @@ type SettingsMenuProps = {
  * @param {SettingsMenuProps} props - Component props
  * @returns {React.ReactElement} Rendered SettingsMenu component
  */
-export default function SettingsMenu({ 
+const SettingsMenu = React.memo(({ 
   className = "", 
   isCompact = false 
-}: SettingsMenuProps): React.ReactElement {
+}: SettingsMenuProps): React.ReactElement => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   
-  // Animation variants
-  const menuVariants = {
+  // Memoized animation variants
+  const menuVariants = useMemo(() => ({
     hidden: { 
       opacity: 0, 
       y: -10,
@@ -51,49 +51,86 @@ export default function SettingsMenu({
       y: -10,
       scale: 0.95
     }
-  };
+  }), [isCompact]);
+
+  // Memoized button animations
+  const buttonAnimations = useMemo(() => ({
+    whileHover: { scale: 1.1 },
+    whileTap: { scale: 0.95 }
+  }), []);
+
+  // Memoized transition config
+  const transitionConfig = useMemo(() => ({ duration: 0.2 }), []);
+  
+  // Optimized toggle function
+  const toggleMenu = useCallback(() => {
+    setIsOpen(!isOpen);
+  }, [isOpen]);
+
+  // Optimized event handlers
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  }, []);
+
+  const handleEscape = useCallback((event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setIsOpen(false);
+    }
+  }, []);
   
   // Close menu when clicking outside
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    }
-    
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [handleClickOutside]);
   
   // Close menu when pressing Escape
   useEffect(() => {
-    function handleEscape(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        setIsOpen(false);
-      }
-    }
-    
     document.addEventListener('keydown', handleEscape);
     return () => {
       document.removeEventListener('keydown', handleEscape);
     };
-  }, []);
+  }, [handleEscape]);
+
+  // Memoized style objects
+  const dropdownStyle = useMemo(() => ({
+    backgroundColor: 'var(--card-color)',
+    borderColor: 'var(--border-color)',
+    width: 'max-content',
+    minWidth: '16rem',
+    maxWidth: 'calc(100vw - 1rem)'
+  }), []);
+
+  const buttonStyle = useMemo(() => ({
+    color: 'var(--text-color)'
+  }), []);
+
+  const headingStyle = useMemo(() => ({
+    color: 'var(--muted-color)',
+    fontFamily: 'var(--mono-font)',
+    marginTop: '0'
+  }), []);
+
+  const textStyle = useMemo(() => ({
+    color: 'var(--text-color)'
+  }), []);
   
   return (
     <div className={`relative ${className}`} ref={menuRef}>
       {/* Settings toggle button */}
       <motion.button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleMenu}
         className={`p-2 rounded-full flex items-center justify-center ${isOpen ? 'bg-primary-color text-background-color' : ''}`}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
+        {...buttonAnimations}
         aria-label="Settings menu"
         title="Settings"
         aria-expanded={isOpen}
         aria-controls="settings-dropdown"
-        style={{ color: 'var(--text-color)' }}
+        style={buttonStyle}
       >
         <Image 
           src="/assets/icons/pixel-cog-solid.svg"
@@ -114,19 +151,13 @@ export default function SettingsMenu({
             animate="visible"
             exit="exit"
             variants={menuVariants}
-            transition={{ duration: 0.2 }}
+            transition={transitionConfig}
             className={`absolute z-50 mt-2 p-3 rounded-lg shadow-lg border doc-card ${
               isCompact 
                 ? 'right-0 top-full' 
                 : 'right-0 top-full'
             }`}
-            style={{ 
-              backgroundColor: 'var(--card-color)',
-              borderColor: 'var(--border-color)',
-              width: 'max-content',
-              minWidth: '16rem',
-              maxWidth: 'calc(100vw - 1rem)'
-            }}
+            style={dropdownStyle}
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="settings-menu-button"
@@ -134,18 +165,18 @@ export default function SettingsMenu({
             <div className="flex flex-col items-start justify-start space-y-2">
               {/* Theme section */}
               <div className="w-full">
-                <h3 className="text-sm font-medium mb-1" style={{ color: 'var(--muted-color)', fontFamily: 'var(--mono-font)', marginTop: '0' }}>
+                <h3 className="text-sm font-medium mb-1" style={headingStyle}>
                   APPEARANCE
                 </h3>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm" style={{ color: 'var(--text-color)' }}>Theme</span>
+                  <span className="text-sm" style={textStyle}>Theme</span>
                   <ThemeSwitcher />
                 </div>
               </div>
               
               {/* Background section */}
               <div>
-                <h3 className="text-sm font-medium mb-1" style={{ color: 'var(--muted-color)', fontFamily: 'var(--mono-font)', marginTop: '0' }}>
+                <h3 className="text-sm font-medium mb-1" style={headingStyle}>
                   BACKGROUND
                 </h3>
                 <BackgroundSelector className="w-full justify-between" />
@@ -156,4 +187,8 @@ export default function SettingsMenu({
       </AnimatePresence>
     </div>
   );
-} 
+});
+
+SettingsMenu.displayName = 'SettingsMenu';
+
+export default SettingsMenu; 

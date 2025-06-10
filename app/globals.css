@@ -44,6 +44,30 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Urbanist';
+  src: url('/fonts/Urbanist-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Urbanist';
+  src: url('/fonts/Urbanist-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Urbanist';
+  src: url('/fonts/Urbanist-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Import VCR OSD MONO font for monospace text */
 @font-face {
   font-family: 'VCR OSD Mono';
@@ -141,6 +165,14 @@ h1, h2, h3, h4, h5, h6,
   box-shadow: 0 4px 16px rgba(0,0,0,0.07);
   transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
   max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media (min-width: 1200px) {
+  .doc-card {
+    max-width: 1080px;
+  }
 }
 
 /* File Tree */
@@ -290,29 +322,33 @@ h1, h2, h3, h4, h5, h6,
 
 .bracket-left, .bracket-right {
   display: inline-block;
-  min-width: 0;
-  transition: all 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
-  overflow: hidden;
+  position: absolute;
+  font-weight: normal;
+  pointer-events: none;
+  text-shadow: 0 0 1px rgba(var(--primary-color-rgb), 0.6);
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+  font-size: 1.1em;
+  letter-spacing: -0.5px;
+  transform-origin: center;
 }
 
-.bracket-left {
-  transform-origin: left;
-  margin-right: 2px;
-  max-width: 0;
-  opacity: 0;
+@keyframes bracketFlicker {
+  0% { opacity: 1; }
+  10% { opacity: 0.2; }
+  15% { opacity: 1; }
+  20% { opacity: 0; }
+  25% { opacity: 1; }
+  30% { opacity: 0.7; }
+  35% { opacity: 0.1; }
+  40% { opacity: 1; }
+  45% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 1; }
 }
 
-.bracket-right {
-  transform-origin: right;
-  margin-left: 2px;
-  max-width: 0;
-  opacity: 0;
-}
-
-.nav-link:hover .bracket-left,
-.nav-link:hover .bracket-right {
-  max-width: 20px;
-  opacity: 1;
+.bracket-left:hover, .bracket-right:hover {
+  animation: bracketFlicker 0.2s steps(2) infinite;
 }
 
 /* Notification styles */
@@ -514,18 +550,64 @@ code {
   font-family: var(--body-font);
 }
 
+/* Style for blockquotes with custom quote icons */
 .doc-card blockquote {
+  position: relative;
   border-left: 4px solid var(--primary-color);
-  padding-left: 1rem;
-  margin-left: 0;
-  margin-right: 0;
-  margin-bottom: 1rem;
-  color: var(--muted-color);
-  font-style: italic;
+  padding: 1.5rem 2.5rem 1.5rem 3rem;
+  margin: 1.5rem 0;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  font-style: normal;
+  color: var(--text-color);
+  overflow: visible;
+}
+
+.dark .doc-card blockquote {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.doc-card blockquote::before {
+  content: "";
+  position: absolute;
+  top: 1.5rem;
+  left: 0.75rem;
+  width: 24px;
+  height: 24px;
+  background-image: url('/assets/icons/pixel-quote-left-solid.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.7;
+  filter: brightness(0.2);
+}
+
+.dark .doc-card blockquote::before {
+  filter: brightness(2.5);
+  opacity: 0.6;
+}
+
+/* Right quote removed */
+
+.doc-card blockquote p {
+  margin-bottom: 0.5rem;
+}
+
+.doc-card blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.doc-card blockquote cite {
+  display: block;
+  text-align: right;
+  font-style: normal;
+  font-weight: bold;
+  margin-top: 0.5rem;
+  font-family: var(--mono-font);
+  font-size: 0.9rem;
 }
 
 .doc-card hr {
-  margin: 2rem 0;
+  margin: 1rem 0 2rem 0;
   border: 0;
   border-top: 1px solid var(--border-color);
 }
@@ -577,19 +659,33 @@ code {
 /* Profile container layout */
 .profile-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 2rem;
   align-items: flex-start;
   margin: 2rem 0;
 }
 
-/* Profile image in the container */
-.profile-container > p {
+/* Profile image with social links container */
+.profile-image-container {
   flex: 0 1 250px;
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0; /* Explicitly set margin-top to 0 */
+  padding-top: 0; /* Explicitly set padding-top to 0 */
 }
 
-.profile-container > p > img {
+/* Profile image in the container */
+.profile-container > p,
+.profile-image-container > p {
+  flex: 0 1 250px;
+  margin: 0;
+  width: 100%;
+  padding-top: 0; /* Explicitly set padding-top to 0 */
+}
+
+.profile-container > p > img,
+.profile-image-container > p > img {
   width: 100%;
   max-width: 250px;
   height: auto;
@@ -597,12 +693,25 @@ code {
   border: 4px solid var(--primary-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   margin: 0;
+  display: block; /* Ensure image is block-level to avoid line-height issues */
 }
 
 /* Profile details section */
 .profile-details {
   flex: 1 1 300px;
-  margin-top: 1rem;
+  /* margin-top: 1rem; */ /* Removed to allow closer spacing on mobile if needed */
+  margin-top: 0; /* Explicitly set margin-top to 0 */
+  padding-top: 0; /* Explicitly set padding-top to 0 */
+}
+
+.profile-details > p:first-of-type {
+  margin-top: 0; /* Ensure the first paragraph has no top margin */
+  padding-top: 0; /* Ensure the first paragraph has no top padding */
+}
+
+.profile-details strong {
+  margin-top: 0; /* Ensure strong elements have no top margin */
+  padding-top: 0; /* Ensure strong elements have no top padding */
 }
 
 /* Remove profile image styling that's now handled by the container */
@@ -615,8 +724,10 @@ code {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 1.5rem;
-  margin: 1.2rem 0;
+  justify-content: center;
+  gap: 1rem; /* Reduced gap slightly */
+  margin: 0.8rem 0; /* Reduced top/bottom margin */
+  width: 100%;
 }
 
 .social-links-inline a {
@@ -626,6 +737,7 @@ code {
   text-decoration: none;
   transition: all 0.2s ease;
   font-family: var(--body-font);
+  gap: 12px;
 }
 
 .social-links-inline a:hover {
@@ -636,54 +748,88 @@ code {
 .social-links-inline img {
   height: 20px;
   width: auto;
-  margin-right: 8px;
   vertical-align: middle;
 }
 
+/* Wallet info container */
+.wallet-info {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.wallet-info p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  width: 100%;
+  position: relative;
+}
+
+.wallet-info p strong {
+  min-width: 140px;
+  font-weight: bold;
+  display: inline-block;
+  flex: 0 0 140px;
+}
+
+.wallet-info .wallet-address {
+  flex: 1;
+  min-width: 200px;
+  margin: 0;
+}
+
 /* Wallet address styling */
-.wallet-address {
+code.wallet-address {
   font-family: var(--mono-font);
   background-color: rgba(0, 0, 0, 0.05);
   padding: 0.4rem 0.8rem;
+  padding-right: 2.5rem;
   border-radius: 4px;
   border: 1px solid var(--border-color);
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 0 0 0 0.5rem;
-  max-width: calc(100% - 150px);
+  display: inline-block;
   width: 100%;
+  box-sizing: border-box;
 }
 
-.dark .wallet-address {
+.dark code.wallet-address {
   background-color: rgba(255, 255, 255, 0.1);
   border-color: var(--border-color);
 }
 
 /* Copy button styling */
 .copy-button {
-  background: none;
-  border: none;
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
   cursor: pointer;
   padding: 4px 8px;
-  margin-left: auto;
   border-radius: 4px;
-  vertical-align: middle;
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
-  display: inline-flex;
+  opacity: 0.9;
+  transition: all 0.2s ease;
+  display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.dark .copy-button {
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .copy-button:hover {
   opacity: 1;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.15);
 }
 
 .dark .copy-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.25);
 }
 
 .copy-button img {
@@ -691,7 +837,7 @@ code {
 }
 
 /* Fix for profile info layout */
-.doc-card p strong {
+.doc-card p.profile-info strong {
   font-weight: bold;
   display: inline-block;
   min-width: 140px;
@@ -699,15 +845,12 @@ code {
 }
 
 /* Style the paragraphs following a strong element to maintain alignment */
-.doc-card p {
+.doc-card p.profile-info {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   margin-bottom: 1rem;
-}
-
-.doc-card p strong + br {
-  display: none;
+  width: 100%;
 }
 
 /* Fix for image size in dark mode */
@@ -740,15 +883,161 @@ code {
 .icon-heading {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   font-family: var(--title-font);
   font-size: 1.5rem;
   margin-bottom: 1rem;
   margin-top: 1.5rem;
   border-bottom: none;
+  text-align: left;
+  width: 100%;
 }
 
 .icon-heading img {
   height: 24px;
   width: auto;
   margin-right: 10px;
+}
+
+/* Resources and Citations section styling */
+.resources-section {
+  font-family: var(--mono-font);
+  background-color: rgba(0, 0, 0, 0.05);
+  border-left: 4px solid var(--primary-color);
+  padding: 1rem;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+.dark .resources-section {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.resources-section h3, 
+.resources-section h4 {
+  font-family: var(--mono-font);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
+
+.resources-section ul {
+  margin-bottom: 0.5rem;
+}
+
+.resources-section ol {
+  margin-bottom: 0.5rem;
+  counter-reset: item;
+}
+
+.resources-section ol li {
+  display: block;
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.resources-section ol li:before {
+  content: counter(item) ".";
+  counter-increment: item;
+  font-weight: 700;
+  position: absolute;
+  left: 0;
+  width: 1.5rem;
+}
+
+.resources-section li {
+  font-family: var(--mono-font);
+  margin-bottom: 0.5rem;
+}
+
+.resources-section a {
+  word-break: break-all;
+}
+
+@media (max-width: 640px) {
+  .resources-section {
+    padding: 1rem 0.75rem;
+    font-size: 0.85rem;
+  }
+  
+  .resources-section ol li {
+    padding-left: 1.5rem;
+  }
+  
+  .resources-section ol li:before {
+    width: 1.2rem;
+  }
+}
+
+/* Add rounded border to all markdown images except icons */
+.markdown-content img:not([src*="pixel-"]) {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
+  margin: 1.5rem auto;
+}
+
+/* Ensure icon images don't get the markdown image styling */
+.icon-heading img,
+.social-links-inline img {
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  width: auto;
+  display: inline;
+}
+
+.doc-card ol {
+  font-family: var(--mono-font);
+  margin-bottom: 1rem;
+}
+
+.doc-card ol li {
+  font-family: var(--mono-font);
+  margin-bottom: 0.5rem;
+}
+
+/* Mobile specific adjustments for profile */
+@media (max-width: 767px) { /* Using 767px to target mobile before md breakpoint */
+  .profile-container {
+    gap: 1rem; /* Reduce gap on mobile */
+    align-items: flex-start; /* Explicitly ensure top alignment for children */
+  }
+  .profile-image-container {
+    flex: 0 0 48%; /* Adjusted to ~50% width, allowing for gap */
+    /* max-width: 100px; */ /* Removed max-width to allow 50% scaling */
+    margin-top: 0; /* Reinforce margin-top to 0 */
+  }
+  .profile-details {
+    flex: 0 0 48%; /* Adjusted to ~50% width, allowing for gap */
+    margin-top: 0; /* Reinforce margin-top to 0 */
+  }
+  .profile-details > p:first-of-type {
+    margin-top: 0; /* Ensure first paragraph in details aligns at the top */
+    padding-top: 0; /* Ensure first paragraph has no top padding */
+  }
+  .profile-details > p {
+    margin-top: 0; /* Reset top margin for all paragraphs */
+    line-height: 1.4; /* Slightly reduce line height for tighter text */
+  }
+  .social-links-inline {
+    gap: 0.5rem; /* Further reduce gap for social icons on mobile */
+    margin-top: 0.25rem; /* Reduced margin-top to bring closer to image */
+    margin-bottom: 0.25rem; /* Added small bottom margin for balance */
+  }
+  .social-links-inline img {
+    height: 18px; /* Slightly smaller icons on mobile */
+  }
 }

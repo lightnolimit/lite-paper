@@ -3,177 +3,206 @@ import { FileItem } from "../components/FileTree";
 export const documentationTree: FileItem[] = [
   {
     type: 'directory',
-    name: 'Introduction',
-    path: 'introduction',
+    name: 'Prelude',
+    path: 'prelude',
     children: [
       {
         type: 'file',
         name: 'Synopsis.md',
-        path: 'introduction/synopsis'
+        path: 'prelude/synopsis'
       },
       {
         type: 'file',
-        name: 'Disclaimer.md',
-        path: 'introduction/disclaimer'
+        name: 'Disclaimers.md',
+        path: 'prelude/disclaimers'
       },
       {
         type: 'file',
-        name: 'Legal.md',
-        path: 'introduction/legal'
+        name: 'ACP.md',
+        path: 'prelude/acp'
       },
-      {
-        type: 'file',
-        name: 'Financial.md',
-        path: 'introduction/financial'
-      }
     ]
   },
   {
     type: 'directory',
-    name: 'Prelude: Phantasy',
-    path: 'prelude-phantasy',
+    name: 'Agents',
+    path: 'agents',
     children: [
       {
         type: 'file',
-        name: 'Synopsis.md',
-        path: 'prelude-phantasy/synopsis'
+        name: 'Rally.md',
+        path: 'agents/rally'
       },
       {
         type: 'file',
-        name: 'Roadmap.md',
-        path: 'prelude-phantasy/roadmap'
-      }
+        name: 'Alchemist.md',
+        path: 'agents/alchemist'
+      },
+      {
+        type: 'file',
+        name: 'Munny.md',
+        path: 'agents/munny'
+      },
+      {
+        type: 'file',
+        name: 'Sheena.md',
+        path: 'agents/sheena'
+      },
     ]
   },
   {
     type: 'directory',
-    name: 'Developer Guides',
-    path: 'developer-guides',
+    name: 'Platforms',
+    path: 'platforms',
     children: [
       {
         type: 'file',
-        name: 'Code Examples.md',
-        path: 'developer-guides/code-examples'
+        name: 'Alkahest.md',
+        path: 'platforms/alkahest'
       },
       {
         type: 'file',
-        name: 'Notification Components.md',
-        path: 'developer-guides/notification-components'
-      }
+        name: 'Atelier.md',
+        path: 'platforms/atelier'
+      },
+      {
+        type: 'file',
+        name: 'Banshee.md',
+        path: 'platforms/banshee'
+      },
     ]
   },
+  // {
+  //   type: 'directory',
+  //   name: 'Developer Guides',
+  //   path: 'developer-guides',
+  //   children: [
+  //     {
+  //       type: 'file',
+  //       name: 'Code Examples.md',
+  //       path: 'developer-guides/code-examples'
+  //     },
+  //     {
+  //       type: 'file',
+  //       name: 'Notification Components.md',
+  //       path: 'developer-guides/notification-components'
+  //     }
+  //   ]
+  // },
   {
     type: 'directory',
-    name: 'Phase 1: Rally',
-    path: 'phase1-rally',
+    name: 'Phase 1: Rally.sh',
+    path: 'rally.sh',
     children: [
       {
         type: 'file',
-        name: 'Synopsis.md',
-        path: 'phase1-rally/synopsis'
+        name: 'Platform.md',
+        path: 'rally.sh/platform'
       },
       {
         type: 'file',
-        name: 'Rally.sh Platform.md',
-        path: 'phase1-rally/rallysh-platform'
-      },
-      {
-        type: 'file',
-        name: 'Roadmap.md',
-        path: 'phase1-rally/roadmap'
+        name: 'Strategy.md',
+        path: 'rally.sh/blueprint'
       },
       {
         type: 'directory',
-        name: 'Rally Profile',
-        path: 'phase1-rally/rally-profile',
+        name: '@Rally',
+        path: 'rally.sh/rally',
         children: [
           {
             type: 'file',
-            name: 'Biography.md',
-            path: 'phase1-rally/rally-profile/biography'
+            name: 'Bio.md',
+            path: 'rally.sh/rally/bio'
+          },
+        ]
+      },
+      {
+        type: 'directory',
+        name: 'Technology',
+        path: 'rally.sh/technology',
+        children: [
+          {
+            type: 'file',
+            name: 'Privacy.md',
+            path: 'rally.sh/technology/privacy'
+          },
+        ]
+      },
+      {
+        type: 'directory',
+        name: 'Tokenomics', 
+        path: 'rally.sh/tokenomics',
+        children: [
+          {
+            type: 'file',
+            name: 'Distribution.md',
+            path: 'rally.sh/tokenomics/distribution'
           },
           {
             type: 'file',
-            name: 'Measurements.md',
-            path: 'phase1-rally/rally-profile/measurements'
+            name: 'Utility.md',
+            path: 'rally.sh/tokenomics/utility'
+          },
+          {
+            type: 'file',
+            name: 'Summary.md',
+            path: 'rally.sh/tokenomics/summary'
           }
+        ]
+      }
+    ]
+  },
+  {
+    type: 'directory',
+    name: 'Phase 2: Banshee.sh',
+    path: 'banshee.sh',
+    children: [
+      {
+        type: 'file',
+        name: 'Platform.md',
+        path: 'banshee.sh/banshee-platform'
+      },
+      {
+        type: 'file',
+        name: 'Synopsis.md',
+        path: 'banshee.sh/synopsis'
+      },
+      {
+        type: 'file',
+        name: 'Roadmap.md',
+        path: 'banshee.sh/roadmap'
+      },
+      {
+        type: 'directory',
+        name: '@Sheena',
+        path: 'banshee.sh/models',
+        children: [
+          {
+            type: 'file',
+            name: 'Bio.md',
+            path: 'banshee.sh/models/sheena'
+          },
         ]
       },
       {
         type: 'directory',
         name: 'Tokenomics',
-        path: 'phase1-rally/tokenomics',
-        children: [
-          {
-            type: 'file',
-            name: 'Index.md',
-            path: 'phase1-rally/tokenomics/index'
-          },
-          {
-            type: 'file',
-            name: 'Distribution.md',
-            path: 'phase1-rally/tokenomics/distribution'
-          },
-          {
-            type: 'file',
-            name: 'Utility.md',
-            path: 'phase1-rally/tokenomics/utility'
-          }
-        ]
-      }
-    ]
-  },
-  {
-    type: 'directory',
-    name: 'Phase 2: Banshee',
-    path: 'phase2-banshee',
-    children: [
-      {
-        type: 'file',
-        name: 'Synopsis.md',
-        path: 'phase2-banshee/synopsis'
-      },
-      {
-        type: 'file',
-        name: 'Banshee Platform.md',
-        path: 'phase2-banshee/banshee-platform'
-      },
-      {
-        type: 'file',
-        name: 'Roadmap.md',
-        path: 'phase2-banshee/roadmap'
-      },
-      {
-        type: 'directory',
-        name: 'Models',
-        path: 'phase2-banshee/models',
-        children: [
-          {
-            type: 'file',
-            name: 'Sheena.md',
-            path: 'phase2-banshee/models/sheena'
-          }
-        ]
-      },
-      {
-        type: 'directory',
-        name: 'Tokenomics',
-        path: 'phase2-banshee/tokenomics',
+        path: 'banshee.sh/tokenomics',
         children: [
           {
             type: 'file',
             name: 'Distribution.md',
-            path: 'phase2-banshee/tokenomics/distribution'
+            path: 'banshee.sh/tokenomics/distribution'
           },
           {
             type: 'file',
             name: 'Utility.md',
-            path: 'phase2-banshee/tokenomics/utility'
+            path: 'banshee.sh/tokenomics/utility'
           },
           {
             type: 'file',
             name: 'Additional Benefits.md',
-            path: 'phase2-banshee/tokenomics/additional-benefits'
+            path: 'banshee.sh/tokenomics/additional-benefits'
           }
         ]
       }
@@ -181,75 +210,75 @@ export const documentationTree: FileItem[] = [
   },
   {
     type: 'directory',
-    name: 'Platform: Okiya',
-    path: 'platform-okiya',
+    name: 'Phase 3: Phantasy.bot',
+    path: 'phantasy-bot',
     children: [
       {
         type: 'file',
+        name: 'Platform.md',
+        path: 'phantasy-bot/platform'
+      },
+      {
+        type: 'file',
         name: 'Synopsis.md',
-        path: 'platform-okiya/synopsis'
+        path: 'phantasy-bot/synopsis'
       },
       {
         type: 'file',
-        name: 'Training Arc.md',
-        path: 'platform-okiya/training-arc'
-      },
-      {
-        type: 'file',
-        name: 'Graduation Era.md',
-        path: 'platform-okiya/graduation-era'
+        name: 'Roadmap.md',
+        path: 'phantasy-bot/roadmap'
       },
       {
         type: 'directory',
         name: 'Okāsan',
-        path: 'platform-okiya/okasan',
+        path: 'phantasy-bot/okasan',
         children: [
           {
             type: 'file',
-            name: 'Synopsis.md',
-            path: 'platform-okiya/okasan/synopsis'
+            name: 'Bio.md',
+            path: 'phantasy-bot/okasan/synopsis'
           },
           {
             type: 'file',
             name: 'Profile.md',
-            path: 'platform-okiya/okasan/profile'
+            path: 'phantasy-bot/okasan/profile'
           },
           {
             type: 'file',
             name: 'Measurements.md',
-            path: 'platform-okiya/okasan/measurements'
+            path: 'phantasy-bot/okasan/measurements'
           }
         ]
       },
       {
         type: 'directory',
         name: 'Tokenomics',
-        path: 'platform-okiya/tokenomics',
+        path: 'phantasy-bot/tokenomics',
         children: [
           {
             type: 'file',
             name: 'Distribution.md',
-            path: 'platform-okiya/tokenomics/distribution'
+            path: 'phantasy-bot/tokenomics/distribution'
           },
           {
             type: 'file',
             name: 'Total Supply.md',
-            path: 'platform-okiya/tokenomics/total-supply'
+            path: 'phantasy-bot/tokenomics/total-supply'
           },
           {
             type: 'file',
             name: 'Fees.md',
-            path: 'platform-okiya/tokenomics/fees'
+            path: 'phantasy-bot/tokenomics/fees'
           },
           {
             type: 'file',
             name: 'Utility.md',
-            path: 'platform-okiya/tokenomics/utility'
+            path: 'phantasy-bot/tokenomics/utility'
           },
           {
             type: 'file',
             name: 'Additional Benefits.md',
-            path: 'platform-okiya/tokenomics/additional-benefits'
+            path: 'phantasy-bot/tokenomics/additional-benefits'
           }
         ]
       }

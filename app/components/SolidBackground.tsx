@@ -10,7 +10,7 @@ import React from 'react';
  * 
  * @returns {React.ReactElement} Solid background component
  */
-export default function SolidBackground(): React.ReactElement {
+const SolidBackground = React.memo((): React.ReactElement => {
   return (
     <div 
       className="fixed inset-0 w-full h-full -z-10"
@@ -18,4 +18,8 @@ export default function SolidBackground(): React.ReactElement {
       aria-hidden="true"
     />
   );
-} 
+});
+
+SolidBackground.displayName = 'SolidBackground';
+
+export default SolidBackground; 

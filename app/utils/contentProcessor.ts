@@ -1,22 +1,45 @@
+import logger from './logger';
+
+// Create a utility-specific logger instance
+const processorLogger = logger;
+
+// Cache for processed elements to avoid reprocessing
+const processedElements = new WeakSet<HTMLElement>();
+
 /**
  * Add accessibility features to links in the document
  * 
  * @param element - The parent element containing links
  */
 export const processLinks = (element: HTMLElement): void => {
-  const links = element.querySelectorAll('a');
+  if (processedElements.has(element)) {
+    processorLogger.debug('Element already processed for links, skipping');
+    return;
+  }
+
+  const links = element.querySelectorAll('a:not([data-processed])');
+  processorLogger.debug(`Processing ${links.length} new links for accessibility`);
+  
   links.forEach(link => {
+    const linkElement = link as HTMLAnchorElement;
+    
     // Add tabindex to make links focusable in tab order
-    link.setAttribute('tabindex', '0');
+    linkElement.setAttribute('tabindex', '0');
+    linkElement.setAttribute('data-processed', 'true');
     
     // Add keyboard event listener for Enter key
-    link.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        link.click();
+    const handleKeydown = (e: Event) => {
+      const keyboardEvent = e as KeyboardEvent;
+      if (keyboardEvent.key === 'Enter') {
+        keyboardEvent.preventDefault();
+        linkElement.click();
       }
-    });
+    };
+    
+    linkElement.addEventListener('keydown', handleKeydown);
   });
+  
+  processedElements.add(element);
 };
 
 /**
@@ -25,86 +48,141 @@ export const processLinks = (element: HTMLElement): void => {
  * @param element - The parent element containing wallet addresses
  */
 export const processWalletAddresses = (element: HTMLElement): void => {
-  const walletAddresses = element.querySelectorAll('.wallet-address');
+  const walletAddresses = element.querySelectorAll('.wallet-address:not([data-copy-processed])');
+  processorLogger.debug(`Processing ${walletAddresses.length} new wallet addresses`);
   
-  walletAddresses.forEach(walletElement => {
+  walletAddresses.forEach((walletElement) => {
     const address = walletElement.getAttribute('data-address');
-    if (!address) return;
-    
-    // Check if button already exists to prevent duplicates
-    if (walletElement.querySelector('.copy-button')) return;
+    if (!address) {
+      processorLogger.warn('Wallet element without data-address attribute found');
+      return;
+    }
 
-    // Add styles to the wallet address element
-    const walletEl = walletElement as HTMLElement;
-    walletEl.style.position = 'relative';
-    walletEl.style.paddingRight = '30px';
-    walletEl.style.display = 'inline-flex';
-    walletEl.style.alignItems = 'center';
+    walletElement.setAttribute('data-copy-processed', 'true');
+    processorLogger.debug(`Adding copy button for address: ${address.substring(0, 4)}...`);
     
     // Create the copy button
     const copyButton = document.createElement('button');
     copyButton.className = 'copy-button';
-    copyButton.style.position = 'absolute';
-    copyButton.style.right = '5px';
-    copyButton.style.display = 'flex';
-    copyButton.style.alignItems = 'center';
-    copyButton.style.justifyContent = 'center';
-    copyButton.style.cursor = 'pointer';
-    copyButton.style.padding = '2px';
-    copyButton.style.borderRadius = '4px';
-    copyButton.style.backgroundColor = 'var(--card-color)';
-    copyButton.style.border = '1px solid var(--border-color)';
-    
-    // Add the copy icon
-    copyButton.innerHTML = `<img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" width="14" height="14" />`;
     copyButton.setAttribute('aria-label', 'Copy to clipboard');
     copyButton.setAttribute('title', 'Copy to clipboard');
     
+    // Add the copy icon
+    copyButton.innerHTML = `<img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" width="14" height="14" />`;
+    
     // Add click handler
-    copyButton.addEventListener('click', () => {
-      navigator.clipboard.writeText(address).then(() => {
+    const handleCopyClick = async (e: Event) => {
+      e.stopPropagation();
+      
+      try {
+        await navigator.clipboard.writeText(address);
+        processorLogger.debug(`Copied address to clipboard: ${address.substring(0, 4)}...`);
+        
         // Success feedback
         copyButton.innerHTML = `<img src="/assets/icons/pixel-check-circle-solid.svg" alt="Copied" width="14" height="14" />`;
         
         // Show feedback toast
-        const toast = document.createElement('div');
-        toast.innerText = 'Copied to clipboard!';
-        toast.style.position = 'fixed';
-        toast.style.bottom = '20px';
-        toast.style.left = '50%';
-        toast.style.transform = 'translateX(-50%)';
-        toast.style.backgroundColor = 'var(--primary-color)';
-        toast.style.color = 'white';
-        toast.style.padding = '8px 16px';
-        toast.style.borderRadius = '4px';
-        toast.style.zIndex = '9999';
-        toast.style.opacity = '0';
-        toast.style.transition = 'opacity 0.3s ease';
+        showCopyToast();
         
-        document.body.appendChild(toast);
-        
-        // Show the toast
-        setTimeout(() => {
-          toast.style.opacity = '1';
-        }, 10);
-        
-        // Reset the button and remove toast after delay
+        // Reset the button after delay
         setTimeout(() => {
           copyButton.innerHTML = `<img src="/assets/icons/pixel-copy-solid.svg" alt="Copy" width="14" height="14" />`;
-          toast.style.opacity = '0';
-          
-          // Remove the toast element after fade out
-          setTimeout(() => {
-            document.body.removeChild(toast);
-          }, 300);
         }, 1500);
-      });
-    });
+      } catch (error) {
+        processorLogger.error('Failed to copy to clipboard:', error);
+      }
+    };
+    
+    copyButton.addEventListener('click', handleCopyClick);
     
     // Add button to the wallet address element
     walletElement.appendChild(copyButton);
   });
 };
+
+/**
+ * Show a copy success toast - memoized to prevent multiple toasts
+ */
+let toastTimeout: NodeJS.Timeout | null = null;
+const showCopyToast = (): void => {
+  // Prevent multiple toasts
+  if (toastTimeout) return;
+  
+  const toast = document.createElement('div');
+  toast.innerText = 'Copied to clipboard!';
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--primary-color);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-family: var(--mono-font);
+    pointer-events: none;
+  `;
+  
+  document.body.appendChild(toast);
+  
+  // Show the toast
+  requestAnimationFrame(() => {
+    toast.style.opacity = '1';
+  });
+  
+  // Remove toast after delay
+  toastTimeout = setTimeout(() => {
+    toast.style.opacity = '0';
+    
+    setTimeout(() => {
+      if (toast.parentNode) {
+        document.body.removeChild(toast);
+      }
+      toastTimeout = null;
+    }, 300);
+  }, 1500);
+};
+
+/**
+ * Optimized style map for better performance
+ */
+const styleReplacements: Array<[RegExp, string]> = [
+  // Code elements (but not wallet addresses)
+  [/<code(?! class="wallet-address")/g, '<code class="font-mono bg-opacity-10 bg-gray-200 dark:bg-gray-700 dark:bg-opacity-20 px-1 py-0.5 rounded"'],
+  
+  // Table elements
+  [/<table>/g, '<table class="w-full border-collapse my-4">'],
+  [/<th>/g, '<th class="border border-gray-300 dark:border-gray-700 px-4 py-2 bg-gray-100 dark:bg-gray-800">'],
+  [/<td>/g, '<td class="border border-gray-300 dark:border-gray-700 px-4 py-2">'],
+  
+  // Blockquotes
+  [/<blockquote>/g, '<blockquote class="border-l-4 border-primary-color pl-4 italic text-gray-600 dark:text-gray-400 my-4">'],
+  
+  // Headings (but not icon headings)
+  [/<h1(?! class="icon-heading")([^>]*)>/g, '<h1$1 class="font-title text-3xl mb-6 mt-8">'],
+  [/<h2(?! class="icon-heading")([^>]*)>/g, '<h2$1 class="font-title text-2xl mb-4 mt-6">'],
+  [/<h3(?! class="icon-heading")([^>]*)>/g, '<h3$1 class="font-title text-xl mb-3 mt-5">'],
+  [/<h4(?! class="icon-heading")([^>]*)>/g, '<h4$1 class="font-title text-lg mb-2 mt-4">'],
+  [/<h5(?! class="icon-heading")([^>]*)>/g, '<h5$1 class="font-title text-base mb-2 mt-3">'],
+  [/<h6(?! class="icon-heading")([^>]*)>/g, '<h6$1 class="font-title text-sm mb-2 mt-3">'],
+  
+  // Paragraphs
+  [/<p([^>]*)>/g, '<p$1 class="font-body mb-4">'],
+  
+  // Links (but not social links)
+  [/<a(?! class="social)([^>]*)>/g, '<a$1 class="text-primary-color hover:underline">'],
+  
+  // Lists
+  [/<ul([^>]*)>/g, '<ul$1 class="list-disc pl-6 mb-4">'],
+  [/<ol([^>]*)>/g, '<ol$1 class="list-decimal pl-6 mb-4">'],
+  [/<li([^>]*)>/g, '<li$1 class="mb-1">'],
+  
+  // Horizontal rules
+  [/<hr>/g, '<hr class="my-8 border-t border-gray-300 dark:border-gray-700">'],
+];
 
 /**
  * Apply CSS classes to various HTML elements in the rendered markdown
@@ -113,58 +191,14 @@ export const processWalletAddresses = (element: HTMLElement): void => {
  * @returns Styled HTML string
  */
 export const applyMarkdownStyles = (html: string): string => {
-  const styleMap = {
-    code: '<code class="font-mono bg-opacity-10 bg-gray-200 dark:bg-gray-700 dark:bg-opacity-20 px-1 py-0.5 rounded"',
-    table: '<table class="w-full border-collapse my-4">',
-    th: '<th class="border border-gray-300 dark:border-gray-700 px-4 py-2 bg-gray-100 dark:bg-gray-800">',
-    td: '<td class="border border-gray-300 dark:border-gray-700 px-4 py-2">',
-    blockquote: '<blockquote class="border-l-4 border-primary-color pl-4 italic text-gray-600 dark:text-gray-400 my-4">',
-    h1: '<h1$1 class="font-title text-3xl mb-6 mt-8">',
-    h2: '<h2$1 class="font-title text-2xl mb-4 mt-6">',
-    h3: '<h3$1 class="font-title text-xl mb-3 mt-5">',
-    h4: '<h4$1 class="font-title text-lg mb-2 mt-4">',
-    h5: '<h5$1 class="font-title text-base mb-2 mt-3">',
-    h6: '<h6$1 class="font-title text-sm mb-2 mt-3">',
-    p: '<p$1 class="font-body mb-4">',
-    a: '<a$1 class="text-primary-color hover:underline">',
-    ul: '<ul$1 class="list-disc pl-6 mb-4">',
-    ol: '<ol$1 class="list-decimal pl-6 mb-4">',
-    li: '<li$1 class="mb-1">',
-    hr: '<hr class="my-8 border-t border-gray-300 dark:border-gray-700">',
-  };
+  processorLogger.debug('Applying styles to markdown HTML');
+  
+  // Apply all style replacements in a single pass
+  let styledHtml = html;
+  for (const [regex, replacement] of styleReplacements) {
+    styledHtml = styledHtml.replace(regex, replacement);
+  }
 
-  // Style for code blocks (but not wallet addresses)
-  html = html.replace(/<code(?! class="wallet-address")/g, styleMap.code);
-  
-  // Apply styling for tables
-  html = html.replace(/<table>/g, styleMap.table);
-  html = html.replace(/<th>/g, styleMap.th);
-  html = html.replace(/<td>/g, styleMap.td);
-  
-  // Style for blockquotes
-  html = html.replace(/<blockquote>/g, styleMap.blockquote);
-  
-  // Style for regular headings (not icon headings)
-  html = html.replace(/<h1(?! class="icon-heading")([^>]*)>/g, styleMap.h1)
-    .replace(/<h2(?! class="icon-heading")([^>]*)>/g, styleMap.h2)
-    .replace(/<h3(?! class="icon-heading")([^>]*)>/g, styleMap.h3)
-    .replace(/<h4(?! class="icon-heading")([^>]*)>/g, styleMap.h4)
-    .replace(/<h5(?! class="icon-heading")([^>]*)>/g, styleMap.h5)
-    .replace(/<h6(?! class="icon-heading")([^>]*)>/g, styleMap.h6);
-  
-  // Style for paragraphs
-  html = html.replace(/<p([^>]*)>/g, styleMap.p);
-  
-  // Style for links
-  html = html.replace(/<a(?! class="social)([^>]*)>/g, styleMap.a);
-  
-  // Style for lists
-  html = html.replace(/<ul([^>]*)>/g, styleMap.ul)
-    .replace(/<ol([^>]*)>/g, styleMap.ol)
-    .replace(/<li([^>]*)>/g, styleMap.li);
-
-  // Add styling for horizontal rules
-  html = html.replace(/<hr>/g, styleMap.hr);
-
-  return html;
+  processorLogger.debug('Finished applying styles to markdown HTML');
+  return styledHtml;
 }; 
