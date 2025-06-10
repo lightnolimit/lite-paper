@@ -68,12 +68,28 @@
   font-display: swap;
 }
 
-/* Import VCR OSD MONO font for monospace text */
+/* Import MapleMono font for monospace text */
 @font-face {
-  font-family: 'VCR OSD Mono';
-  src: url('/fonts/VCR_OSD_MONO.woff2') format('woff2');
+  font-family: 'MapleMono';
+  src: url('/fonts/MapleMono-NF-CN-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MapleMono';
+  src: url('/fonts/MapleMono-NF-CN-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MapleMono';
+  src: url('/fonts/MapleMono-NF-CN-Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
   font-display: swap;
 }
 
@@ -88,7 +104,7 @@
   --border-soft: #f2f2f2; /* Even lighter border for header/sidebar */
   --text-color: #2E3A23;
   --muted-color: #6E7D61;
-  --mono-font: 'VCR OSD Mono', monospace;
+  --mono-font: 'MapleMono', 'SF Mono', 'Monaco', 'Consolas', monospace;
   --title-font: 'Yeezy T-Star', sans-serif;
   --body-font: 'Urbanist', sans-serif;
   --icon-color: #2E3A23; /* Icon color for light mode */
@@ -127,6 +143,35 @@ h1, h2, h3, h4, h5, h6,
   transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Hide particles and complex animations when motion is reduced */
+.reduce-motion .background-particles,
+.reduce-motion .node-group,
+.reduce-motion .wave-cursor-visible {
+  animation: none !important;
+  transform: none !important;
 }
 
 /* Custom Scrollbar */
@@ -219,6 +264,27 @@ h1, h2, h3, h4, h5, h6,
   filter: invert(1);
 }
 
+/* File tree icon hover effects */
+.file-tree-item:hover img[src*="pixel-folder"],
+.file-tree-item:hover img[src*="pixel-file"] {
+  filter: brightness(0) saturate(100%) invert(43%) sepia(20%) saturate(1027%) hue-rotate(88deg) brightness(95%) contrast(89%);
+}
+
+.dark .file-tree-item:hover img[src*="pixel-folder"],
+.dark .file-tree-item:hover img[src*="pixel-file"] {
+  filter: brightness(0) saturate(100%) invert(64%) sepia(87%) saturate(1392%) hue-rotate(316deg) brightness(105%) contrast(101%);
+}
+
+.file-tree-item.active img[src*="pixel-folder"],
+.file-tree-item.active img[src*="pixel-file"] {
+  filter: brightness(0) saturate(100%) invert(43%) sepia(20%) saturate(1027%) hue-rotate(88deg) brightness(95%) contrast(89%);
+}
+
+.dark .file-tree-item.active img[src*="pixel-folder"],
+.dark .file-tree-item.active img[src*="pixel-file"] {
+  filter: brightness(0) saturate(100%) invert(64%) sepia(87%) saturate(1392%) hue-rotate(316deg) brightness(105%) contrast(101%);
+}
+
 /* Logo styling */
 .logo-image {
   border-radius: 6px;
@@ -236,6 +302,37 @@ h1, h2, h3, h4, h5, h6,
 
 .animate-fadeIn {
   animation: fadeIn 0.5s ease forwards;
+}
+
+/* Documentation graph animations */
+.documentation-graph-svg {
+  transition: all 0.3s ease;
+}
+
+.documentation-graph-svg:hover {
+  filter: brightness(1.05);
+}
+
+@keyframes nodeFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.node-group {
+  animation: nodeFloat 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.node-group:nth-child(odd) {
+  animation-delay: -1.5s;
+}
+
+.node-group:nth-child(even) {
+  animation-delay: -0.75s;
 }
 
 /* Wave animation cursor enhancement */

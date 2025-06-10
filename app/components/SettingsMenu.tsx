@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeSwitcher from './ThemeSwitcher';
+import MotionToggle from './MotionToggle';
 import BackgroundSelector from './BackgroundSelector';
 import Image from 'next/image';
 
@@ -168,9 +169,13 @@ const SettingsMenu = React.memo(({
                 <h3 className="text-sm font-medium mb-1" style={headingStyle}>
                   APPEARANCE
                 </h3>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-2">
                   <span className="text-sm" style={textStyle}>Theme</span>
                   <ThemeSwitcher />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm" style={textStyle}>Motion</span>
+                  <MotionToggle />
                 </div>
               </div>
               
@@ -182,26 +187,7 @@ const SettingsMenu = React.memo(({
                 <BackgroundSelector className="w-full justify-between" />
               </div>
 
-              {/* Graph View section */}
-              <div className="w-full">
-                <h3 className="text-sm font-medium mb-1" style={headingStyle}>
-                  VISUALIZATION
-                </h3>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm" style={textStyle}>Graph View</span>
-                  <button
-                    onClick={() => {
-                      // Toggle graph view - this will be handled by parent component
-                      const event = new CustomEvent('toggleGraphView');
-                      window.dispatchEvent(event);
-                    }}
-                    className="px-2 py-1 text-xs rounded border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                    style={textStyle}
-                  >
-                    Toggle
-                  </button>
-                </div>
-              </div>
+
             </div>
           </motion.div>
         )}

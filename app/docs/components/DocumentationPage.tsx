@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import Navigation from '../../components/Navigation';
 import FileTree from '../../components/FileTree';
 import ContentRenderer from '../../components/ContentRenderer';
-import DocumentationGraph from '../../components/DocumentationGraph';
+
 import { documentationTree } from '../../data/documentation';
 import { FileItem } from '../../components/FileTree';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -31,7 +31,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [backgroundType, setBackgroundType] = useState<string>('wave');
   const [isMobile, setIsMobile] = useState(false);
-  const [graphViewVisible, setGraphViewVisible] = useState(false);
+
   
   // Memoized animation variants
   const sidebarAnimationVariants = useMemo(() => ({
@@ -89,15 +89,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
     setPath(currentPath);
   }, [initialContent, currentPath]);
 
-  // Listen for graph view toggle events
-  useEffect(() => {
-    const handleGraphViewToggle = () => {
-      setGraphViewVisible(!graphViewVisible);
-    };
 
-    window.addEventListener('toggleGraphView', handleGraphViewToggle);
-    return () => window.removeEventListener('toggleGraphView', handleGraphViewToggle);
-  }, [graphViewVisible]);
   
   // Memoized background component selection
   const BackgroundComponent = useMemo(() => {
@@ -200,18 +192,16 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                 className="w-full md:w-72 lg:w-80 shrink-0 doc-card file-tree-panel p-4 h-[calc(100vh-64px)] top-16 overflow-y-auto z-20 border-r scrollbar-hide"
                 style={sidebarStyle}
               >
-                <div className="flex justify-between items-center mb-3 md:hidden">
-                  <div></div>
-                  <button 
-                    onClick={toggleSidebar}
-                    className="p-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                    aria-label="Close sidebar"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
+                {/* Mobile close button - positioned absolutely */}
+                <button 
+                  onClick={toggleSidebar}
+                  className="absolute top-3 right-3 p-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors z-10 md:hidden"
+                  aria-label="Close sidebar"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
                 <FileTree 
                   items={documentationTree} 
                   onSelect={handleSelectFile}
@@ -251,17 +241,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
             )}
             
             <div className="max-w-6xl mx-auto">
-              {graphViewVisible ? (
-                <DocumentationGraph 
-                  currentPath={path}
-                  onNodeClick={(nodePath) => {
-                    router.push(`/docs/${nodePath}`, { scroll: false });
-                  }}
-                  className="w-full"
-                />
-              ) : (
-                <ContentRenderer content={content} path={path} />
-              )}
+              <ContentRenderer content={content} path={path} />
             </div>
           </div>
         </div>

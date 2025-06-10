@@ -5,12 +5,15 @@ import React, { createContext, useState, useEffect, useContext, ReactNode, useMe
 type ThemeContextType = {
   isDarkMode: boolean;
   toggleTheme: () => void;
+  prefersReducedMotion: boolean;
+  toggleReducedMotion: () => void;
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   // Memoized theme application function
   const applyTheme = useCallback((darkMode: boolean) => {
@@ -25,24 +28,74 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('darkMode', darkMode.toString());
   }, []);
 
-  // Initialize theme from localStorage or system preference
+  // Memoized motion preference application
+  const applyMotionPreference = useCallback((reducedMotion: boolean) => {
+    const html = document.documentElement;
+    
+    if (reducedMotion) {
+      html.classList.add('reduce-motion');
+    } else {
+      html.classList.remove('reduce-motion');
+    }
+    
+    localStorage.setItem('prefersReducedMotion', reducedMotion.toString());
+  }, []);
+
+  // Initialize theme and motion preferences
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
-    // Check localStorage first
-    const storedPreference = localStorage.getItem('darkMode');
-    
-    // Apply theme based on stored preference or system preference
-    const darkModeEnabled = storedPreference === 'true' || 
-      (storedPreference === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    // Theme initialization
+    const storedThemePreference = localStorage.getItem('darkMode');
+    const darkModeEnabled = storedThemePreference === 'true' || 
+      (storedThemePreference === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
     
     setIsDarkMode(darkModeEnabled);
     applyTheme(darkModeEnabled);
     
-    if (storedPreference === null) {
+    if (storedThemePreference === null) {
       localStorage.setItem('darkMode', darkModeEnabled.toString());
     }
-  }, [applyTheme]);
+
+    // Motion preference initialization
+    const storedMotionPreference = localStorage.getItem('prefersReducedMotion');
+    const systemPrefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reducedMotionEnabled = storedMotionPreference === 'true' || 
+      (storedMotionPreference === null && systemPrefersReducedMotion);
+    
+    setPrefersReducedMotion(reducedMotionEnabled);
+    applyMotionPreference(reducedMotionEnabled);
+    
+    if (storedMotionPreference === null && systemPrefersReducedMotion) {
+      localStorage.setItem('prefersReducedMotion', 'true');
+    }
+
+    // Listen for system preference changes
+    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const motionMediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    
+    const handleDarkModeChange = (e: MediaQueryListEvent) => {
+      if (localStorage.getItem('darkMode') === null) {
+        setIsDarkMode(e.matches);
+        applyTheme(e.matches);
+      }
+    };
+
+    const handleMotionChange = (e: MediaQueryListEvent) => {
+      if (localStorage.getItem('prefersReducedMotion') === null) {
+        setPrefersReducedMotion(e.matches);
+        applyMotionPreference(e.matches);
+      }
+    };
+    
+    darkModeMediaQuery.addEventListener('change', handleDarkModeChange);
+    motionMediaQuery.addEventListener('change', handleMotionChange);
+    
+    return () => {
+      darkModeMediaQuery.removeEventListener('change', handleDarkModeChange);
+      motionMediaQuery.removeEventListener('change', handleMotionChange);
+    };
+  }, [applyTheme, applyMotionPreference]);
   
   // Apply theme changes when isDarkMode changes
   useEffect(() => {
@@ -56,18 +109,37 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     });
     window.dispatchEvent(themeChangeEvent);
   }, [isDarkMode, applyTheme]);
+
+  // Apply motion preference changes
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    applyMotionPreference(prefersReducedMotion);
+    
+    // Dispatch a custom event for motion preference change
+    const motionChangeEvent = new CustomEvent('motionChange', { 
+      detail: { prefersReducedMotion }
+    });
+    window.dispatchEvent(motionChangeEvent);
+  }, [prefersReducedMotion, applyMotionPreference]);
   
-  // Memoized toggle theme function to prevent unnecessary re-renders
+  // Memoized toggle functions
   const toggleTheme = useCallback(() => {
     setIsDarkMode(prev => !prev);
+  }, []);
+
+  const toggleReducedMotion = useCallback(() => {
+    setPrefersReducedMotion(prev => !prev);
   }, []);
 
   // Memoized context value to prevent re-renders when children don't need to update
   const contextValue = useMemo(() => ({
     isDarkMode,
-    toggleTheme
-  }), [isDarkMode, toggleTheme]);
-  
+    toggleTheme,
+    prefersReducedMotion,
+    toggleReducedMotion
+  }), [isDarkMode, toggleTheme, prefersReducedMotion, toggleReducedMotion]);
+
   return (
     <ThemeContext.Provider value={contextValue}>
       {children}

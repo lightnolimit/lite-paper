@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { documentationTree, FileItem } from '../data/documentation';
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import { motion } from 'framer-motion';
+import { documentationTree } from '../data/documentation';
+import { FileItem } from './FileTree';
+import { useTheme } from '../providers/ThemeProvider';
 
 // Types for our graph system
 interface GraphNode {
@@ -14,13 +16,15 @@ interface GraphNode {
   y: number;
   level: number;
   connections: string[];
-  color?: string;
+  visible: boolean;
+  searchRelevance: number; // 0-1, for search scoring
 }
 
 interface GraphLink {
   source: string;
   target: string;
   strength: number;
+  visible: boolean;
 }
 
 interface DocumentationGraphProps {
@@ -30,14 +34,13 @@ interface DocumentationGraphProps {
 }
 
 /**
- * Interactive documentation graph component inspired by Obsidian
+ * Interactive documentation graph component with focused view
  * 
  * Features:
- * - Force-directed layout
- * - Interactive nodes and links
- * - Highlight current page
- * - Search and filter
- * - Zoom and pan
+ * - Shows only current node + connections to reduce clutter
+ * - Theme-aware colors (sakura pink/matcha green)
+ * - Efficient search with relevance scoring
+ * - Smooth animations and transitions
  */
 export default function DocumentationGraph({ 
   currentPath, 
@@ -48,27 +51,47 @@ export default function DocumentationGraph({
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [nodes, setNodes] = useState<GraphNode[]>([]);
   const [links, setLinks] = useState<GraphLink[]>([]);
-  const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [focusedNodeId, setFocusedNodeId] = useState<string | null>(null);
+  const { isDarkMode, prefersReducedMotion } = useTheme();
 
-  // Color scheme for different node types
-  const nodeColors = {
-    file: '#8a56ff',
-    directory: '#61dafb',
-    current: '#ff6b6b',
-    connected: '#4ecdc4',
-    search: '#feca57'
-  };
+  // Theme-aware color scheme
+  const themeColors = useMemo(() => {
+    if (isDarkMode) {
+      return {
+        // Dark mode - Sakura pink aesthetic
+        primary: '#FF85A1',      // Sakura pink
+        secondary: '#FFC4DD',    // Light pink  
+        accent: '#FF4989',       // Bright pink
+        connected: '#FFB3C6',    // Medium pink
+        current: '#FF6B9D',      // Deep pink
+        search: '#FFCC99',       // Warm orange
+        muted: '#9C9CAF',        // Gray
+        background: '#0F0F12'
+      };
+    } else {
+      return {
+        // Light mode - Matcha green aesthetic
+        primary: '#678D58',      // Matcha green
+        secondary: '#A3C9A8',    // Light green
+        accent: '#557153',       // Forest green
+        connected: '#8FB287',    // Medium green
+        current: '#4A6B42',      // Deep green
+        search: '#B8860B',       // Gold
+        muted: '#6E7D61',        // Gray
+        background: '#F3F5F0'
+      };
+    }
+  }, [isDarkMode]);
 
-  // Extract nodes and create graph structure
+  // Extract and build graph structure
   const { graphNodes, graphLinks } = useMemo(() => {
     const extractedNodes: GraphNode[] = [];
     const extractedLinks: GraphLink[] = [];
     
     // Recursive function to extract nodes from file tree
     function extractNodes(items: FileItem[], level = 0, parentPath = '') {
-      items.forEach((item, index) => {
+      items.forEach((item) => {
         const nodeId = item.path;
         const node: GraphNode = {
           id: nodeId,
@@ -79,16 +102,18 @@ export default function DocumentationGraph({
           x: Math.random() * dimensions.width,
           y: Math.random() * dimensions.height,
           connections: [],
-          color: item.type === 'file' ? nodeColors.file : nodeColors.directory
+          visible: false, // Initially hidden
+          searchRelevance: 0
         };
 
-        // Create connection to parent if exists
-        if (parentPath && item.type === 'file') {
+        // Create parent-child connections
+        if (parentPath) {
           node.connections.push(parentPath);
           extractedLinks.push({
             source: parentPath,
             target: nodeId,
-            strength: 1
+            strength: 1,
+            visible: false
           });
         }
 
@@ -103,62 +128,133 @@ export default function DocumentationGraph({
 
     extractNodes(documentationTree);
 
-    // Create cross-references based on content analysis
-    // This would typically analyze markdown content for links
-    // For now, we'll create some logical connections
+    // Create logical connections for related content
     const createLogicalConnections = () => {
-      extractedNodes.forEach(node => {
-        extractedNodes.forEach(otherNode => {
-          if (node.id !== otherNode.id) {
-            // Connect getting-started items
-            if (node.path.includes('getting-started') && otherNode.path.includes('getting-started')) {
-              if (!extractedLinks.some(link => 
-                (link.source === node.id && link.target === otherNode.id) ||
-                (link.source === otherNode.id && link.target === node.id)
-              )) {
-                extractedLinks.push({
-                  source: node.id,
-                  target: otherNode.id,
-                  strength: 0.5
-                });
-              }
-            }
-            
-            // Connect related topics
-            const relatedPairs = [
-              ['installation', 'quick-start'],
-              ['basic-usage', 'advanced-features'],
-              ['configuration', 'troubleshooting'],
-              ['overview', 'authentication'],
-              ['code-examples', 'best-practices']
-            ];
-            
-            relatedPairs.forEach(([term1, term2]) => {
-              if ((node.path.includes(term1) && otherNode.path.includes(term2)) ||
-                  (node.path.includes(term2) && otherNode.path.includes(term1))) {
-                if (!extractedLinks.some(link => 
-                  (link.source === node.id && link.target === otherNode.id) ||
-                  (link.source === otherNode.id && link.target === node.id)
-                )) {
-                  extractedLinks.push({
-                    source: node.id,
-                    target: otherNode.id,
-                    strength: 0.7
-                  });
-                }
-              }
-            });
+      const relatedPairs = [
+        ['installation', 'quick-start'],
+        ['basic-usage', 'configuration'],
+        ['overview', 'authentication'],
+        ['endpoints', 'authentication'],
+        ['code-examples', 'best-practices']
+      ];
+      
+      relatedPairs.forEach(([term1, term2]) => {
+        const node1 = extractedNodes.find(n => n.path.includes(term1));
+        const node2 = extractedNodes.find(n => n.path.includes(term2));
+        
+        if (node1 && node2) {
+          // Add bidirectional connections
+          if (!node1.connections.includes(node2.id)) {
+            node1.connections.push(node2.id);
           }
-        });
+          if (!node2.connections.includes(node1.id)) {
+            node2.connections.push(node1.id);
+          }
+          
+          extractedLinks.push({
+            source: node1.id,
+            target: node2.id,
+            strength: 0.7,
+            visible: false
+          });
+        }
       });
     };
 
     createLogicalConnections();
 
     return { graphNodes: extractedNodes, graphLinks: extractedLinks };
-  }, [dimensions, documentationTree]);
+  }, [dimensions]);
 
-  // Force simulation for positioning
+  // Efficient search with relevance scoring
+  const searchResults = useMemo(() => {
+    if (!searchTerm.trim()) return { nodes: [], hasResults: false };
+    
+    const query = searchTerm.toLowerCase().trim();
+    const results = graphNodes.map(node => {
+      const title = node.title.toLowerCase();
+      const path = node.path.toLowerCase();
+      
+      let relevance = 0;
+      
+      // Exact title match gets highest score
+      if (title === query) relevance = 1.0;
+      // Title starts with query gets high score
+      else if (title.startsWith(query)) relevance = 0.9;
+      // Title contains query gets medium score
+      else if (title.includes(query)) relevance = 0.7;
+      // Path contains query gets low score
+      else if (path.includes(query)) relevance = 0.4;
+      
+      // Boost score if it's the current node or connected to current
+      if (currentPath) {
+        if (node.id === currentPath) relevance += 0.2;
+        else if (node.connections.includes(currentPath)) relevance += 0.1;
+      }
+      
+      return { ...node, searchRelevance: Math.min(relevance, 1.0) };
+    })
+    .filter(node => node.searchRelevance > 0)
+    .sort((a, b) => b.searchRelevance - a.searchRelevance);
+    
+    return { nodes: results, hasResults: results.length > 0 };
+  }, [searchTerm, graphNodes, currentPath]);
+
+  // Update node visibility based on current focus and search
+  const visibleElements = useMemo(() => {
+    const visibleNodes = new Set<string>();
+    const visibleLinks = new Set<string>();
+    
+    if (searchTerm.trim()) {
+      // Show search results
+      searchResults.nodes.slice(0, 8).forEach(node => {
+        visibleNodes.add(node.id);
+        // Show connections between search results
+        node.connections.forEach(connId => {
+          if (searchResults.nodes.some(n => n.id === connId)) {
+            visibleNodes.add(connId);
+            visibleLinks.add(`${node.id}-${connId}`);
+            visibleLinks.add(`${connId}-${node.id}`);
+          }
+        });
+      });
+    } else {
+      // Focus mode: show current node + direct connections
+      const focusNode = focusedNodeId || currentPath;
+      if (focusNode) {
+        visibleNodes.add(focusNode);
+        
+        // Find and show direct connections
+        const currentNode = graphNodes.find(n => n.id === focusNode);
+        if (currentNode) {
+          currentNode.connections.forEach(connId => {
+            visibleNodes.add(connId);
+            visibleLinks.add(`${focusNode}-${connId}`);
+            visibleLinks.add(`${connId}-${focusNode}`);
+          });
+          
+          // Show nodes that connect to current
+          graphNodes.forEach(node => {
+            if (node.connections.includes(focusNode)) {
+              visibleNodes.add(node.id);
+              visibleLinks.add(`${node.id}-${focusNode}`);
+              visibleLinks.add(`${focusNode}-${node.id}`);
+            }
+          });
+        }
+      } else {
+        // No focus: show a few central nodes
+        const centralNodes = graphNodes
+          .filter(n => n.connections.length > 1)
+          .slice(0, 3);
+        centralNodes.forEach(node => visibleNodes.add(node.id));
+      }
+    }
+    
+    return { visibleNodes, visibleLinks };
+  }, [searchTerm, searchResults, focusedNodeId, currentPath, graphNodes]);
+
+  // Position nodes using simple force simulation
   useEffect(() => {
     if (!graphNodes.length) return;
 
@@ -167,21 +263,22 @@ export default function DocumentationGraph({
       links: [...graphLinks]
     };
 
-    // Simple force simulation implementation
-    const iterations = 100;
+    const iterations = 80;
     const centerX = dimensions.width / 2;
     const centerY = dimensions.height / 2;
+    const isSidebarView = dimensions.height <= 300;
 
     for (let i = 0; i < iterations; i++) {
-      // Attraction to center
+      // Gentle attraction to center
       simulation.nodes.forEach(node => {
         const dx = centerX - node.x;
         const dy = centerY - node.y;
-        node.x += dx * 0.01;
-        node.y += dy * 0.01;
+        node.x += dx * 0.02;
+        node.y += dy * 0.02;
       });
 
-      // Repulsion between nodes
+      // Node repulsion
+      const minDistance = isSidebarView ? 50 : 80;
       for (let j = 0; j < simulation.nodes.length; j++) {
         for (let k = j + 1; k < simulation.nodes.length; k++) {
           const nodeA = simulation.nodes[j];
@@ -190,10 +287,10 @@ export default function DocumentationGraph({
           const dy = nodeB.y - nodeA.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
           
-          if (distance < 100) {
-            const force = (100 - distance) / distance;
-            const fx = dx * force * 0.1;
-            const fy = dy * force * 0.1;
+          if (distance < minDistance && distance > 0) {
+            const force = (minDistance - distance) / distance * 0.1;
+            const fx = dx * force;
+            const fy = dy * force;
             
             nodeA.x -= fx;
             nodeA.y -= fy;
@@ -212,10 +309,10 @@ export default function DocumentationGraph({
           const dx = target.x - source.x;
           const dy = target.y - source.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
-          const targetDistance = 80;
+          const targetDistance = isSidebarView ? 60 : 100;
           
           if (distance > 0) {
-            const force = (distance - targetDistance) / distance * link.strength * 0.1;
+            const force = (distance - targetDistance) / distance * link.strength * 0.05;
             const fx = dx * force;
             const fy = dy * force;
             
@@ -228,27 +325,16 @@ export default function DocumentationGraph({
       });
 
       // Keep nodes in bounds
+      const margin = 30;
       simulation.nodes.forEach(node => {
-        node.x = Math.max(30, Math.min(dimensions.width - 30, node.x));
-        node.y = Math.max(30, Math.min(dimensions.height - 30, node.y));
+        node.x = Math.max(margin, Math.min(dimensions.width - margin, node.x));
+        node.y = Math.max(margin, Math.min(dimensions.height - margin, node.y));
       });
     }
 
     setNodes(simulation.nodes);
     setLinks(simulation.links);
   }, [graphNodes, graphLinks, dimensions]);
-
-  // Filter nodes based on search
-  const filteredNodes = useMemo(() => {
-    if (!searchTerm) return nodes;
-    
-    return nodes.map(node => ({
-      ...node,
-      color: node.title.toLowerCase().includes(searchTerm.toLowerCase()) 
-        ? nodeColors.search 
-        : node.color
-    }));
-  }, [nodes, searchTerm]);
 
   // Handle window resize
   useEffect(() => {
@@ -262,94 +348,171 @@ export default function DocumentationGraph({
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [isFullscreen]);
+  }, []);
 
-  const handleNodeClick = (node: GraphNode) => {
-    setSelectedNode(node.id);
+  // Set focus when current path changes
+  useEffect(() => {
+    if (currentPath) {
+      setFocusedNodeId(currentPath);
+    }
+  }, [currentPath]);
+
+  const handleNodeClick = useCallback((node: GraphNode) => {
+    setFocusedNodeId(node.id);
     onNodeClick?.(node.path);
-  };
+  }, [onNodeClick]);
 
-  const getNodeRadius = (node: GraphNode) => {
-    if (node.id === currentPath) return 12;
-    if (node.id === selectedNode) return 10;
-    return node.type === 'directory' ? 8 : 6;
-  };
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  }, []);
 
-  const getNodeColor = (node: GraphNode) => {
-    if (node.id === currentPath) return nodeColors.current;
-    if (node.title.toLowerCase().includes(searchTerm.toLowerCase())) return nodeColors.search;
+  const getNodeColor = useCallback((node: GraphNode): string => {
+    if (searchTerm && node.searchRelevance > 0) {
+      return themeColors.search;
+    }
+    if (node.id === currentPath) {
+      return themeColors.current;
+    }
+    if (node.id === focusedNodeId) {
+      return themeColors.accent;
+    }
+    if (node.type === 'directory') {
+      return themeColors.secondary;
+    }
+    return themeColors.primary;
+  }, [searchTerm, currentPath, focusedNodeId, themeColors]);
+
+  const getNodeRadius = useCallback((node: GraphNode): number => {
+    const isSidebarView = dimensions.height <= 300;
+    const baseScale = isSidebarView ? 0.6 : 1;
     
-    // Highlight connected nodes
-    const isConnected = links.some(link => 
-      (link.source === selectedNode && link.target === node.id) ||
-      (link.target === selectedNode && link.source === node.id)
-    );
-    
-    if (selectedNode && isConnected) return nodeColors.connected;
-    
-    return node.color || (node.type === 'file' ? nodeColors.file : nodeColors.directory);
-  };
+    if (node.id === currentPath) return 8 * baseScale;
+    if (node.id === focusedNodeId) return 7 * baseScale;
+    if (searchTerm && node.searchRelevance > 0.8) return 7 * baseScale;
+    return node.type === 'directory' ? 6 * baseScale : 5 * baseScale;
+  }, [dimensions.height, currentPath, focusedNodeId, searchTerm]);
+
+  const isSidebarView = dimensions.height <= 300;
 
   return (
     <div className={`documentation-graph ${className}`}>
-      {/* Controls */}
-      <div className="graph-controls flex gap-2 mb-4 items-center">
+      {/* Search Input */}
+      <div className="mb-2">
         <input
           type="text"
-          placeholder="Search documentation..."
+          placeholder={isSidebarView ? "Search docs..." : "Search documents..."}
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+          onChange={handleSearchChange}
+          className={`w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-opacity-50 ${
+            isSidebarView ? 'text-xs py-1 px-2' : ''
+          }`}
+          style={{ 
+            fontFamily: 'var(--mono-font)'
+          }}
         />
-        <button
-          onClick={() => setIsFullscreen(!isFullscreen)}
-          className="px-4 py-2 rounded-lg bg-primary-color text-white hover:bg-opacity-80 transition-colors"
-        >
-          {isFullscreen ? 'Exit' : 'Fullscreen'}
-        </button>
       </div>
 
-      {/* Graph SVG */}
-      <motion.div
-        className={`graph-container border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden ${
-          isFullscreen ? 'fixed inset-4 z-50 bg-white dark:bg-gray-900' : 'h-96'
-        }`}
-        animate={{
-          height: isFullscreen ? 'calc(100vh - 2rem)' : '24rem'
-        }}
-      >
+      {/* Graph Container */}
+      <div className={`graph-container border border-gray-300 dark:border-gray-700 rounded overflow-hidden ${
+        isSidebarView ? 'h-48' : 'h-96'
+      }`}>
         <svg
           ref={svgRef}
           width="100%"
           height="100%"
           className="documentation-graph-svg"
           viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
+          style={{ backgroundColor: 'var(--card-color)' }}
         >
-          {/* Background */}
-          <rect width="100%" height="100%" fill="var(--card-color)" />
-          
+          {/* Gradient definitions */}
+          <defs>
+            <radialGradient id="node-gradient" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="white" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="transparent" />
+            </radialGradient>
+            
+            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+              <feMerge> 
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+
+          {/* Mind-map label */}
+          <text
+            x={dimensions.width - 10}
+            y={15}
+            textAnchor="end"
+            className="text-xs fill-current pointer-events-none"
+            style={{ 
+              fontSize: isSidebarView ? '8px' : '10px',
+              fontFamily: 'var(--mono-font)',
+              fill: isDarkMode ? 'rgba(240, 240, 245, 0.4)' : 'rgba(46, 58, 35, 0.4)'
+            }}
+          >
+            mind-map
+          </text>
+
+          {/* Background particles */}
+          {!isSidebarView && (
+            <g className="background-particles" opacity="0.1">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <motion.circle
+                  key={`particle-${i}`}
+                  r={1}
+                  fill={themeColors.primary}
+                  initial={{
+                    x: Math.random() * dimensions.width,
+                    y: Math.random() * dimensions.height,
+                  }}
+                  animate={{
+                    x: Math.random() * dimensions.width,
+                    y: Math.random() * dimensions.height,
+                  }}
+                  transition={{
+                    duration: Math.random() * 20 + 10,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    ease: "linear"
+                  }}
+                />
+              ))}
+            </g>
+          )}
+
           {/* Links */}
           <g className="links">
             {links.map((link, index) => {
-              const sourceNode = filteredNodes.find(n => n.id === link.source);
-              const targetNode = filteredNodes.find(n => n.id === link.target);
+              const sourceNode = nodes.find(n => n.id === link.source);
+              const targetNode = nodes.find(n => n.id === link.target);
               
               if (!sourceNode || !targetNode) return null;
               
-              const isHighlighted = selectedNode && 
-                (link.source === selectedNode || link.target === selectedNode);
+              const linkKey = `${link.source}-${link.target}`;
+              const isVisible = visibleElements.visibleLinks.has(linkKey);
+              
+              if (!isVisible) return null;
               
               return (
-                <line
+                <motion.line
                   key={`link-${index}`}
                   x1={sourceNode.x}
                   y1={sourceNode.y}
                   x2={targetNode.x}
                   y2={targetNode.y}
-                  stroke={isHighlighted ? nodeColors.connected : '#666'}
-                  strokeWidth={isHighlighted ? 2 : 1}
-                  strokeOpacity={isHighlighted ? 0.8 : 0.3}
-                  className="transition-all duration-300"
+                  stroke={themeColors.connected}
+                  strokeWidth={isSidebarView ? 1 : 1.5}
+                  strokeOpacity={0.6}
+                  initial={{ pathLength: prefersReducedMotion ? 1 : 0, opacity: prefersReducedMotion ? 0.6 : 0 }}
+                  animate={{ pathLength: 1, opacity: 0.6 }}
+                  exit={{ pathLength: prefersReducedMotion ? 1 : 0, opacity: prefersReducedMotion ? 0.6 : 0 }}
+                  transition={{ 
+                    duration: prefersReducedMotion ? 0.01 : 0.8,
+                    delay: prefersReducedMotion ? 0 : index * 0.1,
+                    ease: "easeInOut"
+                  }}
                 />
               );
             })}
@@ -357,108 +520,152 @@ export default function DocumentationGraph({
           
           {/* Nodes */}
           <g className="nodes">
-            {filteredNodes.map((node) => (
-              <g key={node.id} className="node-group">
-                {/* Node circle */}
-                <circle
-                  cx={node.x}
-                  cy={node.y}
-                  r={getNodeRadius(node)}
-                  fill={getNodeColor(node)}
-                  stroke="#fff"
-                  strokeWidth={node.id === selectedNode ? 3 : 2}
-                  className="cursor-pointer transition-all duration-300 hover:scale-110"
+            {nodes.map((node, nodeIndex) => {
+              const isVisible = visibleElements.visibleNodes.has(node.id);
+              
+              if (!isVisible) return null;
+              
+              const nodeColor = getNodeColor(node);
+              const nodeRadius = getNodeRadius(node);
+              
+              return (
+                <motion.g 
+                  key={node.id} 
+                  className="node-group cursor-pointer"
+                  initial={{ 
+                    scale: prefersReducedMotion ? 1 : 0,
+                    opacity: prefersReducedMotion ? 1 : 0
+                  }}
+                  animate={{ 
+                    scale: 1,
+                    opacity: 1
+                  }}
+                  exit={{
+                    scale: prefersReducedMotion ? 1 : 0,
+                    opacity: prefersReducedMotion ? 1 : 0
+                  }}
+                  transition={{
+                    duration: prefersReducedMotion ? 0.01 : 0.5,
+                    delay: prefersReducedMotion ? 0 : nodeIndex * 0.05
+                  }}
+                  whileHover={prefersReducedMotion ? {} : { 
+                    scale: 1.1,
+                    transition: { duration: 0.2 }
+                  }}
+                  whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
                   onClick={() => handleNodeClick(node)}
-                />
-                
-                {/* Node label */}
-                <text
-                  x={node.x}
-                  y={node.y + getNodeRadius(node) + 15}
-                  textAnchor="middle"
-                  className="text-xs fill-current text-gray-700 dark:text-gray-300 font-medium pointer-events-none"
-                  style={{ fontSize: node.id === currentPath ? '12px' : '10px' }}
                 >
-                  {node.title.length > 15 ? `${node.title.slice(0, 15)}...` : node.title}
-                </text>
-                
-                {/* Current page indicator */}
-                {node.id === currentPath && (
+                  {/* Node glow */}
+                  <motion.circle
+                    cx={node.x}
+                    cy={node.y}
+                    r={nodeRadius + 3}
+                    fill={nodeColor}
+                    opacity={0.2}
+                    filter="url(#glow)"
+                  />
+                  
+                  {/* Main node */}
+                  <motion.circle
+                    cx={node.x}
+                    cy={node.y}
+                    r={nodeRadius}
+                    fill={nodeColor}
+                    stroke="white"
+                    strokeWidth={node.id === currentPath ? 2 : 1}
+                  />
+                  
+                  {/* Node gradient overlay */}
                   <circle
                     cx={node.x}
                     cy={node.y}
-                    r={getNodeRadius(node) + 4}
-                    fill="none"
-                    stroke={nodeColors.current}
-                    strokeWidth={2}
-                    strokeDasharray="4,4"
-                    className="animate-pulse"
+                    r={nodeRadius}
+                    fill="url(#node-gradient)"
+                    pointerEvents="none"
                   />
-                )}
-              </g>
-            ))}
+                  
+                  {/* Node label */}
+                  <motion.text
+                    x={node.x}
+                    y={node.y + nodeRadius + (isSidebarView ? 8 : 12)}
+                    textAnchor="middle"
+                    className="text-xs fill-current text-gray-700 dark:text-gray-300 font-medium pointer-events-none"
+                    style={{ 
+                      fontSize: isSidebarView ? '8px' : '10px',
+                      fontFamily: 'var(--mono-font)'
+                    }}
+                  >
+                    {isSidebarView ? 
+                      (node.title.length > 6 ? `${node.title.slice(0, 6)}...` : node.title) :
+                      (node.title.length > 12 ? `${node.title.slice(0, 12)}...` : node.title)
+                    }
+                  </motion.text>
+                  
+                  {/* Current page indicator */}
+                  {node.id === currentPath && (
+                    <motion.circle
+                      cx={node.x}
+                      cy={node.y}
+                      r={nodeRadius + 5}
+                      fill="none"
+                      stroke={themeColors.current}
+                      strokeWidth={1.5}
+                      strokeDasharray="3,3"
+                      animate={{
+                        rotate: 360,
+                        strokeDashoffset: [0, -6]
+                      }}
+                      transition={{
+                        rotate: { duration: 8, repeat: Infinity, ease: "linear" },
+                        strokeDashoffset: { duration: 1, repeat: Infinity, ease: "linear" }
+                      }}
+                    />
+                  )}
+                </motion.g>
+              );
+            })}
           </g>
         </svg>
-      </motion.div>
-
-      {/* Legend */}
-      <div className="graph-legend mt-4 flex flex-wrap gap-4 text-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: nodeColors.file }}></div>
-          <span>Files</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: nodeColors.directory }}></div>
-          <span>Directories</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: nodeColors.current }}></div>
-          <span>Current Page</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: nodeColors.connected }}></div>
-          <span>Connected</span>
-        </div>
       </div>
 
-      {/* Node info panel */}
-      <AnimatePresence>
-        {selectedNode && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="node-info mt-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg"
-          >
-            {(() => {
-              const node = filteredNodes.find(n => n.id === selectedNode);
-              if (!node) return null;
-              
-              const connections = links.filter(link => 
-                link.source === selectedNode || link.target === selectedNode
-              );
-              
-              return (
-                <div>
-                  <h3 className="font-bold text-lg mb-2">{node.title}</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                    Type: {node.type} | Path: {node.path}
-                  </p>
-                  <p className="text-sm">
-                    Connected to {connections.length} other page{connections.length !== 1 ? 's' : ''}
-                  </p>
-                  <button
-                    onClick={() => setSelectedNode(null)}
-                    className="mt-2 text-sm text-primary-color hover:underline"
-                  >
-                    Clear selection
-                  </button>
-                </div>
-              );
-            })()}
-          </motion.div>
+      {/* Compact legend */}
+      <div className={`graph-legend mt-2 flex justify-center gap-3 text-xs opacity-75 ${
+        isSidebarView ? 'text-xs' : 'text-sm'
+      }`}>
+        <div className="flex items-center gap-1">
+          <div 
+            className="w-2 h-2 rounded-full" 
+            style={{ backgroundColor: themeColors.primary }}
+          />
+          <span style={{ fontSize: isSidebarView ? '9px' : '11px' }}>Pages</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div 
+            className="w-2 h-2 rounded-full" 
+            style={{ backgroundColor: themeColors.current }}
+          />
+          <span style={{ fontSize: isSidebarView ? '9px' : '11px' }}>Current</span>
+        </div>
+        {searchTerm && (
+          <div className="flex items-center gap-1">
+            <div 
+              className="w-2 h-2 rounded-full" 
+              style={{ backgroundColor: themeColors.search }}
+            />
+            <span style={{ fontSize: isSidebarView ? '9px' : '11px' }}>Matches</span>
+          </div>
         )}
-      </AnimatePresence>
+      </div>
+
+      {/* Search results info */}
+      {searchTerm && (
+        <div className="mt-1 text-xs text-center opacity-75">
+          {searchResults.hasResults 
+            ? `${searchResults.nodes.length} result${searchResults.nodes.length !== 1 ? 's' : ''}`
+            : 'No matches found'
+          }
+        </div>
+      )}
     </div>
   );
-} 
+}

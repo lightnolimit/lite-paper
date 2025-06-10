@@ -2,6 +2,8 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import DocumentationGraph from './DocumentationGraph';
 
 export type FileItem = {
   name: string;
@@ -170,6 +172,7 @@ FileTreeItem.displayName = 'FileTreeItem';
 
 const FileTree: React.FC<FileTreeProps> = ({ items, onSelect, currentPath }) => {
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+  const router = useRouter();
   
   const toggleItem = useCallback((path: string) => {
     setExpandedItems((prev) => ({
@@ -203,6 +206,19 @@ const FileTree: React.FC<FileTreeProps> = ({ items, onSelect, currentPath }) => 
           currentPath={currentPath}
         />
       ))}
+      
+      {/* Documentation Graph - placed at the bottom of sidebar */}
+      <div className="mt-3 border-t border-gray-200 dark:border-gray-700 pt-3">
+        <div className="h-64 w-full">
+          <DocumentationGraph 
+            currentPath={currentPath || ''}
+            onNodeClick={(nodePath) => {
+              router.push(`/docs/${nodePath}`, { scroll: false });
+            }}
+            className="w-full h-full"
+          />
+        </div>
+      </div>
     </div>
   );
 };
