@@ -11,7 +11,19 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Memoized theme application function
+  const applyTheme = useCallback((darkMode: boolean) => {
+    const html = document.documentElement;
+    
+    if (darkMode) {
+      html.classList.add('dark');
+    } else {
+      html.classList.remove('dark');
+    }
+    
+    localStorage.setItem('darkMode', darkMode.toString());
+  }, []);
 
   // Initialize theme from localStorage or system preference
   useEffect(() => {
@@ -30,26 +42,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (storedPreference === null) {
       localStorage.setItem('darkMode', darkModeEnabled.toString());
     }
-    
-    setIsInitialized(true);
-  }, []);
+  }, [applyTheme]);
   
-  // Memoized theme application function
-  const applyTheme = useCallback((darkMode: boolean) => {
-    const html = document.documentElement;
-    
-    if (darkMode) {
-      html.classList.add('dark');
-    } else {
-      html.classList.remove('dark');
-    }
-    
-    localStorage.setItem('darkMode', darkMode.toString());
-  }, []);
-  
-  // Effect to apply theme changes
+  // Apply theme changes when isDarkMode changes
   useEffect(() => {
-    if (!isInitialized || typeof window === 'undefined') return;
+    if (typeof window === 'undefined') return;
     
     applyTheme(isDarkMode);
     
@@ -58,7 +55,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       detail: { isDarkMode }
     });
     window.dispatchEvent(themeChangeEvent);
-  }, [isDarkMode, isInitialized, applyTheme]);
+  }, [isDarkMode, applyTheme]);
   
   // Memoized toggle theme function to prevent unnecessary re-renders
   const toggleTheme = useCallback(() => {

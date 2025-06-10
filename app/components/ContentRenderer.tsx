@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { marked } from 'marked';
+import { useRouter } from 'next/navigation';
 import { documentationTree } from '../data/documentation';
 import { FileItem } from './FileTree';
 import { applyMarkdownStyles, processLinks, processWalletAddresses } from '../utils/contentProcessor';
@@ -159,12 +160,64 @@ const useProcessDomElements = (contentRef: React.RefObject<HTMLDivElement | null
  */
 export default function ContentRenderer({ content = '', path = '' }: ContentRendererProps): React.ReactElement {
   const contentRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   
   // Memoize adjacent pages to prevent recalculation
   const { prevPage, nextPage } = useMemo(() => findAdjacentPages(path), [path]);
   
   // Process DOM elements after render
   useProcessDomElements(contentRef, content);
+  
+  // Setup content processing and DOM manipulation
+  useEffect(() => {
+    if (!content) return;
+    
+    // Store current ref value for cleanup
+    const currentContentRef = contentRef.current;
+    
+    // Apply content processing immediately
+    const processContent = async () => {
+      try {
+        // Process markdown content with existing utilities
+        const rawHtml = await marked(content);
+        const styledHtml = applyMarkdownStyles(rawHtml);
+        
+        if (contentRef.current) {
+          contentRef.current.innerHTML = styledHtml;
+          
+          // Add click handlers for internal links
+          const links = contentRef.current.querySelectorAll('a[href^="/docs/"]');
+          links.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href) {
+              link.addEventListener('click', (e) => {
+                e.preventDefault();
+                router.push(href);
+              });
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error processing markdown content:', error);
+        if (contentRef.current) {
+          contentRef.current.innerHTML = '<p>Error loading content. Please try again.</p>';
+        }
+      }
+    };
+    
+    processContent();
+    
+    // Cleanup function using stored ref
+    return () => {
+      if (currentContentRef) {
+        const links = currentContentRef.querySelectorAll('a[href^="/docs/"]');
+        links.forEach(link => {
+          // Remove event listeners on cleanup
+          link.replaceWith(link.cloneNode(true));
+        });
+      }
+    };
+  }, [content, path, router, contentRef]); // Added contentRef dependency
   
   // Render markdown with memoization
   const contentHtml = useMemo(() => {

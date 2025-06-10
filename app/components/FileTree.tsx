@@ -79,7 +79,7 @@ const FileTreeItem: React.FC<FileTreeItemProps> = React.memo(({
   const hasChildren = isDirectory && item.children && item.children.length > 0;
   
   // Memoize icon data to prevent recalculation
-  const iconData = useMemo(() => getCustomIcon(item), [item.name, item.path, item.type]);
+  const iconData = useMemo(() => getCustomIcon(item), [item]);
   
   const iconSrc = isDirectory 
     ? (item.expanded ? (iconData as FolderIcons).open : (iconData as FolderIcons).closed)

@@ -193,7 +193,7 @@ const DitherPattern = React.memo(({
     
     materialRef.current = material;
     meshRef.current.material = material;
-  }, []); // Only create once, let color updates happen separately
+  }, [themeColors]);
 
   // Debounced mouse position update
   useEffect(() => {
