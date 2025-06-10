@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { marked } from 'marked';
 import { useRouter } from 'next/navigation';
+import DOMPurify from 'dompurify';
 import { documentationTree } from '../data/documentation';
 import { FileItem } from './FileTree';
 import { applyMarkdownStyles, processLinks, processWalletAddresses } from '../utils/contentProcessor';
@@ -23,6 +24,14 @@ const componentLogger = logger;
 type ContentRendererProps = {
   content: string;
   path: string;
+};
+
+/**
+ * An HTMLAnchorElement with an optional custom property to hold its click handler.
+ * This is used to properly remove the event listener during cleanup.
+ */
+type LinkWithHandler = HTMLAnchorElement & {
+  __clickHandler?: (e: MouseEvent) => void;
 };
 
 /**
@@ -169,11 +178,15 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
   useProcessDomElements(contentRef, content);
   
   // Setup content processing and DOM manipulation
+  // We disable the ref exhaustive-deps warning because we properly handle the ref 
+  // by storing its value at the beginning of the effect as recommended by React team
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
-    if (!content) return;
-    
-    // Store current ref value for cleanup
+    // Store current ref value for cleanup, as suggested by React's exhaustive-deps lint rule.
+    // This prevents issues where the ref might be nullified before the cleanup function runs.
     const currentContentRef = contentRef.current;
+
+    if (!content || !currentContentRef) return;
     
     // Apply content processing immediately
     const processContent = async () => {
@@ -182,42 +195,68 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
         const rawHtml = await marked(content);
         const styledHtml = applyMarkdownStyles(rawHtml);
         
-        if (contentRef.current) {
-          contentRef.current.innerHTML = styledHtml;
-          
-          // Add click handlers for internal links
-          const links = contentRef.current.querySelectorAll('a[href^="/docs/"]');
-          links.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href) {
-              link.addEventListener('click', (e) => {
-                e.preventDefault();
-                router.push(href);
-              });
-            }
-          });
-        }
+        // Sanitize the HTML to prevent XSS attacks
+        const sanitizedHtml = DOMPurify.sanitize(styledHtml, {
+          // Allow safe HTML tags and attributes for documentation
+          ALLOWED_TAGS: [
+            'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'hr',
+            'ul', 'ol', 'li', 'blockquote', 'pre', 'code',
+            'table', 'thead', 'tbody', 'tr', 'th', 'td',
+            'a', 'strong', 'em', 'u', 'del', 'mark',
+            'img', 'div', 'span'
+          ],
+          ALLOWED_ATTR: [
+            'href', 'src', 'alt', 'title', 'class', 'id',
+            'data-address', 'data-processed', 'data-copy-processed',
+            'tabindex', 'aria-label', 'width', 'height'
+          ],
+          ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp|\/docs\/):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i
+        });
+        
+        // Always use the stored ref value, not the current ref
+        currentContentRef.innerHTML = sanitizedHtml;
+        
+        // Add click handlers for internal links
+        const links = currentContentRef.querySelectorAll('a[href^="/docs/"]');
+        links.forEach(rawLink => {
+          const link = rawLink as LinkWithHandler;
+          const href = link.getAttribute('href');
+          if (href) {
+            const clickHandler = (e: MouseEvent) => {
+              e.preventDefault();
+              router.push(href);
+            };
+            link.addEventListener('click', clickHandler as EventListener);
+            
+            // Store handler for cleanup
+            link.__clickHandler = clickHandler;
+          }
+        });
       } catch (error) {
         console.error('Error processing markdown content:', error);
-        if (contentRef.current) {
-          contentRef.current.innerHTML = '<p>Error loading content. Please try again.</p>';
-        }
+        // Always use the stored ref value
+        currentContentRef.innerHTML = '<p>Error loading content. Please try again.</p>';
       }
     };
     
     processContent();
     
-    // Cleanup function using stored ref
+    // Cleanup function using the stored ref value (not contentRef.current)
     return () => {
       if (currentContentRef) {
         const links = currentContentRef.querySelectorAll('a[href^="/docs/"]');
-        links.forEach(link => {
-          // Remove event listeners on cleanup
-          link.replaceWith(link.cloneNode(true));
+        links.forEach(rawLink => {
+          const link = rawLink as LinkWithHandler;
+          // Properly remove the exact event listener we added
+          const handler = link.__clickHandler;
+          if (handler) {
+            link.removeEventListener('click', handler as EventListener);
+          }
         });
       }
     };
-  }, [content, path, router, contentRef]); // Added contentRef dependency
+  }, [content, path, router]); // contentRef is a stable ref and doesn't need to be in dependencies
+  /* eslint-enable react-hooks/exhaustive-deps */
   
   // Render markdown with memoization
   const contentHtml = useMemo(() => {

@@ -1,0 +1,6 @@
+---
+description: Package management and running terminal commands
+globs: 
+alwaysApply: false
+---
+Use `pnpm` over yarn or npm.

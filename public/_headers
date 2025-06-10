@@ -1,9 +1,40 @@
-# Security headers for all pages
+# Security headers for Cloudflare Pages deployment
 /*
+  # Prevent XSS attacks
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   X-XSS-Protection: 1; mode=block
+  
+  # Content Security Policy - strict but allows our known assets
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  
+  # HSTS - Force HTTPS
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  
+  # Referrer policy
   Referrer-Policy: strict-origin-when-cross-origin
+  
+  # Permissions policy - disable unnecessary browser features
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), accelerometer=(), gyroscope=()
+
+# Additional security for API routes (if any)
+/api/*
+  # API-specific security headers
+  X-Robots-Tag: noindex
+
+# Robots.txt - no additional security needed
+/robots.txt
+  # Allow caching for robots.txt
+  Cache-Control: public, max-age=3600
+
+# Static assets - optimize caching
+/assets/*
+  # Cache static assets for a year
+  Cache-Control: public, max-age=31536000, immutable
+  
+/_next/static/*
+  # Cache Next.js static assets
+  Cache-Control: public, max-age=31536000, immutable
 
 # Cache control for static assets
 /favicon/*
