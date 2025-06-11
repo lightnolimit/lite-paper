@@ -7,6 +7,7 @@ import Navigation from '../../components/Navigation';
 import FileTree from '../../components/FileTree';
 import ContentRenderer from '../../components/ContentRenderer';
 import { useTheme } from '../../providers/ThemeProvider';
+import fileTreeStyles from '../../components/FileTree.module.css';
 
 import { documentationTree } from '../../data/documentation';
 import { FileItem } from '../../components/FileTree';
@@ -222,7 +223,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                 animate={isMobile ? sidebarAnimationVariants.mobile.animate : sidebarAnimationVariants.desktop.animate}
                 exit={isMobile ? sidebarAnimationVariants.mobile.exit : sidebarAnimationVariants.desktop.exit}
                 transition={isMobile ? transitionConfig : { duration: 0 }}
-                className="w-full md:w-56 lg:w-64 shrink-0 file-tree-panel p-3 h-[calc(100vh-48px)] top-12 overflow-y-auto z-20 scrollbar-hide"
+                className={`w-full md:w-56 lg:w-64 shrink-0 ${fileTreeStyles.fileTreePanel} p-3 h-[calc(100vh-48px)] top-12 overflow-y-auto z-20 scrollbar-hide`}
                 style={sidebarStyle}
               >
                 {/* Mobile close button - positioned absolutely */}

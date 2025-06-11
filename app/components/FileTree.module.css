@@ -1,0 +1,85 @@
+/* File Tree Container */
+.fileTree {
+  padding-left: 0.5rem;
+  transition: all 0.3s ease;
+  font-family: var(--mono-font);
+  letter-spacing: -0.5px;
+}
+
+/* File Tree Items */
+.fileTreeItem {
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+.fileTreeItem:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--primary-color);
+}
+
+.dark .fileTreeItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.fileTreeItem.active {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--primary-color);
+}
+
+.dark .fileTreeItem.active {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--primary-color);
+}
+
+/* File Tree Panel Container */
+.fileTreePanel {
+  background-color: var(--card-color);
+  border-right: 1px solid var(--border-unified);
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-radius: 0 !important;
+  box-shadow: none;
+}
+
+.dark .fileTreePanel {
+  background-color: var(--card-color);
+}
+
+/* Custom SVG icon handling for dark mode */
+.dark img[src*="pixel-folder"],
+.dark img[src*="pixel-file"],
+.dark img[src*="pixel-info-circle"],
+.dark img[src*="pixel-exclamation"],
+.dark img[src*="pixel-times-circle"],
+.dark img[src*="pixel-check-circle"] {
+  filter: invert(1);
+}
+
+/* File tree icon hover effects */
+.fileTreeItem:hover img[src*="pixel-folder"],
+.fileTreeItem:hover img[src*="pixel-file"] {
+  filter: brightness(0) saturate(100%) invert(43%) sepia(20%) saturate(1027%) hue-rotate(88deg) brightness(95%) contrast(89%);
+}
+
+.dark .fileTreeItem:hover img[src*="pixel-folder"],
+.dark .fileTreeItem:hover img[src*="pixel-file"] {
+  filter: brightness(0) saturate(100%) invert(64%) sepia(87%) saturate(1392%) hue-rotate(316deg) brightness(105%) contrast(101%);
+}
+
+.fileTreeItem.active img[src*="pixel-folder"],
+.fileTreeItem.active img[src*="pixel-file"] {
+  filter: brightness(0) saturate(100%) invert(43%) sepia(20%) saturate(1027%) hue-rotate(88deg) brightness(95%) contrast(89%);
+}
+
+.dark .fileTreeItem.active img[src*="pixel-folder"],
+.dark .fileTreeItem.active img[src*="pixel-file"] {
+  filter: brightness(0) saturate(100%) invert(64%) sepia(87%) saturate(1392%) hue-rotate(316deg) brightness(105%) contrast(101%);
+}
+
+/* Reduced motion styles for file tree */
+.reduceMotion .fileTreeItem {
+  transition: none;
+} 

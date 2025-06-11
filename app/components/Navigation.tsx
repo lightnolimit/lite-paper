@@ -337,7 +337,7 @@ export default function Navigation({
             height={32}
             className="h-8 w-auto logo-image"
           />
-          <span className="font-mono text-xl tracking-tighter uppercase" style={{ fontFamily: 'var(--mono-font)' }}>LITE PAPER</span>
+          <span className="font-title text-xl tracking-tighter" style={{ fontFamily: 'var(--title-font)' }}>Lite Paper</span>
         </Link>
         
         <div className="flex items-center gap-2">

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { processMarkdown, CodeBlockData } from '../utils/markdown-processor';
 import { processLinks, processWalletAddresses } from '../utils/contentProcessor';
 import CodeBlock from './CodeBlock';
+import ColorPalette from './ColorPalette';
 import logger from '../utils/logger';
 
 const componentLogger = logger;
@@ -95,13 +96,14 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
     };
   }, [processedData, router]);
 
-  // Render code blocks in placeholders
+  // Render code blocks and color palettes in placeholders
   useEffect(() => {
     if (!processedData || !contentRef.current) return;
 
-    const placeholders = contentRef.current.querySelectorAll('[data-codeblock-id]');
+    // Handle code block placeholders
+    const codeBlockPlaceholders = contentRef.current.querySelectorAll('[data-codeblock-id]');
     
-    placeholders.forEach(placeholder => {
+    codeBlockPlaceholders.forEach(placeholder => {
       const blockId = placeholder.getAttribute('data-codeblock-id');
       if (blockId && processedData.codeBlocks.has(blockId)) {
         const snippets = processedData.codeBlocks.get(blockId)!;
@@ -124,6 +126,34 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
           // This fallback should not be needed for React 18+ but just in case
           console.warn('Could not load React 18 createRoot, this should not happen');
         });
+      }
+    });
+
+    // Handle color palette placeholders
+    const colorPalettePlaceholders = contentRef.current.querySelectorAll('[data-colorpalette-id]');
+    
+    colorPalettePlaceholders.forEach(placeholder => {
+      const paletteData = placeholder.getAttribute('data-palette');
+      if (paletteData) {
+        try {
+          const parsedData = JSON.parse(paletteData);
+          
+          // Create a container for the React component
+          const container = document.createElement('div');
+          placeholder.parentNode?.replaceChild(container, placeholder);
+          
+          // Use createRoot for React 18+
+          import('react-dom/client').then(({ createRoot }) => {
+            const root = createRoot(container);
+            root.render(
+              <ColorPalette colors={parsedData.colors} />
+            );
+          }).catch(() => {
+            console.warn('Could not load React 18 createRoot, this should not happen');
+          });
+        } catch (error) {
+          console.error('Error parsing color palette data:', error);
+        }
       }
     });
   }, [processedData]);

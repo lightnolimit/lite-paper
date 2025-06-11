@@ -133,7 +133,7 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
               {prevPage ? (
                 <motion.button
                   onClick={() => router.push(`/docs/${prevPage.path}`)}
-                  className="nav-button text-left p-4 rounded-lg border border-unified bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  className="nav-button text-left p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900/30 transition-colors"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -147,7 +147,7 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
               {nextPage && (
                 <motion.button
                   onClick={() => router.push(`/docs/${nextPage.path}`)}
-                  className="nav-button text-right p-4 rounded-lg border border-unified bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  className="nav-button text-right p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900/30 transition-colors"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >

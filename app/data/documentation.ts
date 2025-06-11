@@ -99,6 +99,11 @@ export const documentationTree: FileItem[] = [
       },
       {
         type: 'file',
+        name: 'Design System.md',
+        path: 'developer-guides/design-system'
+      },
+      {
+        type: 'file',
         name: 'UI Configuration.md',
         path: 'developer-guides/ui-configuration'
       },

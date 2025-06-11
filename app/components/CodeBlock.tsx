@@ -4,6 +4,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useTheme } from 'next-themes';
+import styles from './CodeBlock.module.css';
 
 /**
  * Props for individual code snippets
@@ -129,7 +130,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
   // Don't render until mounted to avoid hydration mismatch
   if (!mounted) {
     return (
-      <div className={`code-block-container ${className}`}>
+      <div className={`${styles.codeBlockContainer} ${className}`}>
         <div className="animate-pulse">
           <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
           <div className="h-32 bg-gray-100 dark:bg-gray-800 rounded"></div>
@@ -139,10 +140,10 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
   }
 
   return (
-    <div className={`code-block-container ${className}`}>
+    <div className={`${styles.codeBlockContainer} ${className}`}>
       {/* Title */}
       {title && (
-        <div className="code-block-title">
+        <div className={styles.codeBlockTitle}>
           <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">
             {title}
           </h4>
@@ -151,11 +152,11 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
       
       {/* Language tabs */}
       {snippets.length > 1 && (
-        <div className="code-block-tabs">
+        <div className={styles.codeBlockTabs}>
           {snippets.map((snippet, index) => (
             <button
               key={index}
-              className={`code-block-tab ${activeTab === index ? 'active' : ''}`}
+              className={`${styles.codeBlockTab} ${activeTab === index ? styles.codeBlockTabActive : ''}`}
               onClick={() => setActiveTab(index)}
               type="button"
             >
@@ -166,14 +167,14 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
       )}
       
       {/* Code content */}
-      <div className="code-block-wrapper">
+      <div className={styles.codeBlockWrapper}>
         {/* Header with language and copy button */}
-        <div className="code-block-header">
-          <span className="code-block-language">
+        <div className={styles.codeBlockHeader}>
+          <span className={styles.codeBlockLanguage}>
             {currentSnippet.label || getLanguageDisplay(currentSnippet.language)}
           </span>
           <button
-            className="code-block-copy-btn"
+            className={styles.codeBlockCopyBtn}
             onClick={copyToClipboard}
             title={copied ? 'Copied!' : 'Copy to clipboard'}
             type="button"
@@ -198,7 +199,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
         </div>
         
         {/* Code content with animation */}
-        <div className="code-block-content">
+        <div className={styles.codeBlockContent}>
           <SyntaxHighlighter
             language={currentSnippet.language}
             style={isDark ? oneDark : oneLight}

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import DocumentationGraph from './DocumentationGraph';
 import { useTheme } from '../providers/ThemeProvider';
+import styles from './FileTree.module.css';
 
 export type FileItem = {
   name: string;
@@ -113,7 +114,7 @@ const FileTreeItem: React.FC<FileTreeItemProps> = React.memo(({
   return (
     <div style={{ paddingLeft: depth > 1 ? `${(depth - 1) * 12}px` : '0px' }}>
       <div 
-        className={`file-tree-item flex items-center py-1 ${isActive ? 'active' : ''}`}
+        className={`${styles.fileTreeItem} flex items-center py-1 ${isActive ? 'active' : ''}`}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
         tabIndex={0}
@@ -228,7 +229,7 @@ const FileTree: React.FC<FileTreeProps> = ({ items, onSelect, currentPath }) => 
   }, [items, expandedItems]);
   
   return (
-    <div className="file-tree">
+    <div className={styles.fileTree}>
       {itemsWithState.map((item) => (
         <FileTreeItem
           key={item.path}

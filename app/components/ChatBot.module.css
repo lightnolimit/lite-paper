@@ -1,0 +1,80 @@
+/* Chatbot specific styles - ensure proper fonts and solid backgrounds */
+.chatbotContainer {
+  font-family: var(--body-font) !important;
+  background-color: var(--card-color) !important;
+  backdrop-filter: none !important;
+  border: 1px solid var(--border-unified) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+}
+
+.chatbotToggle {
+  background-color: var(--primary-color) !important;
+  backdrop-filter: none !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.dark .chatbotToggle {
+  background-color: var(--primary-color) !important;
+}
+
+.chatbotContainer * {
+  font-family: var(--body-font) !important;
+}
+
+.chatbotContainer input,
+.chatbotContainer textarea,
+.chatbotContainer button {
+  font-family: var(--body-font) !important;
+}
+
+.chatbotContainer code {
+  font-family: var(--mono-font) !important;
+}
+
+.chatbotContainer input::placeholder {
+  color: var(--muted-color) !important;
+}
+
+.chatbotContainer .borderT {
+  border-color: var(--border-unified) !important;
+}
+
+.chatbotMessageAssistant {
+  background-color: var(--card-color) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-unified) !important;
+}
+
+.chatbotMessageUser {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+/* Modal-specific styles */
+.modalOverlay {
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+}
+
+.dark .modalOverlay {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.modalContainer {
+  background-color: var(--card-color) !important;
+  border: 1px solid var(--border-unified) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  font-family: var(--body-font) !important;
+}
+
+.dark .modalContainer {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Fix animation warnings for transparent colors */
+.dark .chatbotToggle {
+  --primary-color: #FF85A1;
+} 

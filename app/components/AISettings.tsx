@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import styles from './ChatBot.module.css';
 
 export function AISettings({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [apiKey, setApiKey] = useState('');
@@ -37,14 +38,14 @@ export function AISettings({ isOpen, onClose }: { isOpen: boolean; onClose: () =
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+      className={`fixed inset-0 ${styles.modalOverlay} z-50 flex items-center justify-center p-4`}
       onClick={onClose}
     >
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
-        className="bg-background-color border border-border-color rounded-lg p-6 w-full max-w-md"
+        className={`${styles.modalContainer} rounded-lg p-6 w-full max-w-md`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">

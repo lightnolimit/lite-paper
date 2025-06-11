@@ -42,6 +42,18 @@ renderer.code = function(token: { text: string; lang?: string; escaped?: boolean
   const code = token.text || '';
   const language = token.lang || 'text';
   
+  // Handle ColorPalette code blocks
+  if (language === 'ColorPalette') {
+    try {
+      const paletteData = JSON.parse(code);
+      // Return a placeholder that we'll replace with ColorPalette component
+      return `<div data-colorpalette-id="${blockId}" data-palette='${JSON.stringify(paletteData)}' class="color-palette-placeholder"></div>`;
+    } catch (error) {
+      console.error('Invalid ColorPalette JSON:', error);
+      return `<div class="notification notification-error">Invalid ColorPalette JSON format</div>`;
+    }
+  }
+  
   // Handle multi-language code blocks (custom syntax)
   if (language.includes('|')) {
     // Format: javascript|TypeScript|python with optional labels
