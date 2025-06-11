@@ -85,14 +85,7 @@ const socialLinks = [
   }
 ];
 
-/**
- * Mobile menu animation variants for framer-motion
- */
-const mobileMenuVariants = {
-  hidden: { opacity: 0, height: 0 },
-  visible: { opacity: 1, height: 'auto' },
-  exit: { opacity: 0, height: 0 }
-};
+// Mobile menu animation variants (to be memoized in component)
 
 // Memoized animation configurations
 const bracketAnimationConfig = {
@@ -116,10 +109,14 @@ const exitAnimationConfig = {
  * @param {NavigationProps} props - Component props
  * @returns {React.ReactElement} Rendered Navigation component
  */
-export default function Navigation({ docsPath, onToggleSidebar, sidebarVisible }: NavigationProps): React.ReactElement {
+export default function Navigation({ 
+  docsPath, 
+  onToggleSidebar, 
+  sidebarVisible 
+}: NavigationProps): React.ReactElement {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isDarkMode } = useTheme();
+  const { isDarkMode, prefersReducedMotion } = useTheme();
   const isDocsPage = docsPath !== undefined;
   
   // Close mobile menu when window is resized to desktop size
@@ -134,88 +131,122 @@ export default function Navigation({ docsPath, onToggleSidebar, sidebarVisible }
     return () => window.removeEventListener('resize', handleResize);
   }, [mobileMenuOpen]);
 
-  // Memoized bracket animation variants
-  const leftBracketVariants = useMemo(() => ({
-    initial: { 
-      opacity: 0, 
-      x: -10,
-      color: 'var(--primary-color)',
-    },
-    animate: {
-      opacity: [0, 0.4, 0, 0.7, 0, 1, 0, 0, 0, 0.5, 1],
-      x: [-10, -9, -7, -5, -4, -2, 0, 0, 0, 0, 0],
-      scale: [1, 1.2, 0.8, 1.1, 0.9, 1.0, 0.95, 1.1, 0.9, 1.0, 1],
-      color: [
-        'var(--primary-color)',
-        'transparent',
-        isDarkMode ? '#FFF' : '#000',
-        'transparent',
-        'transparent',
-        'var(--primary-color)',
-        'transparent',
-        'transparent',
-        'transparent',
-        isDarkMode ? '#FFF' : '#000',
-        'var(--primary-color)'
-      ],
-      transition: {
-        ...bracketAnimationConfig,
-        scale: { ...bracketAnimationConfig, ease: "easeInOut" },
-        opacity: { ...bracketAnimationConfig, ease: "linear" },
-        color: { ...bracketAnimationConfig, ease: "linear" },
-      }
-    },
-    exit: { 
-      opacity: [1, 0, 0.7, 0, 0.4, 0],
-      x: [-2, -4, -5, -7, -9, -10],
-      color: 'var(--primary-color)',
-      transition: { 
-        ...exitAnimationConfig,
-        opacity: { ...exitAnimationConfig, ease: "linear" },
-      } 
+  // Memoized bracket animation variants (simplified if motion is reduced)
+  const leftBracketVariants = useMemo(() => {
+    if (prefersReducedMotion) {
+      return {
+        initial: { opacity: 0, color: 'var(--primary-color)' },
+        animate: { opacity: 1, color: 'var(--primary-color)', transition: { duration: 0.05 } },
+        exit: { opacity: 0, color: 'var(--primary-color)', transition: { duration: 0.05 } }
+      };
     }
-  }), [isDarkMode]);
+    return {
+      initial: { 
+        opacity: 0, 
+        x: -10,
+        color: 'var(--primary-color)',
+      },
+      animate: {
+        opacity: [0, 0.4, 0, 0.7, 0, 1, 0, 0, 0, 0.5, 1],
+        x: [-10, -9, -7, -5, -4, -2, 0, 0, 0, 0, 0],
+        scale: [1, 1.2, 0.8, 1.1, 0.9, 1.0, 0.95, 1.1, 0.9, 1.0, 1],
+        color: [
+          'var(--primary-color)',
+          'transparent',
+          isDarkMode ? '#FFF' : '#000',
+          'transparent',
+          'transparent',
+          'var(--primary-color)',
+          'transparent',
+          'transparent',
+          'transparent',
+          isDarkMode ? '#FFF' : '#000',
+          'var(--primary-color)'
+        ],
+        transition: {
+          ...bracketAnimationConfig,
+          scale: { ...bracketAnimationConfig, ease: "easeInOut" },
+          opacity: { ...bracketAnimationConfig, ease: "linear" },
+          color: { ...bracketAnimationConfig, ease: "linear" },
+        }
+      },
+      exit: { 
+        opacity: [1, 0, 0.7, 0, 0.4, 0],
+        x: [-2, -4, -5, -7, -9, -10],
+        color: 'var(--primary-color)',
+        transition: { 
+          ...exitAnimationConfig,
+          opacity: { ...exitAnimationConfig, ease: "linear" },
+        } 
+      }
+    };
+  }, [isDarkMode, prefersReducedMotion]);
 
-  const rightBracketVariants = useMemo(() => ({
-    initial: { 
-      opacity: 0, 
-      x: 10,
-      color: 'var(--primary-color)',
-    },
-    animate: {
-      opacity: [0, 0.4, 0, 0.7, 0, 1, 0, 0, 0, 0.5, 1],
-      x: [10, 9, 7, 5, 4, 2, 0, 0, 0, 0, 0],
-      scale: [1, 1.2, 0.8, 1.1, 0.9, 1.0, 0.95, 1.1, 0.9, 1.0, 1],
-      color: [
-        'var(--primary-color)',
-        'transparent',
-        isDarkMode ? '#FFF' : '#000',
-        'transparent',
-        'transparent',
-        'var(--primary-color)',
-        'transparent',
-        'transparent',
-        'transparent',
-        isDarkMode ? '#FFF' : '#000',
-        'var(--primary-color)'
-      ],
-      transition: {
-        ...bracketAnimationConfig,
-        scale: { ...bracketAnimationConfig, ease: "easeInOut" },
-        opacity: { ...bracketAnimationConfig, ease: "linear" },
-        color: { ...bracketAnimationConfig, ease: "linear" },
-      }
-    },
-    exit: { 
-      opacity: [1, 0, 0.7, 0, 0.4, 0],
-      x: [2, 4, 5, 7, 9, 10],
-      color: 'var(--primary-color)',
-      transition: { 
-        ...exitAnimationConfig,
-        opacity: { ...exitAnimationConfig, ease: "linear" },
-      } 
+  const rightBracketVariants = useMemo(() => {
+    if (prefersReducedMotion) {
+      return {
+        initial: { opacity: 0, color: 'var(--primary-color)' },
+        animate: { opacity: 1, color: 'var(--primary-color)', transition: { duration: 0.05 } },
+        exit: { opacity: 0, color: 'var(--primary-color)', transition: { duration: 0.05 } }
+      };
     }
-  }), [isDarkMode]);
+    return {
+      initial: { 
+        opacity: 0, 
+        x: 10,
+        color: 'var(--primary-color)',
+      },
+      animate: {
+        opacity: [0, 0.4, 0, 0.7, 0, 1, 0, 0, 0, 0.5, 1],
+        x: [10, 9, 7, 5, 4, 2, 0, 0, 0, 0, 0],
+        scale: [1, 1.2, 0.8, 1.1, 0.9, 1.0, 0.95, 1.1, 0.9, 1.0, 1],
+        color: [
+          'var(--primary-color)',
+          'transparent',
+          isDarkMode ? '#FFF' : '#000',
+          'transparent',
+          'transparent',
+          'var(--primary-color)',
+          'transparent',
+          'transparent',
+          'transparent',
+          isDarkMode ? '#FFF' : '#000',
+          'var(--primary-color)'
+        ],
+        transition: {
+          ...bracketAnimationConfig,
+          scale: { ...bracketAnimationConfig, ease: "easeInOut" },
+          opacity: { ...bracketAnimationConfig, ease: "linear" },
+          color: { ...bracketAnimationConfig, ease: "linear" },
+        }
+      },
+      exit: { 
+        opacity: [1, 0, 0.7, 0, 0.4, 0],
+        x: [2, 4, 5, 7, 9, 10],
+        color: 'var(--primary-color)',
+        transition: { 
+          ...exitAnimationConfig,
+          opacity: { ...exitAnimationConfig, ease: "linear" },
+        } 
+      }
+    };
+  }, [isDarkMode, prefersReducedMotion]);
+
+  // Memoized mobile menu variants (simplified if motion is reduced)
+  const mobileMenuVariants = useMemo(() => {
+    if (prefersReducedMotion) {
+      return {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1 },
+        exit: { opacity: 0 }
+      };
+    }
+    return {
+      hidden: { opacity: 0, height: 0 },
+      visible: { opacity: 1, height: 'auto' },
+      exit: { opacity: 0, height: 0 }
+    };
+  }, [prefersReducedMotion]);
 
   // Memoized click handlers
   const handleMobileMenuToggle = useCallback(() => {
@@ -290,8 +321,8 @@ export default function Navigation({ docsPath, onToggleSidebar, sidebarVisible }
   ), [hoveredItem, leftBracketVariants, rightBracketVariants, handleMobileNavClick]);
   
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 header-bar border-b" style={{ backgroundColor: 'var(--card-color)' }}>
-      <div className="max-w-full mx-auto px-5 md:px-8 flex items-center justify-between h-16">
+          <header className="fixed top-0 left-0 right-0 z-40 header-bar border-b" style={{ backgroundColor: 'var(--card-color)' }}>
+        <div className="max-w-full mx-auto px-5 md:px-8 flex items-center justify-between h-14">
         {/* Logo and site title */}
         <Link 
           href="/"

@@ -6,6 +6,7 @@ import ThemeSwitcher from './ThemeSwitcher';
 import MotionToggle from './MotionToggle';
 import BackgroundSelector from './BackgroundSelector';
 import Image from 'next/image';
+import { useTheme } from '../providers/ThemeProvider';
 
 /**
  * Props for the SettingsMenu component
@@ -33,35 +34,52 @@ const SettingsMenu = React.memo(({
 }: SettingsMenuProps): React.ReactElement => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { prefersReducedMotion } = useTheme();
   
-  // Memoized animation variants
-  const menuVariants = useMemo(() => ({
-    hidden: { 
-      opacity: 0, 
-      y: -10,
-      scale: 0.95,
-      transformOrigin: isCompact ? 'center top' : 'top right'
-    },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      scale: 1
-    },
-    exit: { 
-      opacity: 0, 
-      y: -10,
-      scale: 0.95
+  // Memoized animation variants (disabled if motion is reduced)
+  const menuVariants = useMemo(() => {
+    if (prefersReducedMotion) {
+      return {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1 },
+        exit: { opacity: 0 }
+      };
     }
-  }), [isCompact]);
+    return {
+      hidden: { 
+        opacity: 0, 
+        y: -10,
+        scale: 0.95,
+        transformOrigin: isCompact ? 'center top' : 'top right'
+      },
+      visible: { 
+        opacity: 1, 
+        y: 0,
+        scale: 1
+      },
+      exit: { 
+        opacity: 0, 
+        y: -10,
+        scale: 0.95
+      }
+    };
+  }, [isCompact, prefersReducedMotion]);
 
-  // Memoized button animations
-  const buttonAnimations = useMemo(() => ({
-    whileHover: { scale: 1.1 },
-    whileTap: { scale: 0.95 }
-  }), []);
+  // Memoized button animations (disabled if motion is reduced)
+  const buttonAnimations = useMemo(() => {
+    if (prefersReducedMotion) {
+      return {};
+    }
+    return {
+      whileHover: { scale: 1.1 },
+      whileTap: { scale: 0.95 }
+    };
+  }, [prefersReducedMotion]);
 
-  // Memoized transition config
-  const transitionConfig = useMemo(() => ({ duration: 0.2 }), []);
+  // Memoized transition config (faster if motion is reduced)
+  const transitionConfig = useMemo(() => ({ 
+    duration: prefersReducedMotion ? 0.05 : 0.2 
+  }), [prefersReducedMotion]);
   
   // Optimized toggle function
   const toggleMenu = useCallback(() => {
@@ -123,25 +141,46 @@ const SettingsMenu = React.memo(({
   return (
     <div className={`relative ${className}`} ref={menuRef}>
       {/* Settings toggle button */}
-      <motion.button
-        onClick={toggleMenu}
-        className={`p-2 rounded-full flex items-center justify-center ${isOpen ? 'bg-primary-color text-background-color' : ''}`}
-        {...buttonAnimations}
-        aria-label="Settings menu"
-        title="Settings"
-        aria-expanded={isOpen}
-        aria-controls="settings-dropdown"
-        style={buttonStyle}
-      >
-        <Image 
-          src="/assets/icons/pixel-cog-solid.svg"
-          alt="Settings"
-          width={20}
-          height={20}
-          style={{ display: 'block' }}
-          aria-hidden="true"
-        />
-      </motion.button>
+      {prefersReducedMotion ? (
+        <button
+          onClick={toggleMenu}
+          className={`p-2 rounded-full flex items-center justify-center ${isOpen ? 'bg-primary-color text-background-color' : ''}`}
+          aria-label="Settings menu"
+          title="Settings"
+          aria-expanded={isOpen}
+          aria-controls="settings-dropdown"
+          style={buttonStyle}
+        >
+          <Image 
+            src="/assets/icons/pixel-cog-solid.svg"
+            alt="Settings"
+            width={20}
+            height={20}
+            style={{ display: 'block' }}
+            aria-hidden="true"
+          />
+        </button>
+      ) : (
+        <motion.button
+          onClick={toggleMenu}
+          className={`p-2 rounded-full flex items-center justify-center ${isOpen ? 'bg-primary-color text-background-color' : ''}`}
+          {...buttonAnimations}
+          aria-label="Settings menu"
+          title="Settings"
+          aria-expanded={isOpen}
+          aria-controls="settings-dropdown"
+          style={buttonStyle}
+        >
+          <Image 
+            src="/assets/icons/pixel-cog-solid.svg"
+            alt="Settings"
+            width={20}
+            height={20}
+            style={{ display: 'block' }}
+            aria-hidden="true"
+          />
+        </motion.button>
+      )}
       
       {/* Dropdown menu */}
       <AnimatePresence>

@@ -6,15 +6,14 @@ import { Metadata } from 'next';
  * @see https://nextjs.org/docs/app/api-reference/functions/generate-metadata
  */
 export const metadata: Metadata = {
-  title: 'Phantasy Documentation - Home',
+  title: 'Phantasy Documentation',
   description: 'Official documentation for the Phantasy platform - explore guides, references, and API docs',
 };
 
 /**
  * Home page component
  * 
- * Redirects to the main documentation introduction page for a better user experience.
- * This approach ensures users immediately land on useful content rather than a landing page.
+ * Redirects directly to the main documentation introduction page.
  * 
  * @returns {null} No direct render as this redirects
  */

@@ -53,6 +53,10 @@ export default function DocumentationGraph({
   const [links, setLinks] = useState<GraphLink[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [focusedNodeId, setFocusedNodeId] = useState<string | null>(null);
+  // Zoom and drag disabled - using fixed viewBox
+  const [clickedNodeId, setClickedNodeId] = useState<string | null>(null);
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [pendingSwitchNodeId, setPendingSwitchNodeId] = useState<string | null>(null);
   const { isDarkMode, prefersReducedMotion } = useTheme();
 
   // Theme-aware color scheme
@@ -151,7 +155,7 @@ export default function DocumentationGraph({
             node2.connections.push(node1.id);
           }
           
-          extractedLinks.push({
+                  extractedLinks.push({
             source: node1.id,
             target: node2.id,
             strength: 0.7,
@@ -254,87 +258,94 @@ export default function DocumentationGraph({
     return { visibleNodes, visibleLinks };
   }, [searchTerm, searchResults, focusedNodeId, currentPath, graphNodes]);
 
-  // Position nodes using simple force simulation
+  // Position nodes with current node at center
   useEffect(() => {
     if (!graphNodes.length) return;
 
-    const simulation = {
-      nodes: [...graphNodes],
-      links: [...graphLinks]
-    };
-
-    const iterations = 80;
     const centerX = dimensions.width / 2;
     const centerY = dimensions.height / 2;
     const isSidebarView = dimensions.height <= 300;
-
-    for (let i = 0; i < iterations; i++) {
-      // Gentle attraction to center
-      simulation.nodes.forEach(node => {
-        const dx = centerX - node.x;
-        const dy = centerY - node.y;
-        node.x += dx * 0.02;
-        node.y += dy * 0.02;
-      });
-
-      // Node repulsion
-      const minDistance = isSidebarView ? 50 : 80;
-      for (let j = 0; j < simulation.nodes.length; j++) {
-        for (let k = j + 1; k < simulation.nodes.length; k++) {
-          const nodeA = simulation.nodes[j];
-          const nodeB = simulation.nodes[k];
-          const dx = nodeB.x - nodeA.x;
-          const dy = nodeB.y - nodeA.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          
-          if (distance < minDistance && distance > 0) {
-            const force = (minDistance - distance) / distance * 0.1;
-            const fx = dx * force;
-            const fy = dy * force;
-            
-            nodeA.x -= fx;
-            nodeA.y -= fy;
-            nodeB.x += fx;
-            nodeB.y += fy;
-          }
-        }
-      }
-
-      // Link forces
-      simulation.links.forEach(link => {
-        const source = simulation.nodes.find(n => n.id === link.source);
-        const target = simulation.nodes.find(n => n.id === link.target);
+    
+    // Find the current or focused node
+    const currentNode = graphNodes.find(n => n.id === (focusedNodeId || currentPath));
+    
+    // Position nodes in a centered layout
+    const positionedNodes = graphNodes.map(node => {
+      const newNode = { ...node };
+      
+      if (node.id === (focusedNodeId || currentPath)) {
+        // Current node goes to center
+        newNode.x = centerX;
+        newNode.y = centerY;
+      } else if (currentNode && currentNode.connections.includes(node.id)) {
+        // Connected nodes form a circle around the center
+        const connectionIndex = currentNode.connections.indexOf(node.id);
+        const totalConnections = currentNode.connections.length;
+        const angle = (connectionIndex / totalConnections) * 2 * Math.PI;
+        const radius = isSidebarView ? 80 : 120;
         
-        if (source && target) {
-          const dx = target.x - source.x;
-          const dy = target.y - source.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          const targetDistance = isSidebarView ? 60 : 100;
+        newNode.x = centerX + Math.cos(angle) * radius;
+        newNode.y = centerY + Math.sin(angle) * radius;
+      } else if (currentNode) {
+        // Other nodes that connect to the current node
+        const connectingNodes = graphNodes.filter(n => n.connections.includes(currentNode.id));
+        const nodeIndex = connectingNodes.findIndex(n => n.id === node.id);
+        
+        if (nodeIndex !== -1) {
+          const angle = (nodeIndex / connectingNodes.length) * 2 * Math.PI + Math.PI;
+          const radius = isSidebarView ? 140 : 200;
           
-          if (distance > 0) {
-            const force = (distance - targetDistance) / distance * link.strength * 0.05;
-            const fx = dx * force;
-            const fy = dy * force;
-            
-            source.x += fx;
-            source.y += fy;
-            target.x -= fx;
-            target.y -= fy;
-          }
+          newNode.x = centerX + Math.cos(angle) * radius;
+          newNode.y = centerY + Math.sin(angle) * radius;
+        } else {
+          // Random position for unconnected nodes (off-screen)
+          const angle = Math.random() * 2 * Math.PI;
+          const radius = isSidebarView ? 300 : 400;
+          newNode.x = centerX + Math.cos(angle) * radius;
+          newNode.y = centerY + Math.sin(angle) * radius;
         }
-      });
+      } else {
+        // No current node selected - spread nodes evenly
+        const nodeIndex = graphNodes.indexOf(node);
+        const totalNodes = Math.min(graphNodes.length, 8);
+        const angle = (nodeIndex / totalNodes) * 2 * Math.PI;
+        const radius = isSidebarView ? 100 : 150;
+        
+        newNode.x = centerX + Math.cos(angle) * radius;
+        newNode.y = centerY + Math.sin(angle) * radius;
+      }
+      
+      return newNode;
+    });
 
-      // Keep nodes in bounds
-      const margin = 30;
-      simulation.nodes.forEach(node => {
-        node.x = Math.max(margin, Math.min(dimensions.width - margin, node.x));
-        node.y = Math.max(margin, Math.min(dimensions.height - margin, node.y));
-      });
-    }
+    setNodes(positionedNodes);
+    setLinks(graphLinks);
+  }, [graphNodes, graphLinks, dimensions, focusedNodeId, currentPath]);
 
-    setNodes(simulation.nodes);
-    setLinks(simulation.links);
-  }, [graphNodes, graphLinks, dimensions]);
+  // Disabled zoom and drag functionality
+  const handleMouseDown = useCallback(() => {
+    // Disable drag functionality
+    return;
+  }, []);
+
+  const handleMouseMove = useCallback(() => {
+    // Disable drag functionality
+    return;
+  }, []);
+
+  const handleMouseUp = useCallback(() => {
+    // Disable drag functionality
+    return;
+  }, []);
+
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Completely disable zoom functionality
+    return;
+  }, []);
+
+  // Zoom and drag disabled - no view reset needed
 
   // Handle window resize
   useEffect(() => {
@@ -357,10 +368,32 @@ export default function DocumentationGraph({
     }
   }, [currentPath]);
 
-  const handleNodeClick = useCallback((node: GraphNode) => {
+    const handleNodeClick = useCallback((node: GraphNode) => {
+    if (isNavigating) return; // Prevent multiple clicks during navigation
+    
+    // Don't navigate immediately, just show the new relational nodes and switch button
+    setClickedNodeId(node.id);
     setFocusedNodeId(node.id);
+    setPendingSwitchNodeId(node.id);
+    
+    // Clear the click animation after a short delay
+    setTimeout(() => {
+      setClickedNodeId(null);
+    }, prefersReducedMotion ? 50 : 600);
+  }, [isNavigating, prefersReducedMotion]);
+
+  const handleSwitchClick = useCallback((node: GraphNode) => {
+    if (isNavigating) return;
+    
+    setIsNavigating(true);
+    setPendingSwitchNodeId(null);
+    
+    // Navigate after a brief delay
+    setTimeout(() => {
     onNodeClick?.(node.path);
-  }, [onNodeClick]);
+      setIsNavigating(false);
+    }, 100);
+  }, [onNodeClick, isNavigating]);
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -398,10 +431,10 @@ export default function DocumentationGraph({
     <div className={`documentation-graph ${className}`}>
       {/* Search Input */}
       <div className="mb-2">
-        <input
-          type="text"
+          <input
+            type="text"
           placeholder={isSidebarView ? "Search docs..." : "Search documents..."}
-          value={searchTerm}
+            value={searchTerm}
           onChange={handleSearchChange}
           className={`w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-opacity-50 ${
             isSidebarView ? 'text-xs py-1 px-2' : ''
@@ -413,9 +446,21 @@ export default function DocumentationGraph({
       </div>
 
       {/* Graph Container */}
-      <div className={`graph-container border border-gray-300 dark:border-gray-700 rounded overflow-hidden ${
+      <div className={`graph-container border border-gray-300 dark:border-gray-700 rounded overflow-hidden relative ${
         isSidebarView ? 'h-48' : 'h-96'
       }`}>
+        {/* Fixed mind-map label */}
+        <div 
+          className="absolute top-2 right-3 text-xs pointer-events-none z-10"
+          style={{ 
+            fontSize: isSidebarView ? '8px' : '10px',
+            fontFamily: 'var(--mono-font)',
+            color: isDarkMode ? 'rgba(240, 240, 245, 0.4)' : 'rgba(46, 58, 35, 0.4)'
+          }}
+        >
+          mind-map
+        </div>
+        
         <svg
           ref={svgRef}
           width="100%"
@@ -423,13 +468,18 @@ export default function DocumentationGraph({
           className="documentation-graph-svg"
           viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
           style={{ backgroundColor: 'var(--card-color)' }}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onWheel={handleWheel}
         >
           {/* Gradient definitions */}
           <defs>
             <radialGradient id="node-gradient" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor="white" stopOpacity="0.3" />
               <stop offset="100%" stopColor="transparent" />
-            </radialGradient>
+              </radialGradient>
             
             <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
@@ -440,48 +490,35 @@ export default function DocumentationGraph({
             </filter>
           </defs>
 
-          {/* Mind-map label */}
-          <text
-            x={dimensions.width - 10}
-            y={15}
-            textAnchor="end"
-            className="text-xs fill-current pointer-events-none"
-            style={{ 
-              fontSize: isSidebarView ? '8px' : '10px',
-              fontFamily: 'var(--mono-font)',
-              fill: isDarkMode ? 'rgba(240, 240, 245, 0.4)' : 'rgba(46, 58, 35, 0.4)'
-            }}
-          >
-            mind-map
-          </text>
+
 
           {/* Background particles */}
           {!isSidebarView && (
-            <g className="background-particles" opacity="0.1">
+          <g className="background-particles" opacity="0.1">
               {Array.from({ length: 6 }).map((_, i) => (
-                <motion.circle
-                  key={`particle-${i}`}
+              <motion.circle
+                key={`particle-${i}`}
                   r={1}
                   fill={themeColors.primary}
-                  initial={{
-                    x: Math.random() * dimensions.width,
-                    y: Math.random() * dimensions.height,
-                  }}
-                  animate={{
-                    x: Math.random() * dimensions.width,
-                    y: Math.random() * dimensions.height,
-                  }}
-                  transition={{
+                initial={{
+                  x: Math.random() * dimensions.width,
+                  y: Math.random() * dimensions.height,
+                }}
+                animate={{
+                  x: Math.random() * dimensions.width,
+                  y: Math.random() * dimensions.height,
+                }}
+                transition={{
                     duration: Math.random() * 20 + 10,
-                    repeat: Infinity,
-                    repeatType: "reverse",
-                    ease: "linear"
-                  }}
-                />
-              ))}
-            </g>
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  ease: "linear"
+                }}
+              />
+            ))}
+          </g>
           )}
-
+          
           {/* Links */}
           <g className="links">
             {links.map((link, index) => {
@@ -621,12 +658,103 @@ export default function DocumentationGraph({
                       }}
                     />
                   )}
+                  
+                  {/* Click confirmation indicator */}
+                  {node.id === clickedNodeId && (
+                    <>
+                      {/* Expanding confirmation ring */}
+                      <motion.circle
+                        cx={node.x}
+                        cy={node.y}
+                        r={nodeRadius}
+                        fill="none"
+                        stroke={themeColors.accent}
+                        strokeWidth={2}
+                        initial={{ r: nodeRadius, opacity: 0.8 }}
+                        animate={{ r: nodeRadius + 15, opacity: 0 }}
+                        transition={{ 
+                          duration: prefersReducedMotion ? 0.01 : 0.6, 
+                          ease: "easeOut" 
+                        }}
+                      />
+                      
+                      {/* Check icon or confirmation symbol */}
+                      <motion.text
+                        x={node.x}
+                        y={node.y + 2}
+                        textAnchor="middle"
+                        className="pointer-events-none"
+                      style={{
+                          fontSize: isSidebarView ? '8px' : '12px',
+                          fontFamily: 'var(--mono-font)',
+                          fill: themeColors.accent
+                        }}
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ 
+                          duration: prefersReducedMotion ? 0.01 : 0.3,
+                          delay: prefersReducedMotion ? 0 : 0.1
+                        }}
+                      >
+                        ✓
+                      </motion.text>
+                    </>
+                  )}
+                  
+                  {/* Switch button for pending navigation */}
+                  {node.id === pendingSwitchNodeId && node.id !== currentPath && (
+                    <motion.g
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      transition={{ 
+                        duration: prefersReducedMotion ? 0.01 : 0.3,
+                        delay: prefersReducedMotion ? 0 : 0.4
+                      }}
+                    >
+                      {/* Switch button background */}
+                      <motion.rect
+                        x={node.x - (isSidebarView ? 18 : 24)}
+                        y={node.y - nodeRadius - (isSidebarView ? 20 : 28)}
+                        width={isSidebarView ? 36 : 48}
+                        height={isSidebarView ? 14 : 18}
+                        rx={isSidebarView ? 7 : 9}
+                        fill={themeColors.accent}
+                        stroke="white"
+                        strokeWidth={1}
+                        className="cursor-pointer"
+                        whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
+                        whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSwitchClick(node);
+                        }}
+                      />
+                      
+                      {/* Switch button text */}
+                      <motion.text
+                        x={node.x}
+                        y={node.y - nodeRadius - (isSidebarView ? 16 : 22)}
+                        textAnchor="middle"
+                        className="cursor-pointer pointer-events-none"
+                        style={{
+                          fontSize: isSidebarView ? '7px' : '9px',
+                          fontFamily: 'var(--mono-font)',
+                          fill: 'white',
+                          fontWeight: 'bold',
+                          dominantBaseline: 'central'
+                        }}
+                      >
+                        switch?
+                      </motion.text>
+                    </motion.g>
+                  )}
                 </motion.g>
               );
             })}
           </g>
         </svg>
-      </div>
+          </div>
 
       {/* Compact legend */}
       <div className={`graph-legend mt-2 flex justify-center gap-3 text-xs opacity-75 ${
@@ -638,7 +766,7 @@ export default function DocumentationGraph({
             style={{ backgroundColor: themeColors.primary }}
           />
           <span style={{ fontSize: isSidebarView ? '9px' : '11px' }}>Pages</span>
-        </div>
+          </div>
         <div className="flex items-center gap-1">
           <div 
             className="w-2 h-2 rounded-full" 
@@ -655,7 +783,7 @@ export default function DocumentationGraph({
             <span style={{ fontSize: isSidebarView ? '9px' : '11px' }}>Matches</span>
           </div>
         )}
-      </div>
+          </div>
 
       {/* Search results info */}
       {searchTerm && (
@@ -668,4 +796,4 @@ export default function DocumentationGraph({
       )}
     </div>
   );
-}
+} 

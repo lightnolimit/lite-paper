@@ -185,6 +185,138 @@ const styleReplacements: Array<[RegExp, string]> = [
 ];
 
 /**
+ * Process CodeBlock components in markdown
+ * 
+ * @param html - The HTML string containing CodeBlock components
+ * @returns HTML string with CodeBlock components rendered
+ */
+export const processCodeBlocks = (html: string): string => {
+  processorLogger.debug('Processing CodeBlock components in markdown');
+  
+  // Pattern to match CodeBlock components with their props
+  const codeBlockPattern = /<CodeBlock\s+([^>]+)\/>/g;
+  
+  return html.replace(codeBlockPattern, (match, propsString) => {
+    try {
+      // Extract title and snippets from props
+      const titleMatch = propsString.match(/title="([^"]+)"/);
+      const snippetsMatch = propsString.match(/snippets=\{(\[[\s\S]+?\])\}/);
+      
+      if (!snippetsMatch) {
+        processorLogger.warn('CodeBlock found without snippets prop');
+        return match;
+      }
+      
+      const title = titleMatch ? titleMatch[1] : '';
+      const snippetsJson = snippetsMatch[1];
+      
+      // Parse the snippets JSON
+      const snippets = JSON.parse(snippetsJson);
+      
+      // Generate a unique ID for this code block
+      const blockId = `code-block-${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Create HTML for the code block
+      const codeBlockHtml = `
+        <div class="code-block-container" id="${blockId}">
+          ${title ? `<div class="code-block-title"><h4>${title}</h4></div>` : ''}
+          
+          ${snippets.length > 1 ? `
+          <div class="code-block-tabs">
+            ${snippets.map((snippet: { language: string; label?: string }, index: number) => `
+              <button 
+                class="code-block-tab ${index === 0 ? 'active' : ''}" 
+                onclick="switchCodeTab('${blockId}', ${index})"
+                data-tab="${index}"
+              >
+                ${snippet.label || getLanguageDisplay(snippet.language)}
+              </button>
+            `).join('')}
+          </div>
+          ` : ''}
+          
+          <div class="code-block-wrapper">
+            <div class="code-block-header">
+              <span class="code-block-language" id="${blockId}-language">
+                ${snippets[0].label || getLanguageDisplay(snippets[0].language)}
+              </span>
+              <button 
+                class="code-block-copy-btn" 
+                onclick="copyCodeBlock('${blockId}')"
+                title="Copy to clipboard"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                </svg>
+                <span class="text-xs font-medium">Copy</span>
+              </button>
+            </div>
+            
+                         ${snippets.map((snippet: { language: string; code: string }, index: number) => `
+               <pre 
+                 class="code-block-content ${index === 0 ? 'active' : 'hidden'}" 
+                 id="${blockId}-content-${index}"
+                 data-language="${snippet.language}"
+               ><code class="language-${snippet.language}">${escapeHtml(snippet.code)}</code></pre>
+             `).join('')}
+          </div>
+          
+          <script>
+            window.codeBlockData = window.codeBlockData || {};
+            window.codeBlockData['${blockId}'] = ${JSON.stringify(snippets)};
+          </script>
+        </div>
+      `;
+      
+      return codeBlockHtml;
+    } catch (error) {
+      processorLogger.error('Error processing CodeBlock:', error);
+      return match; // Return original if parsing fails
+    }
+  });
+};
+
+/**
+ * Get display name for a programming language
+ */
+function getLanguageDisplay(language: string): string {
+  const languageMap: Record<string, string> = {
+    'javascript': 'JavaScript',
+    'typescript': 'TypeScript',
+    'python': 'Python',
+    'solidity': 'Solidity',
+    'bash': 'Bash',
+    'shell': 'Shell',
+    'json': 'JSON',
+    'css': 'CSS',
+    'html': 'HTML',
+    'sql': 'SQL',
+    'yaml': 'YAML',
+    'toml': 'TOML',
+    'go': 'Go',
+    'rust': 'Rust',
+    'java': 'Java',
+    'cpp': 'C++',
+    'c': 'C'
+  };
+  
+  return languageMap[language.toLowerCase()] || language.toUpperCase();
+}
+
+/**
+ * Escape HTML characters
+ */
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/**
  * Apply CSS classes to various HTML elements in the rendered markdown
  * 
  * @param html - The raw HTML string from markdown parsing
@@ -193,8 +325,10 @@ const styleReplacements: Array<[RegExp, string]> = [
 export const applyMarkdownStyles = (html: string): string => {
   processorLogger.debug('Applying styles to markdown HTML');
   
+  // First process CodeBlock components
+  let styledHtml = processCodeBlocks(html);
+  
   // Apply all style replacements in a single pass
-  let styledHtml = html;
   for (const [regex, replacement] of styleReplacements) {
     styledHtml = styledHtml.replace(regex, replacement);
   }

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../providers/ThemeProvider';
 
 /**
  * Type for valid background types
@@ -27,6 +28,7 @@ type BackgroundSelectorProps = {
  */
 const BackgroundSelector = React.memo(({ className = "" }: BackgroundSelectorProps) => {
   const [backgroundType, setBackgroundType] = useState<BackgroundType>('wave');
+  const { prefersReducedMotion } = useTheme();
   
   /**
    * Initialize background type from localStorage or environment variable
@@ -69,11 +71,16 @@ const BackgroundSelector = React.memo(({ className = "" }: BackgroundSelectorPro
     window.location.reload();
   }, []);
 
-  // Memoized animation variants
-  const buttonAnimations = useMemo(() => ({
-    whileHover: { scale: 1.05 },
-    whileTap: { scale: 0.95 }
-  }), []);
+  // Memoized animation variants (disabled if motion is reduced)
+  const buttonAnimations = useMemo(() => {
+    if (prefersReducedMotion) {
+      return {};
+    }
+    return {
+      whileHover: { scale: 1.05 },
+      whileTap: { scale: 0.95 }
+    };
+  }, [prefersReducedMotion]);
 
   // Memoized base styles for active and inactive states
   const baseButtonStyles = useMemo(() => ({
@@ -115,15 +122,31 @@ const BackgroundSelector = React.memo(({ className = "" }: BackgroundSelectorPro
   
   return (
     <div className={`flex flex-wrap items-center gap-2 ${className}`}>
-      {buttonConfigs.map(({ type, label }) => (
-        <motion.button
-          key={type}
-          onClick={() => handleBackgroundChange(type)}
-          {...getButtonStyles(type)}
-        >
-          {label}
-        </motion.button>
-      ))}
+      {buttonConfigs.map(({ type, label }) => {
+        const buttonProps = getButtonStyles(type);
+        
+        return prefersReducedMotion ? (
+          <button
+            key={type}
+            onClick={() => handleBackgroundChange(type)}
+            className={buttonProps.className}
+            style={buttonProps.style}
+            aria-label={buttonProps['aria-label']}
+            title={buttonProps.title}
+            aria-pressed={buttonProps['aria-pressed']}
+          >
+            {label}
+          </button>
+        ) : (
+          <motion.button
+            key={type}
+            onClick={() => handleBackgroundChange(type)}
+            {...buttonProps}
+          >
+            {label}
+          </motion.button>
+        );
+      })}
     </div>
   );
 });

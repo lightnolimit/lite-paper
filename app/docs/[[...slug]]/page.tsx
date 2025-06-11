@@ -18,13 +18,15 @@ export async function generateStaticParams() {
   const contentDir = path.join(process.cwd(), 'app/docs/content');
   const paths: { slug: string[] }[] = [];
   
-  // Add the default path
-  paths.push({ slug: ['getting-started', 'introduction'] });
-  
   // Recursive function to traverse directories
   async function traverse(dir: string, currentPath: string[] = []) {
     try {
       const files = await fs.promises.readdir(dir);
+      
+      // Add directory path (for cases like /docs/getting-started)
+      if (currentPath.length > 0) {
+        paths.push({ slug: [...currentPath] });
+      }
       
       for (const file of files) {
         const filePath = path.join(dir, file);
@@ -45,6 +47,11 @@ export async function generateStaticParams() {
   }
   
   await traverse(contentDir);
+  
+  // Add the root docs path (no slug)
+  paths.push({ slug: [] });
+  
+  console.log('Generated static params:', paths);
   return paths;
 }
 
@@ -53,10 +60,32 @@ export default async function DocPage({ params }: PageProps) {
   const resolvedParams = await params;
   const slug = resolvedParams?.slug;
 
-  // Safely determine slugPath - use a path that actually exists
-  const slugPath = (Array.isArray(slug) && slug.length > 0) 
-    ? slug.join('/') 
-    : 'getting-started/introduction';
+  // Function to determine the correct path
+  function getDocumentPath(slug?: string[]): string {
+    if (!slug || slug.length === 0) {
+      return 'getting-started/introduction';
+    }
+    
+    const joinedPath = slug.join('/');
+    
+    // Handle directory redirects to default files
+    const directoryDefaults: Record<string, string> = {
+      'getting-started': 'getting-started/introduction',
+      'user-guide': 'user-guide/basic-usage',
+      'api-reference': 'api-reference/overview',
+      'developer-guides': 'developer-guides/code-examples',
+      'deployment': 'deployment/overview'
+    };
+    
+    // If it's a directory, redirect to default file
+    if (directoryDefaults[joinedPath]) {
+      return directoryDefaults[joinedPath];
+    }
+    
+    return joinedPath;
+  }
+
+  const slugPath = getDocumentPath(slug);
   
   // Load the content for this document
   const content = await loadMarkdownContent(slugPath);

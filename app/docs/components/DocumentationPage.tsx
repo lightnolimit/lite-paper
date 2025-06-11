@@ -6,10 +6,12 @@ import dynamic from 'next/dynamic';
 import Navigation from '../../components/Navigation';
 import FileTree from '../../components/FileTree';
 import ContentRenderer from '../../components/ContentRenderer';
+import { useTheme } from '../../providers/ThemeProvider';
 
 import { documentationTree } from '../../data/documentation';
 import { FileItem } from '../../components/FileTree';
 import { motion, AnimatePresence } from 'framer-motion';
+import { uiConfig, getMobileTogglePositionClasses } from '../../config/ui';
 
 interface DocumentationPageProps {
   initialContent: string;
@@ -26,6 +28,7 @@ const BackgroundComponents = {
 
 const DocumentationPage = React.memo(({ initialContent, currentPath }: DocumentationPageProps) => {
   const router = useRouter();
+  const { prefersReducedMotion } = useTheme();
   const [content, setContent] = useState<string>(initialContent);
   const [path, setPath] = useState<string>(currentPath);
   const [sidebarVisible, setSidebarVisible] = useState(false);
@@ -33,34 +36,60 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
   const [isMobile, setIsMobile] = useState(false);
 
   
-  // Memoized animation variants
-  const sidebarAnimationVariants = useMemo(() => ({
-    mobile: {
-      initial: { opacity: 0, x: -100, position: 'fixed' as const },
-      animate: { opacity: 1, x: 0, position: 'fixed' as const },
-      exit: { opacity: 0, x: -100, position: 'fixed' as const }
-    },
-    desktop: {
-      initial: { opacity: 1, x: 0, position: 'sticky' as const },
-      animate: { opacity: 1, x: 0, position: 'sticky' as const },
-      exit: { opacity: 1, x: 0, position: 'sticky' as const }
+  // Memoized animation variants (disabled if motion is reduced)
+  const sidebarAnimationVariants = useMemo(() => {
+    if (prefersReducedMotion) {
+      return {
+        mobile: {
+          initial: { opacity: 0, position: 'fixed' as const },
+          animate: { opacity: 1, position: 'fixed' as const },
+          exit: { opacity: 0, position: 'fixed' as const }
+        },
+        desktop: {
+          initial: { opacity: 1, position: 'sticky' as const },
+          animate: { opacity: 1, position: 'sticky' as const },
+          exit: { opacity: 1, position: 'sticky' as const }
+        }
+      };
     }
-  }), []);
+    return {
+      mobile: {
+        initial: { opacity: 0, x: -100, position: 'fixed' as const },
+        animate: { opacity: 1, x: 0, position: 'fixed' as const },
+        exit: { opacity: 0, x: -100, position: 'fixed' as const }
+      },
+      desktop: {
+        initial: { opacity: 1, x: 0, position: 'sticky' as const },
+        animate: { opacity: 1, x: 0, position: 'sticky' as const },
+        exit: { opacity: 1, x: 0, position: 'sticky' as const }
+      }
+    };
+  }, [prefersReducedMotion]);
 
-  // Memoized transition config
+  // Memoized transition config (faster if motion is reduced)
   const transitionConfig = useMemo(() => ({
-    duration: 0.3
-  }), []);
+    duration: prefersReducedMotion ? 0.05 : 0.3
+  }), [prefersReducedMotion]);
 
-  // Memoized button animation config
-  const buttonAnimationConfig = useMemo(() => ({
-    whileHover: { scale: 1.1 },
-    whileTap: { scale: 0.9 },
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: 20 },
-    transition: { duration: 0.2 }
-  }), []);
+  // Memoized button animation config (disabled if motion is reduced)
+  const buttonAnimationConfig = useMemo(() => {
+    if (prefersReducedMotion) {
+      return {
+        initial: { opacity: 1 },
+        animate: { opacity: 1 },
+        exit: { opacity: 1 },
+        transition: { duration: 0.05 }
+      };
+    }
+    return {
+      whileHover: { scale: 1.1 },
+      whileTap: { scale: 0.9 },
+      initial: { opacity: 0, y: 20 },
+      animate: { opacity: 1, y: 0 },
+      exit: { opacity: 0, y: 20 },
+      transition: { duration: 0.2 }
+    };
+  }, [prefersReducedMotion]);
 
   // Effect to initialize component state
   useEffect(() => {
@@ -81,7 +110,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
     } else {
       setBackgroundType(envDefault);
     }
-  }, []);
+  }, [currentPath]);
   
   // Update content when initialContent or currentPath changes
   useEffect(() => {
@@ -177,9 +206,13 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
   return (
     <main className="flex min-h-screen flex-col">
       <BackgroundComponent />
-      <Navigation docsPath={path} onToggleSidebar={toggleSidebar} sidebarVisible={sidebarVisible} />
+      <Navigation 
+        docsPath={path} 
+        onToggleSidebar={toggleSidebar} 
+        sidebarVisible={sidebarVisible}
+      />
       
-      <div className="w-full flex flex-1 z-10 pt-16">
+      <div className="w-full flex flex-1 z-10 pt-14">
         <div className="flex w-full">
           {/* Sidebar */}
           <AnimatePresence>
@@ -189,7 +222,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                 animate={isMobile ? sidebarAnimationVariants.mobile.animate : sidebarAnimationVariants.desktop.animate}
                 exit={isMobile ? sidebarAnimationVariants.mobile.exit : sidebarAnimationVariants.desktop.exit}
                 transition={isMobile ? transitionConfig : { duration: 0 }}
-                className="w-full md:w-72 lg:w-80 shrink-0 doc-card file-tree-panel p-4 h-[calc(100vh-64px)] top-16 overflow-y-auto z-20 border-r scrollbar-hide"
+                className="w-full md:w-64 lg:w-72 shrink-0 file-tree-panel p-4 h-[calc(100vh-56px)] top-14 overflow-y-auto z-20 scrollbar-hide"
                 style={sidebarStyle}
               >
                 {/* Mobile close button - positioned absolutely */}
@@ -212,37 +245,60 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
           </AnimatePresence>
           
           {/* Content */}
-          <div className={`flex-1 py-8 px-6 md:px-8 lg:px-16 ${contentOpacityClass}`}>
-            {/* Mobile file tree toggle button - only visible on mobile when sidebar is hidden */}
-            {isMobile && !sidebarVisible && (
-              <motion.button
-                onClick={toggleSidebar}
-                className="fixed z-30 bottom-6 left-6 rounded p-3 shadow-lg"
-                {...buttonAnimationConfig}
-                aria-label="Show documentation tree"
-                style={buttonStyle}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-5 h-5"
-                  style={iconStyle}
+          <div className={`flex-1 py-6 px-4 md:px-6 lg:px-12 ${contentOpacityClass}`}>
+            {/* Mobile file tree toggle button - configurable via uiConfig */}
+            {uiConfig.showMobileFileTreeToggle && isMobile && !sidebarVisible && (
+              prefersReducedMotion ? (
+                <button
+                  onClick={toggleSidebar}
+                  className={`fixed z-30 ${getMobileTogglePositionClasses(uiConfig.mobileTogglePosition)} rounded p-3 shadow-lg`}
+                  aria-label="Show documentation tree"
+                  style={buttonStyle}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
-                  />
-                </svg>
-              </motion.button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-5 h-5"
+                    style={iconStyle}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
+                    />
+                  </svg>
+                </button>
+              ) : (
+                <motion.button
+                  onClick={toggleSidebar}
+                  className={`fixed z-30 ${getMobileTogglePositionClasses(uiConfig.mobileTogglePosition)} rounded p-3 shadow-lg`}
+                  {...buttonAnimationConfig}
+                  aria-label="Show documentation tree"
+                  style={buttonStyle}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-5 h-5"
+                    style={iconStyle}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
+                    />
+                  </svg>
+                </motion.button>
+              )
             )}
             
-            <div className="max-w-6xl mx-auto">
-              <ContentRenderer content={content} path={path} />
-            </div>
+            <ContentRenderer content={content} path={path} />
           </div>
         </div>
       </div>

@@ -91,6 +91,11 @@ export const documentationTree: FileItem[] = [
         type: 'file',
         name: 'Contributing.md',
         path: 'developer-guides/contributing'
+      },
+      {
+        type: 'file',
+        name: 'UI Configuration.md',
+        path: 'developer-guides/ui-configuration'
       }
     ]
   },

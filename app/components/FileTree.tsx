@@ -3,7 +3,9 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import DocumentationGraph from './DocumentationGraph';
+import { useTheme } from '../providers/ThemeProvider';
 
 export type FileItem = {
   name: string;
@@ -76,6 +78,7 @@ const FileTreeItem: React.FC<FileTreeItemProps> = React.memo(({
   onToggle,
   currentPath
 }) => {
+  const { prefersReducedMotion } = useTheme();
   const isActive = currentPath === item.path;
   const isDirectory = item.type === 'directory';
   const hasChildren = isDirectory && item.children && item.children.length > 0;
@@ -106,9 +109,9 @@ const FileTreeItem: React.FC<FileTreeItemProps> = React.memo(({
     }
   }, [handleClick]);
   
-  // Use standard depth for the container, but add extra indent for files inside folders  
+  // Use standard depth for the container, but only apply padding for nested items (depth > 1)  
   return (
-    <div style={{ paddingLeft: `${depth * 12}px` }}>
+    <div style={{ paddingLeft: depth > 1 ? `${(depth - 1) * 12}px` : '0px' }}>
       <div 
         className={`file-tree-item flex items-center py-1 ${isActive ? 'active' : ''}`}
         onClick={handleClick}
@@ -124,13 +127,22 @@ const FileTreeItem: React.FC<FileTreeItemProps> = React.memo(({
         }}
       >
         {isDirectory && (
-          <span className="mr-1 transform transition-transform" style={{ 
-            transform: item.expanded ? 'rotate(90deg)' : 'rotate(0deg)',
-            display: 'inline-block',
-            width: '20px',
-          }}>
+          <motion.span 
+            className="mr-1"
+            style={{ 
+              display: 'inline-block',
+              width: '20px',
+            }}
+            animate={{ 
+              rotate: item.expanded ? 90 : 0 
+            }}
+            transition={{ 
+              duration: prefersReducedMotion ? 0.01 : 0.2,
+              ease: "easeOut"
+            }}
+          >
             {hasChildren ? '›' : ' '}
-          </span>
+          </motion.span>
         )}
         
         <span className="mr-2 flex items-center">
@@ -150,20 +162,41 @@ const FileTreeItem: React.FC<FileTreeItemProps> = React.memo(({
         <span className="truncate">{item.name}</span>
       </div>
       
-      {isDirectory && item.expanded && item.children && (
-        <div className="file-tree-children pl-2">
-          {item.children.map((child) => (
-            <FileTreeItem
-              key={child.path}
-              item={child}
-              onSelect={onSelect}
-              depth={depth + 1}
-              onToggle={onToggle}
-              currentPath={currentPath}
-            />
-          ))}
-        </div>
-      )}
+      <AnimatePresence>
+        {isDirectory && item.expanded && item.children && (
+          <motion.div 
+            className="file-tree-children pl-2"
+            initial={{ 
+              height: 0, 
+              opacity: prefersReducedMotion ? 1 : 0
+            }}
+            animate={{ 
+              height: "auto", 
+              opacity: 1 
+            }}
+            exit={{ 
+              height: 0, 
+              opacity: prefersReducedMotion ? 1 : 0 
+            }}
+            transition={{ 
+              duration: prefersReducedMotion ? 0.01 : 0.2,
+              ease: "easeInOut" 
+            }}
+            style={{ overflow: "hidden" }}
+          >
+            {item.children.map((child) => (
+              <FileTreeItem
+                key={child.path}
+                item={child}
+                onSelect={onSelect}
+                depth={depth + 1}
+                onToggle={onToggle}
+                currentPath={currentPath}
+              />
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 });
@@ -208,7 +241,7 @@ const FileTree: React.FC<FileTreeProps> = ({ items, onSelect, currentPath }) => 
       ))}
       
       {/* Documentation Graph - placed at the bottom of sidebar */}
-      <div className="mt-3 border-t border-gray-200 dark:border-gray-700 pt-3">
+      <div className="mt-3 border-t pt-3" style={{ borderColor: 'var(--border-unified)' }}>
         <div className="h-64 w-full">
           <DocumentationGraph 
             currentPath={currentPath || ''}
