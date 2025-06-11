@@ -48,6 +48,11 @@ export const documentationTree: FileItem[] = [
         name: 'Troubleshooting.md',
         path: 'user-guide/troubleshooting'
       },
+      {
+        type: 'file',
+        name: 'Chatbot.md',
+        path: 'user-guide/chatbot'
+      },
     ]
   },
   {

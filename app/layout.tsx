@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ThemeProvider } from "./providers/ThemeProvider";
+import { ChatBotProvider } from "./components/ChatBotProvider";
 
 /**
  * Default metadata for the application
@@ -163,7 +164,10 @@ export default function RootLayout({
         <script src="/js/codeblock.js" defer />
       </head>
       <body className="min-h-screen font-yeezy">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          {children}
+          <ChatBotProvider />
+        </ThemeProvider>
       </body>
     </html>
   );
