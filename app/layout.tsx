@@ -163,7 +163,7 @@ export default function RootLayout({
         {/* Code block functionality */}
         <script src="/js/codeblock.js" defer />
       </head>
-      <body className="min-h-screen font-yeezy">
+      <body className="min-h-screen font-urbanist">
         <ThemeProvider>
           {children}
           <ChatBotProvider />

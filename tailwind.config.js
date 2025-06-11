@@ -7,7 +7,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'yeezy': ['"Yeezy T-Star"', 'sans-serif'],
+        'urbanist': ['Urbanist', 'sans-serif'],
       },
       colors: {
         // Dark mode - Japanese pink aesthetic

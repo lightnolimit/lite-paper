@@ -171,7 +171,7 @@ Theme-aware styling using CSS variables:
 
 ```css
 :root {
-  --title-font: 'Yeezy T-Star', sans-serif;
+  --title-font: 'Urbanist', sans-serif;
   --body-font: 'Urbanist', sans-serif;
   --mono-font: 'MapleMono', 'SF Mono', monospace;
 }

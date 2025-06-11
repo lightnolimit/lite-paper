@@ -138,7 +138,7 @@ export function ChatBot({ className = '', isOpen = false, onToggle }: ChatBotPro
         animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
         exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95, y: 20 }}
         transition={{ duration: 0.2 }}
-        className={`fixed bottom-4 right-4 w-96 h-[32rem] bg-background-color border border-border-color rounded-lg shadow-xl flex flex-col z-50 ${className}`}
+        className={`chatbot-container fixed bottom-4 right-4 w-96 h-[32rem] rounded-lg flex flex-col z-50 ${className}`}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border-color">
@@ -183,8 +183,8 @@ export function ChatBot({ className = '', isOpen = false, onToggle }: ChatBotPro
               <div
                 className={`max-w-[80%] rounded-lg px-3 py-2 ${
                   message.type === 'user'
-                    ? 'bg-primary-color text-white'
-                    : 'bg-background-color text-text-color border border-border-color'
+                    ? 'chatbot-message-user'
+                    : 'chatbot-message-assistant'
                 }`}
               >
                 <div className="text-sm prose prose-sm max-w-none [&>p]:mb-0 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
@@ -231,7 +231,7 @@ export function ChatBot({ className = '', isOpen = false, onToggle }: ChatBotPro
               animate={{ opacity: 1 }}
               className="flex justify-start"
             >
-              <div className="bg-background-color border border-border-color rounded-lg px-3 py-2">
+              <div className="chatbot-message-assistant rounded-lg px-3 py-2">
                 <div className="flex space-x-1">
                   <div className="w-2 h-2 bg-muted-color rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                   <div className="w-2 h-2 bg-muted-color rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -253,7 +253,7 @@ export function ChatBot({ className = '', isOpen = false, onToggle }: ChatBotPro
                 <button
                   key={index}
                   onClick={() => handleSuggestionClick(suggestion)}
-                  className="w-full text-left text-xs bg-background-color hover:bg-border-color border border-border-color rounded px-2 py-1 transition-colors"
+                  className="w-full text-left text-xs chatbot-message-assistant hover:opacity-80 rounded px-2 py-1 transition-colors"
                 >
                   {suggestion}
                 </button>
@@ -272,7 +272,7 @@ export function ChatBot({ className = '', isOpen = false, onToggle }: ChatBotPro
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask me anything about the documentation..."
-              className="flex-1 bg-background-color border border-border-color rounded-lg px-3 py-2 text-sm text-text-color placeholder-muted-color focus:outline-none focus:ring-2 focus:ring-primary-color focus:border-transparent"
+              className="flex-1 chatbot-message-assistant rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-color focus:border-transparent"
               disabled={isLoading}
             />
             <button
@@ -301,7 +301,7 @@ export function ChatToggle({ onClick, isOpen }: { onClick: () => void; isOpen: b
   return (
     <motion.button
       onClick={onClick}
-      className="fixed bottom-4 right-4 w-12 h-12 bg-primary-color text-white rounded-full shadow-lg hover:bg-primary-color/90 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2 transition-colors z-40"
+      className="chatbot-toggle fixed bottom-4 right-4 w-12 h-12 text-white rounded-full hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2 transition-all z-40"
       whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
       whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
       aria-label={isOpen ? 'Close chat' : 'Open chat'}

@@ -2,38 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import Yeezy T-Star fonts */
-@font-face {
-  font-family: 'Yeezy T-Star';
-  src: url('/fonts/yeezy_tstar-regular-webfont.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Yeezy T-Star';
-  src: url('/fonts/yeezy_tstar-light-webfont.woff2') format('woff2');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Yeezy T-Star';
-  src: url('/fonts/yeezy_tstar-bold-webfont.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Yeezy T-Star';
-  src: url('/fonts/yeezy_tstar-heavy-webfont.woff2') format('woff2');
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
+/* Removed Yeezy T-Star fonts - files deleted */
 
 /* Import Urbanist font */
 @font-face {
@@ -894,7 +863,7 @@ code:not(.code-block-content code) {
 .doc-card h1 {
   font-size: 2.25rem;
   padding-bottom: 0.75rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem; /* Reduced from 1.5rem */
   margin-top: 0;
   border-bottom: none;
   font-weight: 700;
@@ -1530,4 +1499,66 @@ code.wallet-address {
   .social-links-inline img {
     height: 18px; /* Slightly smaller icons on mobile */
   }
+}
+
+/* Chatbot specific styles - ensure proper fonts and solid backgrounds */
+.chatbot-container {
+  font-family: var(--body-font) !important;
+  background-color: var(--card-color) !important;
+  backdrop-filter: none !important;
+  border: 1px solid var(--border-unified) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+}
+
+.chatbot-toggle {
+  background-color: var(--primary-color) !important;
+  backdrop-filter: none !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.dark .chatbot-toggle {
+  background-color: var(--primary-color) !important;
+}
+
+.chatbot-container * {
+  font-family: var(--body-font) !important;
+}
+
+.chatbot-container input,
+.chatbot-container textarea,
+.chatbot-container button {
+  font-family: var(--body-font) !important;
+}
+
+.chatbot-container code {
+  font-family: var(--mono-font) !important;
+}
+
+.chatbot-container input::placeholder {
+  color: var(--muted-color) !important;
+}
+
+.chatbot-container .border-t {
+  border-color: var(--border-unified) !important;
+}
+
+.chatbot-message-assistant {
+  background-color: var(--card-color) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-unified) !important;
+}
+
+.chatbot-message-user {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+/* Fix animation warnings for transparent colors */
+.dark .chatbot-toggle {
+  --primary-color: #FF85A1;
+}
+
+/* Ensure proper color transitions */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
 }

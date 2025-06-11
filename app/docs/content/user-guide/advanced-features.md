@@ -222,7 +222,7 @@ Our documentation site implements several performance optimizations:
 
 **Asset Optimization:**
 - **Font Loading**: WOFF2 format with `font-display: swap`
-  - Yeezy T-Star: ~11KB per variant
+  - Urbanist: ~42KB per variant
   - Urbanist: ~42KB per variant  
   - MapleMono: ~17MB (loaded on demand for code blocks)
 - **Image Optimization**: Next.js automatic WebP/AVIF conversion
