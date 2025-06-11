@@ -1,502 +1,923 @@
 # Code Examples
 
-Welcome to the comprehensive code examples section! Here you'll find practical examples of how to integrate with the Phantasy platform using various programming languages and frameworks.
+Welcome to the comprehensive code examples section! Here you'll find practical examples of how to build and customize features in your documentation site using Next.js, React, and modern web technologies.
 
 ## Getting Started
 
-Let's start with a simple API call example:
+Let's start with a simple example of adding a new documentation page:
 
-```javascript
-// Basic API call to get user information
-const response = await fetch('https://api.phantasy.io/v1/users/me', {
-  headers: {
-    'Authorization': `Bearer ${apiKey}`,
-    'Content-Type': 'application/json'
-  }
-});
+```typescript
+// types/documentation.ts
+export interface DocumentationPage {
+  title: string;
+  path: string;
+  content: string;
+  lastModified: Date;
+  category: string;
+}
 
-const userData = await response.json();
-console.log('User data:', userData);
+// Adding a new page to the documentation structure
+const newPage: DocumentationPage = {
+  title: "My New Feature",
+  path: "developer-guides/my-new-feature",
+  content: "# My New Feature\n\nDetailed documentation content...",
+  lastModified: new Date(),
+  category: "developer-guides"
+};
 ```
 
-## Multi-Language SDK Examples
+## Theme System Examples
 
-Here's how to authenticate with our API using different programming languages:
+Here's how to implement and customize the theme system:
 
-```javascript|python|bash
-// JavaScript/Node.js
-import { PhantasyClient } from '@phantasy/sdk';
+```typescript|css|javascript
+// TypeScript - Theme Provider Implementation
+'use client';
 
-const client = new PhantasyClient({
-  apiKey: process.env.PHANTASY_API_KEY,
-  environment: 'production'
-});
+import { createContext, useContext, useEffect, useState } from 'react';
 
-async function authenticateUser() {
-  try {
-    const auth = await client.auth.login({
-      email: 'user@example.com',
-      password: 'secure_password'
-    });
+interface ThemeContextType {
+  isDarkMode: boolean;
+  toggleTheme: () => void;
+  prefersReducedMotion: boolean;
+}
+
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    // Check system preferences
+    const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     
-    console.log('Authentication successful:', auth.token);
-    return auth;
-  } catch (error) {
-    console.error('Authentication failed:', error);
-    throw error;
+    setIsDarkMode(darkModeQuery.matches);
+    setPrefersReducedMotion(motionQuery.matches);
+
+    // Load saved preference
+    const saved = localStorage.getItem('theme');
+    if (saved) {
+      setIsDarkMode(saved === 'dark');
+      document.documentElement.classList.toggle('dark', saved === 'dark');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark', newTheme);
+  };
+
+  return (
+    <ThemeContext.Provider value={{ isDarkMode, toggleTheme, prefersReducedMotion }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+export const useTheme = () => {
+  const context = useContext(ThemeContext);
+  if (context === undefined) {
+    throw new Error('useTheme must be used within a ThemeProvider');
+  }
+  return context;
+};
+---
+/* CSS - Theme Variables and Transitions */
+:root {
+  /* Light theme colors */
+  --background-color: #FAFBF9;
+  --text-color: #1F2937;
+  --text-secondary: #374151;
+  --muted-color: #6B7280;
+  --card-background: #FFFFFF;
+  --border-color: #E5E7EB;
+
+  /* Typography */
+  --title-font: 'Urbanist', sans-serif;
+  --body-font: 'Urbanist', sans-serif;
+  --mono-font: 'MapleMono', 'SF Mono', monospace;
+
+  /* Transitions */
+  --theme-transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.dark {
+  /* Dark theme colors */
+  --background-color: #0B0D0F;
+  --text-color: #F8FAFC;
+  --text-secondary: #E2E8F0;
+  --muted-color: #94A3B8;
+  --card-background: #111317;
+  --border-color: #1F2937;
+}
+
+/* Smooth transitions for all theme changes */
+* {
+  transition: var(--theme-transition);
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none;
+    animation: none;
   }
 }
 ---
-# Python
-import os
-from phantasy_sdk import PhantasyClient
+// JavaScript - Dynamic Background System
+class BackgroundManager {
+  constructor() {
+    this.currentBackground = 'wave';
+    this.canvas = null;
+    this.animationId = null;
+  }
 
-client = PhantasyClient(
-    api_key=os.getenv('PHANTASY_API_KEY'),
-    environment='production'
-)
+  init(canvasElement) {
+    this.canvas = canvasElement;
+    this.setupCanvas();
+    this.startAnimation();
+  }
 
-def authenticate_user():
-    try:
-        auth = client.auth.login(
-            email='user@example.com',
-            password='secure_password'
-        )
-        
-        print(f'Authentication successful: {auth.token}')
-        return auth
-    except Exception as error:
-        print(f'Authentication failed: {error}')
-        raise
----
-# Bash/cURL
-#!/bin/bash
-
-API_KEY="${PHANTASY_API_KEY}"
-API_URL="https://api.phantasy.io/v1"
-
-# Authenticate user
-response=$(curl -s -X POST "${API_URL}/auth/login" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer ${API_KEY}" \
-  -d '{
-    "email": "user@example.com",
-    "password": "secure_password"
-  }')
-
-token=$(echo $response | jq -r '.token')
-echo "Authentication successful: $token"
-```
-
-## Smart Contract Integration
-
-Working with smart contracts on the Phantasy platform:
-
-```solidity
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
-
-import "@phantasy/contracts/interfaces/IPhantasyNFT.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-
-contract PhantasyGameItem is ERC721, Ownable, IPhantasyNFT {
-    uint256 private _tokenIdCounter;
-    mapping(uint256 => ItemMetadata) public itemMetadata;
+  setupCanvas() {
+    const ctx = this.canvas.getContext('2d');
+    const resizeCanvas = () => {
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
+    };
     
-    struct ItemMetadata {
-        string name;
-        uint256 level;
-        uint256 rarity;
-        uint256 gameId;
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+  }
+
+  startAnimation() {
+    const animate = (timestamp) => {
+      this.render(timestamp);
+      this.animationId = requestAnimationFrame(animate);
+    };
+    
+    animate(0);
+  }
+
+  render(timestamp) {
+    const ctx = this.canvas.getContext('2d');
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    switch (this.currentBackground) {
+      case 'wave':
+        this.renderWave(ctx, timestamp);
+        break;
+      case 'stars':
+        this.renderStars(ctx, timestamp);
+        break;
+      case 'dither':
+        this.renderDither(ctx, timestamp);
+        break;
     }
-    
-    constructor() ERC721("PhantasyGameItem", "PGI") {}
-    
-    function mintItem(
-        address to,
-        string memory name,
-        uint256 level,
-        uint256 rarity,
-        uint256 gameId
-    ) public onlyOwner returns (uint256) {
-        uint256 tokenId = _tokenIdCounter++;
-        
-        itemMetadata[tokenId] = ItemMetadata({
-            name: name,
-            level: level,
-            rarity: rarity,
-            gameId: gameId
-        });
-        
-        _safeMint(to, tokenId);
-        
-        emit ItemMinted(to, tokenId, name, level);
-        return tokenId;
-    }
-    
-    function getItemMetadata(uint256 tokenId) 
-        public 
-        view 
-        returns (ItemMetadata memory) {
-        require(_exists(tokenId), "Item does not exist");
-        return itemMetadata[tokenId];
-    }
-    
-    event ItemMinted(
-        address indexed to, 
-        uint256 indexed tokenId, 
-        string name, 
-        uint256 level
-    );
+  }
+
+  switchBackground(type) {
+    this.currentBackground = type;
+    localStorage.setItem('backgroundType', type);
+  }
 }
+
+// Usage
+const backgroundManager = new BackgroundManager();
+backgroundManager.init(document.getElementById('background-canvas'));
 ```
 
-## React Integration
+## Navigation Component
 
-Building a React component that integrates with Phantasy services:
+Building a responsive navigation with search functionality:
 
 ```tsx
-import React, { useState, useEffect } from 'react';
-import { usePhantasy } from '@phantasy/react-hooks';
-import { Button, Card, Loader } from '@phantasy/ui-components';
+'use client';
 
-interface GameStats {
-  level: number;
-  experience: number;
-  items: number;
-  achievements: number;
+import { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { documentationTree } from '../data/documentation';
+
+interface SearchResult {
+  title: string;
+  path: string;
+  category: string;
+  snippet?: string;
 }
 
-const PlayerDashboard: React.FC = () => {
-  const { user, isConnected, connect } = usePhantasy();
-  const [stats, setStats] = useState<GameStats | null>(null);
-  const [loading, setLoading] = useState(false);
-  
+export function Navigation() {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
+  // Search functionality
   useEffect(() => {
-    if (isConnected && user) {
-      fetchPlayerStats();
+    if (searchQuery.length > 2) {
+      const results = searchDocumentation(searchQuery);
+      setSearchResults(results);
+    } else {
+      setSearchResults([]);
     }
-  }, [isConnected, user]);
-  
-  const fetchPlayerStats = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`/api/players/${user.id}/stats`);
-      const playerStats = await response.json();
-      setStats(playerStats);
-    } catch (error) {
-      console.error('Failed to fetch player stats:', error);
-    } finally {
-      setLoading(false);
+  }, [searchQuery]);
+
+  const searchDocumentation = (query: string): SearchResult[] => {
+    const results: SearchResult[] = [];
+    const searchTerm = query.toLowerCase();
+
+    const searchInTree = (items: any[]) => {
+      items.forEach(item => {
+        if (item.type === 'file') {
+          const title = item.name.replace('.md', '');
+          if (title.toLowerCase().includes(searchTerm)) {
+            results.push({
+              title,
+              path: item.path,
+              category: item.path.split('/')[0]
+            });
+          }
+        } else if (item.children) {
+          searchInTree(item.children);
+        }
+      });
+    };
+
+    searchInTree(documentationTree);
+    return results.slice(0, 10); // Limit results
+  };
+
+  const handleSearchSelect = (result: SearchResult) => {
+    router.push(`/docs/${result.path}`);
+    setIsSearchOpen(false);
+    setSearchQuery('');
+  };
+
+  return (
+    <nav className="sticky top-0 z-50 bg-background-color border-b border-border-color">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-12">
+          {/* Logo */}
+          <div className="flex items-center">
+            <h1 className="text-xl font-bold text-text-color">
+              Documentation
+            </h1>
+          </div>
+
+          {/* Search */}
+          <div className="relative">
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="flex items-center gap-2 px-3 py-2 text-sm text-muted-color border border-border-color rounded-lg hover:border-text-color transition-colors"
+            >
+              <SearchIcon className="w-4 h-4" />
+              Search docs...
+              <kbd className="hidden sm:inline-block text-xs border border-border-color rounded px-1">
+                ⌘K
+              </kbd>
+            </button>
+
+            {/* Search Modal */}
+            {isSearchOpen && (
+              <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-[20vh]">
+                <div className="bg-card-background border border-border-color rounded-lg w-full max-w-lg mx-4">
+                  <div className="p-4 border-b border-border-color">
+                    <input
+                      ref={searchRef}
+                      type="text"
+                      placeholder="Search documentation..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full bg-transparent text-text-color placeholder-muted-color border-none outline-none"
+                      autoFocus
+                    />
+                  </div>
+                  
+                  {searchResults.length > 0 && (
+                    <div className="max-h-80 overflow-y-auto">
+                      {searchResults.map((result, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleSearchSelect(result)}
+                          className="w-full text-left p-4 hover:bg-background-color transition-colors border-b border-border-color last:border-b-0"
+                        >
+                          <div className="font-medium text-text-color">
+                            {result.title}
+                          </div>
+                          <div className="text-sm text-muted-color">
+                            {result.category}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Theme Toggle */}
+          <ThemeToggle />
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+function SearchIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+  );
+}
+```
+
+## Documentation Graph Component
+
+Creating an interactive visualization of documentation structure:
+
+```tsx
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import { documentationTree } from '../data/documentation';
+
+interface GraphNode {
+  id: string;
+  label: string;
+  path: string;
+  x: number;
+  y: number;
+  connections: string[];
+  category: string;
+}
+
+export function DocumentationGraph({ 
+  currentPath, 
+  onNodeClick,
+  className 
+}: {
+  currentPath?: string;
+  onNodeClick?: (path: string) => void;
+  className?: string;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [nodes, setNodes] = useState<GraphNode[]>([]);
+  const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+
+  useEffect(() => {
+    const graphNodes = buildGraphFromTree();
+    setNodes(graphNodes);
+  }, []);
+
+  useEffect(() => {
+    if (nodes.length > 0) {
+      drawGraph();
+    }
+  }, [nodes, hoveredNode, currentPath]);
+
+  const buildGraphFromTree = (): GraphNode[] => {
+    const nodes: GraphNode[] = [];
+    const centerX = 400;
+    const centerY = 300;
+    let nodeIndex = 0;
+
+    const processItem = (item: any, angle: number, radius: number, parentId?: string) => {
+      if (item.type === 'file') {
+        const x = centerX + Math.cos(angle) * radius;
+        const y = centerY + Math.sin(angle) * radius;
+        
+        const node: GraphNode = {
+          id: item.path,
+          label: item.name.replace('.md', ''),
+          path: item.path,
+          x,
+          y,
+          connections: parentId ? [parentId] : [],
+          category: item.path.split('/')[0]
+        };
+        
+        nodes.push(node);
+      } else if (item.children) {
+        // Add directory node
+        const x = centerX + Math.cos(angle) * (radius * 0.6);
+        const y = centerY + Math.sin(angle) * (radius * 0.6);
+        
+        const dirNode: GraphNode = {
+          id: item.path,
+          label: item.name,
+          path: item.path,
+          x,
+          y,
+          connections: [],
+          category: 'directory'
+        };
+        
+        nodes.push(dirNode);
+        
+        // Process children
+        item.children.forEach((child: any, index: number) => {
+          const childAngle = angle + (index - item.children.length / 2) * 0.3;
+          processItem(child, childAngle, radius + 100, item.path);
+        });
+      }
+    };
+
+    documentationTree.forEach((section, index) => {
+      const angle = (index / documentationTree.length) * Math.PI * 2;
+      processItem(section, angle, 150);
+    });
+
+    return nodes;
+  };
+
+  const drawGraph = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw connections
+    ctx.strokeStyle = 'rgba(156, 163, 175, 0.3)';
+    ctx.lineWidth = 1;
+    
+    nodes.forEach(node => {
+      node.connections.forEach(connectionId => {
+        const connectedNode = nodes.find(n => n.id === connectionId);
+        if (connectedNode) {
+          ctx.beginPath();
+          ctx.moveTo(node.x, node.y);
+          ctx.lineTo(connectedNode.x, connectedNode.y);
+          ctx.stroke();
+        }
+      });
+    });
+
+    // Draw nodes
+    nodes.forEach(node => {
+      const isHovered = hoveredNode === node.id;
+      const isCurrent = currentPath === node.path;
+      
+      // Node circle
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, isHovered ? 8 : 6, 0, Math.PI * 2);
+      
+      if (isCurrent) {
+        ctx.fillStyle = '#3B82F6';
+      } else if (node.category === 'directory') {
+        ctx.fillStyle = '#8B5CF6';
+      } else {
+        ctx.fillStyle = '#6B7280';
+      }
+      
+      ctx.fill();
+
+      // Label
+      ctx.fillStyle = '#374151';
+      ctx.font = '12px system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText(node.label, node.x, node.y + 20);
+    });
+  };
+
+  const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    // Find clicked node
+    const clickedNode = nodes.find(node => {
+      const distance = Math.sqrt(Math.pow(x - node.x, 2) + Math.pow(y - node.y, 2));
+      return distance <= 8;
+    });
+
+    if (clickedNode && onNodeClick) {
+      onNodeClick(clickedNode.path);
     }
   };
-  
-  if (!isConnected) {
-    return (
-      <Card className="text-center p-8">
-        <h2 className="text-2xl font-bold mb-4">Connect Your Wallet</h2>
-        <p className="text-gray-600 mb-6">
-          Connect your wallet to view your gaming stats and achievements.
-        </p>
-        <Button onClick={connect} variant="primary">
-          Connect Wallet
-        </Button>
-      </Card>
-    );
-  }
-  
-  if (loading) {
-    return (
-      <Card className="text-center p-8">
-        <Loader />
-        <p className="mt-4">Loading your stats...</p>
-      </Card>
-    );
-  }
-  
+
+  const handleCanvasMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    // Find hovered node
+    const hoveredNode = nodes.find(node => {
+      const distance = Math.sqrt(Math.pow(x - node.x, 2) + Math.pow(y - node.y, 2));
+      return distance <= 8;
+    });
+
+    setHoveredNode(hoveredNode?.id || null);
+    canvas.style.cursor = hoveredNode ? 'pointer' : 'default';
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <Card className="p-6">
-        <h3 className="font-semibold text-gray-600">Level</h3>
-        <p className="text-3xl font-bold text-blue-600">{stats?.level || 0}</p>
-      </Card>
-      
-      <Card className="p-6">
-        <h3 className="font-semibold text-gray-600">Experience</h3>
-        <p className="text-3xl font-bold text-green-600">
-          {stats?.experience?.toLocaleString() || 0}
-        </p>
-      </Card>
-      
-      <Card className="p-6">
-        <h3 className="font-semibold text-gray-600">Items</h3>
-        <p className="text-3xl font-bold text-purple-600">{stats?.items || 0}</p>
-      </Card>
-      
-      <Card className="p-6">
-        <h3 className="font-semibold text-gray-600">Achievements</h3>
-        <p className="text-3xl font-bold text-orange-600">
-          {stats?.achievements || 0}
-        </p>
-      </Card>
+    <div className={className}>
+      <canvas
+        ref={canvasRef}
+        width={800}
+        height={600}
+        onClick={handleCanvasClick}
+        onMouseMove={handleCanvasMouseMove}
+        className="w-full h-full border border-border-color rounded-lg"
+      />
     </div>
   );
-};
-
-export default PlayerDashboard;
+}
 ```
 
-## Configuration Examples
+## Code Block Component
 
-### Environment Configuration
+Advanced syntax highlighting with copy functionality:
 
-```yaml
-# docker-compose.yml
-version: '3.8'
+```tsx
+'use client';
 
-services:
-  phantasy-app:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - PHANTASY_API_KEY=${PHANTASY_API_KEY}
-      - PHANTASY_ENVIRONMENT=production
-      - DATABASE_URL=${DATABASE_URL}
-    depends_on:
-      - database
+import { useState } from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useTheme } from '../providers/ThemeProvider';
+
+interface CodeSnippet {
+  language: string;
+  code: string;
+  label: string;
+}
+
+interface CodeBlockProps {
+  snippets: CodeSnippet[];
+  title?: string;
+  defaultLanguage?: string;
+  showLineNumbers?: boolean;
+  className?: string;
+}
+
+export function CodeBlock({
+  snippets,
+  title,
+  defaultLanguage,
+  showLineNumbers = false,
+  className = ''
+}: CodeBlockProps) {
+  const { isDarkMode } = useTheme();
+  const [activeTab, setActiveTab] = useState(defaultLanguage || snippets[0]?.language || '');
+  const [copied, setCopied] = useState(false);
+
+  const activeSnippet = snippets.find(s => s.language === activeTab) || snippets[0];
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(activeSnippet.code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy code:', err);
+    }
+  };
+
+  return (
+    <div className={`bg-card-background border border-border-color rounded-lg overflow-hidden ${className}`}>
+      {title && (
+        <div className="px-4 py-2 border-b border-border-color">
+          <h4 className="text-sm font-medium text-text-color">{title}</h4>
+        </div>
+      )}
       
-  database:
-    image: postgres:15
-    environment:
-      - POSTGRES_DB=phantasy
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+      {snippets.length > 1 && (
+        <div className="flex items-center justify-between px-4 py-2 border-b border-border-color bg-background-color">
+          <div className="flex gap-1">
+            {snippets.map((snippet) => (
+              <button
+                key={snippet.language}
+                onClick={() => setActiveTab(snippet.language)}
+                className={`px-3 py-1 text-xs rounded transition-colors ${
+                  activeTab === snippet.language
+                    ? 'bg-text-color text-background-color'
+                    : 'text-muted-color hover:text-text-color'
+                }`}
+              >
+                {snippet.label}
+              </button>
+            ))}
+          </div>
+          
+          <button
+            onClick={copyToClipboard}
+            className="text-xs text-muted-color hover:text-text-color transition-colors"
+          >
+            {copied ? 'Copied!' : 'Copy'}
+          </button>
+        </div>
+      )}
       
-volumes:
-  pgdata:
-```
-
-### Package Configuration
-
-```json
-{
-  "name": "my-phantasy-app",
-  "version": "1.0.0",
-  "description": "A gaming application built with Phantasy platform",
-  "main": "index.js",
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "test": "jest",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx"
-  },
-  "dependencies": {
-    "@phantasy/sdk": "^2.1.0",
-    "@phantasy/react-hooks": "^1.5.0",
-    "@phantasy/ui-components": "^3.2.0",
-    "next": "^14.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@types/react": "^18.2.0",
-    "eslint": "^8.0.0",
-    "jest": "^29.0.0",
-    "typescript": "^5.0.0"
-  }
+      <div className="relative">
+        <SyntaxHighlighter
+          language={activeSnippet.language}
+          style={isDarkMode ? oneDark : oneLight}
+          showLineNumbers={showLineNumbers}
+          customStyle={{
+            margin: 0,
+            padding: '1rem',
+            background: 'transparent',
+            fontSize: '0.875rem'
+          }}
+        >
+          {activeSnippet.code}
+        </SyntaxHighlighter>
+        
+        {snippets.length === 1 && (
+          <button
+            onClick={copyToClipboard}
+            className="absolute top-2 right-2 p-2 text-xs text-muted-color hover:text-text-color transition-colors bg-background-color rounded border border-border-color"
+          >
+            {copied ? 'Copied!' : 'Copy'}
+          </button>
+        )}
+      </div>
+    </div>
+  );
 }
 ```
 
 ## Testing Examples
 
-### Unit Tests
+Unit and integration tests for documentation components:
 
-```javascript
-// tests/auth.test.js
-import { PhantasyClient } from '@phantasy/sdk';
-import { jest } from '@jest/globals';
+```typescript
+// __tests__/components/Navigation.test.tsx
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { Navigation } from '../components/Navigation';
+import { ThemeProvider } from '../providers/ThemeProvider';
 
-describe('Authentication', () => {
-  let client;
-  
-  beforeEach(() => {
-    client = new PhantasyClient({
-      apiKey: 'test-api-key',
-      environment: 'testing'
+const MockedNavigation = () => (
+  <ThemeProvider>
+    <Navigation />
+  </ThemeProvider>
+);
+
+describe('Navigation Component', () => {
+  it('renders navigation with search functionality', () => {
+    render(<MockedNavigation />);
+    
+    expect(screen.getByText('Documentation')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/search docs/i)).toBeInTheDocument();
+  });
+
+  it('opens search modal when search button is clicked', async () => {
+    render(<MockedNavigation />);
+    
+    const searchButton = screen.getByText('Search docs...');
+    fireEvent.click(searchButton);
+    
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText('Search documentation...')).toBeInTheDocument();
     });
   });
-  
-  test('should authenticate user with valid credentials', async () => {
-    const mockResponse = {
-      token: 'mock-jwt-token',
-      user: { id: '123', email: 'test@example.com' }
-    };
+
+  it('filters search results based on query', async () => {
+    render(<MockedNavigation />);
     
-    // Mock the API call
-    jest.spyOn(global, 'fetch').mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockResponse
+    // Open search
+    fireEvent.click(screen.getByText('Search docs...'));
+    
+    // Type search query
+    const searchInput = screen.getByPlaceholderText('Search documentation...');
+    fireEvent.change(searchInput, { target: { value: 'installation' } });
+    
+    await waitFor(() => {
+      expect(screen.getByText('Installation')).toBeInTheDocument();
     });
-    
-    const result = await client.auth.login({
-      email: 'test@example.com',
-      password: 'password123'
-    });
-    
-    expect(result.token).toBe('mock-jwt-token');
-    expect(result.user.email).toBe('test@example.com');
-  });
-  
-  test('should throw error with invalid credentials', async () => {
-    jest.spyOn(global, 'fetch').mockResolvedValueOnce({
-      ok: false,
-      status: 401,
-      json: async () => ({ error: 'Invalid credentials' })
-    });
-    
-    await expect(client.auth.login({
-      email: 'test@example.com',
-      password: 'wrong-password'
-    })).rejects.toThrow('Invalid credentials');
   });
 });
 ```
 
-### Integration Tests
-
-```python
-# tests/test_integration.py
-import pytest
-import os
-from phantasy_sdk import PhantasyClient
-
-@pytest.fixture
-def client():
-    return PhantasyClient(
-        api_key=os.getenv('PHANTASY_TEST_API_KEY'),
-        environment='testing'
-    )
-
-@pytest.fixture
-def authenticated_client(client):
-    # Login with test credentials
-    auth = client.auth.login(
-        email='test@phantasy.io',
-        password='test_password'
-    )
-    client.set_auth_token(auth.token)
-    return client
-
-class TestGameIntegration:
-    def test_create_game_session(self, authenticated_client):
-        """Test creating a new game session."""
-        session = authenticated_client.games.create_session(
-            game_id='test-game-123',
-            player_count=2
-        )
-        
-        assert session.id is not None
-        assert session.status == 'waiting'
-        assert session.player_count == 2
-    
-    def test_join_game_session(self, authenticated_client):
-        """Test joining an existing game session."""
-        # First create a session
-        session = authenticated_client.games.create_session(
-            game_id='test-game-123',
-            player_count=2
-        )
-        
-        # Then join it
-        result = authenticated_client.games.join_session(session.id)
-        
-        assert result.status == 'joined'
-        assert result.session_id == session.id
-    
-    def test_submit_score(self, authenticated_client):
-        """Test submitting a game score."""
-        score_data = {
-            'game_id': 'test-game-123',
-            'score': 1500,
-            'level': 5,
-            'achievements': ['first_win', 'combo_master']
-        }
-        
-        result = authenticated_client.scores.submit(score_data)
-        
-        assert result.success is True
-        assert result.score == 1500
-        assert 'leaderboard_position' in result
-```
-
-## Best Practices
-
-### Error Handling
+## Performance Optimization Examples
 
 ```typescript
-// utils/api-client.ts
-import { PhantasyClient, PhantasyError } from '@phantasy/sdk';
+// utils/performance.ts
+export class PerformanceMonitor {
+  private static instance: PerformanceMonitor;
+  private metrics: Map<string, number[]> = new Map();
 
-export class ApiClient {
-  private client: PhantasyClient;
-  
-  constructor(apiKey: string) {
-    this.client = new PhantasyClient({ apiKey });
+  static getInstance(): PerformanceMonitor {
+    if (!PerformanceMonitor.instance) {
+      PerformanceMonitor.instance = new PerformanceMonitor();
+    }
+    return PerformanceMonitor.instance;
   }
-  
-  async withRetry<T>(
-    operation: () => Promise<T>,
-    maxRetries: number = 3,
-    delay: number = 1000
-  ): Promise<T> {
-    let lastError: Error;
-    
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        return await operation();
-      } catch (error) {
-        lastError = error as Error;
-        
-        // Don't retry on authentication errors
-        if (error instanceof PhantasyError && error.code === 'AUTH_FAILED') {
-          throw error;
-        }
-        
-        if (attempt === maxRetries) {
-          break;
-        }
-        
-        // Exponential backoff
-        await new Promise(resolve => 
-          setTimeout(resolve, delay * Math.pow(2, attempt - 1))
-        );
-      }
+
+  measureRender(componentName: string, renderTime: number) {
+    if (!this.metrics.has(componentName)) {
+      this.metrics.set(componentName, []);
     }
     
-    throw lastError!;
+    const times = this.metrics.get(componentName)!;
+    times.push(renderTime);
+    
+    // Keep only last 100 measurements
+    if (times.length > 100) {
+      times.shift();
+    }
   }
-  
-  async getUserData(userId: string) {
-    return this.withRetry(() => 
-      this.client.users.get(userId)
-    );
+
+  getAverageRenderTime(componentName: string): number {
+    const times = this.metrics.get(componentName);
+    if (!times || times.length === 0) return 0;
+    
+    return times.reduce((sum, time) => sum + time, 0) / times.length;
   }
+
+  logPerformanceReport() {
+    console.group('Performance Report');
+    this.metrics.forEach((times, componentName) => {
+      const avg = this.getAverageRenderTime(componentName);
+      console.log(`${componentName}: ${avg.toFixed(2)}ms average`);
+    });
+    console.groupEnd();
+  }
+}
+
+// Custom hook for measuring component render time
+import { useEffect } from 'react';
+
+export function useRenderTime(componentName: string) {
+  useEffect(() => {
+    const start = performance.now();
+    
+    return () => {
+      const end = performance.now();
+      const renderTime = end - start;
+      PerformanceMonitor.getInstance().measureRender(componentName, renderTime);
+    };
+  });
 }
 ```
 
-## Next Steps
+## Build and Deployment
 
-Now that you've seen these examples, you can:
+Real deployment configuration for Next.js:
 
-1. **Explore the [API Reference](/docs/api-reference/overview)** for detailed endpoint documentation
-2. **Check out [Best Practices](/docs/developer-guides/best-practices)** for production-ready code
-3. **Visit [Deployment Guides](/docs/deployment/overview)** to learn about hosting your application
-4. **Join our [Discord community](https://discord.gg/phantasy)** for support and discussions
+```javascript
+// next.config.js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  experimental: {
+    appDir: true,
+  },
+  
+  // Enable static export
+  output: 'export',
+  
+  // Disable image optimization for static export
+  images: {
+    unoptimized: true
+  },
+  
+  // Custom webpack configuration
+  webpack: (config, { dev, isServer }) => {
+    // Optimize bundle size
+    if (!dev && !isServer) {
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          default: false,
+          vendors: false,
+          vendor: {
+            name: 'vendor',
+            chunks: 'all',
+            test: /node_modules/,
+            priority: 20
+          },
+          common: {
+            name: 'common',
+            minChunks: 2,
+            chunks: 'all',
+            priority: 10,
+            reuseExistingChunk: true,
+            enforce: true
+          }
+        }
+      };
+    }
+    
+    return config;
+  },
+  
+  // Environment variables
+  env: {
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+  }
+};
 
-Happy coding! 🚀
+module.exports = nextConfig;
+```
+
+## Error Handling
+
+Robust error handling for documentation features:
+
+```typescript
+// utils/errorHandler.ts
+export class DocumentationError extends Error {
+  constructor(
+    message: string,
+    public code: string,
+    public statusCode: number = 500
+  ) {
+    super(message);
+    this.name = 'DocumentationError';
+  }
+}
+
+export function handleDocumentationError(error: unknown): DocumentationError {
+  if (error instanceof DocumentationError) {
+    return error;
+  }
+  
+  if (error instanceof Error) {
+    return new DocumentationError(error.message, 'UNKNOWN_ERROR');
+  }
+  
+  return new DocumentationError('An unknown error occurred', 'UNKNOWN_ERROR');
+}
+
+// Error boundary for React components
+'use client';
+
+import React from 'react';
+
+interface Props {
+  children: React.ReactNode;
+  fallback?: React.ComponentType<{ error: Error }>;
+}
+
+interface State {
+  hasError: boolean;
+  error?: Error;
+}
+
+export class DocumentationErrorBoundary extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Documentation Error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      const FallbackComponent = this.props.fallback || DefaultErrorFallback;
+      return <FallbackComponent error={this.state.error!} />;
+    }
+
+    return this.props.children;
+  }
+}
+
+function DefaultErrorFallback({ error }: { error: Error }) {
+  return (
+    <div className="p-8 text-center">
+      <h2 className="text-2xl font-bold text-red-600 mb-4">
+        Something went wrong
+      </h2>
+      <p className="text-gray-600 mb-4">
+        {error.message}
+      </p>
+      <button
+        onClick={() => window.location.reload()}
+        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        Reload Page
+      </button>
+    </div>
+  );
+}
+```
+
+---
+
+**Related Documentation:**
+- [Advanced Features](../user-guide/advanced-features) - Advanced platform capabilities
+- [Best Practices](./best-practices) - Development guidelines
+- [Icon Customization](./icon-customization) - Adding custom icons
+- [UI Configuration](./ui-configuration) - Theme and layout customization

@@ -96,6 +96,11 @@ export const documentationTree: FileItem[] = [
         type: 'file',
         name: 'UI Configuration.md',
         path: 'developer-guides/ui-configuration'
+      },
+      {
+        type: 'file',
+        name: 'Icon Customization.md',
+        path: 'developer-guides/icon-customization'
       }
     ]
   },
