@@ -322,7 +322,7 @@ export default function Navigation({
   
   return (
           <header className="fixed top-0 left-0 right-0 z-40 header-bar border-b" style={{ backgroundColor: 'var(--card-color)' }}>
-        <div className="max-w-full mx-auto px-5 md:px-8 flex items-center justify-between h-14">
+        <div className="max-w-full mx-auto px-5 md:px-8 flex items-center justify-between h-12">
         {/* Logo and site title */}
         <Link 
           href="/"

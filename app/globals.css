@@ -94,37 +94,39 @@
 }
 
 :root {
-  /* Light mode - Japanese green aesthetic */
+  /* Light mode - Enhanced readability with better contrast */
   --primary-color: #678D58;
   --secondary-color: #A3C9A8;
   --accent-color: #557153;
-  --background-color: #F3F5F0;
+  --background-color: #FAFBF9;
   --card-color: #FFFFFF;
   --border-color: #222; /* Main card border (full brightness) */
   --border-soft: #f2f2f2; /* Even lighter border for header/sidebar */
   --border-unified: #d1d5db; /* Light gray for consistent borders */
-  --text-color: #2E3A23;
-  --muted-color: #6E7D61;
+  --text-color: #1F2937; /* Much darker for better contrast */
+  --text-secondary: #374151; /* Secondary text color */
+  --muted-color: #6B7280; /* Better contrast for muted text */
   --mono-font: 'MapleMono', 'SF Mono', 'Monaco', 'Consolas', monospace;
   --title-font: 'Urbanist', sans-serif;
   --body-font: 'Urbanist', sans-serif;
-  --icon-color: #2E3A23; /* Icon color for light mode */
+  --icon-color: #1F2937; /* Icon color for light mode */
   --primary-color-rgb: 103, 141, 88; /* RGB value of #678D58 */
 }
 
 .dark {
-  /* Dark mode - Japanese pink aesthetic */
+  /* Dark mode - Enhanced readability with better contrast */
   --primary-color: #FF85A1;
   --secondary-color: #FFC4DD;
   --accent-color: #FF4989;
-  --background-color: #0F0F12;
-  --card-color: #1A1A1F;
+  --background-color: #0B0D0F;
+  --card-color: #111317;
   --border-color: #bbb; /* Main card border (full brightness) */
   --border-soft: #23232a; /* Softer border for header/sidebar */
   --border-unified: #374151; /* Dark gray for consistent borders */
-  --text-color: #F0F0F5;
-  --muted-color: #9C9CAF;
-  --icon-color: #F0F0F5; /* Icon color for dark mode */
+  --text-color: #F8FAFC; /* Higher contrast white */
+  --text-secondary: #E2E8F0; /* Secondary text color */
+  --muted-color: #94A3B8; /* Better contrast for muted text */
+  --icon-color: #F8FAFC; /* Icon color for dark mode */
   --primary-color-rgb: 255, 133, 161; /* RGB value of #FF85A1 */
 }
 
@@ -133,6 +135,12 @@ body {
   background-color: var(--background-color);
   transition: background-color 0.3s ease, color 0.3s ease;
   font-family: var(--body-font);
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 h1, h2, h3, h4, h5, h6, 
@@ -221,7 +229,7 @@ select:focus {
   background: rgba(255, 255, 255, 0.4);
 }
 
-/* Documentation card */
+/* Enhanced documentation card for better readability */
 .doc-card {
   background-color: var(--card-color);
   border: 1px solid var(--border-unified);
@@ -231,6 +239,14 @@ select:focus {
   max-width: 100%;
   width: 100%;
   margin: 0 auto;
+  padding: 2.5rem 3rem;
+  line-height: 1.75;
+}
+
+@media (max-width: 768px) {
+  .doc-card {
+    padding: 1.5rem 1.25rem;
+  }
 }
 
 .dark .doc-card {
@@ -748,16 +764,18 @@ pre:not(.code-block-content) {
 
 code:not(.code-block-content code) {
   font-family: var(--mono-font);
-  font-size: 0.875rem;
-  background-color: rgba(0, 0, 0, 0.04);
-  padding: 0.125rem 0.25rem;
-  border-radius: 3px;
-  color: inherit;
-  font-weight: 400;
+  font-size: 0.9rem;
+  background-color: rgba(0, 0, 0, 0.06);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  color: var(--text-color);
+  font-weight: 500;
+  letter-spacing: -0.025em;
 }
 
 .dark code:not(.code-block-content code) {
-  background-color: rgba(255, 255, 255, 0.06);
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--text-color);
 }
 
 /* Mobile responsiveness for code blocks */
@@ -861,90 +879,161 @@ code:not(.code-block-content code) {
   }
 }
 
-/* Markdown content styling */
+/* Enhanced Markdown content styling for better readability */
 .doc-card h1, .doc-card h2, .doc-card h3, .doc-card h4, .doc-card h5, .doc-card h6 {
   font-family: var(--title-font);
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
-  line-height: 1.2;
-  font-weight: 700;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.3;
+  font-weight: 600;
   color: var(--text-color);
   border-bottom: none;
+  letter-spacing: -0.025em;
 }
 
 .doc-card h1 {
-  font-size: 2.5rem;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1.5rem;
+  font-size: 2.25rem;
+  padding-bottom: 0.75rem;
+  margin-bottom: 2rem;
+  margin-top: 0;
   border-bottom: none;
+  font-weight: 700;
+  line-height: 1.25;
 }
 
 .doc-card h2 {
-  font-size: 2rem;
-  padding-bottom: 0.3rem;
+  font-size: 1.875rem;
+  padding-bottom: 0.5rem;
   border-bottom: none;
+  margin-top: 3rem;
+  font-weight: 650;
+  line-height: 1.3;
 }
 
 .doc-card h3 {
   font-size: 1.5rem;
+  margin-top: 2.5rem;
+  font-weight: 600;
+  line-height: 1.35;
 }
 
 .doc-card h4 {
   font-size: 1.25rem;
+  margin-top: 2rem;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .doc-card h5 {
-  font-size: 1.1rem;
+  font-size: 1.125rem;
+  margin-top: 1.75rem;
+  font-weight: 600;
+  line-height: 1.45;
 }
 
 .doc-card h6 {
   font-size: 1rem;
+  margin-top: 1.5rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.075em;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 .doc-card p {
   font-family: var(--body-font);
-  margin-bottom: 1rem;
-  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  line-height: 1.75;
+  font-size: 1rem;
+  color: var(--text-color);
+  max-width: none;
+}
+
+/* Enhanced first paragraph for better reading flow */
+.doc-card > p:first-of-type {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+  color: var(--text-color);
+}
+
+/* Improved spacing between sections */
+.doc-card > h2 + p,
+.doc-card > h3 + p,
+.doc-card > h4 + p {
+  margin-top: 0.5rem;
+}
+
+/* Better spacing for content following headings */
+.doc-card h1 + *,
+.doc-card h2 + *,
+.doc-card h3 + *,
+.doc-card h4 + *,
+.doc-card h5 + *,
+.doc-card h6 + * {
+  margin-top: 0;
 }
 
 .doc-card a {
   color: var(--primary-color);
   text-decoration: none;
   transition: all 0.2s ease;
+  font-weight: 500;
+  border-bottom: 1px solid transparent;
 }
 
 .doc-card a:hover {
-  text-decoration: underline;
-  opacity: 0.9;
+  text-decoration: none;
+  border-bottom: 1px solid var(--primary-color);
+  opacity: 0.8;
+}
+
+.doc-card a:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 .doc-card ul, .doc-card ol {
-  margin-bottom: 1.5rem;
-  padding-left: 1.5rem;
+  margin-bottom: 1.75rem;
+  padding-left: 1.75rem;
+  line-height: 1.75;
 }
 
 .doc-card li {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
   font-family: var(--body-font);
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--text-color);
 }
 
-/* Style for blockquotes with custom quote icons */
+.doc-card li p {
+  margin-bottom: 0.75rem;
+}
+
+.doc-card li:last-child {
+  margin-bottom: 0;
+}
+
+/* Enhanced blockquotes for better readability */
 .doc-card blockquote {
   position: relative;
   border-left: 4px solid var(--primary-color);
-  padding: 1.5rem 2.5rem 1.5rem 3rem;
-  margin: 1.5rem 0;
-  background-color: rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
+  padding: 1.75rem 2.5rem 1.75rem 3.25rem;
+  margin: 2rem 0;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
   font-style: normal;
-  color: var(--text-color);
+  color: var(--text-secondary);
   overflow: visible;
+  font-size: 1.05rem;
+  line-height: 1.8;
 }
 
 .dark .doc-card blockquote {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
 }
 
 .doc-card blockquote::before {
@@ -969,7 +1058,10 @@ code:not(.code-block-content code) {
 /* Right quote removed */
 
 .doc-card blockquote p {
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
 }
 
 .doc-card blockquote p:last-child {
@@ -987,31 +1079,41 @@ code:not(.code-block-content code) {
 }
 
 .doc-card hr {
-  margin: 1rem 0 2rem 0;
+  margin: 3rem 0;
   border: 0;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-unified);
+  opacity: 0.6;
 }
 
 .doc-card table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 1rem;
+  margin: 2rem 0;
   font-family: var(--body-font);
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 .doc-card th, .doc-card td {
-  border: 1px solid var(--border-color);
-  padding: 0.5rem;
+  border: 1px solid var(--border-unified);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  vertical-align: top;
 }
 
 .doc-card th {
-  background-color: rgba(0, 0, 0, 0.05);
-  font-weight: bold;
-  text-align: left;
+  background-color: rgba(0, 0, 0, 0.03);
+  font-weight: 600;
+  color: var(--text-color);
+  letter-spacing: -0.025em;
 }
 
 .dark .doc-card th {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.doc-card td {
+  color: var(--text-color);
 }
 
 /* Fix for social media icons in dark mode */

@@ -212,7 +212,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
         sidebarVisible={sidebarVisible}
       />
       
-      <div className="w-full flex flex-1 z-10 pt-14">
+      <div className="w-full flex flex-1 z-10 pt-12">
         <div className="flex w-full">
           {/* Sidebar */}
           <AnimatePresence>
@@ -222,7 +222,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                 animate={isMobile ? sidebarAnimationVariants.mobile.animate : sidebarAnimationVariants.desktop.animate}
                 exit={isMobile ? sidebarAnimationVariants.mobile.exit : sidebarAnimationVariants.desktop.exit}
                 transition={isMobile ? transitionConfig : { duration: 0 }}
-                className="w-full md:w-64 lg:w-72 shrink-0 file-tree-panel p-4 h-[calc(100vh-56px)] top-14 overflow-y-auto z-20 scrollbar-hide"
+                className="w-full md:w-56 lg:w-64 shrink-0 file-tree-panel p-3 h-[calc(100vh-48px)] top-12 overflow-y-auto z-20 scrollbar-hide"
                 style={sidebarStyle}
               >
                 {/* Mobile close button - positioned absolutely */}
@@ -245,7 +245,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
           </AnimatePresence>
           
           {/* Content */}
-          <div className={`flex-1 py-6 px-4 md:px-6 lg:px-12 ${contentOpacityClass}`}>
+          <div className={`flex-1 py-4 px-3 md:px-4 lg:px-8 ${contentOpacityClass}`}>
             {/* Mobile file tree toggle button - configurable via uiConfig */}
             {uiConfig.showMobileFileTreeToggle && isMobile && !sidebarVisible && (
               prefersReducedMotion ? (
