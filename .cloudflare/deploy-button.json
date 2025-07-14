@@ -1,0 +1,10 @@
+{
+  "projectName": "lite-paper-docs",
+  "buildCommand": "npm run build",
+  "buildDirectory": "out",
+  "nvmVersion": "18",
+  "deployConfig": {
+    "compatibilityDate": "2025-01-14",
+    "compatibilityFlags": []
+  }
+}

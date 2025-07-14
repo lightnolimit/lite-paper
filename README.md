@@ -2,7 +2,7 @@
 
 A beautiful, fast, and customizable documentation website template built with Next.js 15, TypeScript, and Tailwind CSS. Features an interactive mindmap visualization and optional AI-powered documentation assistant.
 
-[![Deploy to Cloudflare Pages](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/lightnolimit/lite-paper)
+[![Deploy to Cloudflare Pages](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/lightnolimit/lite-paper&projectName=lite-paper-docs)
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Next.js 15](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
@@ -91,11 +91,16 @@ Open [http://localhost:3000](http://localhost:3000) to see your documentation si
 
 ## 🚀 Quick Deploy
 
-Deploy this documentation site to Cloudflare Pages in one click:
+Deploy this documentation site to Cloudflare Pages in one click using the button at the top of this README!
 
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/your-username/your-repo)
+The deployment will:
 
-> **Note**: Replace `your-username/your-repo` with your actual GitHub repository URL.
+- Clone this repository to your GitHub account
+- Set up automatic builds and deployments
+- Create a Cloudflare Pages project
+- Deploy your documentation site globally
+
+No API tokens or manual configuration required!
 
 ## 📁 Project Structure
 
