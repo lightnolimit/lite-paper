@@ -137,6 +137,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, [prefersReducedMotion, applyMotionPreference]);
 
   // Global keyboard shortcut for theme toggle (Cmd/Ctrl + Shift + T)
+  // Memoized toggle functions
+  const toggleTheme = useCallback(() => {
+    setIsDarkMode((prev) => !prev);
+  }, []);
+
+  const toggleReducedMotion = useCallback(() => {
+    setPrefersReducedMotion((prev) => !prev);
+  }, []);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -152,15 +161,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [toggleTheme]);
-
-  // Memoized toggle functions
-  const toggleTheme = useCallback(() => {
-    setIsDarkMode((prev) => !prev);
-  }, []);
-
-  const toggleReducedMotion = useCallback(() => {
-    setPrefersReducedMotion((prev) => !prev);
-  }, []);
 
   // Memoized context value to prevent re-renders when children don't need to update
   const contextValue = useMemo(
