@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 
 import './globals.css';
-import { ChatBotProvider } from './components/ChatBotProvider';
+import { CommandPaletteProvider } from './providers/CommandPaletteProvider';
 import { ThemeProvider } from './providers/ThemeProvider';
 
 /**
@@ -162,8 +162,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen font-urbanist">
         <ThemeProvider>
-          {children}
-          <ChatBotProvider />
+          <CommandPaletteProvider>{children}</CommandPaletteProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import React from 'react';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 
+import { useCommandPalette } from '../providers/CommandPaletteProvider';
 import { useTheme } from '../providers/ThemeProvider';
 
 import SettingsMenu from './SettingsMenu';
@@ -42,6 +43,7 @@ const navItems: NavItem[] = [
   { label: 'API', href: '/docs/api-reference/overview' },
   { label: 'Guide', href: '/docs/user-guide/basic-usage' },
   { label: 'Deploy', href: '/docs/deployment/overview' },
+  { label: 'AI/LLMs', href: '/llms' },
 ];
 
 /**
@@ -139,6 +141,7 @@ export default function Navigation({
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isDarkMode, prefersReducedMotion } = useTheme();
+  const { openCommandPalette } = useCommandPalette();
   const isDocsPage = docsPath !== undefined;
 
   // Close mobile menu when window is resized to desktop size
@@ -401,6 +404,42 @@ export default function Navigation({
               aria-hidden="true"
             ></div>
           </nav>
+
+          {/* Command Palette indicator */}
+          <button
+            onClick={openCommandPalette}
+            className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-md text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+            style={{
+              color: 'var(--muted-color)',
+              fontFamily: 'var(--mono-font)',
+              fontSize: '0.875rem',
+            }}
+            title="Open command palette"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-4 h-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+              />
+            </svg>
+            <kbd
+              className="hidden lg:inline-block px-1.5 py-0.5 text-xs border rounded"
+              style={{ borderColor: 'var(--border-color)' }}
+            >
+              {typeof navigator !== 'undefined' && navigator.platform?.toLowerCase().includes('mac')
+                ? '⌘'
+                : 'Ctrl'}
+              K
+            </kbd>
+          </button>
 
           {/* Desktop Social Media Icons */}
           <div className="hidden md:flex items-center gap-2">

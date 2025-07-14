@@ -1,0 +1,28 @@
+{
+  "generated": "2025-07-14T15:48:57.243Z",
+  "paths": [
+    "getting-started/introduction",
+    "getting-started/quick-start",
+    "getting-started/installation",
+    "user-guide/basic-usage",
+    "user-guide/advanced-features",
+    "user-guide/configuration",
+    "user-guide/troubleshooting",
+    "user-guide/chatbot",
+    "api-reference/overview",
+    "api-reference/authentication",
+    "api-reference/endpoints",
+    "developer-guides/code-examples",
+    "developer-guides/best-practices",
+    "developer-guides/contributing",
+    "developer-guides/design-system",
+    "developer-guides/ui-configuration",
+    "developer-guides/icon-customization",
+    "deployment/overview",
+    "deployment/production-setup",
+    "deployment/platforms/cloudflare",
+    "deployment/platforms/vercel",
+    "deployment/platforms/netlify"
+  ],
+  "count": 22
+}

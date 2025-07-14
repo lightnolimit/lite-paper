@@ -13,6 +13,7 @@ import React, {
 type ThemeContextType = {
   isDarkMode: boolean;
   toggleTheme: () => void;
+  toggleDarkMode: () => void;
   prefersReducedMotion: boolean;
   toggleReducedMotion: () => void;
 };
@@ -135,6 +136,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     window.dispatchEvent(motionChangeEvent);
   }, [prefersReducedMotion, applyMotionPreference]);
 
+  // Global keyboard shortcut for theme toggle (Cmd/Ctrl + Shift + T)
   // Memoized toggle functions
   const toggleTheme = useCallback(() => {
     setIsDarkMode((prev) => !prev);
@@ -144,11 +146,28 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setPrefersReducedMotion((prev) => !prev);
   }, []);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Use Cmd/Ctrl + Shift + T to avoid conflicts with browser shortcuts
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'T') {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleTheme();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toggleTheme]);
+
   // Memoized context value to prevent re-renders when children don't need to update
   const contextValue = useMemo(
     () => ({
       isDarkMode,
       toggleTheme,
+      toggleDarkMode: toggleTheme,
       prefersReducedMotion,
       toggleReducedMotion,
     }),

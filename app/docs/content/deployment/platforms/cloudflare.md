@@ -2,6 +2,14 @@
 
 Cloudflare Pages is the **recommended hosting platform** for this documentation template. It offers excellent performance, global CDN, automatic SSL, and seamless integration with GitHub.
 
+## Quick Deploy
+
+Deploy this documentation site to Cloudflare Pages in one click:
+
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/your-username/your-repo)
+
+> **Note**: Replace `your-username/your-repo` with your actual GitHub repository URL. The button will automatically detect your repository settings and guide you through the deployment process.
+
 ## Why Cloudflare Pages?
 
 ✅ **Free Tier**: Generous limits for documentation sites  

@@ -91,6 +91,51 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
       }
     });
 
+    // Handle download links
+    const downloadLinks = currentRef.querySelectorAll('a.download-link');
+    downloadLinks.forEach((rawLink) => {
+      const link = rawLink as HTMLAnchorElement;
+      const file = link.getAttribute('data-file');
+      if (file) {
+        const clickHandler = (e: MouseEvent) => {
+          e.preventDefault();
+          const a = document.createElement('a');
+          a.href = `/${file}`;
+          a.download = file;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        };
+        link.addEventListener('click', clickHandler);
+        clickHandlers.push({ element: link, handler: clickHandler });
+      }
+    });
+
+    // Handle copy URL links
+    const copyLinks = currentRef.querySelectorAll('a.copy-link');
+    copyLinks.forEach((rawLink) => {
+      const link = rawLink as HTMLAnchorElement;
+      const url = link.getAttribute('data-url');
+      if (url) {
+        const clickHandler = async (e: MouseEvent) => {
+          e.preventDefault();
+          try {
+            const fullUrl = window.location.origin + url;
+            await navigator.clipboard.writeText(fullUrl);
+            const originalText = link.textContent;
+            link.textContent = '✓ Copied!';
+            setTimeout(() => {
+              link.textContent = originalText;
+            }, 2000);
+          } catch (err) {
+            console.error('Failed to copy:', err);
+          }
+        };
+        link.addEventListener('click', clickHandler);
+        clickHandlers.push({ element: link, handler: clickHandler });
+      }
+    });
+
     // Cleanup function
     return () => {
       clickHandlers.forEach(({ element, handler }) => {

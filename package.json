@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "npm run generate:docs && next dev -p 3333",
+    "build": "npm run generate:llms && npm run generate:docs && next build",
+    "start": "next start -p 3333",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
@@ -13,7 +13,9 @@
     "type-check": "tsc --noEmit",
     "pages:build": "next build",
     "deploy": "npx wrangler pages publish out",
-    "prepare": "husky"
+    "prepare": "husky",
+    "generate:llms": "node scripts/generate-llms.mjs",
+    "generate:docs": "node scripts/generate-docs.mjs"
   },
   "engines": {
     "node": ">=16.0.0"

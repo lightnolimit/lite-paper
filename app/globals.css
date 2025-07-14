@@ -80,6 +80,37 @@
   --body-font: 'Urbanist', sans-serif;
   --icon-color: #1f2937; /* Icon color for light mode */
   --primary-color-rgb: 103, 141, 88; /* RGB value of #678D58 */
+  --hover-color: rgba(0, 0, 0, 0.05);
+
+  /* Typography Scale - Mobile First (scaled down by ~20% to match 80% zoom) */
+  --text-xs: 0.6rem; /* ~10px */
+  --text-sm: 0.7rem; /* ~11px */
+  --text-base: 0.8rem; /* ~13px */
+  --text-lg: 0.9rem; /* ~14px */
+  --text-xl: 1rem; /* ~16px */
+  --text-2xl: 1.2rem; /* ~19px */
+  --text-3xl: 1.5rem; /* ~24px */
+  --text-4xl: 1.8rem; /* ~29px */
+  --text-5xl: 2.4rem; /* ~38px */
+
+  /* Line Heights */
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 1.75;
+
+  /* Spacing Scale (scaled down by ~20% to match 80% zoom) */
+  --space-1: 0.2rem;
+  --space-2: 0.4rem;
+  --space-3: 0.6rem;
+  --space-4: 0.8rem;
+  --space-5: 1rem;
+  --space-6: 1.2rem;
+  --space-8: 1.6rem;
+  --space-10: 2rem;
+  --space-12: 2.4rem;
+  --space-16: 3.2rem;
 }
 
 .dark {
@@ -97,6 +128,20 @@
   --muted-color: #94a3b8; /* Better contrast for muted text */
   --icon-color: #f8fafc; /* Icon color for dark mode */
   --primary-color-rgb: 255, 133, 161; /* RGB value of #FF85A1 */
+  --hover-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Responsive Typography Scale */
+@media (min-width: 768px) {
+  :root {
+    --text-base: 1.125rem; /* 18px on desktop */
+    --text-lg: 1.25rem; /* 20px */
+    --text-xl: 1.5rem; /* 24px */
+    --text-2xl: 1.875rem; /* 30px */
+    --text-3xl: 2.25rem; /* 36px */
+    --text-4xl: 3rem; /* 48px */
+    --text-5xl: 3.75rem; /* 60px */
+  }
 }
 
 body {
@@ -106,8 +151,8 @@ body {
     background-color 0.3s ease,
     color 0.3s ease;
   font-family: var(--body-font);
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -180,8 +225,8 @@ select:focus {
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: calc(var(--space-2) - 2px);
+  height: calc(var(--space-2) - 2px);
 }
 
 ::-webkit-scrollbar-track {
@@ -190,7 +235,7 @@ select:focus {
 
 ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
+  border-radius: var(--space-3);
   transition: background 0.2s ease;
 }
 
@@ -206,24 +251,95 @@ select:focus {
   background: rgba(255, 255, 255, 0.4);
 }
 
+/* Command Palette Scrollbar - More minimal and theme-aware */
+.command-palette-scroll::-webkit-scrollbar {
+  width: calc(var(--space-1) + 1px);
+}
+
+.command-palette-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  margin: var(--space-1) 0;
+}
+
+.command-palette-scroll::-webkit-scrollbar-thumb {
+  background: rgba(var(--primary-color-rgb), 0.2);
+  border-radius: var(--space-3);
+  transition: background 0.15s ease;
+}
+
+.command-palette-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--primary-color-rgb), 0.4);
+}
+
+/* Firefox scrollbar styling */
+.command-palette-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--primary-color-rgb), 0.2) transparent;
+}
+
+.command-palette-scroll:hover {
+  scrollbar-color: rgba(var(--primary-color-rgb), 0.4) transparent;
+}
+
+/* Documentation content scrollbar */
+.doc-content-scroll {
+  /* Persistent scrollbar gutter */
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+  /* Padding for scrollbar */
+  padding-right: var(--space-1);
+}
+
+.doc-content-scroll::-webkit-scrollbar {
+  width: calc(var(--space-2) + 2px);
+}
+
+.doc-content-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  margin: var(--space-2) 0;
+}
+
+.doc-content-scroll::-webkit-scrollbar-thumb {
+  background: rgba(var(--primary-color-rgb), 0.15);
+  border-radius: var(--space-2);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background 0.2s ease;
+}
+
+.doc-content-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--primary-color-rgb), 0.25);
+  background-clip: padding-box;
+}
+
+/* Firefox scrollbar styling for doc content */
+.doc-content-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--primary-color-rgb), 0.15) transparent;
+}
+
+/* Dark mode adjustments */
+.dark .doc-content-scroll::-webkit-scrollbar-thumb {
+  background: rgba(var(--primary-color-rgb), 0.1);
+  background-clip: padding-box;
+}
+
+.dark .doc-content-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--primary-color-rgb), 0.2);
+  background-clip: padding-box;
+}
+
 /* Enhanced documentation card for better readability */
 .doc-card {
   background-color: var(--card-color);
   border: 1px solid var(--border-unified);
-  border-radius: 0.75rem;
+  border-radius: var(--space-3);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   max-width: 100%;
   width: 100%;
   margin: 0 auto;
-  padding: 2.5rem 3rem;
-  line-height: 1.75;
-}
-
-@media (max-width: 768px) {
-  .doc-card {
-    padding: 1.5rem 1.25rem;
-  }
+  line-height: var(--leading-loose);
 }
 
 .dark .doc-card {
@@ -240,13 +356,13 @@ select:focus {
 
 @media (min-width: 1400px) {
   .doc-card {
-    max-width: 1200px;
+    max-width: 75rem;
   }
 }
 
 /* Logo styling */
 .logo-image {
-  border-radius: 6px;
+  border-radius: calc(var(--space-2) - 2px);
 }
 
 /* Custom animations */
@@ -261,6 +377,15 @@ select:focus {
 
 .animate-fadeIn {
   animation: fadeIn 0.5s ease forwards;
+}
+
+/* Animation delays for loading dots */
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animation-delay-400 {
+  animation-delay: 400ms;
 }
 
 /* Documentation graph animations */
@@ -444,9 +569,9 @@ select:focus {
 
 /* Notification styles */
 .notification {
-  padding: 1rem;
-  margin: 1rem 0;
-  border-radius: 0px;
+  padding: var(--space-4);
+  margin: var(--space-4) 0;
+  border-radius: 0;
   border: 2px solid;
   font-family: var(--mono-font);
   display: flex;
@@ -532,13 +657,13 @@ pre {
   overflow-x: auto;
   white-space: pre-wrap;
   word-wrap: break-word;
-  padding: 1rem;
-  border-radius: 8px;
+  padding: var(--space-4);
+  border-radius: var(--space-2);
   border: 1px solid rgba(var(--primary-color-rgb), 0.15);
   background-color: rgba(0, 0, 0, 0.02);
-  margin: 1rem 0;
-  font-size: 0.875rem;
-  line-height: 1.6;
+  margin: var(--space-4) 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
   font-family: var(--mono-font) !important;
   letter-spacing: -0.5px;
 }
@@ -550,10 +675,10 @@ pre {
 
 code {
   font-family: var(--mono-font);
-  font-size: 0.9rem;
+  font-size: 0.9em;
   background-color: rgba(0, 0, 0, 0.06);
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--space-1);
   color: var(--text-color);
   font-weight: 500;
   letter-spacing: -0.025em;
@@ -567,13 +692,43 @@ code {
 /* Mobile responsiveness for inline code */
 @media (max-width: 640px) {
   pre {
-    padding: 0.75rem;
-    font-size: 0.8rem;
+    padding: var(--space-3);
+    font-size: var(--text-sm);
   }
 
   code {
-    font-size: 0.8rem;
-    padding: 0.2rem 0.4rem;
+    font-size: var(--text-sm);
+    padding: var(--space-1) var(--space-2);
+  }
+
+  /* Mobile typography adjustments */
+  .doc-card h1 {
+    font-size: var(--text-3xl);
+  }
+
+  .doc-card h2 {
+    font-size: var(--text-2xl);
+    margin-top: var(--space-8);
+  }
+
+  .doc-card h3 {
+    font-size: var(--text-xl);
+    margin-top: var(--space-6);
+  }
+
+  .doc-card h4 {
+    font-size: var(--text-lg);
+    margin-top: var(--space-6);
+  }
+
+  .doc-card p {
+    font-size: var(--text-base);
+    margin-bottom: var(--space-4);
+  }
+
+  .doc-card ul,
+  .doc-card ol {
+    padding-left: var(--space-4);
   }
 }
 
@@ -593,7 +748,7 @@ code {
 
 @media (max-width: 640px) {
   .notification {
-    padding: 0.75rem;
+    padding: var(--space-3);
     flex-direction: column;
   }
 
@@ -602,12 +757,12 @@ code {
   }
 
   pre {
-    padding: 0.75rem;
-    font-size: 0.85rem;
+    padding: var(--space-3);
+    font-size: var(--text-sm);
   }
 
   code {
-    font-size: 0.85rem;
+    font-size: var(--text-sm);
   }
 }
 
@@ -619,9 +774,9 @@ code {
 .doc-card h5,
 .doc-card h6 {
   font-family: var(--title-font);
-  margin-top: 2.5rem;
-  margin-bottom: 0.75rem;
-  line-height: 1.3;
+  margin-top: var(--space-10);
+  margin-bottom: var(--space-3);
+  line-height: var(--leading-tight);
   font-weight: 600;
   color: var(--text-color);
   border-bottom: none;
@@ -629,73 +784,73 @@ code {
 }
 
 .doc-card h1 {
-  font-size: 2.25rem;
-  padding-bottom: 0.75rem;
-  margin-bottom: 1rem; /* Reduced from 1.5rem */
+  font-size: var(--text-4xl);
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
   margin-top: 0;
   border-bottom: none;
   font-weight: 700;
-  line-height: 1.25;
+  line-height: var(--leading-tight);
 }
 
 .doc-card h2 {
-  font-size: 1.875rem;
-  padding-bottom: 0.5rem;
+  font-size: var(--text-3xl);
+  padding-bottom: var(--space-2);
   border-bottom: none;
-  margin-top: 3rem;
-  margin-bottom: 0.75rem;
+  margin-top: var(--space-12);
+  margin-bottom: var(--space-3);
   font-weight: 650;
-  line-height: 1.3;
+  line-height: var(--leading-tight);
 }
 
 .doc-card h3 {
-  font-size: 1.5rem;
-  margin-top: 2.5rem;
-  margin-bottom: 0.75rem;
+  font-size: var(--text-2xl);
+  margin-top: var(--space-10);
+  margin-bottom: var(--space-3);
   font-weight: 600;
-  line-height: 1.35;
+  line-height: var(--leading-snug);
 }
 
 .doc-card h4 {
-  font-size: 1.25rem;
-  margin-top: 2rem;
-  margin-bottom: 0.75rem;
+  font-size: var(--text-xl);
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-3);
   font-weight: 600;
-  line-height: 1.4;
+  line-height: var(--leading-snug);
 }
 
 .doc-card h5 {
-  font-size: 1.125rem;
-  margin-top: 1.75rem;
-  margin-bottom: 0.75rem;
+  font-size: var(--text-lg);
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-3);
   font-weight: 600;
-  line-height: 1.45;
+  line-height: var(--leading-normal);
 }
 
 .doc-card h6 {
-  font-size: 1rem;
-  margin-top: 1.5rem;
-  margin-bottom: 0.75rem;
+  font-size: var(--text-base);
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-3);
   text-transform: uppercase;
   letter-spacing: 0.075em;
   font-weight: 600;
-  line-height: 1.5;
+  line-height: var(--leading-normal);
 }
 
 .doc-card p {
   font-family: var(--body-font);
-  margin-bottom: 1.5rem;
-  line-height: 1.75;
-  font-size: 1rem;
+  margin-bottom: var(--space-6);
+  line-height: var(--leading-loose);
+  font-size: var(--text-base);
   color: var(--text-color);
   max-width: none;
 }
 
 /* Enhanced first paragraph for better reading flow */
 .doc-card > p:first-of-type {
-  font-size: 1.125rem;
-  line-height: 1.8;
-  margin-bottom: 2rem;
+  font-size: var(--text-lg);
+  line-height: var(--leading-loose);
+  margin-bottom: var(--space-8);
   color: var(--text-color);
 }
 
@@ -736,26 +891,26 @@ code {
 .doc-card a:focus {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
-  border-radius: 2px;
+  border-radius: calc(var(--space-1) / 2);
 }
 
 .doc-card ul,
 .doc-card ol {
-  margin-bottom: 1.75rem;
-  padding-left: 1.75rem;
-  line-height: 1.75;
+  margin-bottom: var(--space-6);
+  padding-left: var(--space-6);
+  line-height: var(--leading-loose);
 }
 
 .doc-card li {
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--space-2);
   font-family: var(--body-font);
-  font-size: 1rem;
-  line-height: 1.75;
+  font-size: var(--text-base);
+  line-height: var(--leading-loose);
   color: var(--text-color);
 }
 
 .doc-card li p {
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--space-3);
 }
 
 .doc-card li:last-child {
@@ -766,15 +921,15 @@ code {
 .doc-card blockquote {
   position: relative;
   border-left: 4px solid var(--primary-color);
-  padding: 1.75rem 2.5rem 1.75rem 3.25rem;
-  margin: 2rem 0;
+  padding: var(--space-6) var(--space-10) var(--space-6) var(--space-12);
+  margin: var(--space-8) 0;
   background-color: rgba(0, 0, 0, 0.03);
-  border-radius: 8px;
+  border-radius: var(--space-2);
   font-style: normal;
   color: var(--text-secondary);
   overflow: visible;
-  font-size: 1.05rem;
-  line-height: 1.8;
+  font-size: var(--text-base);
+  line-height: var(--leading-loose);
 }
 
 .dark .doc-card blockquote {
@@ -785,10 +940,10 @@ code {
 .doc-card blockquote::before {
   content: '';
   position: absolute;
-  top: 1.5rem;
-  left: 0.75rem;
-  width: 24px;
-  height: 24px;
+  top: var(--space-6);
+  left: var(--space-3);
+  width: var(--space-6);
+  height: var(--space-6);
   background-image: url('/assets/icons/pixel-quote-left-solid.svg');
   background-size: contain;
   background-repeat: no-repeat;
@@ -825,7 +980,7 @@ code {
 }
 
 .doc-card hr {
-  margin: 3rem 0;
+  margin: var(--space-12) 0;
   border: 0;
   border-top: 1px solid var(--border-unified);
   opacity: 0.6;
@@ -834,7 +989,7 @@ code {
 .doc-card table {
   width: 100%;
   border-collapse: collapse;
-  margin: 2rem 0;
+  margin: var(--space-8) 0;
   font-family: var(--body-font);
   font-size: 0.95rem;
   line-height: 1.6;
@@ -843,7 +998,7 @@ code {
 .doc-card th,
 .doc-card td {
   border: 1px solid var(--border-unified);
-  padding: 0.75rem 1rem;
+  padding: var(--space-3) var(--space-4);
   text-align: left;
   vertical-align: top;
 }
@@ -889,9 +1044,9 @@ code {
 .profile-container {
   display: flex;
   flex-wrap: nowrap;
-  gap: 2rem;
+  gap: var(--space-8);
   align-items: flex-start;
-  margin: 2rem 0;
+  margin: var(--space-8) 0;
 }
 
 /* Profile image with social links container */
@@ -954,8 +1109,8 @@ code {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 1rem; /* Reduced gap slightly */
-  margin: 0.8rem 0; /* Reduced top/bottom margin */
+  gap: var(--space-4);
+  margin: var(--space-3) 0;
   width: 100%;
 }
 
@@ -975,7 +1130,7 @@ code {
 }
 
 .social-links-inline img {
-  height: 20px;
+  height: var(--space-5);
   width: auto;
   vertical-align: middle;
 }
@@ -985,7 +1140,7 @@ code {
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin: 1rem 0;
+  margin: var(--space-4) 0;
 }
 
 .wallet-info p {
@@ -998,7 +1153,7 @@ code {
 }
 
 .wallet-info p strong {
-  min-width: 140px;
+  min-width: calc(var(--space-16) * 2);
   font-weight: bold;
   display: inline-block;
   flex: 0 0 140px;
@@ -1014,9 +1169,9 @@ code {
 code.wallet-address {
   font-family: var(--mono-font);
   background-color: rgba(0, 0, 0, 0.05);
-  padding: 0.4rem 0.8rem;
-  padding-right: 2.5rem;
-  border-radius: 4px;
+  padding: calc(var(--space-2) - 1px) var(--space-3);
+  padding-right: var(--space-10);
+  border-radius: var(--space-1);
   border: 1px solid var(--border-color);
   position: relative;
   display: inline-block;
@@ -1034,8 +1189,8 @@ code.wallet-address {
   background-color: rgba(0, 0, 0, 0.1);
   border: 1px solid var(--border-color);
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--space-1);
   opacity: 0.9;
   transition: all 0.2s ease;
   display: flex;
@@ -1069,7 +1224,7 @@ code.wallet-address {
 .doc-card p.profile-info strong {
   font-weight: bold;
   display: inline-block;
-  min-width: 140px;
+  min-width: calc(var(--space-16) * 2);
   vertical-align: top;
 }
 
@@ -1102,10 +1257,10 @@ code.wallet-address {
 
 /* Inline icons in headings */
 .doc-card h2 img {
-  height: 24px;
+  height: var(--space-6);
   width: auto;
   vertical-align: middle;
-  margin-right: 8px;
+  margin-right: var(--space-2);
 }
 
 /* Icon heading styling */
@@ -1123,9 +1278,9 @@ code.wallet-address {
 }
 
 .icon-heading img {
-  height: 24px;
+  height: var(--space-6);
   width: auto;
-  margin-right: 10px;
+  margin-right: var(--space-2);
 }
 
 /* Resources and Citations section styling */
@@ -1133,9 +1288,9 @@ code.wallet-address {
   font-family: var(--mono-font);
   background-color: rgba(0, 0, 0, 0.05);
   border-left: 4px solid var(--primary-color);
-  padding: 1rem;
-  margin: 1.5rem 0;
-  font-size: 0.9rem;
+  padding: var(--space-4);
+  margin: var(--space-6) 0;
+  font-size: var(--text-sm);
   line-height: 1.5;
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -1194,8 +1349,8 @@ code.wallet-address {
 
 @media (max-width: 640px) {
   .resources-section {
-    padding: 1rem 0.75rem;
-    font-size: 0.85rem;
+    padding: var(--space-4) var(--space-3);
+    font-size: var(--text-sm);
   }
 
   .resources-section ol li {
@@ -1210,12 +1365,12 @@ code.wallet-address {
 /* Add rounded border to all markdown images except icons */
 .markdown-content img:not([src*='pixel-']) {
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--space-2);
   width: 100%;
   height: auto;
   max-width: 100%;
   display: block;
-  margin: 1.5rem auto;
+  margin: var(--space-6) auto;
 }
 
 /* Ensure icon images don't get the markdown image styling */
@@ -1268,7 +1423,7 @@ code.wallet-address {
     margin-bottom: 0.25rem; /* Added small bottom margin for balance */
   }
   .social-links-inline img {
-    height: 18px; /* Slightly smaller icons on mobile */
+    height: calc(var(--space-5) - 2px); /* Slightly smaller icons on mobile */
   }
 }
 

@@ -1,6 +1,24 @@
 {
   "permissions": {
-    "allow": ["Bash(npx prettier:*)", "Bash(chmod:*)"],
+    "allow": [
+      "Bash(npx prettier:*)",
+      "Bash(chmod:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr create:*)",
+      "WebFetch(domain:llmstxt.org)",
+      "Bash(rm:*)",
+      "Bash(npm run generate:llms:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run build:*)",
+      "Bash(curl:*)",
+      "Bash(pkill:*)",
+      "Bash(npm run generate:docs:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ],
     "deny": []
   }
 }

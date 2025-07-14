@@ -221,12 +221,12 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
   );
 
   return (
-    <main className="flex min-h-screen flex-col">
+    <main className="flex h-screen flex-col overflow-hidden">
       <BackgroundComponent />
       <Navigation docsPath={path} onToggleSidebar={toggleSidebar} sidebarVisible={sidebarVisible} />
 
-      <div className="w-full flex flex-1 z-10 pt-12">
-        <div className="flex w-full">
+      <div className="w-full flex flex-1 z-10 pt-12 overflow-hidden">
+        <div className="flex w-full h-full">
           {/* Sidebar */}
           <AnimatePresence>
             {sidebarVisible && (
@@ -277,7 +277,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
           </AnimatePresence>
 
           {/* Content */}
-          <div className={`flex-1 py-4 px-3 md:px-4 lg:px-8 ${contentOpacityClass}`}>
+          <div className={`flex-1 h-full overflow-hidden ${contentOpacityClass}`}>
             {/* Mobile file tree toggle button - configurable via uiConfig */}
             {uiConfig.showMobileFileTreeToggle &&
               isMobile &&

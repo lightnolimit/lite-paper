@@ -1,4 +1,5 @@
-// Client-side RAG implementation - works without a server!
+// Client-side RAG implementation with optional AI enhancement
+// This module provides documentation search functionality with optional AI-powered responses
 
 export interface DocumentChunk {
   content: string;
@@ -94,19 +95,24 @@ export function generateAnswer(query: string, sources: DocumentSource[]): string
   return answer;
 }
 
-// Client-side search function that replaces the API call
+// Check if AI features are enabled
+function isAIEnabled(): boolean {
+  return process.env.NEXT_PUBLIC_ENABLE_AI === 'true';
+}
+
+// Client-side search function with optional AI enhancement
 export async function searchAndAnswer(
   query: string,
   useAI: boolean = true
 ): Promise<{ answer: string; sources: DocumentSource[] }> {
   if (documentationIndex.length === 0) {
-    loadEmbeddedDocs();
+    await loadEmbeddedDocs();
   }
 
   const sources = searchDocuments(query);
 
-  // Use Akash AI for better responses if available
-  if (useAI && sources.length > 0) {
+  // Use AI for better responses if enabled and available
+  if (useAI && sources.length > 0 && isAIEnabled()) {
     try {
       const aiAnswer = await getAIResponse(query, sources);
       return { answer: aiAnswer, sources };
@@ -120,15 +126,23 @@ export async function searchAndAnswer(
   return { answer, sources };
 }
 
-// Call Akash Chat API for enhanced responses
+// Optional AI enhancement for responses
+// This function is only called if AI is enabled via environment variable
 async function getAIResponse(query: string, sources: DocumentSource[]): Promise<string> {
+  const workerUrl = process.env.NEXT_PUBLIC_AI_WORKER_URL;
+
+  if (!workerUrl) {
+    throw new Error('AI worker URL not configured');
+  }
+
   // Build context from relevant documentation
   const context = sources
     .slice(0, 3)
     .map((source) => `**${source.title}** (from ${source.path}):\n${source.snippet}`)
     .join('\n\n');
 
-  const systemPrompt = `You are a helpful documentation assistant. Answer the user's question based ONLY on the provided documentation context. 
+  // Format the prompt for LLM
+  const prompt = `You are a helpful documentation assistant. Answer the user's question based ONLY on the provided documentation context.
 
 Keep your response:
 - Accurate and based only on the provided context
@@ -139,96 +153,98 @@ Keep your response:
 If the context doesn't contain enough information to answer the question, say so and suggest checking the referenced documentation sections.
 
 Documentation Context:
-${context}`;
+${context}
 
-  const response = await fetch('https://chatapi.akash.network/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${getApiKey()}`, // We'll implement this
-    },
-    body: JSON.stringify({
-      model: 'Meta-Llama-3-1-8B-Instruct-FP8', // Fast and efficient model from Akash
-      messages: [
-        {
-          role: 'system',
-          content: systemPrompt,
-        },
-        {
-          role: 'user',
-          content: query,
-        },
-      ],
-      temperature: 0.1, // Low temperature for consistent, factual responses
-      max_tokens: 500, // Reasonable response length
-      stream: false,
-    }),
-  });
+User Question: ${query}
 
-  if (!response.ok) {
-    throw new Error(`Akash API error: ${response.status}`);
+Assistant Response:`;
+
+  try {
+    const response = await fetch(workerUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: prompt,
+        max_tokens: 500,
+        temperature: 0.1, // Low temperature for factual responses
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`AI service error: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Extract the response based on common LLM response formats
+    if (typeof data === 'string') {
+      return data;
+    } else if (data.response) {
+      return data.response;
+    } else if (data.choices && data.choices[0]) {
+      return data.choices[0].text || data.choices[0].message?.content || '';
+    } else if (data.result) {
+      return data.result;
+    }
+
+    // Fallback
+    return 'Unable to generate response. Please try again.';
+  } catch (error) {
+    console.warn('AI response failed:', error);
+    throw error; // Let the caller handle fallback
   }
-
-  const data = await response.json();
-  return data.choices[0].message.content;
 }
 
-// Get API key from environment or localStorage
-function getApiKey(): string {
-  // First try to get from environment (if built with the key by the developer)
-  const envKey = process.env.NEXT_PUBLIC_AKASH_API_KEY;
-  if (envKey && envKey.trim() !== '') {
-    return envKey;
-  }
-
-  // Fall back to localStorage (user can set their own key in the UI)
-  const userKey = typeof window !== 'undefined' ? localStorage.getItem('akash_api_key') : null;
-  if (userKey && userKey.trim() !== '') {
-    return userKey;
-  }
-
-  // No key available
-  throw new Error(
-    'No Akash API key available. Please set it in the AI Assistant settings or, for development, as a NEXT_PUBLIC_AKASH_API_KEY environment variable.'
-  );
+// Check if AI assistance is available
+export function isAIAvailable(): boolean {
+  return isAIEnabled() && !!process.env.NEXT_PUBLIC_AI_WORKER_URL;
 }
 
-// Fallback: embedded documentation content
-function loadEmbeddedDocs(): void {
-  const docs: DocumentChunk[] = [
-    {
-      content: `# Getting Started\n\nThis documentation site provides comprehensive guides for building and customizing your documentation platform.\n\n## Quick Start\n\n1. Clone the repository\n2. Install dependencies with npm install\n3. Run npm run dev\n4. Visit http://localhost:3000\n\n## Features\n\n- Dark/light theme switching\n- Interactive backgrounds\n- Responsive design\n- Fast search\n- Code highlighting\n- Icon customization`,
-      metadata: {
-        title: 'Getting Started',
-        path: 'getting-started/introduction',
-        section: 'intro',
-      },
-    },
-    {
-      content: `# Theme Customization\n\nThe theme system supports automatic dark/light mode switching.\n\n## How to Customize\n\n1. Update CSS variables in globals.css\n2. Modify ThemeProvider component\n3. Add custom theme options\n4. Test in both modes\n\n## Variables\n\n- --background-color: Main background\n- --text-color: Primary text\n- --primary-color: Accent color`,
-      metadata: {
-        title: 'Theme Customization',
-        path: 'developer-guides/ui-configuration',
-        section: 'themes',
-      },
-    },
-    {
-      content: `# Icon System\n\nAdd custom icons from iconify.design or create your own.\n\n## Adding Icons\n\n1. Visit iconify.design\n2. Copy SVG code\n3. Save to /public/assets/icons/\n4. Import in components\n\n## Standards\n\n- Use pixel-name.svg naming\n- Optimize for light/dark themes\n- Include alt text\n- Test on different screens`,
-      metadata: {
-        title: 'Icon Customization',
-        path: 'developer-guides/icon-customization',
-        section: 'intro',
-      },
-    },
-    {
-      content: `# Interactive Backgrounds\n\nMultiple animated background options.\n\n## Available Types\n\n- Wave: Mouse-interactive patterns\n- Stars: 3D star field\n- Dither: Shader effects\n- Solid: Static for reduced motion\n\n## Performance\n\nOptimized for 60 FPS, automatically disables for reduced motion preferences.`,
-      metadata: {
-        title: 'Interactive Backgrounds',
-        path: 'user-guide/advanced-features',
-        section: 'backgrounds',
-      },
-    },
-  ];
+// Load actual documentation content from pre-generated JSON
+async function loadEmbeddedDocs(): Promise<void> {
+  if (documentationIndex.length > 0) return; // Already loaded
 
-  documentationIndex.push(...docs);
+  try {
+    // Load the pre-generated docs content
+    const response = await fetch('/docs-content.json');
+    if (response.ok) {
+      const docsData = await response.json();
+
+      // Convert the content object to our DocumentChunk format
+      for (const [path, content] of Object.entries(docsData.content as Record<string, string>)) {
+        if (content && content.trim()) {
+          // Extract title from the first heading or use the path
+          const titleMatch = content.match(/^#\s+(.+)$/m);
+          const title = titleMatch
+            ? titleMatch[1]
+            : path.split('/').pop()?.replace(/-/g, ' ') || path;
+
+          documentationIndex.push({
+            content: content,
+            metadata: {
+              title: title,
+              path: path,
+              section: path.split('/')[0],
+            },
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.warn('Failed to load docs content:', error);
+  }
+
+  // Fallback content if no files loaded
+  if (documentationIndex.length === 0) {
+    documentationIndex.push({
+      content: `# Documentation\n\nThis is a documentation site template. You can customize the content by editing the markdown files in the docs/content directory.\n\n## Features\n\n- Dark/light theme switching\n- Interactive backgrounds\n- Responsive design\n- Fast search\n- Command palette\n- AI assistant`,
+      metadata: {
+        title: 'Documentation',
+        path: 'overview',
+        section: 'general',
+      },
+    });
+  }
 }

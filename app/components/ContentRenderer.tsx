@@ -110,71 +110,73 @@ export default function ContentRenderer({
       initial={{ opacity: 0.9, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.15 }}
-      className="w-full py-0 md:py-4"
+      className="w-full h-full p-4 md:p-6 lg:p-8"
     >
-      <div
-        className="doc-card p-6 md:p-8 relative"
-        role="article"
-        style={{ maxWidth: '100%', width: '100%' }}
-      >
-        {/* Banner for synopsis pages */}
-        {isSynopsisPage && (
-          <div className="w-full mb-6 overflow-hidden rounded-lg relative">
-            <Image
-              src="/assets/banners/phantasy-banner.png"
-              alt="Phantasy Banner"
-              width={1200}
-              height={400}
-              className="w-full object-cover"
-              priority
-            />
+      <div className="doc-card h-full flex flex-col overflow-hidden" role="article">
+        <div className="flex-1 overflow-y-auto doc-content-scroll">
+          <div className="p-6 md:p-8">
+            {/* Banner for synopsis pages */}
+            {isSynopsisPage && (
+              <div className="w-full mb-6 overflow-hidden rounded-lg relative">
+                <Image
+                  src="/assets/banners/phantasy-banner.png"
+                  alt="Phantasy Banner"
+                  width={1200}
+                  height={400}
+                  className="w-full object-cover"
+                  priority
+                />
+              </div>
+            )}
+
+            {/* Main content area - use new MarkdownRenderer */}
+            <MarkdownRenderer content={content} path={path} />
+
+            {/* Navigation between pages */}
+            {(prevPage || nextPage) && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.3 }}
+                className="mt-12 pt-8 border-t border-unified"
+              >
+                <div className="pagination-links">
+                  {prevPage ? (
+                    <motion.button
+                      onClick={() => router.push(`/docs/${prevPage.path}`)}
+                      className="nav-button text-left p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900/30 transition-colors"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                        ← Previous
+                      </div>
+                      <div className="font-medium text-gray-900 dark:text-gray-100">
+                        {prevPage.title}
+                      </div>
+                    </motion.button>
+                  ) : (
+                    <div></div>
+                  )}
+
+                  {nextPage && (
+                    <motion.button
+                      onClick={() => router.push(`/docs/${nextPage.path}`)}
+                      className="nav-button text-right p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900/30 transition-colors"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Next →</div>
+                      <div className="font-medium text-gray-900 dark:text-gray-100">
+                        {nextPage.title}
+                      </div>
+                    </motion.button>
+                  )}
+                </div>
+              </motion.div>
+            )}
           </div>
-        )}
-
-        {/* Main content area - use new MarkdownRenderer */}
-        <MarkdownRenderer content={content} path={path} />
-
-        {/* Navigation between pages */}
-        {(prevPage || nextPage) && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.3 }}
-            className="mt-12 pt-8 border-t border-unified"
-          >
-            <div className="pagination-links">
-              {prevPage ? (
-                <motion.button
-                  onClick={() => router.push(`/docs/${prevPage.path}`)}
-                  className="nav-button text-left p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900/30 transition-colors"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">← Previous</div>
-                  <div className="font-medium text-gray-900 dark:text-gray-100">
-                    {prevPage.title}
-                  </div>
-                </motion.button>
-              ) : (
-                <div></div>
-              )}
-
-              {nextPage && (
-                <motion.button
-                  onClick={() => router.push(`/docs/${nextPage.path}`)}
-                  className="nav-button text-right p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900/30 transition-colors"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Next →</div>
-                  <div className="font-medium text-gray-900 dark:text-gray-100">
-                    {nextPage.title}
-                  </div>
-                </motion.button>
-              )}
-            </div>
-          </motion.div>
-        )}
+        </div>
       </div>
     </motion.div>
   );
