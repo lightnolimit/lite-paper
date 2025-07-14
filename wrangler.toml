@@ -1,7 +1,6 @@
 # Static site configuration for Cloudflare Pages
-name = "docs"
+name = "lite-paper-docs"
 compatibility_date = "2025-05-15"
-[assets]
-directory = "./out"
+pages_build_output_dir = "out"
 
 # No worker script needed for static sites
