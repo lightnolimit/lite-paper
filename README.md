@@ -1,6 +1,6 @@
-# Documentation Site Template
+# Lite Paper (Documentation) Site Template
 
-A modern, responsive documentation site built with Next.js 15, TypeScript, and Tailwind CSS. Perfect for creating beautiful documentation for your projects.
+A modern, responsive documentation-style lite paper website built with Next.js 15, TypeScript, and Tailwind CSS. Perfect for creating beautiful papers for your projects.
 
 ## ✨ Features
 
@@ -17,15 +17,18 @@ A modern, responsive documentation site built with Next.js 15, TypeScript, and T
 ## 🚀 Quick Start
 
 ### 1. Fork this repository
+
 Click the "Fork" button on GitHub to create your own copy.
 
 ### 2. Clone your fork
+
 ```bash
 git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
 cd YOUR_REPO_NAME
 ```
 
 ### 3. Install dependencies
+
 ```bash
 npm install
 # or
@@ -35,6 +38,7 @@ yarn install
 ```
 
 ### 4. Customize your documentation structure
+
 Edit `app/data/documentation.ts` to define your documentation structure:
 
 ```typescript
@@ -47,17 +51,19 @@ export const documentationTree: FileItem[] = [
       {
         type: 'file',
         name: 'Your Page.md',
-        path: 'your-section/your-page'
-      }
-    ]
-  }
+        path: 'your-section/your-page',
+      },
+    ],
+  },
 ];
 ```
 
 ### 5. Add your content
+
 Create Markdown files in the structure you defined. The file paths in `documentation.ts` correspond to your content structure.
 
 ### 6. Run the development server
+
 ```bash
 npm run dev
 ```
@@ -84,16 +90,19 @@ Open [http://localhost:3000](http://localhost:3000) to see your documentation si
 ## 🎨 Customization
 
 ### Styling
+
 - The site uses Tailwind CSS for styling
 - Customize colors, fonts, and layout in `tailwind.config.js`
 - Override styles in `app/globals.css`
 
 ### Navigation Structure
+
 - Define your documentation structure in `app/data/documentation.ts`
 - Supports nested directories and files
 - Each entry maps to a route in your application
 
 ### Content
+
 - Write your documentation in Markdown
 - Files are loaded dynamically based on the structure you define
 - Supports syntax highlighting and rich formatting
@@ -101,16 +110,19 @@ Open [http://localhost:3000](http://localhost:3000) to see your documentation si
 ## 📦 Deployment
 
 ### Cloudflare Pages
+
 1. Connect your GitHub repository to Cloudflare Pages
 2. Set build command: `npm run build`
 3. Set output directory: `out`
 4. Deploy!
 
 ### Vercel
+
 1. Connect your GitHub repository to Vercel
 2. Deploy with default settings
 
 ### Netlify
+
 1. Connect your GitHub repository to Netlify
 2. Set build command: `npm run build`
 3. Set publish directory: `out`
@@ -121,11 +133,13 @@ Open [http://localhost:3000](http://localhost:3000) to see your documentation si
 To receive updates from the template while keeping your content:
 
 ### Setup upstream remote (one-time setup)
+
 ```bash
 git remote add upstream https://github.com/ORIGINAL_OWNER/ORIGINAL_REPO.git
 ```
 
 ### Update from upstream
+
 ```bash
 # Fetch latest changes from upstream
 git fetch upstream
