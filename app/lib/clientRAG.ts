@@ -1,4 +1,5 @@
-// Client-side RAG implementation - works without a server!
+// Client-side RAG implementation with optional AI enhancement
+// This module provides documentation search functionality with optional AI-powered responses
 
 export interface DocumentChunk {
   content: string;
@@ -94,7 +95,12 @@ export function generateAnswer(query: string, sources: DocumentSource[]): string
   return answer;
 }
 
-// Client-side search function that replaces the API call
+// Check if AI features are enabled
+function isAIEnabled(): boolean {
+  return process.env.NEXT_PUBLIC_ENABLE_AI === 'true';
+}
+
+// Client-side search function with optional AI enhancement
 export async function searchAndAnswer(
   query: string,
   useAI: boolean = true
@@ -105,8 +111,8 @@ export async function searchAndAnswer(
 
   const sources = searchDocuments(query);
 
-  // Use Akash AI for better responses if available
-  if (useAI && sources.length > 0) {
+  // Use AI for better responses if enabled and available
+  if (useAI && sources.length > 0 && isAIEnabled()) {
     try {
       const aiAnswer = await getAIResponse(query, sources);
       return { answer: aiAnswer, sources };
@@ -120,15 +126,23 @@ export async function searchAndAnswer(
   return { answer, sources };
 }
 
-// Call Akash Chat API for enhanced responses
+// Optional AI enhancement for responses
+// This function is only called if AI is enabled via environment variable
 async function getAIResponse(query: string, sources: DocumentSource[]): Promise<string> {
+  const workerUrl = process.env.NEXT_PUBLIC_AI_WORKER_URL;
+
+  if (!workerUrl) {
+    throw new Error('AI worker URL not configured');
+  }
+
   // Build context from relevant documentation
   const context = sources
     .slice(0, 3)
     .map((source) => `**${source.title}** (from ${source.path}):\n${source.snippet}`)
     .join('\n\n');
 
-  const systemPrompt = `You are a helpful documentation assistant. Answer the user's question based ONLY on the provided documentation context. 
+  // Format the prompt for LLM
+  const prompt = `You are a helpful documentation assistant. Answer the user's question based ONLY on the provided documentation context.
 
 Keep your response:
 - Accurate and based only on the provided context
@@ -139,58 +153,53 @@ Keep your response:
 If the context doesn't contain enough information to answer the question, say so and suggest checking the referenced documentation sections.
 
 Documentation Context:
-${context}`;
+${context}
 
-  const response = await fetch('https://chatapi.akash.network/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${getApiKey()}`, // We'll implement this
-    },
-    body: JSON.stringify({
-      model: 'Meta-Llama-3-1-8B-Instruct-FP8', // Fast and efficient model from Akash
-      messages: [
-        {
-          role: 'system',
-          content: systemPrompt,
-        },
-        {
-          role: 'user',
-          content: query,
-        },
-      ],
-      temperature: 0.1, // Low temperature for consistent, factual responses
-      max_tokens: 500, // Reasonable response length
-      stream: false,
-    }),
-  });
+User Question: ${query}
 
-  if (!response.ok) {
-    throw new Error(`Akash API error: ${response.status}`);
+Assistant Response:`;
+
+  try {
+    const response = await fetch(workerUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: prompt,
+        max_tokens: 500,
+        temperature: 0.1, // Low temperature for factual responses
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`AI service error: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Extract the response based on common LLM response formats
+    if (typeof data === 'string') {
+      return data;
+    } else if (data.response) {
+      return data.response;
+    } else if (data.choices && data.choices[0]) {
+      return data.choices[0].text || data.choices[0].message?.content || '';
+    } else if (data.result) {
+      return data.result;
+    }
+
+    // Fallback
+    return 'Unable to generate response. Please try again.';
+  } catch (error) {
+    console.warn('AI response failed:', error);
+    throw error; // Let the caller handle fallback
   }
-
-  const data = await response.json();
-  return data.choices[0].message.content;
 }
 
-// Get API key from environment or localStorage
-function getApiKey(): string {
-  // First try to get from environment (if built with the key by the developer)
-  const envKey = process.env.NEXT_PUBLIC_AKASH_API_KEY;
-  if (envKey && envKey.trim() !== '') {
-    return envKey;
-  }
-
-  // Fall back to localStorage (user can set their own key in the UI)
-  const userKey = typeof window !== 'undefined' ? localStorage.getItem('akash_api_key') : null;
-  if (userKey && userKey.trim() !== '') {
-    return userKey;
-  }
-
-  // No key available
-  throw new Error(
-    'No Akash API key available. Please set it in the AI Assistant settings or, for development, as a NEXT_PUBLIC_AKASH_API_KEY environment variable.'
-  );
+// Check if AI assistance is available
+export function isAIAvailable(): boolean {
+  return isAIEnabled() && !!process.env.NEXT_PUBLIC_AI_WORKER_URL;
 }
 
 // Load actual documentation content from pre-generated JSON

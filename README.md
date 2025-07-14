@@ -1,18 +1,25 @@
-# Lite Paper (Documentation) Site Template
+# Lite Paper - Modern Documentation Template
 
-A modern, responsive documentation-style lite paper website built with Next.js 15, TypeScript, and Tailwind CSS. Perfect for creating beautiful papers for your projects.
+A beautiful, fast, and customizable documentation website template built with Next.js 15, TypeScript, and Tailwind CSS. Features an interactive mindmap visualization and optional AI-powered documentation assistant.
+
+[![Deploy to Cloudflare Pages](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/lightnolimit/lite-paper)
+[![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Next.js 15](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
 
 ## ✨ Features
 
 - 🎨 **Modern Design**: Clean, responsive interface with dark/light mode support
 - 📱 **Mobile-First**: Optimized for all screen sizes
 - 🔍 **Fast Search**: Instant search across all documentation
+- 🧭 **Interactive Mindmap**: Visualize your documentation structure
 - 📖 **File Tree Navigation**: Intuitive sidebar navigation
+- 🤖 **AI Assistant** (Optional): Powered by your choice of LLM
 - 🎯 **TypeScript**: Full type safety throughout
-- 🚀 **Fast Performance**: Built on Next.js 15 with optimizations
+- 🚀 **Static Export**: Deploy anywhere with no server required
 - 📝 **Markdown Support**: Write content in Markdown with syntax highlighting
 - 🎨 **Customizable**: Easy to theme and customize
-- ☁️ **Deploy Anywhere**: Works on Vercel, Netlify, Cloudflare Pages, and more
+- ☁️ **Deploy Anywhere**: Works on Cloudflare Pages, Vercel, Netlify, and more
 
 ## 🚀 Quick Start
 
@@ -37,7 +44,19 @@ pnpm install
 yarn install
 ```
 
-### 4. Customize your documentation structure
+### 4. Set up environment variables
+
+```bash
+cp .env.example .env.local
+```
+
+Edit `.env.local` to configure:
+
+- Site name and URL
+- AI features (optional)
+- Analytics (optional)
+
+### 5. Customize your documentation structure
 
 Edit `app/data/documentation.ts` to define your documentation structure:
 
@@ -58,11 +77,11 @@ export const documentationTree: FileItem[] = [
 ];
 ```
 
-### 5. Add your content
+### 6. Add your content
 
 Create Markdown files in the structure you defined. The file paths in `documentation.ts` correspond to your content structure.
 
-### 6. Run the development server
+### 7. Run the development server
 
 ```bash
 npm run dev
@@ -115,6 +134,29 @@ Deploy this documentation site to Cloudflare Pages in one click:
 - Files are loaded dynamically based on the structure you define
 - Supports syntax highlighting and rich formatting
 
+## 🤖 AI Assistant (Optional)
+
+The template includes an optional AI-powered documentation assistant. To enable it:
+
+1. **Set up environment variables** in `.env.local`:
+
+   ```env
+   NEXT_PUBLIC_ENABLE_AI="true"
+   NEXT_PUBLIC_AI_WORKER_URL="https://your-ai-endpoint.workers.dev"
+   ```
+
+2. **Deploy an AI endpoint** (choose one):
+   - **Cloudflare Workers AI**: Deploy your own Llama model
+   - **OpenAI API**: Use any OpenAI-compatible endpoint
+   - **Local LLM**: Connect to Ollama or similar
+
+3. **Test the integration**:
+   - Open Command Palette (Cmd/Ctrl + K)
+   - Select "Ask AI Assistant"
+   - Ask questions about your documentation
+
+The AI assistant uses RAG (Retrieval Augmented Generation) to provide accurate answers based on your documentation content.
+
 ## 📦 Deployment
 
 ### Cloudflare Pages
@@ -162,28 +204,70 @@ git commit -m "Merge upstream changes"
 git push origin main
 ```
 
+## 🛠️ Configuration
+
+### Environment Variables
+
+See `.env.example` for all available options:
+
+| Variable                    | Description           | Default                   |
+| --------------------------- | --------------------- | ------------------------- |
+| `NEXT_PUBLIC_SITE_NAME`     | Your site name        | "Your Documentation Site" |
+| `NEXT_PUBLIC_SITE_URL`      | Production URL        | "https://your-domain.com" |
+| `NEXT_PUBLIC_GITHUB_URL`    | GitHub repository URL | -                         |
+| `NEXT_PUBLIC_ENABLE_AI`     | Enable AI assistant   | "false"                   |
+| `NEXT_PUBLIC_AI_WORKER_URL` | AI endpoint URL       | -                         |
+
+### Theming
+
+Customize colors in `app/globals.css`:
+
+```css
+:root {
+  --primary-color: #3b82f6;
+  --secondary-color: #64748b;
+  --accent-color: #10b981;
+  /* ... more variables */
+}
+```
+
+### Typography
+
+The template uses custom fonts:
+
+- **Headings**: Urbanist
+- **Body**: Urbanist
+- **Code**: MapleMono
+
 ## 🤝 Contributing
 
-Contributions to improve the template are welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## 📄 License
 
 This project is open source and available under the [MIT License](LICENSE).
 
+## 🔒 Security
+
+For security issues, please see [SECURITY.md](SECURITY.md).
+
 ## 🆘 Support
 
 If you have questions or need help:
 
-1. Check the documentation structure in `app/data/documentation.ts`
-2. Look at the example components in `app/components/`
-3. Open an issue on GitHub
+1. Check the [documentation](https://lite-paper.pages.dev)
+2. Join our [GitHub Discussions](https://github.com/lightnolimit/lite-paper/discussions)
+3. Open an [issue](https://github.com/lightnolimit/lite-paper/issues)
+
+## 🙏 Acknowledgments
+
+- Built with [Next.js](https://nextjs.org/)
+- Styled with [Tailwind CSS](https://tailwindcss.com/)
+- Animations by [Framer Motion](https://www.framer.com/motion/)
+- Icons from various pixel art collections
 
 ---
 
 **Happy documenting!** 📚✨
+
+Made with ❤️ by the Lite Paper community

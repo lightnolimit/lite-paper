@@ -1,185 +1,150 @@
-# Contributing to Lite Paper Documentation Template
+# Contributing to Lite Paper
 
-Thank you for your interest in contributing to the Lite Paper Documentation Template! We love your input and appreciate your efforts to make this project better.
-
-## Table of Contents
-
-- [Code of Conduct](#code-of-conduct)
-- [Getting Started](#getting-started)
-- [Development Process](#development-process)
-- [How to Contribute](#how-to-contribute)
-- [Style Guidelines](#style-guidelines)
-- [Commit Messages](#commit-messages)
-- [Pull Request Process](#pull-request-process)
-- [Reporting Issues](#reporting-issues)
+Thank you for your interest in contributing to Lite Paper! We welcome contributions from the community to make this documentation template even better.
 
 ## Code of Conduct
 
-By participating in this project, you agree to abide by our Code of Conduct:
+By participating in this project, you agree to abide by our Code of Conduct (see CODE_OF_CONDUCT.md).
 
-- Use welcoming and inclusive language
-- Be respectful of differing viewpoints and experiences
-- Gracefully accept constructive criticism
-- Focus on what is best for the community
-- Show empathy towards other community members
+## How to Contribute
 
-## Getting Started
+### Reporting Issues
 
-1. **Fork the repository** on GitHub
-2. **Clone your fork** locally:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/lite-paper.git
-   cd lite-paper
-   ```
-3. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-4. **Create a branch** for your feature or fix:
+1. **Check existing issues** first to avoid duplicates
+2. **Use issue templates** when available
+3. **Provide clear descriptions** including:
+   - Steps to reproduce
+   - Expected behavior
+   - Actual behavior
+   - Environment details (OS, Node version, etc.)
+
+### Suggesting Features
+
+1. **Open a discussion** before creating a feature request
+2. **Explain the use case** and why it would benefit others
+3. **Consider implementation complexity** and maintenance burden
+
+### Pull Requests
+
+1. **Fork the repository** and create a new branch:
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
 
-## Development Process
+2. **Make your changes** following our coding standards:
+   - Write clean, readable code
+   - Follow existing code style
+   - Add comments for complex logic
+   - Update documentation as needed
 
-1. **Run the development server**:
+3. **Test your changes**:
 
+   ```bash
+   npm run dev          # Test in development
+   npm run build        # Ensure production build works
+   npm run lint         # Check for linting errors
+   npm run type-check   # Verify TypeScript types
+   ```
+
+4. **Commit your changes** using conventional commits:
+
+   ```bash
+   git commit -m "feat: add new feature"
+   git commit -m "fix: resolve issue with..."
+   git commit -m "docs: update README"
+   ```
+
+5. **Push to your fork** and create a pull request
+
+### Commit Message Guidelines
+
+We use [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat:` New features
+- `fix:` Bug fixes
+- `docs:` Documentation changes
+- `style:` Code style changes (formatting, etc.)
+- `refactor:` Code refactoring
+- `test:` Test additions or modifications
+- `chore:` Maintenance tasks
+
+### Development Setup
+
+1. **Clone the repository**:
+
+   ```bash
+   git clone https://github.com/your-username/lite-paper.git
+   cd lite-paper
+   ```
+
+2. **Install dependencies**:
+
+   ```bash
+   npm install
+   ```
+
+3. **Copy environment variables**:
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+4. **Start development server**:
    ```bash
    npm run dev
    ```
 
-   Open [http://localhost:3000](http://localhost:3000) to see your changes.
+### Code Style
 
-2. **Before committing**, ensure your code passes all checks:
+- **TypeScript**: Use proper types, avoid `any`
+- **React**: Functional components with hooks
+- **Styling**: Use CSS variables for theming
+- **Components**: Keep them small and focused
+- **Imports**: Use absolute imports from `@/` when possible
 
-   ```bash
-   npm run lint        # Check for linting errors
-   npm run format      # Format your code
-   npm run type-check  # Check TypeScript types
-   ```
+### Testing
 
-3. **Test your changes** thoroughly across different browsers and screen sizes.
+While we don't have formal tests yet, please:
 
-## How to Contribute
+- Test your changes thoroughly in development
+- Verify the production build works
+- Check responsive design on different screen sizes
+- Test with both light and dark themes
 
-### Reporting Bugs
+### Documentation
 
-Before creating bug reports, please check existing issues to avoid duplicates. When creating a bug report, include:
+- Update README.md if you change setup instructions
+- Document new features in the appropriate docs section
+- Add JSDoc comments for complex functions
+- Update .env.example if adding new environment variables
 
-- A clear and descriptive title
-- Steps to reproduce the issue
-- Expected behavior
-- Actual behavior
-- Screenshots (if applicable)
-- Your environment (OS, browser, Node version)
-
-### Suggesting Enhancements
-
-Enhancement suggestions are welcome! Please provide:
-
-- A clear and descriptive title
-- A detailed description of the proposed enhancement
-- Why this enhancement would be useful
-- Examples of how it would work
-
-### Code Contributions
-
-1. **Small fixes** (typos, small bugs): Open a PR directly
-2. **Large changes**: Open an issue first to discuss the change
-3. **New features**: Discuss in an issue before implementation
-
-## Style Guidelines
-
-Please refer to our [Style Guide](STYLE_GUIDE.md) for detailed coding standards. Key points:
-
-- Use TypeScript for all new code
-- Follow the existing code style (enforced by ESLint and Prettier)
-- Write meaningful variable and function names
-- Add JSDoc comments for public APIs
-- Keep components small and focused
-
-## Commit Messages
-
-We use [Conventional Commits](https://www.conventionalcommits.org/). Format:
+## Project Structure
 
 ```
-<type>(<scope>): <subject>
-
-<body>
-
-<footer>
+lite-paper/
+├── app/                    # Next.js app directory
+│   ├── components/        # React components
+│   ├── lib/              # Utility functions
+│   ├── providers/        # React context providers
+│   └── docs/             # Documentation content
+├── public/               # Static assets
+├── scripts/              # Build scripts
+└── types/                # TypeScript types
 ```
 
-### Types
+## Need Help?
 
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation changes
-- `style`: Code style changes (formatting, etc)
-- `refactor`: Code refactoring
-- `perf`: Performance improvements
-- `test`: Adding or updating tests
-- `build`: Build system changes
-- `ci`: CI/CD changes
-- `chore`: Other changes that don't modify src or test files
+- Join our [Discussions](https://github.com/lightnolimit/lite-paper/discussions)
+- Check the [Documentation](https://lite-paper.pages.dev)
+- Ask questions in issues (tag with "question")
 
-### Examples
+## Recognition
 
-```bash
-feat(navigation): add mobile menu toggle
-fix(theme): correct dark mode colors in navigation
-docs: update installation instructions
-style: format code with prettier
-```
+Contributors will be recognized in:
 
-## Pull Request Process
+- The README.md contributors section
+- Release notes for significant contributions
+- Special thanks in the documentation
 
-1. **Update documentation** if you've changed APIs or added features
-2. **Ensure all tests pass** and no linting errors exist
-3. **Update the README.md** if needed
-4. **Fill out the PR template** completely
-5. **Request review** from maintainers
-6. **Address feedback** promptly and professionally
-
-### PR Checklist
-
-- [ ] Code follows the style guidelines
-- [ ] Self-review completed
-- [ ] Comments added for complex code
-- [ ] Documentation updated
-- [ ] No new warnings generated
-- [ ] Tests pass locally
-- [ ] Commit messages follow conventions
-
-## Development Tips
-
-### Working with Three.js Backgrounds
-
-When modifying background effects:
-
-- Test performance on lower-end devices
-- Ensure reduced motion preferences are respected
-- Keep animations smooth (60 FPS target)
-
-### Adding New Documentation
-
-1. Add your markdown files to `app/docs/content/`
-2. Update `app/data/documentation.ts` with the new structure
-3. Test navigation and search functionality
-
-### Performance Considerations
-
-- Lazy load heavy components
-- Optimize images before adding them
-- Use dynamic imports for code splitting
-- Test with Lighthouse for performance metrics
-
-## Questions?
-
-Feel free to:
-
-- Open an issue for questions
-- Join our discussions on GitHub
-- Contact the maintainers
-
-Thank you for contributing to make this project better for everyone! 🎉
+Thank you for helping make Lite Paper better for everyone!

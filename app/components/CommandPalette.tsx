@@ -6,6 +6,7 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown';
 
 import { documentationTree } from '../data/documentation';
+import { isAIAvailable } from '../lib/clientRAG';
 import { useTheme } from '../providers/ThemeProvider';
 
 import type { FileItem } from './FileTree';
@@ -40,16 +41,18 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
   const searchIndex = useMemo(() => {
     const results: SearchResult[] = [];
 
-    // Add AI Assistant
-    results.push({
-      title: 'Ask AI Assistant',
-      path: 'ai-assistant',
-      type: 'ai',
-      description: 'Get help from AI about the documentation',
-      action: () => setIsAIMode(true),
-      icon: '🤖',
-      shortcut: 'A',
-    });
+    // Add AI Assistant only if AI is available
+    if (isAIAvailable()) {
+      results.push({
+        title: 'Ask AI Assistant',
+        path: 'ai-assistant',
+        type: 'ai',
+        description: 'Get help from AI about the documentation',
+        action: () => setIsAIMode(true),
+        icon: '🤖',
+        shortcut: 'A',
+      });
+    }
 
     // Add theme toggle action
     results.push({
