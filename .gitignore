@@ -50,5 +50,7 @@ next-env.d.ts
 pnpm-lock.yaml
 package-lock.yaml
 
-# forks
-phantasy-docs/
+# claude
+.claude
+CLAUDE.md
+

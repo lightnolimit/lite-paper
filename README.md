@@ -270,9 +270,3 @@ If you have questions or need help:
 - Styled with [Tailwind CSS](https://tailwindcss.com/)
 - Animations by [Framer Motion](https://www.framer.com/motion/)
 - Icons from various pixel art collections
-
----
-
-**Happy documenting!** 📚✨
-
-Made with ❤️ by the Lite Paper community
