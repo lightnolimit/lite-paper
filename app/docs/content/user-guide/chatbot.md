@@ -5,8 +5,9 @@ The documentation site includes an intelligent chatbot assistant that can help y
 ## Overview
 
 The chatbot uses **Retrieval-Augmented Generation (RAG)** technology to:
+
 - Search through all documentation content
-- Provide contextual answers with source references  
+- Provide contextual answers with source references
 - Suggest related topics and pages
 - Guide you to the most relevant information
 
@@ -25,16 +26,19 @@ The chatbot is available on every page of the documentation:
 The chatbot understands natural language questions about:
 
 **General inquiries:**
+
 - "How do I customize the theme?"
 - "What background options are available?"
 - "How to add new icons?"
 
 **Technical questions:**
+
 - "Show me code examples for the navigation component"
 - "How do I deploy this documentation site?"
 - "What are the performance optimization features?"
 
 **Navigation help:**
+
 - "Where can I find the API documentation?"
 - "Show me the getting started guide"
 - "What's in the developer guides section?"
@@ -53,6 +57,7 @@ Each chatbot response includes:
 ### Smart Search
 
 The chatbot performs intelligent keyword matching:
+
 - **Title prioritization**: Matches in page titles score higher
 - **Content relevance**: Searches through all documentation content
 - **Contextual understanding**: Understands related terms and concepts
@@ -62,6 +67,7 @@ The chatbot performs intelligent keyword matching:
 The chatbot adapts its responses based on your question:
 
 **How-to Questions**
+
 ```
 Q: "How do I add custom icons?"
 A: Based on the documentation, here's how you can add custom icons:
@@ -74,11 +80,12 @@ For more detailed information, check the Icon Customization section.
 ```
 
 **Definition Questions**
+
 ```
 Q: "What is the theme system?"
 A: Based on the documentation:
 
-The theme system provides automatic dark/light mode switching 
+The theme system provides automatic dark/light mode switching
 with smooth transitions, persistent storage, and reduced motion support...
 
 You can find additional information in:
@@ -87,6 +94,7 @@ You can find additional information in:
 ```
 
 **Example Requests**
+
 ```
 Q: "Show me navigation examples"
 A: Here are relevant examples from the documentation:
@@ -101,6 +109,7 @@ Real implementation of the theme provider...
 ### Source Attribution
 
 Every response includes clickable source links:
+
 - Links open in new tabs for easy reference
 - Sources are ranked by relevance
 - Up to 5 source documents per response
@@ -135,6 +144,7 @@ POST /api/chat
 ### Document Processing
 
 The system automatically:
+
 1. **Indexes all markdown files** in the documentation
 2. **Splits content into chunks** for better search performance
 3. **Scores relevance** based on keyword matches and context
@@ -155,14 +165,16 @@ To include additional content in chatbot responses:
 
 1. **Add markdown files** to `/app/docs/content/`
 2. **Include frontmatter** for better categorization:
+
    ```markdown
    ---
-   title: "Your Page Title"
-   category: "user-guide"
+   title: 'Your Page Title'
+   category: 'user-guide'
    ---
-   
+
    # Your Content
    ```
+
 3. **Rebuild the site** to index new content
 
 ### Modifying Responses
@@ -232,16 +244,19 @@ The chatbot operates entirely on your documentation content:
 ### Common Issues
 
 **Chatbot doesn't respond:**
+
 - Check browser console for JavaScript errors
 - Ensure JavaScript is enabled
 - Try refreshing the page
 
 **Poor search results:**
+
 - Try different keywords or phrases
 - Check if the topic exists in documentation
 - Use more specific terms
 
 **Interface doesn't appear:**
+
 - Check if the chat button is visible (bottom-right)
 - Try different screen sizes/devices
 - Clear browser cache
@@ -249,11 +264,13 @@ The chatbot operates entirely on your documentation content:
 ### Performance Issues
 
 **Slow responses:**
+
 - Check network connectivity
 - Ensure adequate device memory
 - Close other browser tabs
 
 **Search not finding content:**
+
 - Verify content exists in `/app/docs/content/`
 - Check if build includes new content
 - Confirm file extensions are `.md`
@@ -261,6 +278,7 @@ The chatbot operates entirely on your documentation content:
 ---
 
 **Related Documentation:**
+
 - [Advanced Features](./advanced-features) - More platform capabilities
 - [Configuration](./configuration) - Site customization options
-- [Code Examples](../developer-guides/code-examples) - Implementation details 
+- [Code Examples](../developer-guides/code-examples) - Implementation details

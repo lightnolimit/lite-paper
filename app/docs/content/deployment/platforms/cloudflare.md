@@ -10,11 +10,12 @@ Cloudflare Pages is the **recommended hosting platform** for this documentation 
 ✅ **Git Integration**: Deploy automatically from GitHub  
 ✅ **Preview Deployments**: Test changes before going live  
 ✅ **Custom Domains**: Use your own domain for free  
-✅ **Edge Functions**: Add server-side functionality  
+✅ **Edge Functions**: Add server-side functionality
 
 ## Prerequisites
 
 Before deploying, ensure you have:
+
 - A **GitHub repository** with your documentation site
 - A **Cloudflare account** (free at [cloudflare.com](https://cloudflare.com))
 - Your site **builds successfully** locally with `npm run build`
@@ -53,6 +54,7 @@ NPM_VERSION: 9
 ```
 
 **Important Build Settings:**
+
 - **Framework preset**: Next.js (Static HTML Export)
 - **Node.js version**: 18 or higher
 - **Build command**: `npm run build`
@@ -73,6 +75,7 @@ NEXT_PUBLIC_SITE_URL=https://your-domain.pages.dev
 ```
 
 To add environment variables:
+
 1. Go to your project in Cloudflare Pages
 2. Click **Settings** → **Environment variables**
 3. Add each variable with **Production** scope
@@ -86,29 +89,29 @@ Create a `next.config.js` file optimized for Cloudflare:
 const nextConfig = {
   // Enable static export for Cloudflare Pages
   output: 'export',
-  
+
   // Disable image optimization for static export
   images: {
-    unoptimized: true
+    unoptimized: true,
   },
-  
+
   // Optional: Add base path if deploying to subdirectory
   // basePath: '/docs',
-  
+
   // Trailing slash for better static hosting
   trailingSlash: true,
-  
+
   // Optimize for static hosting
   exportPathMap: async function (defaultPathMap) {
     return {
       '/': { page: '/' },
       '/docs': { page: '/docs' },
       // Add other routes as needed
-    }
-  }
-}
+    };
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
 ```
 
 ### Step 5: Deploy
@@ -141,12 +144,14 @@ module.exports = nextConfig
 ### Step 2: DNS Configuration
 
 **Option A: Domain managed by Cloudflare**
+
 ```bash
 # DNS records are added automatically
 # Just verify the CNAME record exists
 ```
 
 **Option B: External DNS provider**
+
 ```bash
 # Add this CNAME record to your DNS provider:
 Type: CNAME
@@ -178,6 +183,7 @@ Configure automatic deployments:
 ### Preview Deployments
 
 Each pull request gets a unique preview URL:
+
 - `https://pr-123.your-project.pages.dev`
 - Perfect for testing changes before merging
 - Automatically deleted when PR is closed
@@ -219,12 +225,14 @@ Enable these Cloudflare features for better performance:
 ### Built-in Analytics
 
 Cloudflare provides free analytics:
+
 - **Page views** and **unique visitors**
 - **Geographic distribution**
 - **Performance metrics**
 - **Error tracking**
 
 Access analytics:
+
 1. Go to your Pages project
 2. Click **Analytics** tab
 3. View real-time and historical data
@@ -232,6 +240,7 @@ Access analytics:
 ### Web Analytics (Enhanced)
 
 For more detailed analytics:
+
 1. Enable **Cloudflare Web Analytics**
 2. Add the tracking script to your site
 3. Get detailed user behavior insights
@@ -241,6 +250,7 @@ For more detailed analytics:
 ### Common Build Issues
 
 **Build fails with "Command not found"**
+
 ```bash
 # Solution: Ensure package.json has correct scripts
 {
@@ -253,6 +263,7 @@ For more detailed analytics:
 ```
 
 **Static export fails**
+
 ```bash
 # Solution: Check next.config.js settings
 module.exports = {
@@ -262,6 +273,7 @@ module.exports = {
 ```
 
 **404 errors on page refresh**
+
 ```bash
 # Solution: Add _redirects file to public folder
 /* /index.html 200
@@ -270,6 +282,7 @@ module.exports = {
 ### Performance Issues
 
 **Slow build times**
+
 ```bash
 # Solutions:
 1. Enable Cloudflare build cache
@@ -278,6 +291,7 @@ module.exports = {
 ```
 
 **Large bundle size**
+
 ```bash
 # Solutions:
 1. Run: npm run build:analyze
@@ -294,7 +308,7 @@ Add server-side functionality with Cloudflare Workers:
 ```javascript
 // functions/api/hello.js
 export function onRequest(context) {
-  return new Response('Hello from the edge!')
+  return new Response('Hello from the edge!');
 }
 ```
 
@@ -319,6 +333,7 @@ Create `public/_headers` and `public/_redirects`:
 ### Free Plan Limits
 
 Cloudflare Pages Free Plan includes:
+
 - **Unlimited requests**
 - **Unlimited bandwidth**
 - **500 builds per month**
@@ -328,6 +343,7 @@ Cloudflare Pages Free Plan includes:
 ### Pro Plan Benefits ($20/month)
 
 If you need more:
+
 - **5,000 builds per month**
 - **Additional collaborators**
 - **Enhanced security features**
@@ -336,6 +352,7 @@ If you need more:
 ## Best Practices
 
 ### Repository Structure
+
 ```
 your-docs-repo/
 ├── .github/workflows/    # GitHub Actions (optional)
@@ -347,11 +364,13 @@ your-docs-repo/
 ```
 
 ### Environment Management
+
 - Use **production** environment variables for live site
 - Use **preview** environment variables for testing
 - Never commit sensitive data to repository
 
 ### Security
+
 - Enable **bot fight mode** in Cloudflare
 - Use **security headers** for protection
 - Regularly update dependencies
@@ -359,6 +378,7 @@ your-docs-repo/
 Your documentation site is now live on Cloudflare Pages! 🚀
 
 **Next Steps:**
+
 - [Set up custom domain](../overview#custom-domains)
 - [Configure analytics](../production-setup#analytics)
-- [Optimize performance](../production-setup#performance) 
+- [Optimize performance](../production-setup#performance)

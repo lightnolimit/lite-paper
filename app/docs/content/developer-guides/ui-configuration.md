@@ -16,55 +16,62 @@ To configure the mobile file tree toggle, edit the `app/config/ui.ts` file:
 export const uiConfig: UIConfig = {
   // Enable or disable the floating mobile toggle button
   showMobileFileTreeToggle: false, // Change to true to enable
-  
+
   // Position the toggle button
-  mobileTogglePosition: 'bottom-left' // Options: 'bottom-left', 'bottom-right', 'top-left', 'top-right'
+  mobileTogglePosition: 'bottom-left', // Options: 'bottom-left', 'bottom-right', 'top-left', 'top-right'
 };
 ```
 
 ### Available Options
 
 #### `showMobileFileTreeToggle`
+
 - **Type**: `boolean`
 - **Default**: `false`
 - **Description**: Controls whether the floating mobile toggle button is visible on mobile devices
 
 **When enabled (`true`)**:
+
 - Shows a floating action button on mobile screens
 - Button appears when the sidebar is hidden
 - Provides quick access to the file tree
 
 **When disabled (`false`)**:
+
 - No floating button appears
 - Users can still access the file tree via the navigation menu
 - Cleaner mobile interface
 
 #### `mobileTogglePosition`
+
 - **Type**: `'bottom-left' | 'bottom-right' | 'top-left' | 'top-right'`
 - **Default**: `'bottom-left'`
 - **Description**: Controls the position of the floating toggle button
 
 **Position Options**:
+
 - `'bottom-left'`: Bottom-left corner of the screen
-- `'bottom-right'`: Bottom-right corner of the screen  
+- `'bottom-right'`: Bottom-right corner of the screen
 - `'top-left'`: Top-left corner of the screen
 - `'top-right'`: Top-right corner of the screen
 
 ### Usage Examples
 
 #### Example 1: Enable with Bottom-Right Position
+
 ```typescript
 export const uiConfig: UIConfig = {
   showMobileFileTreeToggle: true,
-  mobileTogglePosition: 'bottom-right'
+  mobileTogglePosition: 'bottom-right',
 };
 ```
 
 #### Example 2: Disable (Default)
+
 ```typescript
 export const uiConfig: UIConfig = {
   showMobileFileTreeToggle: false,
-  mobileTogglePosition: 'bottom-left' // Position doesn't matter when disabled
+  mobileTogglePosition: 'bottom-left', // Position doesn't matter when disabled
 };
 ```
 
@@ -78,6 +85,7 @@ When the mobile toggle is disabled, users can still access the file tree through
 ### Implementation Details
 
 The mobile toggle system uses:
+
 - **Responsive Design**: Only appears on mobile screens (`< 768px width`)
 - **State Management**: Automatically hides when sidebar is open
 - **Accessibility**: Includes proper ARIA labels and keyboard navigation
@@ -125,4 +133,4 @@ The UI configuration system is designed to be extensible. Future configuration o
 - Content layout options
 - Search behavior settings
 
-To request new configuration options, please open an issue in the project repository. 
+To request new configuration options, please open an issue in the project repository.

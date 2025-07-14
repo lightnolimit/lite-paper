@@ -17,10 +17,13 @@ This documentation site template offers:
 ## Key Features
 
 ### Interactive Mindmap
+
 Our unique documentation graph shows the relationships between your content pages, inspired by Obsidian's graph view. Navigate your documentation visually and discover connections between related topics.
 
 ### Flexible Content Structure
+
 Organize your documentation with a hierarchical structure:
+
 - **Getting Started**: Onboarding and quick setup
 - **User Guides**: Detailed usage instructions
 - **API Reference**: Technical documentation
@@ -28,6 +31,7 @@ Organize your documentation with a hierarchical structure:
 - **Deployment**: Platform-specific deployment guides
 
 ### Easy Customization
+
 - Modify content by editing markdown files
 - Customize styling through CSS variables
 - Add new sections through the data structure
@@ -36,6 +40,7 @@ Organize your documentation with a hierarchical structure:
 ## Perfect For
 
 This template is ideal for:
+
 - **Product Documentation**: Software and API docs
 - **Knowledge Bases**: Internal team documentation
 - **Project Wikis**: Open source project documentation
@@ -65,4 +70,4 @@ If you need assistance:
 
 ---
 
-*This template is designed to be customized for your specific project needs.* 
+_This template is designed to be customized for your specific project needs._

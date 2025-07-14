@@ -38,14 +38,7 @@ Import and use your icon in any component:
 import Image from 'next/image';
 
 function MyComponent() {
-  return (
-    <Image 
-      src="/assets/icons/your-new-icon.svg"
-      alt="Description"
-      width={20}
-      height={20}
-    />
-  );
+  return <Image src="/assets/icons/your-new-icon.svg" alt="Description" width={20} height={20} />;
 }
 ```
 
@@ -61,12 +54,12 @@ Follow these naming patterns for consistency:
 
 ### Size Guidelines
 
-| Use Case | Recommended Size | Example |
-|----------|------------------|---------|
-| Navigation icons | 20x20px | Header buttons, menu items |
-| Content icons | 16x16px | Inline with text, small indicators |
-| Feature icons | 24x24px | Section headers, callouts |
-| Large icons | 32x32px+ | Hero sections, major features |
+| Use Case         | Recommended Size | Example                            |
+| ---------------- | ---------------- | ---------------------------------- |
+| Navigation icons | 20x20px          | Header buttons, menu items         |
+| Content icons    | 16x16px          | Inline with text, small indicators |
+| Feature icons    | 24x24px          | Section headers, callouts          |
+| Large icons      | 32x32px+         | Hero sections, major features      |
 
 ### Color Standards
 
@@ -103,16 +96,16 @@ Add icons to the navigation menu:
 ```tsx
 // In Navigation.tsx
 const navItems = [
-  { 
-    label: 'Home', 
+  {
+    label: 'Home',
     href: '/',
-    icon: '/assets/icons/pixel-home.svg'
+    icon: '/assets/icons/pixel-home.svg',
   },
-  { 
-    label: 'Docs', 
+  {
+    label: 'Docs',
     href: '/docs',
-    icon: '/assets/icons/pixel-book.svg'
-  }
+    icon: '/assets/icons/pixel-book.svg',
+  },
 ];
 ```
 
@@ -140,11 +133,11 @@ Create interactive icon components:
 import { useState } from 'react';
 import Image from 'next/image';
 
-function ToggleIcon({ 
-  activeIcon, 
-  inactiveIcon, 
-  isActive, 
-  onToggle 
+function ToggleIcon({
+  activeIcon,
+  inactiveIcon,
+  isActive,
+  onToggle,
 }: {
   activeIcon: string;
   inactiveIcon: string;
@@ -152,13 +145,13 @@ function ToggleIcon({
   onToggle: () => void;
 }) {
   return (
-    <button 
+    <button
       onClick={onToggle}
       className="p-2 rounded-full transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
     >
       <Image
         src={isActive ? activeIcon : inactiveIcon}
-        alt={isActive ? "Active" : "Inactive"}
+        alt={isActive ? 'Active' : 'Inactive'}
         width={20}
         height={20}
         className="transition-opacity"
@@ -170,7 +163,7 @@ function ToggleIcon({
 // Usage
 function MyComponent() {
   const [isLiked, setIsLiked] = useState(false);
-  
+
   return (
     <ToggleIcon
       activeIcon="/assets/icons/pixel-heart-filled.svg"
@@ -223,8 +216,12 @@ Add subtle animations to icons:
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 ```
 
@@ -260,18 +257,21 @@ function SpriteIcon({ id, size = 20 }: { id: string; size?: number }) {
 The site currently includes these pixel-art style icons:
 
 ### Navigation & UI
+
 - `pixel-cog-solid.svg` - Settings/configuration
 - `pixel-home-solid.svg` - Home/dashboard
 - `pixel-book-open-solid.svg` - Documentation
 - `pixel-folder.svg` - File system
 
 ### Content & Features
+
 - `pixel-quote-left-solid.svg` - Blockquotes
 - `pixel-star-solid.svg` - Featured content
 - `pixel-shield-solid.svg` - Security features
 - `pixel-chart-solid.svg` - Analytics/data
 
 ### Social Media
+
 - `pixel-instagram.svg` - Instagram
 - `pixel-twitch.svg` - Twitch
 - `pixel-tiktok.svg` - TikTok
@@ -280,24 +280,28 @@ The site currently includes these pixel-art style icons:
 ## Best Practices
 
 ### Performance
+
 - Use SVG for scalability
 - Optimize SVG files with tools like [SVGO](https://github.com/svg/svgo)
 - Consider icon sprites for multiple icons
 - Use appropriate sizes to avoid scaling
 
 ### Accessibility
+
 - Always include meaningful `alt` text
 - Use ARIA labels for interactive icons
 - Ensure sufficient color contrast
 - Provide text alternatives when needed
 
 ### Consistency
+
 - Maintain consistent visual style
 - Use the same stroke width across icon sets
 - Follow the site's color palette
 - Test icons in both light and dark themes
 
 ### Organization
+
 - Group related icons in subdirectories
 - Use descriptive file names
 - Document custom icons in this guide
@@ -308,21 +312,25 @@ The site currently includes these pixel-art style icons:
 ### Common Issues
 
 **Icon not displaying:**
+
 - Check the file path is correct
 - Ensure the SVG file is valid
 - Verify Next.js can access the public directory
 
 **Icon appears too small/large:**
+
 - Adjust width and height props
 - Check the SVG viewBox attribute
 - Use CSS for responsive sizing
 
 **Icon doesn't change color:**
+
 - Ensure SVG uses `currentColor` or `fill="currentColor"`
 - Check CSS targeting is correct
 - Verify theme variables are applied
 
 **Dark mode issues:**
+
 - Test icons in both themes
 - Use CSS filters for color inversion
 - Consider separate icon variants
@@ -340,6 +348,7 @@ If you encounter issues with icons:
 ---
 
 **Next Steps:**
+
 - [UI Configuration](./ui-configuration) - Learn about theme and layout customization
 - [Best Practices](./best-practices) - Follow development guidelines
-- [Code Examples](./code-examples) - See practical implementations 
+- [Code Examples](./code-examples) - See practical implementations

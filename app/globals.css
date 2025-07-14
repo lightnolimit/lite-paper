@@ -64,45 +64,47 @@
 
 :root {
   /* Light mode - Enhanced readability with better contrast */
-  --primary-color: #678D58;
-  --secondary-color: #A3C9A8;
+  --primary-color: #678d58;
+  --secondary-color: #a3c9a8;
   --accent-color: #557153;
-  --background-color: #FAFBF9;
-  --card-color: #FFFFFF;
+  --background-color: #fafbf9;
+  --card-color: #ffffff;
   --border-color: #222; /* Main card border (full brightness) */
   --border-soft: #f2f2f2; /* Even lighter border for header/sidebar */
   --border-unified: #d1d5db; /* Light gray for consistent borders */
-  --text-color: #1F2937; /* Much darker for better contrast */
+  --text-color: #1f2937; /* Much darker for better contrast */
   --text-secondary: #374151; /* Secondary text color */
-  --muted-color: #6B7280; /* Better contrast for muted text */
+  --muted-color: #6b7280; /* Better contrast for muted text */
   --mono-font: 'MapleMono', 'SF Mono', 'Monaco', 'Consolas', monospace;
   --title-font: 'Urbanist', sans-serif;
   --body-font: 'Urbanist', sans-serif;
-  --icon-color: #1F2937; /* Icon color for light mode */
+  --icon-color: #1f2937; /* Icon color for light mode */
   --primary-color-rgb: 103, 141, 88; /* RGB value of #678D58 */
 }
 
 .dark {
   /* Dark mode - Enhanced readability with better contrast */
-  --primary-color: #FF85A1;
-  --secondary-color: #FFC4DD;
-  --accent-color: #FF4989;
-  --background-color: #0B0D0F;
+  --primary-color: #ff85a1;
+  --secondary-color: #ffc4dd;
+  --accent-color: #ff4989;
+  --background-color: #0b0d0f;
   --card-color: #111317;
   --border-color: #bbb; /* Main card border (full brightness) */
   --border-soft: #23232a; /* Softer border for header/sidebar */
   --border-unified: #374151; /* Dark gray for consistent borders */
-  --text-color: #F8FAFC; /* Higher contrast white */
-  --text-secondary: #E2E8F0; /* Secondary text color */
-  --muted-color: #94A3B8; /* Better contrast for muted text */
-  --icon-color: #F8FAFC; /* Icon color for dark mode */
+  --text-color: #f8fafc; /* Higher contrast white */
+  --text-secondary: #e2e8f0; /* Secondary text color */
+  --muted-color: #94a3b8; /* Better contrast for muted text */
+  --icon-color: #f8fafc; /* Icon color for dark mode */
   --primary-color-rgb: 255, 133, 161; /* RGB value of #FF85A1 */
 }
 
 body {
   color: var(--text-color);
   background-color: var(--background-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
   font-family: var(--body-font);
   font-size: 16px;
   line-height: 1.6;
@@ -112,14 +114,20 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3, h4, h5, h6, 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
 .font-title {
   font-family: var(--title-font);
 }
 
 /* Theme toggle transition */
 .theme-transition * {
-  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke;
+  transition-property:
+    color, background-color, border-color, outline-color, text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
 }
@@ -203,8 +211,8 @@ select:focus {
   background-color: var(--card-color);
   border: 1px solid var(--border-unified);
   border-radius: 0.75rem;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   max-width: 100%;
   width: 100%;
   margin: 0 auto;
@@ -220,7 +228,7 @@ select:focus {
 
 .dark .doc-card {
   border-color: var(--border-unified);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 @media (min-width: 768px) {
@@ -235,8 +243,6 @@ select:focus {
     max-width: 1200px;
   }
 }
-
-
 
 /* Logo styling */
 .logo-image {
@@ -267,7 +273,8 @@ select:focus {
 }
 
 @keyframes nodeFloat {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -305,15 +312,13 @@ select:focus {
   box-shadow: none;
 }
 
-
-
 /* Hide scrollbar but keep functionality */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 /* Navigation button hover effect */
@@ -382,7 +387,8 @@ select:focus {
   color: var(--primary-color) !important;
 }
 
-.bracket-left, .bracket-right {
+.bracket-left,
+.bracket-right {
   display: inline-block;
   position: absolute;
   font-weight: normal;
@@ -396,20 +402,43 @@ select:focus {
 }
 
 @keyframes bracketFlicker {
-  0% { opacity: 1; }
-  10% { opacity: 0.2; }
-  15% { opacity: 1; }
-  20% { opacity: 0; }
-  25% { opacity: 1; }
-  30% { opacity: 0.7; }
-  35% { opacity: 0.1; }
-  40% { opacity: 1; }
-  45% { opacity: 0.3; }
-  50% { opacity: 1; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 0.2;
+  }
+  15% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0.7;
+  }
+  35% {
+    opacity: 0.1;
+  }
+  40% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
-.bracket-left:hover, .bracket-right:hover {
+.bracket-left:hover,
+.bracket-right:hover {
   animation: bracketFlicker 0.2s steps(2) infinite;
 }
 
@@ -438,20 +467,36 @@ select:focus {
 }
 
 .notification::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: linear-gradient(45deg, transparent 25%, rgba(0, 0, 0, 0.05) 25%, rgba(0, 0, 0, 0.05) 50%, transparent 50%, transparent 75%, rgba(0, 0, 0, 0.05) 75%);
+  background-image: linear-gradient(
+    45deg,
+    transparent 25%,
+    rgba(0, 0, 0, 0.05) 25%,
+    rgba(0, 0, 0, 0.05) 50%,
+    transparent 50%,
+    transparent 75%,
+    rgba(0, 0, 0, 0.05) 75%
+  );
   background-size: 8px 8px;
   opacity: 0.3;
   z-index: -1;
 }
 
 .dark .notification::before {
-  background-image: linear-gradient(45deg, transparent 25%, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.05) 50%, transparent 50%, transparent 75%, rgba(255, 255, 255, 0.05) 75%);
+  background-image: linear-gradient(
+    45deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 50%,
+    transparent 75%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
 }
 
 .notification img {
@@ -480,8 +525,6 @@ select:focus {
   background-color: rgba(46, 213, 115, 0.05);
   border-color: #2ed573;
 }
-
-
 
 /* Inline code styles for markdown */
 pre {
@@ -527,7 +570,7 @@ code {
     padding: 0.75rem;
     font-size: 0.8rem;
   }
-  
+
   code {
     font-size: 0.8rem;
     padding: 0.2rem 0.4rem;
@@ -553,23 +596,28 @@ code {
     padding: 0.75rem;
     flex-direction: column;
   }
-  
+
   .notification img {
     margin-bottom: 0.5rem;
   }
-  
+
   pre {
     padding: 0.75rem;
     font-size: 0.85rem;
   }
-  
+
   code {
     font-size: 0.85rem;
   }
 }
 
 /* Enhanced Markdown content styling for better readability */
-.doc-card h1, .doc-card h2, .doc-card h3, .doc-card h4, .doc-card h5, .doc-card h6 {
+.doc-card h1,
+.doc-card h2,
+.doc-card h3,
+.doc-card h4,
+.doc-card h5,
+.doc-card h6 {
   font-family: var(--title-font);
   margin-top: 2.5rem;
   margin-bottom: 0.75rem;
@@ -691,7 +739,8 @@ code {
   border-radius: 2px;
 }
 
-.doc-card ul, .doc-card ol {
+.doc-card ul,
+.doc-card ol {
   margin-bottom: 1.75rem;
   padding-left: 1.75rem;
   line-height: 1.75;
@@ -734,7 +783,7 @@ code {
 }
 
 .doc-card blockquote::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 1.5rem;
   left: 0.75rem;
@@ -791,7 +840,8 @@ code {
   line-height: 1.6;
 }
 
-.doc-card th, .doc-card td {
+.doc-card th,
+.doc-card td {
   border: 1px solid var(--border-unified);
   padding: 0.75rem 1rem;
   text-align: left;
@@ -814,23 +864,23 @@ code {
 }
 
 /* Fix for social media icons in dark mode */
-.dark img[src*="pixel-instagram"],
-.dark img[src*="pixel-twitch"],
-.dark img[src*="pixel-tiktok"],
-.dark img[src*="pixel-x"] {
+.dark img[src*='pixel-instagram'],
+.dark img[src*='pixel-twitch'],
+.dark img[src*='pixel-tiktok'],
+.dark img[src*='pixel-x'] {
   filter: invert(1);
 }
 
 /* Clean up any conflicting old styles */
-.doc-card div[style*="display: flex"],
-.doc-card [style*="display: flex; gap: 24px"],
-.doc-card [style*="display: flex; margin-bottom: 8px"],
-.doc-card [style*="display: flex; align-items: center; margin: 5px"],
-.doc-card [style*="flex: 1; min-width: 250px; max-width: 50%"],
-.doc-card [style*="flex: 1; min-width: 250px;"],
-.doc-card [style*="flex-grow: 1; font-family: monospace;"],
-.doc-card [style*="display: flex; align-items: center; width: 100%;"],
-.doc-card [style*="margin: 30px 0"] {
+.doc-card div[style*='display: flex'],
+.doc-card [style*='display: flex; gap: 24px'],
+.doc-card [style*='display: flex; margin-bottom: 8px'],
+.doc-card [style*='display: flex; align-items: center; margin: 5px'],
+.doc-card [style*='flex: 1; min-width: 250px; max-width: 50%'],
+.doc-card [style*='flex: 1; min-width: 250px;'],
+.doc-card [style*='flex-grow: 1; font-family: monospace;'],
+.doc-card [style*='display: flex; align-items: center; width: 100%;'],
+.doc-card [style*='margin: 30px 0'] {
   /* Reset any conflicting styles */
   all: unset;
 }
@@ -1033,7 +1083,7 @@ code.wallet-address {
 }
 
 /* Fix for image size in dark mode */
-.dark .doc-card img[src*="pixel"] {
+.dark .doc-card img[src*='pixel'] {
   filter: invert(1);
 }
 
@@ -1097,7 +1147,7 @@ code.wallet-address {
   background-color: rgba(255, 255, 255, 0.05);
 }
 
-.resources-section h3, 
+.resources-section h3,
 .resources-section h4 {
   font-family: var(--mono-font);
   font-size: 1rem;
@@ -1125,7 +1175,7 @@ code.wallet-address {
 }
 
 .resources-section ol li:before {
-  content: counter(item) ".";
+  content: counter(item) '.';
   counter-increment: item;
   font-weight: 700;
   position: absolute;
@@ -1147,18 +1197,18 @@ code.wallet-address {
     padding: 1rem 0.75rem;
     font-size: 0.85rem;
   }
-  
+
   .resources-section ol li {
     padding-left: 1.5rem;
   }
-  
+
   .resources-section ol li:before {
     width: 1.2rem;
   }
 }
 
 /* Add rounded border to all markdown images except icons */
-.markdown-content img:not([src*="pixel-"]) {
+.markdown-content img:not([src*='pixel-']) {
   border: 1px solid var(--border-color);
   border-radius: 8px;
   width: 100%;
@@ -1189,7 +1239,8 @@ code.wallet-address {
 }
 
 /* Mobile specific adjustments for profile */
-@media (max-width: 767px) { /* Using 767px to target mobile before md breakpoint */
+@media (max-width: 767px) {
+  /* Using 767px to target mobile before md breakpoint */
   .profile-container {
     gap: 1rem; /* Reduce gap on mobile */
     align-items: flex-start; /* Explicitly ensure top alignment for children */
@@ -1223,5 +1274,7 @@ code.wallet-address {
 
 /* Ensure proper color transitions */
 * {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property:
+    color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter;
 }

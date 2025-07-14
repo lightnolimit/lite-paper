@@ -15,6 +15,7 @@ npm run build
 ```
 
 **Common solutions:**
+
 - Check for dynamic imports that need `ssr: false`
 - Verify all paths in `generateStaticParams` are valid
 - Ensure no server-side only code in client components
@@ -95,6 +96,7 @@ out
 ```
 
 **Environment variables:**
+
 - `NODE_VERSION=18`
 - `NPM_VERSION=8`
 
@@ -128,6 +130,7 @@ This template uses modern web features:
 - **ES6+ JavaScript** (Chrome 51+, Firefox 54+, Safari 10+)
 
 For older browser support, consider:
+
 - Adding polyfills
 - Using PostCSS with autoprefixer
 - Transpiling JavaScript with Babel
@@ -187,6 +190,7 @@ This occurs when a route is referenced but not included in static generation:
 ### "Module not found"
 
 Usually indicates:
+
 - Missing dependency installation
 - Incorrect import path
 - Case sensitivity issues (especially on Linux/macOS)
@@ -195,4 +199,4 @@ Usually indicates:
 # Reinstall dependencies
 rm -rf node_modules package-lock.json
 npm install
-``` 
+```

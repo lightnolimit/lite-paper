@@ -22,21 +22,24 @@ export const documentationIndex: DocumentChunk[] = [];
 
 // Simple keyword-based search and scoring (client-side)
 export function searchDocuments(query: string): DocumentSource[] {
-  const queryTerms = query.toLowerCase().split(' ').filter(term => term.length > 2);
+  const queryTerms = query
+    .toLowerCase()
+    .split(' ')
+    .filter((term) => term.length > 2);
   const results: Array<DocumentSource & { score: number }> = [];
 
-  documentationIndex.forEach(doc => {
+  documentationIndex.forEach((doc) => {
     const content = doc.content.toLowerCase();
     const title = doc.metadata.title.toLowerCase();
-    
+
     let score = 0;
     let bestSnippet = '';
 
-    queryTerms.forEach(term => {
+    queryTerms.forEach((term) => {
       if (title.includes(term)) score += 10;
       const matches = content.split(term).length - 1;
       score += matches * 2;
-      
+
       const termIndex = content.indexOf(term);
       if (termIndex !== -1 && !bestSnippet) {
         const start = Math.max(0, termIndex - 100);
@@ -54,7 +57,7 @@ export function searchDocuments(query: string): DocumentSource[] {
         path: doc.metadata.path,
         snippet: bestSnippet,
         relevanceScore: score,
-        score
+        score,
       });
     }
   });
@@ -72,33 +75,36 @@ export function generateAnswer(query: string, sources: DocumentSource[]): string
 
   const queryLower = query.toLowerCase();
   const topSource = sources[0];
-  
+
   if (queryLower.includes('how to') || queryLower.includes('how do i')) {
     let answer = `Here's how you can ${query.replace(/how to|how do i/i, '').trim()}:\n\n`;
     answer += topSource.snippet;
     return answer;
   }
-  
+
   let answer = `Based on the documentation:\n\n${topSource.snippet}`;
-  
+
   if (sources.length > 1) {
     answer += `\n\nRelated topics:\n`;
-    sources.slice(1, 3).forEach(source => {
+    sources.slice(1, 3).forEach((source) => {
       answer += `- ${source.title}\n`;
     });
   }
-  
+
   return answer;
 }
 
 // Client-side search function that replaces the API call
-export async function searchAndAnswer(query: string, useAI: boolean = true): Promise<{ answer: string; sources: DocumentSource[] }> {
+export async function searchAndAnswer(
+  query: string,
+  useAI: boolean = true
+): Promise<{ answer: string; sources: DocumentSource[] }> {
   if (documentationIndex.length === 0) {
     loadEmbeddedDocs();
   }
-  
+
   const sources = searchDocuments(query);
-  
+
   // Use Akash AI for better responses if available
   if (useAI && sources.length > 0) {
     try {
@@ -109,7 +115,7 @@ export async function searchAndAnswer(query: string, useAI: boolean = true): Pro
       // Fallback to local generation
     }
   }
-  
+
   const answer = generateAnswer(query, sources);
   return { answer, sources };
 }
@@ -117,10 +123,11 @@ export async function searchAndAnswer(query: string, useAI: boolean = true): Pro
 // Call Akash Chat API for enhanced responses
 async function getAIResponse(query: string, sources: DocumentSource[]): Promise<string> {
   // Build context from relevant documentation
-  const context = sources.slice(0, 3).map(source => 
-    `**${source.title}** (from ${source.path}):\n${source.snippet}`
-  ).join('\n\n');
-  
+  const context = sources
+    .slice(0, 3)
+    .map((source) => `**${source.title}** (from ${source.path}):\n${source.snippet}`)
+    .join('\n\n');
+
   const systemPrompt = `You are a helpful documentation assistant. Answer the user's question based ONLY on the provided documentation context. 
 
 Keep your response:
@@ -138,24 +145,24 @@ ${context}`;
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${getApiKey()}` // We'll implement this
+      Authorization: `Bearer ${getApiKey()}`, // We'll implement this
     },
     body: JSON.stringify({
       model: 'Meta-Llama-3-1-8B-Instruct-FP8', // Fast and efficient model from Akash
       messages: [
         {
           role: 'system',
-          content: systemPrompt
+          content: systemPrompt,
         },
         {
-          role: 'user', 
-          content: query
-        }
+          role: 'user',
+          content: query,
+        },
       ],
       temperature: 0.1, // Low temperature for consistent, factual responses
-      max_tokens: 500,  // Reasonable response length
-      stream: false
-    })
+      max_tokens: 500, // Reasonable response length
+      stream: false,
+    }),
   });
 
   if (!response.ok) {
@@ -173,15 +180,17 @@ function getApiKey(): string {
   if (envKey && envKey.trim() !== '') {
     return envKey;
   }
-  
+
   // Fall back to localStorage (user can set their own key in the UI)
   const userKey = typeof window !== 'undefined' ? localStorage.getItem('akash_api_key') : null;
   if (userKey && userKey.trim() !== '') {
     return userKey;
   }
-  
+
   // No key available
-  throw new Error('No Akash API key available. Please set it in the AI Assistant settings or, for development, as a NEXT_PUBLIC_AKASH_API_KEY environment variable.');
+  throw new Error(
+    'No Akash API key available. Please set it in the AI Assistant settings or, for development, as a NEXT_PUBLIC_AKASH_API_KEY environment variable.'
+  );
 }
 
 // Fallback: embedded documentation content
@@ -189,21 +198,37 @@ function loadEmbeddedDocs(): void {
   const docs: DocumentChunk[] = [
     {
       content: `# Getting Started\n\nThis documentation site provides comprehensive guides for building and customizing your documentation platform.\n\n## Quick Start\n\n1. Clone the repository\n2. Install dependencies with npm install\n3. Run npm run dev\n4. Visit http://localhost:3000\n\n## Features\n\n- Dark/light theme switching\n- Interactive backgrounds\n- Responsive design\n- Fast search\n- Code highlighting\n- Icon customization`,
-      metadata: { title: 'Getting Started', path: 'getting-started/introduction', section: 'intro' }
+      metadata: {
+        title: 'Getting Started',
+        path: 'getting-started/introduction',
+        section: 'intro',
+      },
     },
     {
       content: `# Theme Customization\n\nThe theme system supports automatic dark/light mode switching.\n\n## How to Customize\n\n1. Update CSS variables in globals.css\n2. Modify ThemeProvider component\n3. Add custom theme options\n4. Test in both modes\n\n## Variables\n\n- --background-color: Main background\n- --text-color: Primary text\n- --primary-color: Accent color`,
-      metadata: { title: 'Theme Customization', path: 'developer-guides/ui-configuration', section: 'themes' }
+      metadata: {
+        title: 'Theme Customization',
+        path: 'developer-guides/ui-configuration',
+        section: 'themes',
+      },
     },
     {
       content: `# Icon System\n\nAdd custom icons from iconify.design or create your own.\n\n## Adding Icons\n\n1. Visit iconify.design\n2. Copy SVG code\n3. Save to /public/assets/icons/\n4. Import in components\n\n## Standards\n\n- Use pixel-name.svg naming\n- Optimize for light/dark themes\n- Include alt text\n- Test on different screens`,
-      metadata: { title: 'Icon Customization', path: 'developer-guides/icon-customization', section: 'intro' }
+      metadata: {
+        title: 'Icon Customization',
+        path: 'developer-guides/icon-customization',
+        section: 'intro',
+      },
     },
     {
       content: `# Interactive Backgrounds\n\nMultiple animated background options.\n\n## Available Types\n\n- Wave: Mouse-interactive patterns\n- Stars: 3D star field\n- Dither: Shader effects\n- Solid: Static for reduced motion\n\n## Performance\n\nOptimized for 60 FPS, automatically disables for reduced motion preferences.`,
-      metadata: { title: 'Interactive Backgrounds', path: 'user-guide/advanced-features', section: 'backgrounds' }
-    }
+      metadata: {
+        title: 'Interactive Backgrounds',
+        path: 'user-guide/advanced-features',
+        section: 'backgrounds',
+      },
+    },
   ];
-  
+
   documentationIndex.push(...docs);
-} 
+}

@@ -5,6 +5,7 @@ Customize your project settings and behavior.
 ## Configuration Files
 
 ### Main Config
+
 ```json
 {
   "name": "my-project",
@@ -23,6 +24,7 @@ Customize your project settings and behavior.
 ```
 
 ### Environment Variables
+
 ```bash
 # .env.local
 NODE_ENV=development
@@ -33,16 +35,17 @@ SECRET_KEY=your-secret-key
 
 ## Settings
 
-| Setting | Type | Default | Description |
-|---------|------|---------|-------------|
-| `debug` | boolean | `false` | Enable debug mode |
-| `port` | number | `3000` | Server port |
-| `timeout` | number | `5000` | Request timeout (ms) |
-| `cache` | boolean | `true` | Enable caching |
+| Setting   | Type    | Default | Description          |
+| --------- | ------- | ------- | -------------------- |
+| `debug`   | boolean | `false` | Enable debug mode    |
+| `port`    | number  | `3000`  | Server port          |
+| `timeout` | number  | `5000`  | Request timeout (ms) |
+| `cache`   | boolean | `true`  | Enable caching       |
 
 ## Advanced Options
 
 ### Custom Middleware
+
 ```javascript
 // middleware.js
 export default function customMiddleware(options) {
@@ -55,6 +58,7 @@ export default function customMiddleware(options) {
 ```
 
 ### Plugin Configuration
+
 ```javascript
 // plugins.config.js
 export default {
@@ -63,12 +67,12 @@ export default {
     ['advanced-plugin', { option: 'value' }],
     {
       name: 'custom-plugin',
-      config: { enabled: true }
-    }
-  ]
+      config: { enabled: true },
+    },
+  ],
 };
 ```
 
 ---
 
-*Having issues? See our [troubleshooting guide](./troubleshooting).* 
+_Having issues? See our [troubleshooting guide](./troubleshooting)._

@@ -7,7 +7,7 @@ Guide to deploying your documentation site to various hosting platforms.
 This documentation template supports deployment to several platforms:
 
 - **[Cloudflare Pages](./platforms/cloudflare)** - Fast global CDN with edge functions
-- **[Vercel](./platforms/vercel)** - Optimized for Next.js applications  
+- **[Vercel](./platforms/vercel)** - Optimized for Next.js applications
 - **[Netlify](./platforms/netlify)** - JAMstack platform with form handling
 - **Static Hosting** - Any CDN or web server
 
@@ -28,12 +28,12 @@ out/
 ```javascript
 // next.config.js
 module.exports = {
-  output: 'export',  // Static export
+  output: 'export', // Static export
   trailingSlash: false,
   images: {
-    unoptimized: true  // Required for static export
-  }
-}
+    unoptimized: true, // Required for static export
+  },
+};
 ```
 
 ## Pre-deployment Checklist
@@ -160,8 +160,8 @@ export function reportWebVitals(metric) {
   // Send to analytics service
   gtag('event', metric.name, {
     value: Math.round(metric.value),
-    event_category: 'Web Vitals'
-  })
+    event_category: 'Web Vitals',
+  });
 }
 ```
 
@@ -179,10 +179,10 @@ if (typeof window !== 'undefined') {
       body: JSON.stringify({
         message: event.message,
         filename: event.filename,
-        lineno: event.lineno
-      })
-    })
-  })
+        lineno: event.lineno,
+      }),
+    });
+  });
 }
 ```
 
@@ -203,23 +203,23 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Build
         run: npm run build
-        
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
@@ -290,8 +290,8 @@ export default function handler(req, res) {
   res.status(200).json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    version: process.env.npm_package_version
-  })
+    version: process.env.npm_package_version,
+  });
 }
 ```
 
@@ -300,15 +300,18 @@ export default function handler(req, res) {
 ### Common Issues
 
 **Build failures:**
+
 - Check Node.js version compatibility
 - Verify all dependencies are installed
 - Review build logs for specific errors
 
 **Routing issues:**
+
 - Ensure `trailingSlash: false` in Next.js config
 - Check `_redirects` or platform-specific routing
 
 **Asset loading:**
+
 - Verify `basePath` configuration
 - Check CORS headers for external assets
 - Ensure proper CDN configuration
@@ -346,7 +349,7 @@ DEBUG=true npm run deploy
 ### Core Web Vitals Goals
 
 - **LCP** (Largest Contentful Paint): < 2.5s
-- **FID** (First Input Delay): < 100ms  
+- **FID** (First Input Delay): < 100ms
 - **CLS** (Cumulative Layout Shift): < 0.1
 
 ### Optimization Techniques
@@ -401,4 +404,4 @@ Moving between hosting platforms:
 
 - **[Production Setup](./production-setup)** - Advanced configuration
 - **[Platform Guides](./platforms/cloudflare)** - Platform-specific instructions
-- **[Troubleshooting](../user-guide/troubleshooting)** - Common deployment issues 
+- **[Troubleshooting](../user-guide/troubleshooting)** - Common deployment issues

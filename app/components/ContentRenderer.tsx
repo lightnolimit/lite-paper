@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import React, { useMemo } from 'react';
+
 import { documentationTree } from '../data/documentation';
+
 import { FileItem } from './FileTree';
 import MarkdownRenderer from './MarkdownRenderer';
 
@@ -26,26 +28,26 @@ type AdjacentPage = {
 
 // Memoized flatten function to avoid recreation
 const flattenDocumentationTree = (() => {
-  let cachedFlattened: { path: string, name: string }[] | null = null;
-  
-  return (): { path: string, name: string }[] => {
+  let cachedFlattened: { path: string; name: string }[] | null = null;
+
+  return (): { path: string; name: string }[] => {
     if (cachedFlattened) return cachedFlattened;
-    
-    const flattenedItems: { path: string, name: string }[] = [];
-    
+
+    const flattenedItems: { path: string; name: string }[] = [];
+
     function flattenTree(items: FileItem[]) {
-      items.forEach(item => {
+      items.forEach((item) => {
         if (item.type === 'file') {
-          flattenedItems.push({ 
+          flattenedItems.push({
             path: item.path,
-            name: item.name.replace(/\.md$/, '')
+            name: item.name.replace(/\.md$/, ''),
           });
         } else if (item.type === 'directory' && item.children) {
           flattenTree(item.children);
         }
       });
     }
-    
+
     flattenTree(documentationTree);
     cachedFlattened = flattenedItems;
     return flattenedItems;
@@ -55,47 +57,54 @@ const flattenDocumentationTree = (() => {
 /**
  * Find the previous and next pages based on the current path
  */
-const findAdjacentPages = (currentPath: string): { prevPage?: AdjacentPage, nextPage?: AdjacentPage } => {
+const findAdjacentPages = (
+  currentPath: string
+): { prevPage?: AdjacentPage; nextPage?: AdjacentPage } => {
   const flattenedItems = flattenDocumentationTree();
-  
+
   // Find the current item index
-  const currentIndex = flattenedItems.findIndex(item => item.path === currentPath);
-  
+  const currentIndex = flattenedItems.findIndex((item) => item.path === currentPath);
+
   // If not found, return empty result
   if (currentIndex === -1) {
     return {};
   }
-  
+
   // Get previous and next pages
-  const prevPage = currentIndex > 0 
-    ? { 
-        path: flattenedItems[currentIndex - 1].path,
-        title: flattenedItems[currentIndex - 1].name
-      } 
-    : undefined;
-  
-  const nextPage = currentIndex < flattenedItems.length - 1 
-    ? { 
-        path: flattenedItems[currentIndex + 1].path,
-        title: flattenedItems[currentIndex + 1].name
-      } 
-    : undefined;
-  
+  const prevPage =
+    currentIndex > 0
+      ? {
+          path: flattenedItems[currentIndex - 1].path,
+          title: flattenedItems[currentIndex - 1].name,
+        }
+      : undefined;
+
+  const nextPage =
+    currentIndex < flattenedItems.length - 1
+      ? {
+          path: flattenedItems[currentIndex + 1].path,
+          title: flattenedItems[currentIndex + 1].name,
+        }
+      : undefined;
+
   return { prevPage, nextPage };
 };
 
 /**
  * ContentRenderer component that renders markdown content with styling and navigation
  */
-export default function ContentRenderer({ content = '', path = '' }: ContentRendererProps): React.ReactElement {
+export default function ContentRenderer({
+  content = '',
+  path = '',
+}: ContentRendererProps): React.ReactElement {
   const router = useRouter();
-  
+
   // Memoize adjacent pages to prevent recalculation
   const { prevPage, nextPage } = useMemo(() => findAdjacentPages(path), [path]);
-  
+
   // Check if this is a synopsis page to show banner
   const isSynopsisPage = useMemo(() => path.toLowerCase().includes('synopsis'), [path]);
-  
+
   return (
     <motion.div
       initial={{ opacity: 0.9, y: 0 }}
@@ -103,27 +112,31 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
       transition={{ duration: 0.15 }}
       className="w-full py-0 md:py-4"
     >
-      <div className="doc-card p-6 md:p-8 relative" role="article" style={{ maxWidth: '100%', width: '100%' }}>
+      <div
+        className="doc-card p-6 md:p-8 relative"
+        role="article"
+        style={{ maxWidth: '100%', width: '100%' }}
+      >
         {/* Banner for synopsis pages */}
         {isSynopsisPage && (
           <div className="w-full mb-6 overflow-hidden rounded-lg relative">
-            <Image 
-              src="/assets/banners/phantasy-banner.png" 
-              alt="Phantasy Banner" 
-              width={1200} 
+            <Image
+              src="/assets/banners/phantasy-banner.png"
+              alt="Phantasy Banner"
+              width={1200}
               height={400}
               className="w-full object-cover"
               priority
             />
           </div>
         )}
-        
+
         {/* Main content area - use new MarkdownRenderer */}
         <MarkdownRenderer content={content} path={path} />
-        
+
         {/* Navigation between pages */}
         {(prevPage || nextPage) && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.3 }}
@@ -138,12 +151,14 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
                   whileTap={{ scale: 0.98 }}
                 >
                   <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">← Previous</div>
-                  <div className="font-medium text-gray-900 dark:text-gray-100">{prevPage.title}</div>
+                  <div className="font-medium text-gray-900 dark:text-gray-100">
+                    {prevPage.title}
+                  </div>
                 </motion.button>
               ) : (
                 <div></div>
               )}
-              
+
               {nextPage && (
                 <motion.button
                   onClick={() => router.push(`/docs/${nextPage.path}`)}
@@ -152,7 +167,9 @@ export default function ContentRenderer({ content = '', path = '' }: ContentRend
                   whileTap={{ scale: 0.98 }}
                 >
                   <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Next →</div>
-                  <div className="font-medium text-gray-900 dark:text-gray-100">{nextPage.title}</div>
+                  <div className="font-medium text-gray-900 dark:text-gray-100">
+                    {nextPage.title}
+                  </div>
                 </motion.button>
               )}
             </div>

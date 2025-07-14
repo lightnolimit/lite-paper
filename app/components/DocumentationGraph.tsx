@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+
 import { documentationTree } from '../data/documentation';
-import { FileItem } from './FileTree';
 import { useTheme } from '../providers/ThemeProvider';
+
+import { FileItem } from './FileTree';
 
 // Types for our graph system
 interface GraphNode {
@@ -35,17 +37,17 @@ interface DocumentationGraphProps {
 
 /**
  * Interactive documentation graph component with focused view
- * 
+ *
  * Features:
  * - Shows only current node + connections to reduce clutter
  * - Theme-aware colors (sakura pink/matcha green)
  * - Efficient search with relevance scoring
  * - Smooth animations and transitions
  */
-export default function DocumentationGraph({ 
-  currentPath, 
+export default function DocumentationGraph({
+  currentPath,
   onNodeClick,
-  className = '' 
+  className = '',
 }: DocumentationGraphProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
@@ -64,26 +66,26 @@ export default function DocumentationGraph({
     if (isDarkMode) {
       return {
         // Dark mode - Sakura pink aesthetic
-        primary: '#FF85A1',      // Sakura pink
-        secondary: '#FFC4DD',    // Light pink  
-        accent: '#FF4989',       // Bright pink
-        connected: '#FFB3C6',    // Medium pink
-        current: '#FF6B9D',      // Deep pink
-        search: '#FFCC99',       // Warm orange
-        muted: '#9C9CAF',        // Gray
-        background: '#0F0F12'
+        primary: '#FF85A1', // Sakura pink
+        secondary: '#FFC4DD', // Light pink
+        accent: '#FF4989', // Bright pink
+        connected: '#FFB3C6', // Medium pink
+        current: '#FF6B9D', // Deep pink
+        search: '#FFCC99', // Warm orange
+        muted: '#9C9CAF', // Gray
+        background: '#0F0F12',
       };
     } else {
       return {
         // Light mode - Matcha green aesthetic
-        primary: '#678D58',      // Matcha green
-        secondary: '#A3C9A8',    // Light green
-        accent: '#557153',       // Forest green
-        connected: '#8FB287',    // Medium green
-        current: '#4A6B42',      // Deep green
-        search: '#B8860B',       // Gold
-        muted: '#6E7D61',        // Gray
-        background: '#F3F5F0'
+        primary: '#678D58', // Matcha green
+        secondary: '#A3C9A8', // Light green
+        accent: '#557153', // Forest green
+        connected: '#8FB287', // Medium green
+        current: '#4A6B42', // Deep green
+        search: '#B8860B', // Gold
+        muted: '#6E7D61', // Gray
+        background: '#F3F5F0',
       };
     }
   }, [isDarkMode]);
@@ -92,7 +94,7 @@ export default function DocumentationGraph({
   const { graphNodes, graphLinks } = useMemo(() => {
     const extractedNodes: GraphNode[] = [];
     const extractedLinks: GraphLink[] = [];
-    
+
     // Recursive function to extract nodes from file tree
     function extractNodes(items: FileItem[], level = 0, parentPath = '') {
       items.forEach((item) => {
@@ -107,7 +109,7 @@ export default function DocumentationGraph({
           y: Math.random() * dimensions.height,
           connections: [],
           visible: false, // Initially hidden
-          searchRelevance: 0
+          searchRelevance: 0,
         };
 
         // Create parent-child connections
@@ -117,7 +119,7 @@ export default function DocumentationGraph({
             source: parentPath,
             target: nodeId,
             strength: 1,
-            visible: false
+            visible: false,
           });
         }
 
@@ -139,13 +141,13 @@ export default function DocumentationGraph({
         ['basic-usage', 'configuration'],
         ['overview', 'authentication'],
         ['endpoints', 'authentication'],
-        ['code-examples', 'best-practices']
+        ['code-examples', 'best-practices'],
       ];
-      
+
       relatedPairs.forEach(([term1, term2]) => {
-        const node1 = extractedNodes.find(n => n.path.includes(term1));
-        const node2 = extractedNodes.find(n => n.path.includes(term2));
-        
+        const node1 = extractedNodes.find((n) => n.path.includes(term1));
+        const node2 = extractedNodes.find((n) => n.path.includes(term2));
+
         if (node1 && node2) {
           // Add bidirectional connections
           if (!node1.connections.includes(node2.id)) {
@@ -154,12 +156,12 @@ export default function DocumentationGraph({
           if (!node2.connections.includes(node1.id)) {
             node2.connections.push(node1.id);
           }
-          
-                  extractedLinks.push({
+
+          extractedLinks.push({
             source: node1.id,
             target: node2.id,
             strength: 0.7,
-            visible: false
+            visible: false,
           });
         }
       });
@@ -173,34 +175,35 @@ export default function DocumentationGraph({
   // Efficient search with relevance scoring
   const searchResults = useMemo(() => {
     if (!searchTerm.trim()) return { nodes: [], hasResults: false };
-    
+
     const query = searchTerm.toLowerCase().trim();
-    const results = graphNodes.map(node => {
-      const title = node.title.toLowerCase();
-      const path = node.path.toLowerCase();
-      
-      let relevance = 0;
-      
-      // Exact title match gets highest score
-      if (title === query) relevance = 1.0;
-      // Title starts with query gets high score
-      else if (title.startsWith(query)) relevance = 0.9;
-      // Title contains query gets medium score
-      else if (title.includes(query)) relevance = 0.7;
-      // Path contains query gets low score
-      else if (path.includes(query)) relevance = 0.4;
-      
-      // Boost score if it's the current node or connected to current
-      if (currentPath) {
-        if (node.id === currentPath) relevance += 0.2;
-        else if (node.connections.includes(currentPath)) relevance += 0.1;
-      }
-      
-      return { ...node, searchRelevance: Math.min(relevance, 1.0) };
-    })
-    .filter(node => node.searchRelevance > 0)
-    .sort((a, b) => b.searchRelevance - a.searchRelevance);
-    
+    const results = graphNodes
+      .map((node) => {
+        const title = node.title.toLowerCase();
+        const path = node.path.toLowerCase();
+
+        let relevance = 0;
+
+        // Exact title match gets highest score
+        if (title === query) relevance = 1.0;
+        // Title starts with query gets high score
+        else if (title.startsWith(query)) relevance = 0.9;
+        // Title contains query gets medium score
+        else if (title.includes(query)) relevance = 0.7;
+        // Path contains query gets low score
+        else if (path.includes(query)) relevance = 0.4;
+
+        // Boost score if it's the current node or connected to current
+        if (currentPath) {
+          if (node.id === currentPath) relevance += 0.2;
+          else if (node.connections.includes(currentPath)) relevance += 0.1;
+        }
+
+        return { ...node, searchRelevance: Math.min(relevance, 1.0) };
+      })
+      .filter((node) => node.searchRelevance > 0)
+      .sort((a, b) => b.searchRelevance - a.searchRelevance);
+
     return { nodes: results, hasResults: results.length > 0 };
   }, [searchTerm, graphNodes, currentPath]);
 
@@ -208,14 +211,14 @@ export default function DocumentationGraph({
   const visibleElements = useMemo(() => {
     const visibleNodes = new Set<string>();
     const visibleLinks = new Set<string>();
-    
+
     if (searchTerm.trim()) {
       // Show search results
-      searchResults.nodes.slice(0, 8).forEach(node => {
+      searchResults.nodes.slice(0, 8).forEach((node) => {
         visibleNodes.add(node.id);
         // Show connections between search results
-        node.connections.forEach(connId => {
-          if (searchResults.nodes.some(n => n.id === connId)) {
+        node.connections.forEach((connId) => {
+          if (searchResults.nodes.some((n) => n.id === connId)) {
             visibleNodes.add(connId);
             visibleLinks.add(`${node.id}-${connId}`);
             visibleLinks.add(`${connId}-${node.id}`);
@@ -227,18 +230,18 @@ export default function DocumentationGraph({
       const focusNode = focusedNodeId || currentPath;
       if (focusNode) {
         visibleNodes.add(focusNode);
-        
+
         // Find and show direct connections
-        const currentNode = graphNodes.find(n => n.id === focusNode);
+        const currentNode = graphNodes.find((n) => n.id === focusNode);
         if (currentNode) {
-          currentNode.connections.forEach(connId => {
+          currentNode.connections.forEach((connId) => {
             visibleNodes.add(connId);
             visibleLinks.add(`${focusNode}-${connId}`);
             visibleLinks.add(`${connId}-${focusNode}`);
           });
-          
+
           // Show nodes that connect to current
-          graphNodes.forEach(node => {
+          graphNodes.forEach((node) => {
             if (node.connections.includes(focusNode)) {
               visibleNodes.add(node.id);
               visibleLinks.add(`${node.id}-${focusNode}`);
@@ -248,13 +251,11 @@ export default function DocumentationGraph({
         }
       } else {
         // No focus: show a few central nodes
-        const centralNodes = graphNodes
-          .filter(n => n.connections.length > 1)
-          .slice(0, 3);
-        centralNodes.forEach(node => visibleNodes.add(node.id));
+        const centralNodes = graphNodes.filter((n) => n.connections.length > 1).slice(0, 3);
+        centralNodes.forEach((node) => visibleNodes.add(node.id));
       }
     }
-    
+
     return { visibleNodes, visibleLinks };
   }, [searchTerm, searchResults, focusedNodeId, currentPath, graphNodes]);
 
@@ -265,14 +266,14 @@ export default function DocumentationGraph({
     const centerX = dimensions.width / 2;
     const centerY = dimensions.height / 2;
     const isSidebarView = dimensions.height <= 300;
-    
+
     // Find the current or focused node
-    const currentNode = graphNodes.find(n => n.id === (focusedNodeId || currentPath));
-    
+    const currentNode = graphNodes.find((n) => n.id === (focusedNodeId || currentPath));
+
     // Position nodes in a centered layout
-    const positionedNodes = graphNodes.map(node => {
+    const positionedNodes = graphNodes.map((node) => {
       const newNode = { ...node };
-      
+
       if (node.id === (focusedNodeId || currentPath)) {
         // Current node goes to center
         newNode.x = centerX;
@@ -283,18 +284,18 @@ export default function DocumentationGraph({
         const totalConnections = currentNode.connections.length;
         const angle = (connectionIndex / totalConnections) * 2 * Math.PI;
         const radius = isSidebarView ? 80 : 120;
-        
+
         newNode.x = centerX + Math.cos(angle) * radius;
         newNode.y = centerY + Math.sin(angle) * radius;
       } else if (currentNode) {
         // Other nodes that connect to the current node
-        const connectingNodes = graphNodes.filter(n => n.connections.includes(currentNode.id));
-        const nodeIndex = connectingNodes.findIndex(n => n.id === node.id);
-        
+        const connectingNodes = graphNodes.filter((n) => n.connections.includes(currentNode.id));
+        const nodeIndex = connectingNodes.findIndex((n) => n.id === node.id);
+
         if (nodeIndex !== -1) {
           const angle = (nodeIndex / connectingNodes.length) * 2 * Math.PI + Math.PI;
           const radius = isSidebarView ? 140 : 200;
-          
+
           newNode.x = centerX + Math.cos(angle) * radius;
           newNode.y = centerY + Math.sin(angle) * radius;
         } else {
@@ -310,11 +311,11 @@ export default function DocumentationGraph({
         const totalNodes = Math.min(graphNodes.length, 8);
         const angle = (nodeIndex / totalNodes) * 2 * Math.PI;
         const radius = isSidebarView ? 100 : 150;
-        
+
         newNode.x = centerX + Math.cos(angle) * radius;
         newNode.y = centerY + Math.sin(angle) * radius;
       }
-      
+
       return newNode;
     });
 
@@ -368,62 +369,77 @@ export default function DocumentationGraph({
     }
   }, [currentPath]);
 
-    const handleNodeClick = useCallback((node: GraphNode) => {
-    if (isNavigating) return; // Prevent multiple clicks during navigation
-    
-    // Don't navigate immediately, just show the new relational nodes and switch button
-    setClickedNodeId(node.id);
-    setFocusedNodeId(node.id);
-    setPendingSwitchNodeId(node.id);
-    
-    // Clear the click animation after a short delay
-    setTimeout(() => {
-      setClickedNodeId(null);
-    }, prefersReducedMotion ? 50 : 600);
-  }, [isNavigating, prefersReducedMotion]);
+  const handleNodeClick = useCallback(
+    (node: GraphNode) => {
+      if (isNavigating) return; // Prevent multiple clicks during navigation
 
-  const handleSwitchClick = useCallback((node: GraphNode) => {
-    if (isNavigating) return;
-    
-    setIsNavigating(true);
-    setPendingSwitchNodeId(null);
-    
-    // Navigate after a brief delay
-    setTimeout(() => {
-    onNodeClick?.(node.path);
-      setIsNavigating(false);
-    }, 100);
-  }, [onNodeClick, isNavigating]);
+      // Don't navigate immediately, just show the new relational nodes and switch button
+      setClickedNodeId(node.id);
+      setFocusedNodeId(node.id);
+      setPendingSwitchNodeId(node.id);
+
+      // Clear the click animation after a short delay
+      setTimeout(
+        () => {
+          setClickedNodeId(null);
+        },
+        prefersReducedMotion ? 50 : 600
+      );
+    },
+    [isNavigating, prefersReducedMotion]
+  );
+
+  const handleSwitchClick = useCallback(
+    (node: GraphNode) => {
+      if (isNavigating) return;
+
+      setIsNavigating(true);
+      setPendingSwitchNodeId(null);
+
+      // Navigate after a brief delay
+      setTimeout(() => {
+        onNodeClick?.(node.path);
+        setIsNavigating(false);
+      }, 100);
+    },
+    [onNodeClick, isNavigating]
+  );
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   }, []);
 
-  const getNodeColor = useCallback((node: GraphNode): string => {
-    if (searchTerm && node.searchRelevance > 0) {
-      return themeColors.search;
-    }
-    if (node.id === currentPath) {
-      return themeColors.current;
-    }
-    if (node.id === focusedNodeId) {
-      return themeColors.accent;
-    }
-    if (node.type === 'directory') {
-      return themeColors.secondary;
-    }
-    return themeColors.primary;
-  }, [searchTerm, currentPath, focusedNodeId, themeColors]);
+  const getNodeColor = useCallback(
+    (node: GraphNode): string => {
+      if (searchTerm && node.searchRelevance > 0) {
+        return themeColors.search;
+      }
+      if (node.id === currentPath) {
+        return themeColors.current;
+      }
+      if (node.id === focusedNodeId) {
+        return themeColors.accent;
+      }
+      if (node.type === 'directory') {
+        return themeColors.secondary;
+      }
+      return themeColors.primary;
+    },
+    [searchTerm, currentPath, focusedNodeId, themeColors]
+  );
 
-  const getNodeRadius = useCallback((node: GraphNode): number => {
-    const isSidebarView = dimensions.height <= 300;
-    const baseScale = isSidebarView ? 0.6 : 1;
-    
-    if (node.id === currentPath) return 8 * baseScale;
-    if (node.id === focusedNodeId) return 7 * baseScale;
-    if (searchTerm && node.searchRelevance > 0.8) return 7 * baseScale;
-    return node.type === 'directory' ? 6 * baseScale : 5 * baseScale;
-  }, [dimensions.height, currentPath, focusedNodeId, searchTerm]);
+  const getNodeRadius = useCallback(
+    (node: GraphNode): number => {
+      const isSidebarView = dimensions.height <= 300;
+      const baseScale = isSidebarView ? 0.6 : 1;
+
+      if (node.id === currentPath) return 8 * baseScale;
+      if (node.id === focusedNodeId) return 7 * baseScale;
+      if (searchTerm && node.searchRelevance > 0.8) return 7 * baseScale;
+      return node.type === 'directory' ? 6 * baseScale : 5 * baseScale;
+    },
+    [dimensions.height, currentPath, focusedNodeId, searchTerm]
+  );
 
   const isSidebarView = dimensions.height <= 300;
 
@@ -431,36 +447,38 @@ export default function DocumentationGraph({
     <div className={`documentation-graph ${className}`}>
       {/* Search Input */}
       <div className="mb-2">
-          <input
-            type="text"
-          placeholder={isSidebarView ? "Search docs..." : "Search documents..."}
-            value={searchTerm}
+        <input
+          type="text"
+          placeholder={isSidebarView ? 'Search docs...' : 'Search documents...'}
+          value={searchTerm}
           onChange={handleSearchChange}
           className={`w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-opacity-50 ${
             isSidebarView ? 'text-xs py-1 px-2' : ''
           }`}
-          style={{ 
-            fontFamily: 'var(--mono-font)'
+          style={{
+            fontFamily: 'var(--mono-font)',
           }}
         />
       </div>
 
       {/* Graph Container */}
-      <div className={`graph-container border border-gray-300 dark:border-gray-700 rounded overflow-hidden relative ${
-        isSidebarView ? 'h-48' : 'h-96'
-      }`}>
+      <div
+        className={`graph-container border border-gray-300 dark:border-gray-700 rounded overflow-hidden relative ${
+          isSidebarView ? 'h-48' : 'h-96'
+        }`}
+      >
         {/* Fixed mind-map label */}
-        <div 
+        <div
           className="absolute top-2 right-3 text-xs pointer-events-none z-10"
-          style={{ 
+          style={{
             fontSize: isSidebarView ? '8px' : '10px',
             fontFamily: 'var(--mono-font)',
-            color: isDarkMode ? 'rgba(240, 240, 245, 0.4)' : 'rgba(46, 58, 35, 0.4)'
+            color: isDarkMode ? 'rgba(240, 240, 245, 0.4)' : 'rgba(46, 58, 35, 0.4)',
           }}
         >
           mind-map
         </div>
-        
+
         <svg
           ref={svgRef}
           width="100%"
@@ -479,59 +497,57 @@ export default function DocumentationGraph({
             <radialGradient id="node-gradient" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor="white" stopOpacity="0.3" />
               <stop offset="100%" stopColor="transparent" />
-              </radialGradient>
-            
+            </radialGradient>
+
             <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-              <feMerge> 
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
+              <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+              <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
           </defs>
 
-
-
           {/* Background particles */}
           {!isSidebarView && (
-          <g className="background-particles" opacity="0.1">
+            <g className="background-particles" opacity="0.1">
               {Array.from({ length: 6 }).map((_, i) => (
-              <motion.circle
-                key={`particle-${i}`}
+                <motion.circle
+                  key={`particle-${i}`}
                   r={1}
                   fill={themeColors.primary}
-                initial={{
-                  x: Math.random() * dimensions.width,
-                  y: Math.random() * dimensions.height,
-                }}
-                animate={{
-                  x: Math.random() * dimensions.width,
-                  y: Math.random() * dimensions.height,
-                }}
-                transition={{
+                  initial={{
+                    x: Math.random() * dimensions.width,
+                    y: Math.random() * dimensions.height,
+                  }}
+                  animate={{
+                    x: Math.random() * dimensions.width,
+                    y: Math.random() * dimensions.height,
+                  }}
+                  transition={{
                     duration: Math.random() * 20 + 10,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  ease: "linear"
-                }}
-              />
-            ))}
-          </g>
+                    repeat: Infinity,
+                    repeatType: 'reverse',
+                    ease: 'linear',
+                  }}
+                />
+              ))}
+            </g>
           )}
-          
+
           {/* Links */}
           <g className="links">
             {links.map((link, index) => {
-              const sourceNode = nodes.find(n => n.id === link.source);
-              const targetNode = nodes.find(n => n.id === link.target);
-              
+              const sourceNode = nodes.find((n) => n.id === link.source);
+              const targetNode = nodes.find((n) => n.id === link.target);
+
               if (!sourceNode || !targetNode) return null;
-              
+
               const linkKey = `${link.source}-${link.target}`;
               const isVisible = visibleElements.visibleLinks.has(linkKey);
-              
+
               if (!isVisible) return null;
-              
+
               return (
                 <motion.line
                   key={`link-${index}`}
@@ -542,53 +558,63 @@ export default function DocumentationGraph({
                   stroke={themeColors.connected}
                   strokeWidth={isSidebarView ? 1 : 1.5}
                   strokeOpacity={0.6}
-                  initial={{ pathLength: prefersReducedMotion ? 1 : 0, opacity: prefersReducedMotion ? 0.6 : 0 }}
+                  initial={{
+                    pathLength: prefersReducedMotion ? 1 : 0,
+                    opacity: prefersReducedMotion ? 0.6 : 0,
+                  }}
                   animate={{ pathLength: 1, opacity: 0.6 }}
-                  exit={{ pathLength: prefersReducedMotion ? 1 : 0, opacity: prefersReducedMotion ? 0.6 : 0 }}
-                  transition={{ 
+                  exit={{
+                    pathLength: prefersReducedMotion ? 1 : 0,
+                    opacity: prefersReducedMotion ? 0.6 : 0,
+                  }}
+                  transition={{
                     duration: prefersReducedMotion ? 0.01 : 0.8,
                     delay: prefersReducedMotion ? 0 : index * 0.1,
-                    ease: "easeInOut"
+                    ease: 'easeInOut',
                   }}
                 />
               );
             })}
           </g>
-          
+
           {/* Nodes */}
           <g className="nodes">
             {nodes.map((node, nodeIndex) => {
               const isVisible = visibleElements.visibleNodes.has(node.id);
-              
+
               if (!isVisible) return null;
-              
+
               const nodeColor = getNodeColor(node);
               const nodeRadius = getNodeRadius(node);
-              
+
               return (
-                <motion.g 
-                  key={node.id} 
+                <motion.g
+                  key={node.id}
                   className="node-group cursor-pointer"
-                  initial={{ 
+                  initial={{
                     scale: prefersReducedMotion ? 1 : 0,
-                    opacity: prefersReducedMotion ? 1 : 0
+                    opacity: prefersReducedMotion ? 1 : 0,
                   }}
-                  animate={{ 
+                  animate={{
                     scale: 1,
-                    opacity: 1
+                    opacity: 1,
                   }}
                   exit={{
                     scale: prefersReducedMotion ? 1 : 0,
-                    opacity: prefersReducedMotion ? 1 : 0
+                    opacity: prefersReducedMotion ? 1 : 0,
                   }}
                   transition={{
                     duration: prefersReducedMotion ? 0.01 : 0.5,
-                    delay: prefersReducedMotion ? 0 : nodeIndex * 0.05
+                    delay: prefersReducedMotion ? 0 : nodeIndex * 0.05,
                   }}
-                  whileHover={prefersReducedMotion ? {} : { 
-                    scale: 1.1,
-                    transition: { duration: 0.2 }
-                  }}
+                  whileHover={
+                    prefersReducedMotion
+                      ? {}
+                      : {
+                          scale: 1.1,
+                          transition: { duration: 0.2 },
+                        }
+                  }
                   whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
                   onClick={() => handleNodeClick(node)}
                 >
@@ -601,7 +627,7 @@ export default function DocumentationGraph({
                     opacity={0.2}
                     filter="url(#glow)"
                   />
-                  
+
                   {/* Main node */}
                   <motion.circle
                     cx={node.x}
@@ -611,7 +637,7 @@ export default function DocumentationGraph({
                     stroke="white"
                     strokeWidth={node.id === currentPath ? 2 : 1}
                   />
-                  
+
                   {/* Node gradient overlay */}
                   <circle
                     cx={node.x}
@@ -620,24 +646,27 @@ export default function DocumentationGraph({
                     fill="url(#node-gradient)"
                     pointerEvents="none"
                   />
-                  
+
                   {/* Node label */}
                   <motion.text
                     x={node.x}
                     y={node.y + nodeRadius + (isSidebarView ? 8 : 12)}
                     textAnchor="middle"
                     className="text-xs fill-current text-gray-700 dark:text-gray-300 font-medium pointer-events-none"
-                    style={{ 
+                    style={{
                       fontSize: isSidebarView ? '8px' : '10px',
-                      fontFamily: 'var(--mono-font)'
+                      fontFamily: 'var(--mono-font)',
                     }}
                   >
-                    {isSidebarView ? 
-                      (node.title.length > 6 ? `${node.title.slice(0, 6)}...` : node.title) :
-                      (node.title.length > 12 ? `${node.title.slice(0, 12)}...` : node.title)
-                    }
+                    {isSidebarView
+                      ? node.title.length > 6
+                        ? `${node.title.slice(0, 6)}...`
+                        : node.title
+                      : node.title.length > 12
+                        ? `${node.title.slice(0, 12)}...`
+                        : node.title}
                   </motion.text>
-                  
+
                   {/* Current page indicator */}
                   {node.id === currentPath && (
                     <motion.circle
@@ -650,15 +679,15 @@ export default function DocumentationGraph({
                       strokeDasharray="3,3"
                       animate={{
                         rotate: 360,
-                        strokeDashoffset: [0, -6]
+                        strokeDashoffset: [0, -6],
                       }}
                       transition={{
-                        rotate: { duration: 8, repeat: Infinity, ease: "linear" },
-                        strokeDashoffset: { duration: 1, repeat: Infinity, ease: "linear" }
+                        rotate: { duration: 8, repeat: Infinity, ease: 'linear' },
+                        strokeDashoffset: { duration: 1, repeat: Infinity, ease: 'linear' },
                       }}
                     />
                   )}
-                  
+
                   {/* Click confirmation indicator */}
                   {node.id === clickedNodeId && (
                     <>
@@ -672,44 +701,44 @@ export default function DocumentationGraph({
                         strokeWidth={2}
                         initial={{ r: nodeRadius, opacity: 0.8 }}
                         animate={{ r: nodeRadius + 15, opacity: 0 }}
-                        transition={{ 
-                          duration: prefersReducedMotion ? 0.01 : 0.6, 
-                          ease: "easeOut" 
+                        transition={{
+                          duration: prefersReducedMotion ? 0.01 : 0.6,
+                          ease: 'easeOut',
                         }}
                       />
-                      
+
                       {/* Check icon or confirmation symbol */}
                       <motion.text
                         x={node.x}
                         y={node.y + 2}
                         textAnchor="middle"
                         className="pointer-events-none"
-                      style={{
+                        style={{
                           fontSize: isSidebarView ? '8px' : '12px',
                           fontFamily: 'var(--mono-font)',
-                          fill: themeColors.accent
+                          fill: themeColors.accent,
                         }}
                         initial={{ scale: 0, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        transition={{ 
+                        transition={{
                           duration: prefersReducedMotion ? 0.01 : 0.3,
-                          delay: prefersReducedMotion ? 0 : 0.1
+                          delay: prefersReducedMotion ? 0 : 0.1,
                         }}
                       >
                         ✓
                       </motion.text>
                     </>
                   )}
-                  
+
                   {/* Switch button for pending navigation */}
                   {node.id === pendingSwitchNodeId && node.id !== currentPath && (
                     <motion.g
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0, opacity: 0 }}
-                      transition={{ 
+                      transition={{
                         duration: prefersReducedMotion ? 0.01 : 0.3,
-                        delay: prefersReducedMotion ? 0 : 0.4
+                        delay: prefersReducedMotion ? 0 : 0.4,
                       }}
                     >
                       {/* Switch button background */}
@@ -730,7 +759,7 @@ export default function DocumentationGraph({
                           handleSwitchClick(node);
                         }}
                       />
-                      
+
                       {/* Switch button text */}
                       <motion.text
                         x={node.x}
@@ -742,7 +771,7 @@ export default function DocumentationGraph({
                           fontFamily: 'var(--mono-font)',
                           fill: 'white',
                           fontWeight: 'bold',
-                          dominantBaseline: 'central'
+                          dominantBaseline: 'central',
                         }}
                       >
                         switch?
@@ -754,46 +783,38 @@ export default function DocumentationGraph({
             })}
           </g>
         </svg>
-          </div>
+      </div>
 
       {/* Compact legend */}
-      <div className={`graph-legend mt-2 flex justify-center gap-3 text-xs opacity-75 ${
-        isSidebarView ? 'text-xs' : 'text-sm'
-      }`}>
+      <div
+        className={`graph-legend mt-2 flex justify-center gap-3 text-xs opacity-75 ${
+          isSidebarView ? 'text-xs' : 'text-sm'
+        }`}
+      >
         <div className="flex items-center gap-1">
-          <div 
-            className="w-2 h-2 rounded-full" 
-            style={{ backgroundColor: themeColors.primary }}
-          />
+          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: themeColors.primary }} />
           <span style={{ fontSize: isSidebarView ? '9px' : '11px' }}>Pages</span>
-          </div>
+        </div>
         <div className="flex items-center gap-1">
-          <div 
-            className="w-2 h-2 rounded-full" 
-            style={{ backgroundColor: themeColors.current }}
-          />
+          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: themeColors.current }} />
           <span style={{ fontSize: isSidebarView ? '9px' : '11px' }}>Current</span>
         </div>
         {searchTerm && (
           <div className="flex items-center gap-1">
-            <div 
-              className="w-2 h-2 rounded-full" 
-              style={{ backgroundColor: themeColors.search }}
-            />
+            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: themeColors.search }} />
             <span style={{ fontSize: isSidebarView ? '9px' : '11px' }}>Matches</span>
           </div>
         )}
-          </div>
+      </div>
 
       {/* Search results info */}
       {searchTerm && (
         <div className="mt-1 text-xs text-center opacity-75">
-          {searchResults.hasResults 
+          {searchResults.hasResults
             ? `${searchResults.nodes.length} result${searchResults.nodes.length !== 1 ? 's' : ''}`
-            : 'No matches found'
-          }
+            : 'No matches found'}
         </div>
       )}
     </div>
   );
-} 
+}

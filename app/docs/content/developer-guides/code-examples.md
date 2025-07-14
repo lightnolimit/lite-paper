@@ -18,11 +18,11 @@ export interface DocumentationPage {
 
 // Adding a new page to the documentation structure
 const newPage: DocumentationPage = {
-  title: "My New Feature",
-  path: "developer-guides/my-new-feature",
-  content: "# My New Feature\n\nDetailed documentation content...",
+  title: 'My New Feature',
+  path: 'developer-guides/my-new-feature',
+  content: '# My New Feature\n\nDetailed documentation content...',
   lastModified: new Date(),
-  category: "developer-guides"
+  category: 'developer-guides',
 };
 ```
 
@@ -52,7 +52,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     // Check system preferences
     const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    
+
     setIsDarkMode(darkModeQuery.matches);
     setPrefersReducedMotion(motionQuery.matches);
 
@@ -148,7 +148,7 @@ class BackgroundManager {
       this.canvas.width = window.innerWidth;
       this.canvas.height = window.innerHeight;
     };
-    
+
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
   }
@@ -158,14 +158,14 @@ class BackgroundManager {
       this.render(timestamp);
       this.animationId = requestAnimationFrame(animate);
     };
-    
+
     animate(0);
   }
 
   render(timestamp) {
     const ctx = this.canvas.getContext('2d');
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    
+
     switch (this.currentBackground) {
       case 'wave':
         this.renderWave(ctx, timestamp);
@@ -230,14 +230,14 @@ export function Navigation() {
     const searchTerm = query.toLowerCase();
 
     const searchInTree = (items: any[]) => {
-      items.forEach(item => {
+      items.forEach((item) => {
         if (item.type === 'file') {
           const title = item.name.replace('.md', '');
           if (title.toLowerCase().includes(searchTerm)) {
             results.push({
               title,
               path: item.path,
-              category: item.path.split('/')[0]
+              category: item.path.split('/')[0],
             });
           }
         } else if (item.children) {
@@ -262,9 +262,7 @@ export function Navigation() {
         <div className="flex items-center justify-between h-12">
           {/* Logo */}
           <div className="flex items-center">
-            <h1 className="text-xl font-bold text-text-color">
-              Documentation
-            </h1>
+            <h1 className="text-xl font-bold text-text-color">Documentation</h1>
           </div>
 
           {/* Search */}
@@ -295,7 +293,7 @@ export function Navigation() {
                       autoFocus
                     />
                   </div>
-                  
+
                   {searchResults.length > 0 && (
                     <div className="max-h-80 overflow-y-auto">
                       {searchResults.map((result, index) => (
@@ -304,12 +302,8 @@ export function Navigation() {
                           onClick={() => handleSearchSelect(result)}
                           className="w-full text-left p-4 hover:bg-background-color transition-colors border-b border-border-color last:border-b-0"
                         >
-                          <div className="font-medium text-text-color">
-                            {result.title}
-                          </div>
-                          <div className="text-sm text-muted-color">
-                            {result.category}
-                          </div>
+                          <div className="font-medium text-text-color">{result.title}</div>
+                          <div className="text-sm text-muted-color">{result.category}</div>
                         </button>
                       ))}
                     </div>
@@ -330,7 +324,12 @@ export function Navigation() {
 function SearchIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+      />
     </svg>
   );
 }
@@ -356,10 +355,10 @@ interface GraphNode {
   category: string;
 }
 
-export function DocumentationGraph({ 
-  currentPath, 
+export function DocumentationGraph({
+  currentPath,
   onNodeClick,
-  className 
+  className,
 }: {
   currentPath?: string;
   onNodeClick?: (path: string) => void;
@@ -390,7 +389,7 @@ export function DocumentationGraph({
       if (item.type === 'file') {
         const x = centerX + Math.cos(angle) * radius;
         const y = centerY + Math.sin(angle) * radius;
-        
+
         const node: GraphNode = {
           id: item.path,
           label: item.name.replace('.md', ''),
@@ -398,15 +397,15 @@ export function DocumentationGraph({
           x,
           y,
           connections: parentId ? [parentId] : [],
-          category: item.path.split('/')[0]
+          category: item.path.split('/')[0],
         };
-        
+
         nodes.push(node);
       } else if (item.children) {
         // Add directory node
         const x = centerX + Math.cos(angle) * (radius * 0.6);
         const y = centerY + Math.sin(angle) * (radius * 0.6);
-        
+
         const dirNode: GraphNode = {
           id: item.path,
           label: item.name,
@@ -414,11 +413,11 @@ export function DocumentationGraph({
           x,
           y,
           connections: [],
-          category: 'directory'
+          category: 'directory',
         };
-        
+
         nodes.push(dirNode);
-        
+
         // Process children
         item.children.forEach((child: any, index: number) => {
           const childAngle = angle + (index - item.children.length / 2) * 0.3;
@@ -448,10 +447,10 @@ export function DocumentationGraph({
     // Draw connections
     ctx.strokeStyle = 'rgba(156, 163, 175, 0.3)';
     ctx.lineWidth = 1;
-    
-    nodes.forEach(node => {
-      node.connections.forEach(connectionId => {
-        const connectedNode = nodes.find(n => n.id === connectionId);
+
+    nodes.forEach((node) => {
+      node.connections.forEach((connectionId) => {
+        const connectedNode = nodes.find((n) => n.id === connectionId);
         if (connectedNode) {
           ctx.beginPath();
           ctx.moveTo(node.x, node.y);
@@ -462,14 +461,14 @@ export function DocumentationGraph({
     });
 
     // Draw nodes
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       const isHovered = hoveredNode === node.id;
       const isCurrent = currentPath === node.path;
-      
+
       // Node circle
       ctx.beginPath();
       ctx.arc(node.x, node.y, isHovered ? 8 : 6, 0, Math.PI * 2);
-      
+
       if (isCurrent) {
         ctx.fillStyle = '#3B82F6';
       } else if (node.category === 'directory') {
@@ -477,7 +476,7 @@ export function DocumentationGraph({
       } else {
         ctx.fillStyle = '#6B7280';
       }
-      
+
       ctx.fill();
 
       // Label
@@ -497,7 +496,7 @@ export function DocumentationGraph({
     const y = event.clientY - rect.top;
 
     // Find clicked node
-    const clickedNode = nodes.find(node => {
+    const clickedNode = nodes.find((node) => {
       const distance = Math.sqrt(Math.pow(x - node.x, 2) + Math.pow(y - node.y, 2));
       return distance <= 8;
     });
@@ -516,7 +515,7 @@ export function DocumentationGraph({
     const y = event.clientY - rect.top;
 
     // Find hovered node
-    const hoveredNode = nodes.find(node => {
+    const hoveredNode = nodes.find((node) => {
       const distance = Math.sqrt(Math.pow(x - node.x, 2) + Math.pow(y - node.y, 2));
       return distance <= 8;
     });
@@ -571,13 +570,13 @@ export function CodeBlock({
   title,
   defaultLanguage,
   showLineNumbers = false,
-  className = ''
+  className = '',
 }: CodeBlockProps) {
   const { isDarkMode } = useTheme();
   const [activeTab, setActiveTab] = useState(defaultLanguage || snippets[0]?.language || '');
   const [copied, setCopied] = useState(false);
 
-  const activeSnippet = snippets.find(s => s.language === activeTab) || snippets[0];
+  const activeSnippet = snippets.find((s) => s.language === activeTab) || snippets[0];
 
   const copyToClipboard = async () => {
     try {
@@ -590,13 +589,15 @@ export function CodeBlock({
   };
 
   return (
-    <div className={`bg-card-background border border-border-color rounded-lg overflow-hidden ${className}`}>
+    <div
+      className={`bg-card-background border border-border-color rounded-lg overflow-hidden ${className}`}
+    >
       {title && (
         <div className="px-4 py-2 border-b border-border-color">
           <h4 className="text-sm font-medium text-text-color">{title}</h4>
         </div>
       )}
-      
+
       {snippets.length > 1 && (
         <div className="flex items-center justify-between px-4 py-2 border-b border-border-color bg-background-color">
           <div className="flex gap-1">
@@ -614,7 +615,7 @@ export function CodeBlock({
               </button>
             ))}
           </div>
-          
+
           <button
             onClick={copyToClipboard}
             className="text-xs text-muted-color hover:text-text-color transition-colors"
@@ -623,7 +624,7 @@ export function CodeBlock({
           </button>
         </div>
       )}
-      
+
       <div className="relative">
         <SyntaxHighlighter
           language={activeSnippet.language}
@@ -633,12 +634,12 @@ export function CodeBlock({
             margin: 0,
             padding: '1rem',
             background: 'transparent',
-            fontSize: '0.875rem'
+            fontSize: '0.875rem',
           }}
         >
           {activeSnippet.code}
         </SyntaxHighlighter>
-        
+
         {snippets.length === 1 && (
           <button
             onClick={copyToClipboard}
@@ -672,17 +673,17 @@ const MockedNavigation = () => (
 describe('Navigation Component', () => {
   it('renders navigation with search functionality', () => {
     render(<MockedNavigation />);
-    
+
     expect(screen.getByText('Documentation')).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/search docs/i)).toBeInTheDocument();
   });
 
   it('opens search modal when search button is clicked', async () => {
     render(<MockedNavigation />);
-    
+
     const searchButton = screen.getByText('Search docs...');
     fireEvent.click(searchButton);
-    
+
     await waitFor(() => {
       expect(screen.getByPlaceholderText('Search documentation...')).toBeInTheDocument();
     });
@@ -690,14 +691,14 @@ describe('Navigation Component', () => {
 
   it('filters search results based on query', async () => {
     render(<MockedNavigation />);
-    
+
     // Open search
     fireEvent.click(screen.getByText('Search docs...'));
-    
+
     // Type search query
     const searchInput = screen.getByPlaceholderText('Search documentation...');
     fireEvent.change(searchInput, { target: { value: 'installation' } });
-    
+
     await waitFor(() => {
       expect(screen.getByText('Installation')).toBeInTheDocument();
     });
@@ -724,10 +725,10 @@ export class PerformanceMonitor {
     if (!this.metrics.has(componentName)) {
       this.metrics.set(componentName, []);
     }
-    
+
     const times = this.metrics.get(componentName)!;
     times.push(renderTime);
-    
+
     // Keep only last 100 measurements
     if (times.length > 100) {
       times.shift();
@@ -737,7 +738,7 @@ export class PerformanceMonitor {
   getAverageRenderTime(componentName: string): number {
     const times = this.metrics.get(componentName);
     if (!times || times.length === 0) return 0;
-    
+
     return times.reduce((sum, time) => sum + time, 0) / times.length;
   }
 
@@ -757,7 +758,7 @@ import { useEffect } from 'react';
 export function useRenderTime(componentName: string) {
   useEffect(() => {
     const start = performance.now();
-    
+
     return () => {
       const end = performance.now();
       const renderTime = end - start;
@@ -778,15 +779,15 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
-  
+
   // Enable static export
   output: 'export',
-  
+
   // Disable image optimization for static export
   images: {
-    unoptimized: true
+    unoptimized: true,
   },
-  
+
   // Custom webpack configuration
   webpack: (config, { dev, isServer }) => {
     // Optimize bundle size
@@ -800,7 +801,7 @@ const nextConfig = {
             name: 'vendor',
             chunks: 'all',
             test: /node_modules/,
-            priority: 20
+            priority: 20,
           },
           common: {
             name: 'common',
@@ -808,19 +809,19 @@ const nextConfig = {
             chunks: 'all',
             priority: 10,
             reuseExistingChunk: true,
-            enforce: true
-          }
-        }
+            enforce: true,
+          },
+        },
       };
     }
-    
+
     return config;
   },
-  
+
   // Environment variables
   env: {
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-  }
+  },
 };
 
 module.exports = nextConfig;
@@ -847,11 +848,11 @@ export function handleDocumentationError(error: unknown): DocumentationError {
   if (error instanceof DocumentationError) {
     return error;
   }
-  
+
   if (error instanceof Error) {
     return new DocumentationError(error.message, 'UNKNOWN_ERROR');
   }
-  
+
   return new DocumentationError('An unknown error occurred', 'UNKNOWN_ERROR');
 }
 
@@ -917,6 +918,7 @@ function DefaultErrorFallback({ error }: { error: Error }) {
 ---
 
 **Related Documentation:**
+
 - [Advanced Features](../user-guide/advanced-features) - Advanced platform capabilities
 - [Best Practices](./best-practices) - Development guidelines
 - [Icon Customization](./icon-customization) - Adding custom icons

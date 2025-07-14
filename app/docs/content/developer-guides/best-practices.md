@@ -27,18 +27,18 @@ components/
 
 ```typescript
 // External libraries
-import React from 'react'
-import { motion } from 'framer-motion'
+import React from 'react';
+import { motion } from 'framer-motion';
 
 // Internal utilities
-import { formatDate } from '@/lib/utils'
+import { formatDate } from '@/lib/utils';
 
 // Components
-import { Button } from '@/components/ui/Button'
-import { ThemeProvider } from '@/providers/ThemeProvider'
+import { Button } from '@/components/ui/Button';
+import { ThemeProvider } from '@/providers/ThemeProvider';
 
 // Types
-import type { DocumentationItem } from '@/types'
+import type { DocumentationItem } from '@/types';
 ```
 
 ## Performance Optimization
@@ -55,18 +55,18 @@ const OptimizedComponent = memo(({ data, onUpdate }) => {
   const processedData = useMemo(() => {
     return data.map(item => transformItem(item))
   }, [data])
-  
+
   // Memoize event handlers
   const handleClick = useCallback((id: string) => {
     onUpdate(id)
   }, [onUpdate])
-  
+
   return (
     <div>
       {processedData.map(item => (
-        <Item 
-          key={item.id} 
-          data={item} 
+        <Item
+          key={item.id}
+          data={item}
           onClick={handleClick}
         />
       ))}
@@ -105,7 +105,7 @@ Dynamic imports for code splitting:
 // Component-level splitting
 const HeavyComponent = dynamic(
   () => import('@/components/HeavyComponent'),
-  { 
+  {
     ssr: false,
     loading: () => <Skeleton />
   }
@@ -132,7 +132,7 @@ Use appropriate HTML elements:
       </ul>
     </nav>
   </header>
-  
+
   <section aria-labelledby="section-title">
     <h2 id="section-title">Section Title</h2>
     <p>Content...</p>
@@ -153,7 +153,7 @@ Use appropriate HTML elements:
 Provide context for screen readers:
 
 ```typescript
-<button 
+<button
   aria-label="Close sidebar"
   aria-expanded={isOpen}
   aria-controls="sidebar"
@@ -200,16 +200,16 @@ import { useRef, useEffect } from 'react'
 
 function Modal({ isOpen, onClose }) {
   const firstFocusableRef = useRef<HTMLButtonElement>(null)
-  
+
   useEffect(() => {
     if (isOpen && firstFocusableRef.current) {
       firstFocusableRef.current.focus()
     }
   }, [isOpen])
-  
+
   return (
     <div role="dialog" aria-modal="true">
-      <button 
+      <button
         ref={firstFocusableRef}
         onClick={onClose}
       >
@@ -250,7 +250,7 @@ class ErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Error caught by boundary:', error, errorInfo)
-    
+
     // Send to error reporting service
     if (typeof window !== 'undefined') {
       // Analytics or error tracking
@@ -279,41 +279,41 @@ class ErrorBoundary extends Component<Props, State> {
 Handle asynchronous operations safely:
 
 ```typescript
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 
 function useAsyncData<T>(fetchFunction: () => Promise<T>) {
-  const [data, setData] = useState<T | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
-  
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
   useEffect(() => {
-    let cancelled = false
-    
+    let cancelled = false;
+
     fetchFunction()
-      .then(result => {
+      .then((result) => {
         if (!cancelled) {
-          setData(result)
-          setError(null)
+          setData(result);
+          setError(null);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         if (!cancelled) {
-          setError(err)
-          setData(null)
+          setError(err);
+          setData(null);
         }
       })
       .finally(() => {
         if (!cancelled) {
-          setLoading(false)
+          setLoading(false);
         }
-      })
-    
+      });
+
     return () => {
-      cancelled = true
-    }
-  }, [])
-  
-  return { data, loading, error }
+      cancelled = true;
+    };
+  }, []);
+
+  return { data, loading, error };
 }
 ```
 
@@ -342,24 +342,24 @@ Create clear, extensible interfaces:
 ```typescript
 // Base interface
 interface BaseItem {
-  id: string
-  createdAt: Date
-  updatedAt: Date
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // Specific interfaces extending base
 interface DocumentationPage extends BaseItem {
-  title: string
-  content: string
-  path: string
-  tags: string[]
+  title: string;
+  content: string;
+  path: string;
+  tags: string[];
 }
 
 // Union types for variants
-type NavigationItem = 
+type NavigationItem =
   | { type: 'page'; page: DocumentationPage }
   | { type: 'separator'; label: string }
-  | { type: 'external'; url: string; label: string }
+  | { type: 'external'; url: string; label: string };
 ```
 
 ### Type Guards
@@ -375,13 +375,13 @@ function isDocumentationPage(item: unknown): item is DocumentationPage {
     'content' in item &&
     'path' in item &&
     typeof (item as any).title === 'string'
-  )
+  );
 }
 
 // Usage
 if (isDocumentationPage(data)) {
   // TypeScript knows data is DocumentationPage here
-  console.log(data.title)
+  console.log(data.title);
 }
 ```
 
@@ -405,25 +405,25 @@ describe('DocumentationGraph', () => {
       </ThemeProvider>
     )
   }
-  
+
   test('renders search input', () => {
     renderWithTheme(
       <DocumentationGraph currentPath="test" onNodeClick={jest.fn()} />
     )
-    
+
     expect(screen.getByPlaceholderText(/search/i)).toBeInTheDocument()
   })
-  
+
   test('calls onNodeClick when node is clicked', () => {
     const handleNodeClick = jest.fn()
-    
+
     renderWithTheme(
       <DocumentationGraph currentPath="test" onNodeClick={handleNodeClick} />
     )
-    
+
     const node = screen.getByText('Introduction')
     fireEvent.click(node)
-    
+
     expect(handleNodeClick).toHaveBeenCalledWith('getting-started/introduction')
   })
 })
@@ -446,10 +446,10 @@ describe('Documentation Page Integration', () => {
         <DocumentationPage />
       </MemoryRouter>
     )
-    
+
     // Click on a navigation item
     fireEvent.click(screen.getByText('Installation'))
-    
+
     // Wait for content to update
     await waitFor(() => {
       expect(screen.getByText(/installation guide/i)).toBeInTheDocument()
@@ -464,24 +464,24 @@ Test complete user workflows:
 
 ```typescript
 // e2e/navigation.spec.ts
-import { test, expect } from '@playwright/test'
+import { test, expect } from '@playwright/test';
 
 test('user can navigate documentation', async ({ page }) => {
-  await page.goto('/docs')
-  
+  await page.goto('/docs');
+
   // Should load the introduction page by default
-  await expect(page.locator('h1')).toContainText('Introduction')
-  
+  await expect(page.locator('h1')).toContainText('Introduction');
+
   // Click on installation in sidebar
-  await page.click('text=Installation')
-  
+  await page.click('text=Installation');
+
   // Should navigate to installation page
-  await expect(page).toHaveURL('/docs/getting-started/installation')
-  await expect(page.locator('h1')).toContainText('Installation')
-  
+  await expect(page).toHaveURL('/docs/getting-started/installation');
+  await expect(page.locator('h1')).toContainText('Installation');
+
   // Mind map should be visible
-  await expect(page.locator('[data-testid="mind-map"]')).toBeVisible()
-})
+  await expect(page.locator('[data-testid="mind-map"]')).toBeVisible();
+});
 ```
 
 ## Security Considerations
@@ -501,9 +501,11 @@ const securityHeaders = [
       style-src 'self' 'unsafe-inline';
       img-src 'self' data: https:;
       font-src 'self' data:;
-    `.replace(/\s+/g, ' ').trim()
-  }
-]
+    `
+      .replace(/\s+/g, ' ')
+      .trim(),
+  },
+];
 
 module.exports = {
   async headers() {
@@ -512,9 +514,9 @@ module.exports = {
         source: '/(.*)',
         headers: securityHeaders,
       },
-    ]
+    ];
   },
-}
+};
 ```
 
 ### Input Sanitization
@@ -529,16 +531,16 @@ function sanitizeHTML(dirty: string): string {
     // Server-side: use a server-safe sanitizer
     return dirty // Implement server-side sanitization
   }
-  
+
   return DOMPurify.sanitize(dirty)
 }
 
 // Usage in component
 function UserContent({ htmlContent }: { htmlContent: string }) {
   const sanitizedContent = sanitizeHTML(htmlContent)
-  
+
   return (
-    <div 
+    <div
       dangerouslySetInnerHTML={{ __html: sanitizedContent }}
     />
   )
@@ -552,23 +554,23 @@ Secure environment variable handling:
 ```typescript
 // lib/env.ts
 function getRequiredEnvVar(key: string): string {
-  const value = process.env[key]
-  
+  const value = process.env[key];
+
   if (!value) {
-    throw new Error(`Required environment variable ${key} is not set`)
+    throw new Error(`Required environment variable ${key} is not set`);
   }
-  
-  return value
+
+  return value;
 }
 
 export const env = {
   // Public variables (prefixed with NEXT_PUBLIC_)
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-  
+
   // Private variables (server-side only)
   databaseUrl: getRequiredEnvVar('DATABASE_URL'),
   jwtSecret: getRequiredEnvVar('JWT_SECRET'),
-} as const
+} as const;
 ```
 
 ## Deployment Best Practices
@@ -582,24 +584,24 @@ Optimize for production builds:
 module.exports = {
   // Static export for CDN deployment
   output: 'export',
-  
+
   // Image optimization
   images: {
     unoptimized: true, // Required for static export
   },
-  
+
   // Disable source maps in production
   productionBrowserSourceMaps: false,
-  
+
   // Enable SWC minification
   swcMinify: true,
-  
+
   // Optimize bundle
   experimental: {
     optimizeCss: true,
-    optimizePackageImports: ['framer-motion']
-  }
-}
+    optimizePackageImports: ['framer-motion'],
+  },
+};
 ```
 
 ### CI/CD Pipeline
@@ -625,7 +627,7 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-      
+
       - run: npm ci
       - run: npm run lint
       - run: npm run type-check
@@ -642,10 +644,10 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-      
+
       - run: npm ci
       - run: npm run build
-      
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
@@ -671,19 +673,19 @@ export function reportWebVitals(metric: any) {
       event_category: 'Web Vitals',
       event_label: metric.id,
       non_interaction: true,
-    })
+    });
   }
-  
+
   // Send to your analytics service
   fetch('/api/analytics/web-vitals', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(metric)
-  })
+    body: JSON.stringify(metric),
+  });
 }
 
 // pages/_app.tsx
-export { reportWebVitals }
+export { reportWebVitals };
 ```
 
 ### Error Tracking
@@ -694,10 +696,10 @@ Implement error tracking:
 // lib/error-tracking.ts
 class ErrorTracker {
   static init() {
-    window.addEventListener('error', this.handleError)
-    window.addEventListener('unhandledrejection', this.handlePromiseRejection)
+    window.addEventListener('error', this.handleError);
+    window.addEventListener('unhandledrejection', this.handlePromiseRejection);
   }
-  
+
   static handleError(event: ErrorEvent) {
     this.report({
       type: 'javascript',
@@ -705,18 +707,18 @@ class ErrorTracker {
       filename: event.filename,
       lineno: event.lineno,
       colno: event.colno,
-      stack: event.error?.stack
-    })
+      stack: event.error?.stack,
+    });
   }
-  
+
   static handlePromiseRejection(event: PromiseRejectionEvent) {
     this.report({
       type: 'promise',
       message: event.reason?.message || 'Unhandled promise rejection',
-      stack: event.reason?.stack
-    })
+      stack: event.reason?.stack,
+    });
   }
-  
+
   static report(error: any) {
     fetch('/api/errors', {
       method: 'POST',
@@ -725,16 +727,16 @@ class ErrorTracker {
         ...error,
         url: window.location.href,
         userAgent: navigator.userAgent,
-        timestamp: new Date().toISOString()
-      })
+        timestamp: new Date().toISOString(),
+      }),
     }).catch(() => {
       // Fail silently to avoid infinite loops
-    })
+    });
   }
 }
 
 if (typeof window !== 'undefined') {
-  ErrorTracker.init()
+  ErrorTracker.init();
 }
 ```
 
@@ -744,29 +746,25 @@ if (typeof window !== 'undefined') {
 
 Document complex logic:
 
-```typescript
+````typescript
 /**
  * Calculates relevance score for search results using TF-IDF algorithm
- * 
+ *
  * @param query - The search query string
  * @param document - The document to score
  * @param corpus - All documents for IDF calculation
  * @returns Relevance score between 0 and 1
- * 
+ *
  * @example
  * ```typescript
  * const score = calculateRelevance('react hooks', document, allDocuments)
  * console.log(score) // 0.85
  * ```
  */
-function calculateRelevance(
-  query: string, 
-  document: Document, 
-  corpus: Document[]
-): number {
+function calculateRelevance(query: string, document: Document, corpus: Document[]): number {
   // Implementation details...
 }
-```
+````
 
 ### API Documentation
 
@@ -778,23 +776,23 @@ Document all public APIs:
  */
 export interface DocsConfig {
   /** Base URL for the documentation site */
-  baseUrl: string
-  
+  baseUrl: string;
+
   /** Theme configuration */
   theme: {
     /** Primary color for light mode (hex) */
-    lightPrimary: string
+    lightPrimary: string;
     /** Primary color for dark mode (hex) */
-    darkPrimary: string
-  }
-  
+    darkPrimary: string;
+  };
+
   /** Search configuration */
   search?: {
     /** Maximum number of results to show */
-    maxResults?: number
+    maxResults?: number;
     /** Enable fuzzy search */
-    fuzzy?: boolean
-  }
+    fuzzy?: boolean;
+  };
 }
 ```
 
@@ -813,29 +811,31 @@ Brief description of what this component does.
 import { ComponentName } from '@/components/ComponentName'
 
 function App() {
-  return (
-    <ComponentName 
+return (
+<ComponentName 
       prop1="value"
       prop2={42}
       onAction={handleAction}
     />
-  )
+)
 }
 \`\`\`
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| prop1 | string | - | Description of prop1 |
-| prop2 | number | 0 | Description of prop2 |
+| Prop  | Type   | Default | Description          |
+| ----- | ------ | ------- | -------------------- |
+| prop1 | string | -       | Description of prop1 |
+| prop2 | number | 0       | Description of prop2 |
 
 ## Examples
 
 ### Basic Usage
+
 [Example code]
 
 ### Advanced Usage
+
 [Example code]
 ```
 
@@ -850,6 +850,7 @@ Following these best practices will help you maintain a high-quality, accessible
 - **Keep security** in mind throughout development
 
 For more specific guidance, refer to:
+
 - **[Code Examples](./code-examples)** - Practical implementations
 - **[Contributing Guide](./contributing)** - Collaboration guidelines
-- **[Troubleshooting](../user-guide/troubleshooting)** - Common issues and solutions 
+- **[Troubleshooting](../user-guide/troubleshooting)** - Common issues and solutions

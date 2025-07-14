@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
+import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import * as THREE from 'three';
+
 import { useTheme } from '../providers/ThemeProvider';
 
 // Debug state management
@@ -122,63 +123,36 @@ const FRAGMENT_SHADER = `
 const getThemeColors = (isDarkMode: boolean) => ({
   color1: new THREE.Color(isDarkMode ? '#555555' : '#678D58'),
   color2: new THREE.Color(isDarkMode ? '#1A1A1F' : '#F3F5F0'),
-  accent: new THREE.Color(isDarkMode ? '#FFC4DD' : '#557153')
+  accent: new THREE.Color(isDarkMode ? '#FFC4DD' : '#557153'),
 });
 
 // Dithering pattern background
-const DitherPattern = React.memo(({ 
-  mouseX, 
-  mouseY, 
-  isDarkMode, 
-  showCursor = false 
-}: { 
-  mouseX: number, 
-  mouseY: number, 
-  isDarkMode: boolean,
-  showCursor?: boolean
-}) => {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const cursorRef = useRef<THREE.Mesh>(null);
-  const canvasRef = useRef<DOMRect | null>(null);
-  const timeRef = useRef(0);
-  const materialRef = useRef<THREE.ShaderMaterial | null>(null);
-  const mousePositionRef = useRef({ x: 0, y: 0 });
-  
-  // Memoize theme colors
-  const themeColors = useMemo(() => getThemeColors(isDarkMode), [isDarkMode]);
-  
-  // Memoize uniforms
-  const uniforms = useMemo(() => ({
-    u_time: { value: 0 },
-    u_resolution: { value: new THREE.Vector2() },
-    u_mouse: { value: new THREE.Vector2() },
-    u_color1: { value: themeColors.color1 },
-    u_color2: { value: themeColors.color2 },
-    u_accent: { value: themeColors.accent },
-    u_pattern_scale: { value: 60.0 },
-    u_noise_scale: { value: 3.0 },
-    u_noise_time: { value: 0.0 },
-    u_dither_size: { value: 6.0 }
-  }), [themeColors]);
+const DitherPattern = React.memo(
+  ({
+    mouseX,
+    mouseY,
+    isDarkMode,
+    showCursor = false,
+  }: {
+    mouseX: number;
+    mouseY: number;
+    isDarkMode: boolean;
+    showCursor?: boolean;
+  }) => {
+    const meshRef = useRef<THREE.Mesh>(null);
+    const cursorRef = useRef<THREE.Mesh>(null);
+    const canvasRef = useRef<DOMRect | null>(null);
+    const timeRef = useRef(0);
+    const materialRef = useRef<THREE.ShaderMaterial | null>(null);
+    const mousePositionRef = useRef({ x: 0, y: 0 });
 
-  // Update colors when theme changes
-  useEffect(() => {
-    if (materialRef.current) {
-      materialRef.current.uniforms.u_color1.value = themeColors.color1;
-      materialRef.current.uniforms.u_color2.value = themeColors.color2;
-      materialRef.current.uniforms.u_accent.value = themeColors.accent;
-    }
-  }, [themeColors]);
+    // Memoize theme colors
+    const themeColors = useMemo(() => getThemeColors(isDarkMode), [isDarkMode]);
 
-  // Create shader material once
-  useEffect(() => {
-    if (!meshRef.current) return;
-    
-    const material = new THREE.ShaderMaterial({
-      vertexShader: VERTEX_SHADER,
-      fragmentShader: FRAGMENT_SHADER,
-      uniforms: {
-        u_time: { value: timeRef.current },
+    // Memoize uniforms
+    const uniforms = useMemo(
+      () => ({
+        u_time: { value: 0 },
         u_resolution: { value: new THREE.Vector2() },
         u_mouse: { value: new THREE.Vector2() },
         u_color1: { value: themeColors.color1 },
@@ -186,88 +160,123 @@ const DitherPattern = React.memo(({
         u_accent: { value: themeColors.accent },
         u_pattern_scale: { value: 60.0 },
         u_noise_scale: { value: 3.0 },
-        u_noise_time: { value: timeRef.current * 0.2 },
-        u_dither_size: { value: 6.0 }
+        u_noise_time: { value: 0.0 },
+        u_dither_size: { value: 6.0 },
+      }),
+      [themeColors]
+    );
+
+    // Update colors when theme changes
+    useEffect(() => {
+      if (materialRef.current) {
+        materialRef.current.uniforms.u_color1.value = themeColors.color1;
+        materialRef.current.uniforms.u_color2.value = themeColors.color2;
+        materialRef.current.uniforms.u_accent.value = themeColors.accent;
+      }
+    }, [themeColors]);
+
+    // Create shader material once
+    useEffect(() => {
+      if (!meshRef.current) return;
+
+      const material = new THREE.ShaderMaterial({
+        vertexShader: VERTEX_SHADER,
+        fragmentShader: FRAGMENT_SHADER,
+        uniforms: {
+          u_time: { value: timeRef.current },
+          u_resolution: { value: new THREE.Vector2() },
+          u_mouse: { value: new THREE.Vector2() },
+          u_color1: { value: themeColors.color1 },
+          u_color2: { value: themeColors.color2 },
+          u_accent: { value: themeColors.accent },
+          u_pattern_scale: { value: 60.0 },
+          u_noise_scale: { value: 3.0 },
+          u_noise_time: { value: timeRef.current * 0.2 },
+          u_dither_size: { value: 6.0 },
+        },
+      });
+
+      materialRef.current = material;
+      meshRef.current.material = material;
+    }, [themeColors]);
+
+    // Debounced mouse position update
+    useEffect(() => {
+      mousePositionRef.current = { x: mouseX, y: mouseY };
+    }, [mouseX, mouseY]);
+
+    // Update canvas reference and animation loop
+    useFrame(() => {
+      if (!meshRef.current || !materialRef.current) return;
+
+      // Update time uniform
+      timeRef.current += 0.01;
+      materialRef.current.uniforms.u_time.value = timeRef.current;
+      materialRef.current.uniforms.u_noise_time.value = timeRef.current * 0.2;
+
+      // Update canvas bounds less frequently
+      const canvas = document.querySelector('canvas');
+      if (canvas && (!canvasRef.current || timeRef.current % 60 === 0)) {
+        canvasRef.current = canvas.getBoundingClientRect();
+        (materialRef.current.uniforms.u_resolution.value as THREE.Vector2).set(
+          canvas.width,
+          canvas.height
+        );
+      }
+
+      // Calculate normalized mouse position
+      if (canvasRef.current && materialRef.current) {
+        const { x: mouseX, y: mouseY } = mousePositionRef.current;
+        const relativeMouseX = mouseX - (canvasRef.current.left || 0);
+        const relativeMouseY = mouseY - (canvasRef.current.top || 0);
+
+        // Update mouse uniform - y needs to be flipped in WebGL
+        (materialRef.current.uniforms.u_mouse.value as THREE.Vector2).set(
+          relativeMouseX,
+          canvasRef.current.height - relativeMouseY
+        );
+
+        // Update debug cursor with normalized coordinates
+        if (cursorRef.current && showCursor && canvasRef.current.width > 0) {
+          const normalizedX = (relativeMouseX / canvasRef.current.width) * 2 - 1;
+          const normalizedY = -(relativeMouseY / canvasRef.current.height) * 2 + 1;
+
+          cursorRef.current.position.x = normalizedX * 5;
+          cursorRef.current.position.y = normalizedY * 5;
+          cursorRef.current.position.z = 0.2;
+          cursorRef.current.visible = true;
+        } else if (cursorRef.current) {
+          cursorRef.current.visible = false;
+        }
       }
     });
-    
-    materialRef.current = material;
-    meshRef.current.material = material;
-  }, [themeColors]);
 
-  // Debounced mouse position update
-  useEffect(() => {
-    mousePositionRef.current = { x: mouseX, y: mouseY };
-  }, [mouseX, mouseY]);
+    return (
+      <>
+        <mesh ref={meshRef} position={[0, 0, 0]}>
+          <planeGeometry args={[100, 80]} />
+          <shaderMaterial
+            vertexShader={VERTEX_SHADER}
+            fragmentShader={FRAGMENT_SHADER}
+            uniforms={uniforms}
+          />
+        </mesh>
 
-  // Update canvas reference and animation loop
-  useFrame(() => {
-    if (!meshRef.current || !materialRef.current) return;
-    
-    // Update time uniform
-    timeRef.current += 0.01;
-    materialRef.current.uniforms.u_time.value = timeRef.current;
-    materialRef.current.uniforms.u_noise_time.value = timeRef.current * 0.2;
-    
-    // Update canvas bounds less frequently
-    const canvas = document.querySelector('canvas');
-    if (canvas && (!canvasRef.current || timeRef.current % 60 === 0)) {
-      canvasRef.current = canvas.getBoundingClientRect();
-      (materialRef.current.uniforms.u_resolution.value as THREE.Vector2).set(canvas.width, canvas.height);
-    }
-    
-    // Calculate normalized mouse position
-    if (canvasRef.current && materialRef.current) {
-      const { x: mouseX, y: mouseY } = mousePositionRef.current;
-      const relativeMouseX = mouseX - (canvasRef.current.left || 0);
-      const relativeMouseY = mouseY - (canvasRef.current.top || 0);
-      
-      // Update mouse uniform - y needs to be flipped in WebGL
-      (materialRef.current.uniforms.u_mouse.value as THREE.Vector2).set(
-        relativeMouseX, 
-        canvasRef.current.height - relativeMouseY
-      );
-      
-      // Update debug cursor with normalized coordinates
-      if (cursorRef.current && showCursor && canvasRef.current.width > 0) {
-        const normalizedX = (relativeMouseX / canvasRef.current.width) * 2 - 1;
-        const normalizedY = -(relativeMouseY / canvasRef.current.height) * 2 + 1;
-        
-        cursorRef.current.position.x = normalizedX * 5;
-        cursorRef.current.position.y = normalizedY * 5;
-        cursorRef.current.position.z = 0.2;
-        cursorRef.current.visible = true;
-      } else if (cursorRef.current) {
-        cursorRef.current.visible = false;
-      }
-    }
-  });
-
-  return (
-    <>
-      <mesh ref={meshRef} position={[0, 0, 0]}>
-        <planeGeometry args={[100, 80]} />
-        <shaderMaterial
-          vertexShader={VERTEX_SHADER}
-          fragmentShader={FRAGMENT_SHADER}
-          uniforms={uniforms}
-        />
-      </mesh>
-      
-      {/* Debug cursor */}
-      <mesh ref={cursorRef} position={[0, 0, 0.2]} visible={showCursor}>
-        <sphereGeometry args={[0.4, 32, 32]} />
-        <meshStandardMaterial 
-          color={isDarkMode ? '#FFC4DD' : '#ff0000'} 
-          emissive={isDarkMode ? '#FFC4DD' : '#ff6666'}
-          emissiveIntensity={0.8}
-          transparent={true}
-          opacity={0.8}
-        />
-      </mesh>
-    </>
-  );
-});
+        {/* Debug cursor */}
+        <mesh ref={cursorRef} position={[0, 0, 0.2]} visible={showCursor}>
+          <sphereGeometry args={[0.4, 32, 32]} />
+          <meshStandardMaterial
+            color={isDarkMode ? '#FFC4DD' : '#ff0000'}
+            emissive={isDarkMode ? '#FFC4DD' : '#ff6666'}
+            emissiveIntensity={0.8}
+            transparent={true}
+            opacity={0.8}
+          />
+        </mesh>
+      </>
+    );
+  }
+);
 
 DitherPattern.displayName = 'DitherPattern';
 
@@ -284,12 +293,12 @@ export default function DitherBackground() {
       if (!window.__DEBUG_MODE__) {
         window.__DEBUG_MODE__ = {
           showCursor: localStorage.getItem('debugCursor') === 'true',
-          logging: false
+          logging: false,
         };
       }
-      
+
       setShowCursor(window.__DEBUG_MODE__.showCursor);
-      
+
       // Add key handler for debug mode toggling
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'd' && e.ctrlKey && e.shiftKey) {
@@ -298,25 +307,25 @@ export default function DitherBackground() {
           setShowCursor(window.__DEBUG_MODE__!.showCursor);
         }
       };
-      
+
       window.addEventListener('keydown', handleKeyDown);
       return () => window.removeEventListener('keydown', handleKeyDown);
     }
   }, []);
-  
+
   // Optimized mouse tracking with throttling
   const handleMouseMove = useCallback((e: MouseEvent) => {
     setMousePos({
       x: e.clientX,
-      y: e.clientY
+      y: e.clientY,
     });
   }, []);
-  
+
   // Effect for mouse tracking
   useEffect(() => {
     let animationFrameId: number;
     let lastMouseEvent: MouseEvent | null = null;
-    
+
     const throttledMouseMove = (e: MouseEvent) => {
       lastMouseEvent = e;
       if (!animationFrameId) {
@@ -328,9 +337,9 @@ export default function DitherBackground() {
         });
       }
     };
-    
+
     window.addEventListener('mousemove', throttledMouseMove);
-    
+
     return () => {
       window.removeEventListener('mousemove', throttledMouseMove);
       if (animationFrameId) {
@@ -340,10 +349,7 @@ export default function DitherBackground() {
   }, [handleMouseMove]);
 
   return (
-    <div 
-      ref={ref} 
-      className="fixed inset-0 z-0 pointer-events-none"
-    >
+    <div ref={ref} className="fixed inset-0 z-0 pointer-events-none">
       <Canvas
         style={{ width: '100%', height: '100%' }}
         dpr={[1, 2]}
@@ -358,4 +364,4 @@ export default function DitherBackground() {
       </Canvas>
     </div>
   );
-} 
+}

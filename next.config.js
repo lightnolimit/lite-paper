@@ -7,7 +7,7 @@ const nextConfig = {
     NEXT_PUBLIC_BACKGROUND_TYPE: process.env.NEXT_PUBLIC_BACKGROUND_TYPE || 'dither',
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'https://docs.phantasy.bot',
   },
-  
+
   /**
    * Image optimization configuration
    */
@@ -21,23 +21,23 @@ const nextConfig = {
     ],
     unoptimized: true, // Required for Cloudflare Pages static export
   },
-  
+
   /**
    * Output configuration
    * - Using 'export' for Cloudflare Pages compatibility
    */
   output: 'export',
-  
+
   /**
    * Enable React strict mode
    */
   reactStrictMode: true,
-  
+
   /**
    * Trailing slash configuration - consistent URL handling
    */
   trailingSlash: false,
-  
+
   /**
    * TypeScript configuration
    */
@@ -53,9 +53,9 @@ const nextConfig = {
     optimizeCss: true,
     optimizePackageImports: ['framer-motion', '@react-three/fiber', '@react-three/drei'],
   },
-  
+
   // Headers configuration removed as it doesn't work with 'export' mode
   // These headers can be added through Cloudflare Pages custom headers
 };
 
-module.exports = nextConfig; 
+module.exports = nextConfig;

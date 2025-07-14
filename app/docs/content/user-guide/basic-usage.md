@@ -11,17 +11,18 @@ Your documentation site uses a **hierarchical structure** defined in `app/data/d
 ```typescript
 export const documentationTree: FileItem[] = [
   {
-    type: 'directory',        // Section folder
-    name: 'Getting Started',  // Display name
-    path: 'getting-started',  // URL path
-    children: [               // Files in this section
+    type: 'directory', // Section folder
+    name: 'Getting Started', // Display name
+    path: 'getting-started', // URL path
+    children: [
+      // Files in this section
       {
         type: 'file',
         name: 'Introduction.md',
-        path: 'getting-started/introduction'
-      }
-    ]
-  }
+        path: 'getting-started/introduction',
+      },
+    ],
+  },
 ];
 ```
 
@@ -119,6 +120,7 @@ The **Documentation Map** at the bottom of the sidebar:
 ### Breadcrumb Navigation
 
 At the top of each page:
+
 - Shows your current location
 - Click any segment to navigate up
 - Automatically generated from file structure
@@ -129,28 +131,33 @@ At the top of each page:
 
 Your content supports full Markdown syntax:
 
-```markdown
+````markdown
 # H1 Header
+
 ## H2 Header
+
 ### H3 Header
 
-**Bold text** and *italic text*
+**Bold text** and _italic text_
 
 - Unordered lists
+
 1. Ordered lists
 
 `inline code` and code blocks:
 
 ```javascript
 function example() {
-  return "Hello, world!";
+  return 'Hello, world!';
 }
 ```
+````
 
 [Links](./other-page) to other pages
 
 ![Images](./image.png) with alt text
-```
+
+````
 
 ### Code Blocks with Syntax Highlighting
 
@@ -162,7 +169,7 @@ interface User {
   name: string;
   email: string;
 }
-```
+````
 
 ```bash
 # Bash commands
@@ -184,11 +191,13 @@ Use relative paths to link between documentation pages:
 
 ```markdown
 <!-- Link to other pages -->
+
 [Installation Guide](./installation)
 [User Guide](../user-guide/basic-usage)
 [API Reference](../../api-reference/overview)
 
 <!-- Link to sections within a page -->
+
 [Go to Content Management](#content-management)
 ```
 
@@ -211,13 +220,13 @@ Modify colors in `app/globals.css`:
 
 ```css
 :root {
-  --primary-color: #3b82f6;      /* Blue */
-  --secondary-color: #64748b;    /* Gray */
-  --accent-color: #10b981;       /* Green */
+  --primary-color: #3b82f6; /* Blue */
+  --secondary-color: #64748b; /* Gray */
+  --accent-color: #10b981; /* Green */
 }
 
-[data-theme="dark"] {
-  --primary-color: #60a5fa;      /* Lighter blue for dark mode */
+[data-theme='dark'] {
+  --primary-color: #60a5fa; /* Lighter blue for dark mode */
 }
 ```
 
@@ -239,7 +248,7 @@ Change fonts and text styling:
 Toggle between different background effects in the settings menu:
 
 - **Wave** - Animated wave patterns
-- **Geometric** - Moving geometric shapes  
+- **Geometric** - Moving geometric shapes
 - **Particles** - Floating particle system
 - **Grid** - Animated grid overlay
 - **None** - Solid color background
@@ -258,6 +267,7 @@ The template is fully responsive:
 ### Best Practices
 
 1. **Logical Hierarchy**
+
    ```
    Getting Started → User Guide → Advanced Features → API Reference
    ```
@@ -280,6 +290,7 @@ The template is fully responsive:
 ### Content Templates
 
 #### New Feature Documentation
+
 ```markdown
 # Feature Name
 
@@ -308,6 +319,7 @@ Common issues and solutions.
 ```
 
 #### Tutorial Template
+
 ```markdown
 # Tutorial: Doing Something
 
@@ -320,12 +332,15 @@ What readers need before starting.
 ## Step-by-Step Guide
 
 ### Step 1: Setup
+
 Instructions...
 
 ### Step 2: Implementation
+
 Code examples...
 
 ### Step 3: Testing
+
 Verification steps...
 
 ## Next Steps
@@ -364,6 +379,7 @@ git push origin main
 ### Automatic Deployment
 
 If connected to Cloudflare Pages:
+
 1. Push changes to your main branch
 2. Cloudflare automatically builds and deploys
 3. Changes are live in 2-5 minutes
@@ -373,18 +389,22 @@ If connected to Cloudflare Pages:
 ### Common Issues
 
 **Page not showing in navigation**
+
 - Check that the file path matches the configuration in `documentation.ts`
 - Ensure the markdown file exists in the correct directory
 
 **Broken links**
+
 - Use relative paths: `./page` or `../section/page`
 - Check spelling and case sensitivity
 
 **Images not loading**
+
 - Store images in `public/assets/`
 - Use absolute paths: `/assets/images/photo.jpg`
 
 **Mindmap not showing connections**
+
 - Connections are automatically generated based on folder structure
 - Add manual connections by linking between pages
 
@@ -394,4 +414,4 @@ If connected to Cloudflare Pages:
 - Review [Troubleshooting](./troubleshooting) for specific issues
 - Explore [Code Examples](../developer-guides/code-examples) for customization
 
-Your documentation site is now ready to use! Start adding your content and customizing the design to match your needs. 
+Your documentation site is now ready to use! Start adding your content and customizing the design to match your needs.
