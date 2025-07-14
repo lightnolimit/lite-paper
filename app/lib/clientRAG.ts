@@ -193,94 +193,38 @@ function getApiKey(): string {
   );
 }
 
-// Load actual documentation content dynamically
+// Load actual documentation content from pre-generated JSON
 async function loadEmbeddedDocs(): Promise<void> {
   if (documentationIndex.length > 0) return; // Already loaded
 
-  // Define the actual documentation files that exist
-  const docFiles = [
-    {
-      path: 'getting-started/introduction',
-      title: 'Getting Started - Introduction',
-      file: '/app/docs/content/getting-started/introduction.md',
-    },
-    {
-      path: 'getting-started/installation',
-      title: 'Installation Guide',
-      file: '/app/docs/content/getting-started/installation.md',
-    },
-    {
-      path: 'getting-started/quick-start',
-      title: 'Quick Start',
-      file: '/app/docs/content/getting-started/quick-start.md',
-    },
-    {
-      path: 'deployment/overview',
-      title: 'Deployment Overview',
-      file: '/app/docs/content/deployment/overview.md',
-    },
-    {
-      path: 'deployment/platforms/cloudflare',
-      title: 'Deploying to Cloudflare Pages',
-      file: '/app/docs/content/deployment/platforms/cloudflare.md',
-    },
-    {
-      path: 'deployment/platforms/vercel',
-      title: 'Deploying to Vercel',
-      file: '/app/docs/content/deployment/platforms/vercel.md',
-    },
-    {
-      path: 'deployment/platforms/netlify',
-      title: 'Deploying to Netlify',
-      file: '/app/docs/content/deployment/platforms/netlify.md',
-    },
-    {
-      path: 'developer-guides/ui-configuration',
-      title: 'UI Configuration',
-      file: '/app/docs/content/developer-guides/ui-configuration.md',
-    },
-    {
-      path: 'developer-guides/icon-customization',
-      title: 'Icon Customization',
-      file: '/app/docs/content/developer-guides/icon-customization.md',
-    },
-    {
-      path: 'user-guide/advanced-features',
-      title: 'Advanced Features',
-      file: '/app/docs/content/user-guide/advanced-features.md',
-    },
-    {
-      path: 'user-guide/basic-usage',
-      title: 'Basic Usage',
-      file: '/app/docs/content/user-guide/basic-usage.md',
-    },
-    {
-      path: 'api-reference/overview',
-      title: 'API Reference',
-      file: '/app/docs/content/api-reference/overview.md',
-    },
-  ];
+  try {
+    // Load the pre-generated docs content
+    const response = await fetch('/docs-content.json');
+    if (response.ok) {
+      const docsData = await response.json();
 
-  // Load actual content from files using our API endpoint
-  for (const doc of docFiles) {
-    try {
-      const response = await fetch(`/api/docs/${doc.path}`);
-      if (response.ok) {
-        const content = await response.text();
-        if (content.trim()) {
+      // Convert the content object to our DocumentChunk format
+      for (const [path, content] of Object.entries(docsData.content as Record<string, string>)) {
+        if (content && content.trim()) {
+          // Extract title from the first heading or use the path
+          const titleMatch = content.match(/^#\s+(.+)$/m);
+          const title = titleMatch
+            ? titleMatch[1]
+            : path.split('/').pop()?.replace(/-/g, ' ') || path;
+
           documentationIndex.push({
             content: content,
             metadata: {
-              title: doc.title,
-              path: doc.path,
-              section: doc.path.split('/')[0],
+              title: title,
+              path: path,
+              section: path.split('/')[0],
             },
           });
         }
       }
-    } catch (error) {
-      console.warn(`Failed to load ${doc.path}:`, error);
     }
+  } catch (error) {
+    console.warn('Failed to load docs content:', error);
   }
 
   // Fallback content if no files loaded
