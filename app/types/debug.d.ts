@@ -4,9 +4,9 @@ declare global {
     toggleDebugCursor?: () => void;
     toggleDebugLogging?: () => void;
   }
-  
+
   interface DebugState {
     showCursor: boolean;
     logging: boolean;
   }
-} 
+}

@@ -5,6 +5,7 @@ Get your documentation site up and running in just a few minutes! This guide wil
 ## Prerequisites
 
 Before you begin, make sure you have:
+
 - **Node.js 18+** installed on your system
 - **npm** or **yarn** package manager
 - A **Git** client for version control
@@ -32,6 +33,7 @@ npm run dev
 ```
 
 The development server includes:
+
 - **Hot reload** for instant updates
 - **Error overlay** for debugging
 - **TypeScript checking** in real-time
@@ -39,6 +41,7 @@ The development server includes:
 ## Step 3: Customize Your Content
 
 ### Update Site Configuration
+
 Edit the main configuration in `app/data/documentation.ts`:
 
 ```typescript
@@ -51,20 +54,22 @@ export const documentationTree: FileItem[] = [
       {
         type: 'file',
         name: 'Your Page.md',
-        path: 'your-section/your-page'
-      }
-    ]
-  }
+        path: 'your-section/your-page',
+      },
+    ],
+  },
 ];
 ```
 
 ### Create Your Content
+
 Add markdown files in `app/docs/content/`:
 
 ```markdown
 # Your Page Title
 
 Your content here! You can use:
+
 - Standard markdown syntax
 - Code blocks with syntax highlighting
 - Tables, lists, and links
@@ -72,7 +77,9 @@ Your content here! You can use:
 ```
 
 ### Customize Styling
+
 Modify the visual appearance:
+
 - **Colors**: Edit CSS variables in `app/globals.css`
 - **Fonts**: Update font imports and CSS
 - **Layout**: Modify component styling
@@ -91,6 +98,7 @@ npm start
 ```
 
 Verify that:
+
 - ✅ All pages load correctly
 - ✅ Navigation works properly
 - ✅ Mindmap displays your content
@@ -106,6 +114,7 @@ The easiest way to deploy is using Cloudflare Pages:
    - Connect your GitHub repository
 
 2. **Configure Build**
+
    ```
    Build command: npm run build
    Build directory: .next
@@ -119,6 +128,7 @@ The easiest way to deploy is using Cloudflare Pages:
 ## Alternative Deployment Options
 
 ### Vercel
+
 ```bash
 # Install Vercel CLI
 npm i -g vercel
@@ -128,6 +138,7 @@ vercel
 ```
 
 ### Netlify
+
 ```bash
 # Install Netlify CLI
 npm i -g netlify-cli
@@ -137,7 +148,9 @@ netlify deploy --prod
 ```
 
 ### Static Export
+
 For static hosting:
+
 ```bash
 # Build static version
 npm run build && npm run export
@@ -152,4 +165,4 @@ Now that your documentation site is running:
 3. 🚀 Explore [Deployment Options](../../deployment/overview) for production setup
 4. 🛠️ Browse [Developer Guides](../../developer-guides/code-examples) for advanced customization
 
-Need help? Every section in this documentation includes detailed examples and troubleshooting tips! 
+Need help? Every section in this documentation includes detailed examples and troubleshooting tips!

@@ -1,0 +1,6 @@
+{
+  "permissions": {
+    "allow": ["Bash(npx prettier:*)", "Bash(chmod:*)"],
+    "deny": []
+  }
+}

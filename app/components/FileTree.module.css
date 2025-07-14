@@ -49,37 +49,41 @@
 }
 
 /* Custom SVG icon handling for dark mode */
-.dark img[src*="pixel-folder"],
-.dark img[src*="pixel-file"],
-.dark img[src*="pixel-info-circle"],
-.dark img[src*="pixel-exclamation"],
-.dark img[src*="pixel-times-circle"],
-.dark img[src*="pixel-check-circle"] {
+.dark img[src*='pixel-folder'],
+.dark img[src*='pixel-file'],
+.dark img[src*='pixel-info-circle'],
+.dark img[src*='pixel-exclamation'],
+.dark img[src*='pixel-times-circle'],
+.dark img[src*='pixel-check-circle'] {
   filter: invert(1);
 }
 
 /* File tree icon hover effects */
-.fileTreeItem:hover img[src*="pixel-folder"],
-.fileTreeItem:hover img[src*="pixel-file"] {
-  filter: brightness(0) saturate(100%) invert(43%) sepia(20%) saturate(1027%) hue-rotate(88deg) brightness(95%) contrast(89%);
+.fileTreeItem:hover img[src*='pixel-folder'],
+.fileTreeItem:hover img[src*='pixel-file'] {
+  filter: brightness(0) saturate(100%) invert(43%) sepia(20%) saturate(1027%) hue-rotate(88deg)
+    brightness(95%) contrast(89%);
 }
 
-.dark .fileTreeItem:hover img[src*="pixel-folder"],
-.dark .fileTreeItem:hover img[src*="pixel-file"] {
-  filter: brightness(0) saturate(100%) invert(64%) sepia(87%) saturate(1392%) hue-rotate(316deg) brightness(105%) contrast(101%);
+.dark .fileTreeItem:hover img[src*='pixel-folder'],
+.dark .fileTreeItem:hover img[src*='pixel-file'] {
+  filter: brightness(0) saturate(100%) invert(64%) sepia(87%) saturate(1392%) hue-rotate(316deg)
+    brightness(105%) contrast(101%);
 }
 
-.fileTreeItem.active img[src*="pixel-folder"],
-.fileTreeItem.active img[src*="pixel-file"] {
-  filter: brightness(0) saturate(100%) invert(43%) sepia(20%) saturate(1027%) hue-rotate(88deg) brightness(95%) contrast(89%);
+.fileTreeItem.active img[src*='pixel-folder'],
+.fileTreeItem.active img[src*='pixel-file'] {
+  filter: brightness(0) saturate(100%) invert(43%) sepia(20%) saturate(1027%) hue-rotate(88deg)
+    brightness(95%) contrast(89%);
 }
 
-.dark .fileTreeItem.active img[src*="pixel-folder"],
-.dark .fileTreeItem.active img[src*="pixel-file"] {
-  filter: brightness(0) saturate(100%) invert(64%) sepia(87%) saturate(1392%) hue-rotate(316deg) brightness(105%) contrast(101%);
+.dark .fileTreeItem.active img[src*='pixel-folder'],
+.dark .fileTreeItem.active img[src*='pixel-file'] {
+  filter: brightness(0) saturate(100%) invert(64%) sepia(87%) saturate(1392%) hue-rotate(316deg)
+    brightness(105%) contrast(101%);
 }
 
 /* Reduced motion styles for file tree */
 .reduceMotion .fileTreeItem {
   transition: none;
-} 
+}

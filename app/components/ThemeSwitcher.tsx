@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import React, { useMemo, useCallback } from 'react';
+
 import { useTheme } from '../providers/ThemeProvider';
 
 /**
@@ -15,32 +16,41 @@ type ThemeSwitcherProps = {
 
 /**
  * ThemeSwitcher component that toggles between light and dark mode
- * 
+ *
  * Displays a sun icon in dark mode and a moon icon in light mode.
  * Uses framer-motion for hover and tap animations.
- * 
+ *
  * @param {ThemeSwitcherProps} props - Component props
  * @returns {React.ReactElement} Rendered ThemeSwitcher component
  */
-const ThemeSwitcher = React.memo(({ className = "" }: ThemeSwitcherProps): React.ReactElement => {
+const ThemeSwitcher = React.memo(({ className = '' }: ThemeSwitcherProps): React.ReactElement => {
   const { isDarkMode, toggleTheme } = useTheme();
 
   // Memoized animation settings for button
-  const buttonAnimations = useMemo(() => ({
-    whileHover: { scale: 1.1 },
-    whileTap: { scale: 0.95 }
-  }), []);
+  const buttonAnimations = useMemo(
+    () => ({
+      whileHover: { scale: 1.1 },
+      whileTap: { scale: 0.95 },
+    }),
+    []
+  );
 
   // Memoized ARIA labels based on current mode
-  const ariaAttrs = useMemo(() => ({
-    'aria-label': isDarkMode ? "Switch to light mode" : "Switch to dark mode",
-    'title': isDarkMode ? "Switch to light mode" : "Switch to dark mode"
-  }), [isDarkMode]);
+  const ariaAttrs = useMemo(
+    () => ({
+      'aria-label': isDarkMode ? 'Switch to light mode' : 'Switch to dark mode',
+      title: isDarkMode ? 'Switch to light mode' : 'Switch to dark mode',
+    }),
+    [isDarkMode]
+  );
 
   // Memoized style object
-  const buttonStyle = useMemo(() => ({
-    color: 'var(--text-color)'
-  }), []);
+  const buttonStyle = useMemo(
+    () => ({
+      color: 'var(--text-color)',
+    }),
+    []
+  );
 
   // Optimized theme toggle handler
   const handleToggleTheme = useCallback(() => {
@@ -55,30 +65,45 @@ const ThemeSwitcher = React.memo(({ className = "" }: ThemeSwitcherProps): React
     if (isDarkMode) {
       // Pixel Sun (light mode icon)
       return (
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          width="20" 
-          height="20" 
-          viewBox="0 0 24 24" 
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
           style={{ display: 'block' }}
           aria-hidden="true"
         >
-          <path fill="currentColor" d="M21 11v-1h1V9h1V7h-3V6h-2V4h-1V1h-2v1h-1v1h-1v1h-2V3h-1V2H9V1H7v3H6v2H4v1H1v2h1v1h1v1h1v2H3v1H2v1H1v2h3v1h2v2h1v3h2v-1h1v-1h1v-1h2v1h1v1h1v1h2v-3h1v-2h2v-1h3v-2h-1v-1h-1v-1h-1v-2zm-2 2v1h1v1h1v1h-3v1h-1v1h-1v3h-1v-1h-1v-1h-1v-1h-2v1h-1v1H9v1H8v-3H7v-1H6v-1H3v-1h1v-1h1v-1h1v-2H5v-1H4V9H3V8h3V7h1V6h1V3h1v1h1v1h1v1h2V5h1V4h1V3h1v2h1v2h1v1h3v1h-1v1h-1v1h-1v2z" strokeWidth="0.5" stroke="#000" />
-          <path fill="currentColor" d="M16 10V9h-1V8h-1V7h-4v1H9v1H8v1H7v4h1v1h1v1h1v1h4v-1h1v-1h1v-1h1v-4zm-1 4h-1v1h-4v-1H9v-4h1V9h4v1h1z" strokeWidth="0.5" stroke="#000" />
+          <path
+            fill="currentColor"
+            d="M21 11v-1h1V9h1V7h-3V6h-2V4h-1V1h-2v1h-1v1h-1v1h-2V3h-1V2H9V1H7v3H6v2H4v1H1v2h1v1h1v1h1v2H3v1H2v1H1v2h3v1h2v2h1v3h2v-1h1v-1h1v-1h2v1h1v1h1v1h2v-3h1v-2h2v-1h3v-2h-1v-1h-1v-1h-1v-2zm-2 2v1h1v1h1v1h-3v1h-1v1h-1v3h-1v-1h-1v-1h-1v-1h-2v1h-1v1H9v1H8v-3H7v-1H6v-1H3v-1h1v-1h1v-1h1v-2H5v-1H4V9H3V8h3V7h1V6h1V3h1v1h1v1h1v1h2V5h1V4h1V3h1v2h1v2h1v1h3v1h-1v1h-1v1h-1v2z"
+            strokeWidth="0.5"
+            stroke="#000"
+          />
+          <path
+            fill="currentColor"
+            d="M16 10V9h-1V8h-1V7h-4v1H9v1H8v1H7v4h1v1h1v1h1v1h4v-1h1v-1h1v-1h1v-4zm-1 4h-1v1h-4v-1H9v-4h1V9h4v1h1z"
+            strokeWidth="0.5"
+            stroke="#000"
+          />
         </svg>
       );
     } else {
       // Pixel Moon (dark mode icon)
       return (
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          width="20" 
-          height="20" 
-          viewBox="0 0 24 24" 
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
           style={{ display: 'block' }}
           aria-hidden="true"
         >
-          <path fill="currentColor" d="M21 17v1h-2v1h-4v-1h-2v-1h-2v-1h-1v-2H9v-2H8V8h1V6h1V4h1V3h2V2h2V1h-5v1H8v1H6v1H5v1H4v2H3v2H2v6h1v2h1v2h1v1h1v1h2v1h2v1h6v-1h2v-1h2v-1h1v-1h1v-2zM8 20v-1H6v-2H5v-2H4V9h1V7h1V5h2v1H7v2H6v4h1v2h1v2h1v1h1v1h1v1h2v1h2v1h-5v-1z" strokeWidth="0.5" stroke="#000" />
+          <path
+            fill="currentColor"
+            d="M21 17v1h-2v1h-4v-1h-2v-1h-2v-1h-1v-2H9v-2H8V8h1V6h1V4h1V3h2V2h2V1h-5v1H8v1H6v1H5v1H4v2H3v2H2v6h1v2h1v2h1v1h1v1h2v1h2v1h6v-1h2v-1h2v-1h1v-1h1v-2zM8 20v-1H6v-2H5v-2H4V9h1V7h1V5h2v1H7v2H6v4h1v2h1v2h1v1h1v1h1v1h2v1h2v1h-5v-1z"
+            strokeWidth="0.5"
+            stroke="#000"
+          />
         </svg>
       );
     }
@@ -86,7 +111,7 @@ const ThemeSwitcher = React.memo(({ className = "" }: ThemeSwitcherProps): React
 
   // Memoized text display
   const displayText = useMemo(() => {
-    return isDarkMode ? "Light" : "Dark";
+    return isDarkMode ? 'Light' : 'Dark';
   }, [isDarkMode]);
 
   return (
@@ -106,4 +131,4 @@ const ThemeSwitcher = React.memo(({ className = "" }: ThemeSwitcherProps): React
 
 ThemeSwitcher.displayName = 'ThemeSwitcher';
 
-export default ThemeSwitcher; 
+export default ThemeSwitcher;

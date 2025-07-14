@@ -1,7 +1,7 @@
 /**
  * Logger utility for centralized logging with debug mode control
- * 
- * This allows consistent logging across the application with the ability 
+ *
+ * This allows consistent logging across the application with the ability
  * to enable or disable debug logs based on the environment.
  */
 
@@ -16,7 +16,7 @@ class Logger {
 
   /**
    * Create a new logger instance
-   * 
+   *
    * @param prefix - Module name or identifier to prepend to all logs
    */
   constructor(prefix: string = '') {
@@ -25,7 +25,7 @@ class Logger {
 
   /**
    * Log a debug message (only shown when debug mode is enabled)
-   * 
+   *
    * @param message - The message to log
    * @param args - Additional arguments to log
    */
@@ -37,7 +37,7 @@ class Logger {
 
   /**
    * Log an info message
-   * 
+   *
    * @param message - The message to log
    * @param args - Additional arguments to log
    */
@@ -47,7 +47,7 @@ class Logger {
 
   /**
    * Log a warning message
-   * 
+   *
    * @param message - The message to log
    * @param args - Additional arguments to log
    */
@@ -57,7 +57,7 @@ class Logger {
 
   /**
    * Log an error message
-   * 
+   *
    * @param message - The message to log
    * @param args - Additional arguments to log
    */
@@ -68,7 +68,7 @@ class Logger {
 
 /**
  * Create a new logger instance
- * 
+ *
  * @param prefix - Module name or identifier to prepend to all logs
  * @returns A new logger instance
  */
@@ -81,4 +81,4 @@ export const createLogger = (prefix?: string): Logger => {
  */
 export const logger = createLogger('App');
 
-export default logger; 
+export default logger;

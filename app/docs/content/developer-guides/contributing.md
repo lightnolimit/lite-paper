@@ -6,7 +6,7 @@ Thank you for your interest in contributing to the documentation system! This gu
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm 8+
 - Git
 
@@ -14,17 +14,20 @@ Thank you for your interest in contributing to the documentation system! This gu
 
 1. **Fork the repository**
 2. **Clone your fork**:
+
    ```bash
    git clone https://github.com/your-username/docs-template.git
    cd docs-template
    ```
 
 3. **Install dependencies**:
+
    ```bash
    npm install
    ```
 
 4. **Start development server**:
+
    ```bash
    npm run dev
    ```
@@ -55,6 +58,7 @@ type(scope): description
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -64,6 +68,7 @@ type(scope): description
 - `chore`: Maintenance tasks
 
 **Examples:**
+
 ```
 feat(mindmap): add search functionality to documentation graph
 
@@ -86,9 +91,9 @@ docs(api): update endpoints documentation with new parameters
  */
 interface GraphConfig {
   /** Maximum number of nodes to display */
-  maxNodes: number
+  maxNodes: number;
   /** Enable search functionality */
-  enableSearch: boolean
+  enableSearch: boolean;
 }
 ```
 
@@ -161,6 +166,7 @@ npm run test:coverage
 ### Writing Tests
 
 Write tests for:
+
 - Component behavior
 - User interactions
 - Edge cases
@@ -179,25 +185,25 @@ describe('DocumentationGraph', () => {
 
   test('renders nodes correctly', () => {
     render(
-      <DocumentationGraph 
-        data={mockData} 
-        onNodeClick={jest.fn()} 
+      <DocumentationGraph
+        data={mockData}
+        onNodeClick={jest.fn()}
       />
     )
-    
+
     expect(screen.getByText('Introduction')).toBeInTheDocument()
   })
 
   test('calls onNodeClick when node is clicked', () => {
     const handleClick = jest.fn()
-    
+
     render(
-      <DocumentationGraph 
-        data={mockData} 
-        onNodeClick={handleClick} 
+      <DocumentationGraph
+        data={mockData}
+        onNodeClick={handleClick}
       />
     )
-    
+
     fireEvent.click(screen.getByText('Introduction'))
     expect(handleClick).toHaveBeenCalledWith('1')
   })
@@ -223,10 +229,10 @@ describe('DocumentationGraph', () => {
 
 Document all public APIs:
 
-```typescript
+````typescript
 /**
  * Theme provider for the documentation system
- * 
+ *
  * @example
  * ```tsx
  * <ThemeProvider>
@@ -237,13 +243,14 @@ Document all public APIs:
 export function ThemeProvider({ children }: { children: ReactNode }) {
   // Implementation
 }
-```
+````
 
 ## Accessibility
 
 ### Requirements
 
 All contributions must:
+
 - Support keyboard navigation
 - Include proper ARIA labels
 - Respect motion preferences
@@ -317,9 +324,11 @@ npm run lighthouse
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Documentation update
@@ -327,15 +336,18 @@ Brief description of changes
 - [ ] Code refactoring
 
 ## Testing
+
 - [ ] Unit tests pass
 - [ ] E2E tests pass
 - [ ] Manual testing completed
 - [ ] Accessibility testing completed
 
 ## Screenshots/GIFs
+
 If applicable, add screenshots or GIFs
 
 ## Checklist
+
 - [ ] Code follows style guidelines
 - [ ] Self-review completed
 - [ ] Documentation updated
@@ -357,20 +369,25 @@ Use the bug report template:
 
 ```markdown
 ## Bug Description
+
 Clear description of the bug
 
 ## Steps to Reproduce
+
 1. Go to '...'
 2. Click on '...'
 3. See error
 
 ## Expected Behavior
+
 What should have happened
 
 ## Actual Behavior
+
 What actually happened
 
 ## Environment
+
 - OS: [e.g., macOS 13.0]
 - Browser: [e.g., Chrome 110]
 - Node.js: [e.g., 18.12.0]
@@ -382,18 +399,23 @@ Use the feature request template:
 
 ```markdown
 ## Feature Description
+
 Clear description of the feature
 
 ## Use Case
+
 Why is this feature needed?
 
 ## Proposed Solution
+
 How would you implement this?
 
 ## Alternatives Considered
+
 Any alternative solutions?
 
 ## Additional Context
+
 Screenshots, mockups, etc.
 ```
 
@@ -535,4 +557,4 @@ project/
 - Plugin system
 - Advanced theming
 
-Thank you for contributing to make documentation better for everyone! 🚀 
+Thank you for contributing to make documentation better for everyone! 🚀

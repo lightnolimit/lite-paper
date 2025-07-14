@@ -16,15 +16,18 @@ Production: https://your-domain.com
 Retrieve documentation page content.
 
 **Parameters:**
+
 - `slug` (array): Path segments for the documentation page
 
 **Example:**
+
 ```
 GET /docs/getting-started/introduction
 GET /docs/api-reference/overview
 ```
 
 **Response:**
+
 ```json
 {
   "content": "# Introduction\n\nWelcome to the documentation...",
@@ -39,15 +42,18 @@ GET /docs/api-reference/overview
 Search documentation content.
 
 **Query Parameters:**
+
 - `q` (string): Search query
 - `limit` (number): Maximum results (default: 10)
 
 **Example:**
+
 ```
 GET /api/docs/search?q=installation&limit=5
 ```
 
 **Response:**
+
 ```json
 {
   "results": [
@@ -70,6 +76,7 @@ GET /api/docs/search?q=installation&limit=5
 Get current theme configuration.
 
 **Response:**
+
 ```json
 {
   "themes": {
@@ -93,6 +100,7 @@ Get current theme configuration.
 Update theme preferences.
 
 **Request Body:**
+
 ```json
 {
   "theme": "dark",
@@ -101,6 +109,7 @@ Update theme preferences.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -114,6 +123,7 @@ Update theme preferences.
 Get navigation structure.
 
 **Response:**
+
 ```json
 {
   "navigation": [
@@ -140,6 +150,7 @@ Get navigation structure.
 Track page views.
 
 **Request Body:**
+
 ```json
 {
   "path": "/docs/getting-started/introduction",
@@ -150,6 +161,7 @@ Track page views.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -162,6 +174,7 @@ Track page views.
 Track search queries.
 
 **Request Body:**
+
 ```json
 {
   "query": "installation guide",
@@ -171,6 +184,7 @@ Track search queries.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -183,10 +197,12 @@ Track search queries.
 Get popular content.
 
 **Query Parameters:**
+
 - `period` (string): Time period (day, week, month)
 - `limit` (number): Maximum results (default: 10)
 
 **Response:**
+
 ```json
 {
   "pages": [
@@ -209,6 +225,7 @@ Get popular content.
 Submit page feedback.
 
 **Request Body:**
+
 ```json
 {
   "path": "/docs/getting-started/introduction",
@@ -220,6 +237,7 @@ Submit page feedback.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -233,9 +251,11 @@ Submit page feedback.
 Get feedback summary for a page.
 
 **Query Parameters:**
+
 - `path` (string): Page path
 
 **Response:**
+
 ```json
 {
   "path": "/docs/getting-started/introduction",
@@ -254,6 +274,7 @@ Get feedback summary for a page.
 Export documentation as PDF.
 
 **Query Parameters:**
+
 - `paths` (array): Pages to include
 - `format` (string): Output format (pdf, epub)
 
@@ -265,6 +286,7 @@ Binary PDF file or job ID for async processing.
 Export documentation structure as JSON.
 
 **Response:**
+
 ```json
 {
   "meta": {
@@ -290,6 +312,7 @@ Export documentation structure as JSON.
 Handle GitHub webhook for automatic updates.
 
 **Headers:**
+
 - `X-GitHub-Event`: Event type
 - `X-Hub-Signature-256`: HMAC signature
 
@@ -297,6 +320,7 @@ Handle GitHub webhook for automatic updates.
 GitHub webhook payload
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -310,6 +334,7 @@ GitHub webhook payload
 Trigger content rebuild.
 
 **Request Body:**
+
 ```json
 {
   "paths": ["getting-started/introduction"],
@@ -319,6 +344,7 @@ Trigger content rebuild.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -350,27 +376,27 @@ All endpoints return errors in this format:
 
 ### HTTP Status Codes
 
-| Code | Meaning |
-|------|---------|
-| 200 | Success |
-| 201 | Created |
-| 400 | Bad Request |
-| 401 | Unauthorized |
-| 403 | Forbidden |
-| 404 | Not Found |
-| 429 | Rate Limited |
-| 500 | Internal Server Error |
+| Code | Meaning               |
+| ---- | --------------------- |
+| 200  | Success               |
+| 201  | Created               |
+| 400  | Bad Request           |
+| 401  | Unauthorized          |
+| 403  | Forbidden             |
+| 404  | Not Found             |
+| 429  | Rate Limited          |
+| 500  | Internal Server Error |
 
 ## Rate Limiting
 
 API endpoints are rate limited to prevent abuse:
 
-| Endpoint Type | Limit |
-|---------------|-------|
-| Read operations | 1000/hour |
-| Write operations | 100/hour |
-| Search | 60/minute |
-| Analytics | 500/hour |
+| Endpoint Type    | Limit     |
+| ---------------- | --------- |
+| Read operations  | 1000/hour |
+| Write operations | 100/hour  |
+| Search           | 60/minute |
+| Analytics        | 500/hour  |
 
 Rate limit headers are included in responses:
 
@@ -393,25 +419,25 @@ Authorization: Bearer your-jwt-token
 ### JavaScript/TypeScript SDK
 
 ```typescript
-import { DocsAPI } from '@your-org/docs-sdk'
+import { DocsAPI } from '@your-org/docs-sdk';
 
 const api = new DocsAPI({
   baseURL: 'https://your-domain.com',
-  apiKey: 'your-api-key'
-})
+  apiKey: 'your-api-key',
+});
 
 // Search documentation
-const results = await api.search('installation guide')
+const results = await api.search('installation guide');
 
 // Get page content
-const page = await api.getPage('getting-started/introduction')
+const page = await api.getPage('getting-started/introduction');
 
 // Submit feedback
 await api.submitFeedback({
   path: '/docs/getting-started/introduction',
   type: 'helpful',
-  rating: 5
-})
+  rating: 5,
+});
 ```
 
 ### Python SDK
@@ -447,6 +473,7 @@ GET /api/openapi.json
 ```
 
 This can be used with tools like:
+
 - Swagger UI
 - Postman
 - Insomnia
@@ -459,17 +486,14 @@ This can be used with tools like:
 Verify webhook signatures to ensure authenticity:
 
 ```typescript
-import crypto from 'crypto'
+import crypto from 'crypto';
 
 function verifySignature(payload: string, signature: string, secret: string): boolean {
-  const hmac = crypto.createHmac('sha256', secret)
-  hmac.update(payload)
-  const digest = `sha256=${hmac.digest('hex')}`
-  
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(digest)
-  )
+  const hmac = crypto.createHmac('sha256', secret);
+  hmac.update(payload);
+  const digest = `sha256=${hmac.digest('hex')}`;
+
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
 }
 ```
 
@@ -494,8 +518,7 @@ curl -X POST "https://your-domain.com/api/feedback" \
 
 ```javascript
 // Search documentation
-const searchResults = await fetch('/api/docs/search?q=installation')
-  .then(res => res.json())
+const searchResults = await fetch('/api/docs/search?q=installation').then((res) => res.json());
 
 // Submit feedback
 const feedback = await fetch('/api/feedback', {
@@ -504,13 +527,13 @@ const feedback = await fetch('/api/feedback', {
   body: JSON.stringify({
     path: '/docs/getting-started',
     type: 'helpful',
-    rating: 5
-  })
-}).then(res => res.json())
+    rating: 5,
+  }),
+}).then((res) => res.json());
 ```
 
 ## Next Steps
 
 - **[Authentication Guide](./authentication)** - Implement API authentication
 - **[Code Examples](../developer-guides/code-examples)** - Practical API usage examples
-- **[Overview](./overview)** - API architecture and concepts 
+- **[Overview](./overview)** - API architecture and concepts

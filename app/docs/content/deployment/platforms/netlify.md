@@ -94,6 +94,7 @@ Create `netlify.toml` for advanced configuration:
 ### 1. Add Domain
 
 In Netlify dashboard:
+
 1. Go to **Site settings** → **Domain management**
 2. Add custom domain
 3. Configure DNS
@@ -144,10 +145,10 @@ NODE_ENV=production
 # netlify.toml
 [context.production.environment]
   NEXT_PUBLIC_ENVIRONMENT = "production"
-  
+
 [context.deploy-preview.environment]
   NEXT_PUBLIC_ENVIRONMENT = "preview"
-  
+
 [context.branch-deploy.environment]
   NEXT_PUBLIC_ENVIRONMENT = "development"
 ```
@@ -183,29 +184,29 @@ Create serverless functions for dynamic features:
 
 ```typescript
 // netlify/functions/api.ts
-import { Handler } from '@netlify/functions'
+import { Handler } from '@netlify/functions';
 
 export const handler: Handler = async (event, context) => {
-  const { httpMethod, path, body } = event
-  
+  const { httpMethod, path, body } = event;
+
   if (httpMethod === 'POST' && path === '/api/contact') {
-    const data = JSON.parse(body || '{}')
-    
+    const data = JSON.parse(body || '{}');
+
     // Process form submission
     return {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ success: true })
-    }
+      body: JSON.stringify({ success: true }),
+    };
   }
-  
+
   return {
     statusCode: 404,
-    body: JSON.stringify({ error: 'Not found' })
-  }
-}
+    body: JSON.stringify({ error: 'Not found' }),
+  };
+};
 ```
 
 ### Analytics Integration
@@ -216,7 +217,7 @@ Enable Netlify Analytics:
 # netlify.toml
 [build]
   command = "npm run build"
-  
+
 [build.environment]
   NETLIFY_ANALYTICS = "true"
 ```
@@ -239,7 +240,7 @@ Optimize build performance:
 ```toml
 [build]
   command = "npm ci && npm run build"
-  
+
 [build.environment]
   NODE_OPTIONS = "--max-old-space-size=4096"
   NPM_CONFIG_PRODUCTION = "false"
@@ -282,11 +283,11 @@ Netlify creates deploy previews for:
 # Production
 [context.production]
   command = "npm run build:production"
-  
+
 # Deploy previews
 [context.deploy-preview]
   command = "npm run build:preview"
-  
+
 # Branch deploys
 [context.branch-deploy]
   command = "npm run build:development"
@@ -309,33 +310,33 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Run tests
         run: npm run test
-        
+
       - name: Build project
         run: npm run build
-        
+
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v2.0
         with:
           publish-dir: './out'
           production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Deploy from GitHub Actions"
+          deploy-message: 'Deploy from GitHub Actions'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
@@ -349,7 +350,7 @@ Use build plugins for enhanced functionality:
 # netlify.toml
 [[plugins]]
   package = "@netlify/plugin-lighthouse"
-  
+
   [plugins.inputs.thresholds]
     performance = 0.9
     accessibility = 0.9
@@ -358,7 +359,7 @@ Use build plugins for enhanced functionality:
 
 [[plugins]]
   package = "netlify-plugin-submit-sitemap"
-  
+
   [plugins.inputs]
     baseUrl = "https://docs.yoursite.com"
     sitemapPath = "/sitemap.xml"
@@ -391,16 +392,16 @@ export function reportWebVitals(metric: any) {
     window.netlifyAnalytics.track('web-vital', {
       name: metric.name,
       value: metric.value,
-      id: metric.id
-    })
+      id: metric.id,
+    });
   }
-  
+
   // Custom tracking
   fetch('/.netlify/functions/analytics', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(metric)
-  })
+    body: JSON.stringify(metric),
+  });
 }
 ```
 
@@ -408,24 +409,24 @@ export function reportWebVitals(metric: any) {
 
 ```typescript
 // netlify/functions/error-tracking.ts
-import { Handler } from '@netlify/functions'
+import { Handler } from '@netlify/functions';
 
 export const handler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' }
+    return { statusCode: 405, body: 'Method Not Allowed' };
   }
-  
-  const error = JSON.parse(event.body || '{}')
-  
+
+  const error = JSON.parse(event.body || '{}');
+
   // Log error (could send to external service)
-  console.error('Client error:', error)
-  
+  console.error('Client error:', error);
+
   return {
     statusCode: 200,
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ received: true })
-  }
-}
+    body: JSON.stringify({ received: true }),
+  };
+};
 ```
 
 ## Security Features
@@ -456,7 +457,7 @@ Protect sensitive areas:
   for = "/*"
   [context.branch-deploy.headers.values]
     Basic-Auth = "staging:$STAGING_PASSWORD"
-    
+
 # IP restrictions (Netlify Pro)
 [[headers]]
   for = "/admin/*"
@@ -472,39 +473,39 @@ Process form submissions:
 
 ```typescript
 // netlify/functions/contact.ts
-import { Handler } from '@netlify/functions'
+import { Handler } from '@netlify/functions';
 
 export const handler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' }
+    return { statusCode: 405, body: 'Method Not Allowed' };
   }
-  
-  const { name, email, message } = JSON.parse(event.body || '{}')
-  
+
+  const { name, email, message } = JSON.parse(event.body || '{}');
+
   // Validate input
   if (!name || !email || !message) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: 'Missing required fields' })
-    }
+      body: JSON.stringify({ error: 'Missing required fields' }),
+    };
   }
-  
+
   // Process form (send email, save to database, etc.)
   try {
-    await sendEmail({ name, email, message })
-    
+    await sendEmail({ name, email, message });
+
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ success: true })
-    }
+      body: JSON.stringify({ success: true }),
+    };
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to send message' })
-    }
+      body: JSON.stringify({ error: 'Failed to send message' }),
+    };
   }
-}
+};
 ```
 
 ### Spam Protection
@@ -515,15 +516,15 @@ Implement spam protection:
 <!-- Honeypot field -->
 <form name="contact" method="POST" data-netlify="true">
   <input type="hidden" name="form-name" value="contact" />
-  
+
   <!-- Honeypot (hidden from users) -->
   <p style="display: none;">
     <input name="bot-field" />
   </p>
-  
+
   <!-- reCAPTCHA -->
   <div data-netlify-recaptcha="true"></div>
-  
+
   <button type="submit">Send</button>
 </form>
 ```
@@ -543,27 +544,27 @@ Integration options:
 
 ```typescript
 // lib/fauna.ts
-import faunadb from 'faunadb'
+import faunadb from 'faunadb';
 
 const client = new faunadb.Client({
-  secret: process.env.FAUNA_SECRET_KEY!
-})
+  secret: process.env.FAUNA_SECRET_KEY!,
+});
 
 export async function getDocuments() {
-  const query = faunadb.query
-  
+  const query = faunadb.query;
+
   try {
     const result = await client.query(
       query.Map(
         query.Paginate(query.Documents(query.Collection('documents'))),
         query.Lambda('ref', query.Get(query.Var('ref')))
       )
-    )
-    
-    return result
+    );
+
+    return result;
   } catch (error) {
-    console.error('Fauna query error:', error)
-    throw error
+    console.error('Fauna query error:', error);
+    throw error;
   }
 }
 ```
@@ -573,6 +574,7 @@ export async function getDocuments() {
 ### Common Issues
 
 **Build Failures:**
+
 ```bash
 # Check build logs in Netlify dashboard
 # Or use CLI
@@ -580,6 +582,7 @@ netlify build --debug
 ```
 
 **Routing Issues:**
+
 ```toml
 # Fix SPA routing
 [[redirects]]
@@ -590,6 +593,7 @@ netlify build --debug
 ```
 
 **Function Errors:**
+
 ```bash
 # Test functions locally
 netlify dev
@@ -602,7 +606,7 @@ Enable debug logging:
 ```toml
 [build]
   command = "DEBUG=* npm run build"
-  
+
 [build.environment]
   DEBUG = "netlify*"
 ```
@@ -610,10 +614,11 @@ Enable debug logging:
 ### Performance Issues
 
 **Slow builds:**
+
 ```toml
 [build]
   command = "npm ci --prefer-offline && npm run build"
-  
+
 [build.environment]
   NPM_CONFIG_PREFER_OFFLINE = "true"
   NPM_CONFIG_CACHE = ".npm"
@@ -624,6 +629,7 @@ Enable debug logging:
 ### Free Tier Limits
 
 Netlify free plan includes:
+
 - **100GB** bandwidth per month
 - **300** build minutes per month
 - **125k** serverless function invocations
@@ -631,6 +637,7 @@ Netlify free plan includes:
 ### Pro Plan Benefits
 
 For production sites:
+
 - **1TB** bandwidth
 - **Advanced build features**
 - **Analytics and forms**
@@ -648,12 +655,14 @@ For production sites:
 ### From Other Platforms
 
 **From Vercel:**
+
 1. Export build configuration
 2. Convert `vercel.json` to `netlify.toml`
 3. Migrate environment variables
 4. Update DNS records
 
 **From GitHub Pages:**
+
 1. Import repository to Netlify
 2. Configure build command
 3. Set up custom domain
@@ -694,4 +703,4 @@ For production sites:
 
 - **[Cloudflare Pages](./cloudflare)** - Alternative platform guide
 - **[Production Setup](../production-setup)** - Advanced configuration
-- **[Monitoring](../../user-guide/troubleshooting)** - Error tracking and analytics 
+- **[Monitoring](../../user-guide/troubleshooting)** - Error tracking and analytics

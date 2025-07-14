@@ -11,38 +11,34 @@ Advanced configuration for production deployment of your documentation site.
 module.exports = {
   // Static export for optimal performance
   output: 'export',
-  
+
   // Disable trailing slashes for cleaner URLs
   trailingSlash: false,
-  
+
   // Image optimization (disabled for static export)
   images: {
     unoptimized: true,
-    formats: ['image/avif', 'image/webp']
+    formats: ['image/avif', 'image/webp'],
   },
-  
+
   // Optimize compilation
   swcMinify: true,
-  
+
   // Experimental optimizations
   experimental: {
     optimizeCss: true,
-    optimizePackageImports: [
-      'framer-motion',
-      '@react-three/fiber',
-      '@react-three/drei'
-    ]
+    optimizePackageImports: ['framer-motion', '@react-three/fiber', '@react-three/drei'],
   },
-  
+
   // Remove source maps in production
   productionBrowserSourceMaps: false,
-  
+
   // Enable compression
   compress: true,
-  
+
   // Optimize fonts
-  optimizeFonts: true
-}
+  optimizeFonts: true,
+};
 ```
 
 ### Environment Variables
@@ -81,11 +77,11 @@ Implement strict CSP headers:
 
 ```javascript
 // middleware.js
-import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server';
 
 export function middleware(request) {
-  const response = NextResponse.next()
-  
+  const response = NextResponse.next();
+
   // Content Security Policy
   response.headers.set(
     'Content-Security-Policy',
@@ -99,27 +95,26 @@ export function middleware(request) {
       frame-ancestors 'none';
       base-uri 'self';
       form-action 'self';
-    `.replace(/\s+/g, ' ').trim()
-  )
-  
+    `
+      .replace(/\s+/g, ' ')
+      .trim()
+  );
+
   // Security headers
-  response.headers.set('X-Frame-Options', 'DENY')
-  response.headers.set('X-Content-Type-Options', 'nosniff')
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
-  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
-  
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+
   // HSTS
-  response.headers.set(
-    'Strict-Transport-Security',
-    'max-age=31536000; includeSubDomains; preload'
-  )
-  
-  return response
+  response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+
+  return response;
 }
 
 export const config = {
   matcher: '/((?!api|_next/static|_next/image|favicon.ico).*)',
-}
+};
 ```
 
 ### Input Sanitization
@@ -136,7 +131,7 @@ interface SanitizeOptions {
 }
 
 export function sanitizeHTML(
-  dirty: string, 
+  dirty: string,
   options: SanitizeOptions = {}
 ): string {
   const config = {
@@ -156,16 +151,16 @@ export function sanitizeHTML(
     FORBID_SCRIPT: true,
     FORBID_TAGS: ['script', 'object', 'embed', 'iframe'],
   }
-  
+
   return DOMPurify.sanitize(dirty, config)
 }
 
 // Usage in components
 function SafeContent({ content }: { content: string }) {
   const sanitizedContent = sanitizeHTML(content)
-  
+
   return (
-    <div 
+    <div
       dangerouslySetInnerHTML={{ __html: sanitizedContent }}
       className="prose dark:prose-invert"
     />
@@ -204,7 +199,7 @@ Implement strategic code splitting:
 // Dynamic imports for heavy components
 const DocumentationGraph = dynamic(
   () => import('@/components/DocumentationGraph'),
-  { 
+  {
     ssr: false,
     loading: () => <GraphSkeleton />
   }
@@ -241,7 +236,7 @@ export function generateImageSrcSet(
 // Component usage
 function OptimizedImage({ src, alt, ...props }) {
   const srcSet = generateImageSrcSet(src)
-  
+
   return (
     <img
       src={src}
@@ -289,7 +284,7 @@ export default function Document() {
           type="font/woff2"
           crossOrigin="anonymous"
         />
-        
+
         {/* DNS prefetch for external resources */}
         <link rel="dns-prefetch" href="//www.google-analytics.com" />
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
@@ -312,10 +307,10 @@ Implement comprehensive performance tracking:
 ```typescript
 // lib/performance.ts
 interface PerformanceMetric {
-  name: string
-  value: number
-  id: string
-  navigationType?: string
+  name: string;
+  value: number;
+  id: string;
+  navigationType?: string;
 }
 
 export function trackWebVitals(metric: PerformanceMetric) {
@@ -323,15 +318,13 @@ export function trackWebVitals(metric: PerformanceMetric) {
   if (typeof gtag !== 'undefined') {
     gtag('event', metric.name, {
       custom_parameter_name: 'web_vitals',
-      value: Math.round(
-        metric.name === 'CLS' ? metric.value * 1000 : metric.value
-      ),
+      value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
       event_category: 'Web Vitals',
       event_label: metric.id,
       non_interaction: true,
-    })
+    });
   }
-  
+
   // Send to custom analytics endpoint
   fetch('/api/analytics/performance', {
     method: 'POST',
@@ -341,31 +334,31 @@ export function trackWebVitals(metric: PerformanceMetric) {
       value: metric.value,
       id: metric.id,
       url: window.location.pathname,
-      timestamp: Date.now()
-    })
+      timestamp: Date.now(),
+    }),
   }).catch(() => {
     // Fail silently
-  })
+  });
 }
 
 // Real User Monitoring
 export function initRUM() {
   // Track navigation timing
   window.addEventListener('load', () => {
-    const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
-    
+    const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+
     trackWebVitals({
       name: 'TTFB',
       value: navigation.responseStart - navigation.requestStart,
-      id: 'ttfb'
-    })
-    
+      id: 'ttfb',
+    });
+
     trackWebVitals({
       name: 'FCP',
       value: navigation.domContentLoadedEventStart - navigation.navigationStart,
-      id: 'fcp'
-    })
-  })
+      id: 'fcp',
+    });
+  });
 }
 ```
 
@@ -376,27 +369,27 @@ Comprehensive error monitoring:
 ```typescript
 // lib/error-tracking.ts
 interface ErrorReport {
-  message: string
-  stack?: string
-  url: string
-  userAgent: string
-  timestamp: string
-  userId?: string
-  sessionId: string
+  message: string;
+  stack?: string;
+  url: string;
+  userAgent: string;
+  timestamp: string;
+  userId?: string;
+  sessionId: string;
 }
 
 class ErrorTracker {
-  private sessionId: string
-  
+  private sessionId: string;
+
   constructor() {
-    this.sessionId = this.generateSessionId()
-    this.setupErrorHandlers()
+    this.sessionId = this.generateSessionId();
+    this.setupErrorHandlers();
   }
-  
+
   private generateSessionId(): string {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2)
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
   }
-  
+
   private setupErrorHandlers(): void {
     // JavaScript errors
     window.addEventListener('error', (event) => {
@@ -406,10 +399,10 @@ class ErrorTracker {
         url: window.location.href,
         userAgent: navigator.userAgent,
         timestamp: new Date().toISOString(),
-        sessionId: this.sessionId
-      })
-    })
-    
+        sessionId: this.sessionId,
+      });
+    });
+
     // Promise rejections
     window.addEventListener('unhandledrejection', (event) => {
       this.reportError({
@@ -418,47 +411,47 @@ class ErrorTracker {
         url: window.location.href,
         userAgent: navigator.userAgent,
         timestamp: new Date().toISOString(),
-        sessionId: this.sessionId
-      })
-    })
-    
+        sessionId: this.sessionId,
+      });
+    });
+
     // React error boundary integration
-    this.monitorReactErrors()
+    this.monitorReactErrors();
   }
-  
+
   private async reportError(error: ErrorReport): Promise<void> {
     try {
       await fetch('/api/errors', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(error)
-      })
+        body: JSON.stringify(error),
+      });
     } catch (reportingError) {
-      console.error('Failed to report error:', reportingError)
+      console.error('Failed to report error:', reportingError);
     }
   }
-  
+
   private monitorReactErrors(): void {
-    const originalConsoleError = console.error
+    const originalConsoleError = console.error;
     console.error = (...args) => {
-      const message = args.join(' ')
+      const message = args.join(' ');
       if (message.includes('React')) {
         this.reportError({
           message: `React Error: ${message}`,
           url: window.location.href,
           userAgent: navigator.userAgent,
           timestamp: new Date().toISOString(),
-          sessionId: this.sessionId
-        })
+          sessionId: this.sessionId,
+        });
       }
-      originalConsoleError.apply(console, args)
-    }
+      originalConsoleError.apply(console, args);
+    };
   }
 }
 
 // Initialize in production only
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
-  new ErrorTracker()
+  new ErrorTracker();
 }
 ```
 
@@ -478,31 +471,31 @@ module.exports = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable'
-          }
-        ]
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
       },
       {
         source: '/_next/static/(.*)',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable'
-          }
-        ]
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
       },
       {
         source: '/(.*).html',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=3600, must-revalidate'
-          }
-        ]
-      }
-    ]
-  }
-}
+            value: 'public, max-age=3600, must-revalidate',
+          },
+        ],
+      },
+    ];
+  },
+};
 ```
 
 ### Service Worker
@@ -511,40 +504,34 @@ Implement service worker for offline support:
 
 ```typescript
 // public/sw.js
-const CACHE_NAME = 'docs-v1'
+const CACHE_NAME = 'docs-v1';
 const STATIC_CACHE = [
   '/',
   '/docs',
   '/_next/static/css/app.css',
   '/_next/static/js/app.js',
-  '/fonts/MapleMono-NF-CN-Regular.woff2'
-]
+  '/fonts/MapleMono-NF-CN-Regular.woff2',
+];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(STATIC_CACHE))
-  )
-})
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_CACHE)));
+});
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return
-  
+  if (event.request.method !== 'GET') return;
+
   event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        if (response) return response
-        
-        return fetch(event.request)
-          .then(response => {
-            const responseClone = response.clone()
-            caches.open(CACHE_NAME)
-              .then(cache => cache.put(event.request, responseClone))
-            return response
-          })
-      })
-  )
-})
+    caches.match(event.request).then((response) => {
+      if (response) return response;
+
+      return fetch(event.request).then((response) => {
+        const responseClone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        return response;
+      });
+    })
+  );
+});
 ```
 
 ## Database and API Setup
@@ -555,47 +542,44 @@ Implement rate limiting for API endpoints:
 
 ```typescript
 // lib/rate-limit.ts
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server';
 
 interface RateLimitConfig {
-  interval: number // Time window in milliseconds
-  uniqueTokenPerInterval: number // Max requests per interval
+  interval: number; // Time window in milliseconds
+  uniqueTokenPerInterval: number; // Max requests per interval
 }
 
-const rateLimitMap = new Map()
+const rateLimitMap = new Map();
 
 export function rateLimit(config: RateLimitConfig) {
   return async (req: NextRequest) => {
-    const token = req.ip || 'anonymous'
-    const tokenCount = rateLimitMap.get(token) || [0, Date.now()]
-    
+    const token = req.ip || 'anonymous';
+    const tokenCount = rateLimitMap.get(token) || [0, Date.now()];
+
     if (Date.now() - tokenCount[1] > config.interval) {
-      rateLimitMap.set(token, [1, Date.now()])
+      rateLimitMap.set(token, [1, Date.now()]);
     } else {
-      tokenCount[0]++
+      tokenCount[0]++;
       if (tokenCount[0] > config.uniqueTokenPerInterval) {
-        return NextResponse.json(
-          { error: 'Rate limit exceeded' },
-          { status: 429 }
-        )
+        return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
       }
-      rateLimitMap.set(token, tokenCount)
+      rateLimitMap.set(token, tokenCount);
     }
-    
-    return null // Continue to handler
-  }
+
+    return null; // Continue to handler
+  };
 }
 
 // Usage in API routes
 const limiter = rateLimit({
   interval: 60 * 1000, // 1 minute
-  uniqueTokenPerInterval: 10 // 10 requests per minute
-})
+  uniqueTokenPerInterval: 10, // 10 requests per minute
+});
 
 export async function POST(req: NextRequest) {
-  const limitResult = await limiter(req)
-  if (limitResult) return limitResult
-  
+  const limitResult = await limiter(req);
+  if (limitResult) return limitResult;
+
   // Handle request
 }
 ```
@@ -606,7 +590,7 @@ Optimize database connections:
 
 ```typescript
 // lib/database.ts
-import { Pool } from 'pg'
+import { Pool } from 'pg';
 
 // Connection pooling for PostgreSQL
 const pool = new Pool({
@@ -614,34 +598,34 @@ const pool = new Pool({
   max: 20, // Maximum number of connections
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
-})
+});
 
 export async function query(text: string, params?: any[]) {
-  const start = Date.now()
-  
+  const start = Date.now();
+
   try {
-    const result = await pool.query(text, params)
-    const duration = Date.now() - start
-    
+    const result = await pool.query(text, params);
+    const duration = Date.now() - start;
+
     // Log slow queries
     if (duration > 1000) {
-      console.warn(`Slow query detected: ${duration}ms`, { text, params })
+      console.warn(`Slow query detected: ${duration}ms`, { text, params });
     }
-    
-    return result
+
+    return result;
   } catch (error) {
-    console.error('Database query error:', error)
-    throw error
+    console.error('Database query error:', error);
+    throw error;
   }
 }
 
 // Graceful shutdown
 process.on('SIGINT', () => {
   pool.end(() => {
-    console.log('Database pool closed')
-    process.exit(0)
-  })
-})
+    console.log('Database pool closed');
+    process.exit(0);
+  });
+});
 ```
 
 ## Backup and Recovery
@@ -652,40 +636,40 @@ Implement automated content backup:
 
 ```typescript
 // scripts/backup-content.ts
-import fs from 'fs'
-import path from 'path'
-import archiver from 'archiver'
+import fs from 'fs';
+import path from 'path';
+import archiver from 'archiver';
 
 async function backupContent() {
-  const contentDir = path.join(process.cwd(), 'app/docs/content')
-  const backupDir = path.join(process.cwd(), 'backups')
-  const timestamp = new Date().toISOString().replace(/:/g, '-')
-  const backupFile = path.join(backupDir, `content-backup-${timestamp}.zip`)
-  
+  const contentDir = path.join(process.cwd(), 'app/docs/content');
+  const backupDir = path.join(process.cwd(), 'backups');
+  const timestamp = new Date().toISOString().replace(/:/g, '-');
+  const backupFile = path.join(backupDir, `content-backup-${timestamp}.zip`);
+
   // Ensure backup directory exists
   if (!fs.existsSync(backupDir)) {
-    fs.mkdirSync(backupDir, { recursive: true })
+    fs.mkdirSync(backupDir, { recursive: true });
   }
-  
-  const output = fs.createWriteStream(backupFile)
-  const archive = archiver('zip', { zlib: { level: 9 } })
-  
+
+  const output = fs.createWriteStream(backupFile);
+  const archive = archiver('zip', { zlib: { level: 9 } });
+
   return new Promise((resolve, reject) => {
     output.on('close', () => {
-      console.log(`Backup created: ${backupFile} (${archive.pointer()} bytes)`)
-      resolve(backupFile)
-    })
-    
-    archive.on('error', reject)
-    archive.pipe(output)
-    archive.directory(contentDir, false)
-    archive.finalize()
-  })
+      console.log(`Backup created: ${backupFile} (${archive.pointer()} bytes)`);
+      resolve(backupFile);
+    });
+
+    archive.on('error', reject);
+    archive.pipe(output);
+    archive.directory(contentDir, false);
+    archive.finalize();
+  });
 }
 
 // Run backup
 if (require.main === module) {
-  backupContent().catch(console.error)
+  backupContent().catch(console.error);
 }
 ```
 
@@ -756,10 +740,10 @@ Configure different environments:
 ```typescript
 // lib/config.ts
 interface Config {
-  apiUrl: string
-  databaseUrl: string
-  cacheEnabled: boolean
-  analyticsEnabled: boolean
+  apiUrl: string;
+  databaseUrl: string;
+  cacheEnabled: boolean;
+  analyticsEnabled: boolean;
 }
 
 const configs: Record<string, Config> = {
@@ -767,23 +751,23 @@ const configs: Record<string, Config> = {
     apiUrl: 'http://localhost:3000/api',
     databaseUrl: process.env.DEV_DATABASE_URL!,
     cacheEnabled: false,
-    analyticsEnabled: false
+    analyticsEnabled: false,
   },
   staging: {
     apiUrl: 'https://staging-docs.yoursite.com/api',
     databaseUrl: process.env.STAGING_DATABASE_URL!,
     cacheEnabled: true,
-    analyticsEnabled: false
+    analyticsEnabled: false,
   },
   production: {
     apiUrl: 'https://docs.yoursite.com/api',
     databaseUrl: process.env.DATABASE_URL!,
     cacheEnabled: true,
-    analyticsEnabled: true
-  }
-}
+    analyticsEnabled: true,
+  },
+};
 
-export const config = configs[process.env.NODE_ENV] || configs.development
+export const config = configs[process.env.NODE_ENV] || configs.development;
 ```
 
 ### Feature Flags
@@ -801,7 +785,7 @@ interface FeatureFlags {
 
 export class FeatureFlagManager {
   private flags: FeatureFlags
-  
+
   constructor() {
     this.flags = {
       newMindMap: process.env.FEATURE_NEW_MINDMAP === 'true',
@@ -810,7 +794,7 @@ export class FeatureFlagManager {
       commentSystem: process.env.FEATURE_COMMENTS === 'true'
     }
   }
-  
+
   isEnabled(flag: keyof FeatureFlags): boolean {
     return this.flags[flag] || false
   }
@@ -821,7 +805,7 @@ export const featureFlags = new FeatureFlagManager()
 // Usage in components
 function DocumentationGraph() {
   const useNewMindMap = featureFlags.isEnabled('newMindMap')
-  
+
   return useNewMindMap ? <NewMindMap /> : <LegacyMindMap />
 }
 ```
@@ -830,4 +814,4 @@ function DocumentationGraph() {
 
 - **[Platform-specific guides](./platforms/cloudflare)** - Detailed deployment instructions
 - **[Monitoring setup](../user-guide/troubleshooting)** - Error tracking and analytics
-- **[Security best practices](../developer-guides/best-practices)** - Advanced security configuration 
+- **[Security best practices](../developer-guides/best-practices)** - Advanced security configuration

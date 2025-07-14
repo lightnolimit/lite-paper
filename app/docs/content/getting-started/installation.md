@@ -5,12 +5,14 @@ This comprehensive guide covers everything you need to know to install and set u
 ## System Requirements
 
 ### Minimum Requirements
+
 - **Node.js**: Version 18.0 or higher
 - **RAM**: 4GB minimum (8GB recommended)
 - **Storage**: 1GB free space
 - **OS**: Windows 10+, macOS 10.15+, or Linux (Ubuntu 18.04+)
 
 ### Recommended Development Environment
+
 - **Node.js**: Latest LTS version (20.x)
 - **Package Manager**: npm 9+ or yarn 3+
 - **Editor**: VS Code with TypeScript and React extensions
@@ -19,9 +21,11 @@ This comprehensive guide covers everything you need to know to install and set u
 ## Prerequisites
 
 ### 1. Install Node.js
+
 Choose your installation method:
 
 **Option A: Official Installer**
+
 ```bash
 # Download from https://nodejs.org
 # Verify installation
@@ -30,6 +34,7 @@ npm --version   # Should be 9.0.0 or higher
 ```
 
 **Option B: Node Version Manager (Recommended)**
+
 ```bash
 # Install nvm (macOS/Linux)
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -40,6 +45,7 @@ nvm use --lts
 ```
 
 **Option C: Package Managers**
+
 ```bash
 # macOS with Homebrew
 brew install node
@@ -53,6 +59,7 @@ choco install nodejs
 ```
 
 ### 2. Install Git
+
 ```bash
 # macOS with Homebrew
 brew install git
@@ -65,6 +72,7 @@ sudo apt-get install git
 ```
 
 ### 3. Set Up Your Environment
+
 ```bash
 # Configure Git (first time only)
 git config --global user.name "Your Name"
@@ -170,11 +178,11 @@ export const documentationTree: FileItem[] = [
       {
         type: 'file',
         name: 'Introduction.md',
-        path: 'getting-started/introduction'
-      }
+        path: 'getting-started/introduction',
+      },
       // Add more files...
-    ]
-  }
+    ],
+  },
   // Add more sections...
 ];
 ```
@@ -185,16 +193,16 @@ Customize colors and theme in `app/globals.css`:
 
 ```css
 :root {
-  --primary-color: #3b82f6;      /* Blue */
-  --secondary-color: #64748b;    /* Gray */
-  --accent-color: #10b981;       /* Green */
-  --background-color: #ffffff;   /* White */
-  --text-color: #1f2937;         /* Dark Gray */
+  --primary-color: #3b82f6; /* Blue */
+  --secondary-color: #64748b; /* Gray */
+  --accent-color: #10b981; /* Green */
+  --background-color: #ffffff; /* White */
+  --text-color: #1f2937; /* Dark Gray */
 }
 
-[data-theme="dark"] {
-  --background-color: #111827;   /* Dark */
-  --text-color: #f9fafb;         /* Light Gray */
+[data-theme='dark'] {
+  --background-color: #111827; /* Dark */
+  --text-color: #f9fafb; /* Light Gray */
 }
 ```
 
@@ -220,6 +228,7 @@ npm run analyze      # Analyze bundle size
 ### Common Issues
 
 **Issue**: `Cannot find module` errors
+
 ```bash
 # Solution: Clear cache and reinstall
 rm -rf node_modules package-lock.json
@@ -227,18 +236,21 @@ npm install
 ```
 
 **Issue**: TypeScript errors during build
+
 ```bash
 # Solution: Check TypeScript configuration
 npm run type-check
 ```
 
 **Issue**: Port already in use
+
 ```bash
 # Solution: Use different port
 npm run dev -- --port 3001
 ```
 
 **Issue**: Permission errors (macOS/Linux)
+
 ```bash
 # Solution: Fix npm permissions
 sudo chown -R $(whoami) ~/.npm
@@ -289,4 +301,4 @@ Your installation is complete! Here's what to do next:
 3. 🚀 **Deploy**: Choose your hosting platform
 4. 📊 **Analytics**: Add tracking if needed
 
-Continue to the [Quick Start Guide](./quick-start) to begin customizing your site! 
+Continue to the [Quick Start Guide](./quick-start) to begin customizing your site!

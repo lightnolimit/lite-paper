@@ -1,8 +1,11 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { documentationTree } from '../data/documentation';
-import { FileItem } from '../components/FileTree';
+
 import { cache } from 'react';
+
+import { FileItem } from '../components/FileTree';
+import { documentationTree } from '../data/documentation';
+
 import logger from './logger';
 
 // Markdown loader specific logger
@@ -29,26 +32,25 @@ export const loadMarkdownContent = cache(async (docPath: string): Promise<string
     // Construct the file path
     const filePath = path.join(process.cwd(), 'app/docs/content', `${docPath}.md`);
     markdownLogger.debug(`Loading markdown file: ${filePath}`);
-    
+
     // Read the file content
     const content = await fs.readFile(filePath, 'utf-8');
-    
+
     if (!content) {
       markdownLogger.warn(`Empty markdown file: ${docPath}`);
       throw new MarkdownLoadError(docPath, new Error('Empty file content'));
     }
-    
+
     markdownLogger.debug(`Successfully loaded markdown file: ${docPath}`);
     // Return the content directly - we'll let marked handle it
     return content;
   } catch (error) {
     markdownLogger.error(`Error loading markdown file: ${docPath}`, error);
-    
+
     // Create appropriate error message based on error type
-    const errorMessage = error instanceof Error 
-      ? error.message 
-      : 'Unknown error occurred while loading content';
-    
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error occurred while loading content';
+
     return `# Error Loading Content
 
 The requested documentation page could not be found or loaded properly.
@@ -65,9 +67,9 @@ Please try again later or contact support if the problem persists.`;
 export async function getAllMarkdownContent(): Promise<Record<string, string>> {
   const result: Record<string, string> = {};
   let hasErrors = false;
-  
+
   markdownLogger.info('Beginning to load all markdown content');
-  
+
   /**
    * Recursively process file items
    */
@@ -91,15 +93,15 @@ export async function getAllMarkdownContent(): Promise<Record<string, string>> {
       }
     }
   }
-  
+
   // Process all items in the documentation tree
   await processFileItems(documentationTree);
-  
+
   if (hasErrors) {
     markdownLogger.warn('Some documentation files failed to load. Check the logs for details.');
   } else {
     markdownLogger.info(`Successfully loaded ${Object.keys(result).length} markdown files`);
   }
-  
+
   return result;
-} 
+}

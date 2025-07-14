@@ -1,9 +1,10 @@
 'use client';
 
+import { useTheme } from 'next-themes';
 import React, { useState, useCallback, useEffect } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { useTheme } from 'next-themes';
+
 import styles from './CodeBlock.module.css';
 
 /**
@@ -28,14 +29,14 @@ interface CodeBlockProps {
 
 /**
  * Enhanced CodeBlock component with language tabs and copy functionality
- * 
+ *
  * Features:
  * - Multiple language support with tabs
  * - Copy to clipboard functionality
  * - Modern, theme-aware styling
  * - Smooth animations
  * - Syntax highlighting preservation
- * 
+ *
  * @param {CodeBlockProps} props - Component props
  * @returns {React.ReactElement} Rendered CodeBlock component
  */
@@ -44,7 +45,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
   title,
   defaultLanguage,
   showLineNumbers = true,
-  className = ''
+  className = '',
 }) => {
   const { theme, systemTheme } = useTheme();
   const [activeTab, setActiveTab] = useState(0);
@@ -60,7 +61,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
   useEffect(() => {
     if (defaultLanguage && snippets.length > 1) {
       const defaultIndex = snippets.findIndex(
-        snippet => snippet.language.toLowerCase() === defaultLanguage.toLowerCase()
+        (snippet) => snippet.language.toLowerCase() === defaultLanguage.toLowerCase()
       );
       if (defaultIndex !== -1) {
         setActiveTab(defaultIndex);
@@ -97,28 +98,28 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
 
   const getLanguageDisplay = (language: string): string => {
     const languageMap: Record<string, string> = {
-      'javascript': 'JavaScript',
-      'typescript': 'TypeScript',
-      'tsx': 'React/TSX',
-      'jsx': 'React/JSX',
-      'python': 'Python',
-      'bash': 'Bash',
-      'shell': 'Shell',
-      'json': 'JSON',
-      'yaml': 'YAML',
-      'markdown': 'Markdown',
-      'css': 'CSS',
-      'html': 'HTML',
-      'sql': 'SQL',
-      'solidity': 'Solidity',
-      'rust': 'Rust',
-      'go': 'Go',
-      'java': 'Java',
-      'php': 'PHP',
-      'ruby': 'Ruby',
-      'dart': 'Dart',
-      'kotlin': 'Kotlin',
-      'swift': 'Swift'
+      javascript: 'JavaScript',
+      typescript: 'TypeScript',
+      tsx: 'React/TSX',
+      jsx: 'React/JSX',
+      python: 'Python',
+      bash: 'Bash',
+      shell: 'Shell',
+      json: 'JSON',
+      yaml: 'YAML',
+      markdown: 'Markdown',
+      css: 'CSS',
+      html: 'HTML',
+      sql: 'SQL',
+      solidity: 'Solidity',
+      rust: 'Rust',
+      go: 'Go',
+      java: 'Java',
+      php: 'PHP',
+      ruby: 'Ruby',
+      dart: 'Dart',
+      kotlin: 'Kotlin',
+      swift: 'Swift',
     };
     return languageMap[language.toLowerCase()] || language.toUpperCase();
   };
@@ -144,12 +145,10 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
       {/* Title */}
       {title && (
         <div className={styles.codeBlockTitle}>
-          <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">
-            {title}
-          </h4>
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">{title}</h4>
         </div>
       )}
-      
+
       {/* Language tabs */}
       {snippets.length > 1 && (
         <div className={styles.codeBlockTabs}>
@@ -165,7 +164,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
           ))}
         </div>
       )}
-      
+
       {/* Code content */}
       <div className={styles.codeBlockWrapper}>
         {/* Header with language and copy button */}
@@ -181,23 +180,37 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
           >
             {copied ? (
               <>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="20,6 9,17 4,12"/>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <polyline points="20,6 9,17 4,12" />
                 </svg>
                 <span className="text-xs font-medium">Copied!</span>
               </>
             ) : (
               <>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
                 </svg>
                 <span className="text-xs font-medium">Copy</span>
               </>
             )}
           </button>
         </div>
-        
+
         {/* Code content with animation */}
         <div className={styles.codeBlockContent}>
           <SyntaxHighlighter
@@ -210,13 +223,13 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
               padding: '1.5rem',
               background: 'transparent',
               fontSize: '0.875rem',
-              lineHeight: '1.6'
+              lineHeight: '1.6',
             }}
             codeTagProps={{
               style: {
                 fontFamily: 'var(--mono-font)',
-                fontSize: 'inherit'
-              }
+                fontSize: 'inherit',
+              },
             }}
           >
             {currentSnippet.code.trim()}
@@ -227,4 +240,4 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
   );
 };
 
-export default CodeBlock; 
+export default CodeBlock;

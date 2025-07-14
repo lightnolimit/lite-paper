@@ -57,6 +57,7 @@ Add environment variables in Vercel dashboard:
 ### 1. Add Domain
 
 In Vercel dashboard:
+
 1. Go to project **Settings** → **Domains**
 2. Add your custom domain
 3. Configure DNS records
@@ -199,18 +200,18 @@ module.exports = {
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
-  
+
   // Different configs per environment
   ...(process.env.VERCEL_ENV === 'production' && {
     // Production-only config
     productionBrowserSourceMaps: false,
   }),
-  
+
   ...(process.env.VERCEL_ENV === 'preview' && {
     // Preview/staging config
     basePath: process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '',
-  })
-}
+  }),
+};
 ```
 
 ## Performance Optimization
@@ -233,11 +234,11 @@ module.exports = {
   images: {
     domains: ['example.com'],
     formats: ['image/avif', 'image/webp'],
-    
+
     // For static export, disable optimization
-    unoptimized: process.env.VERCEL_ENV !== 'production'
-  }
-}
+    unoptimized: process.env.VERCEL_ENV !== 'production',
+  },
+};
 ```
 
 ### Analytics Integration
@@ -310,26 +311,26 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Run tests
         run: npm run test
-        
+
       - name: Build project
         run: npm run build
-        
+
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
         with:
@@ -377,16 +378,16 @@ export function reportWebVitals(metric: any) {
     window.va('track', 'web-vital', {
       name: metric.name,
       value: metric.value,
-      id: metric.id
-    })
+      id: metric.id,
+    });
   }
-  
+
   // Custom tracking
   fetch('/api/analytics', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(metric)
-  })
+    body: JSON.stringify(metric),
+  });
 }
 ```
 
@@ -395,8 +396,8 @@ export function reportWebVitals(metric: any) {
 ```typescript
 // lib/error-tracking.ts
 export function setupErrorTracking() {
-  if (typeof window === 'undefined') return
-  
+  if (typeof window === 'undefined') return;
+
   window.addEventListener('error', (event) => {
     fetch('/api/errors', {
       method: 'POST',
@@ -408,10 +409,10 @@ export function setupErrorTracking() {
         colno: event.colno,
         stack: event.error?.stack,
         url: window.location.href,
-        userAgent: navigator.userAgent
-      })
-    })
-  })
+        userAgent: navigator.userAgent,
+      }),
+    });
+  });
 }
 ```
 
@@ -431,28 +432,28 @@ npm install @vercel/kv
 
 ```typescript
 // lib/kv.ts
-import { kv } from '@vercel/kv'
+import { kv } from '@vercel/kv';
 
 export async function getCachedData(key: string) {
-  return await kv.get(key)
+  return await kv.get(key);
 }
 
 export async function setCachedData(key: string, data: any, ttl = 3600) {
-  return await kv.setex(key, ttl, JSON.stringify(data))
+  return await kv.setex(key, ttl, JSON.stringify(data));
 }
 
 // Usage in API routes
 export async function GET(request: Request) {
-  const cached = await getCachedData('docs-data')
-  
+  const cached = await getCachedData('docs-data');
+
   if (cached) {
-    return Response.json(JSON.parse(cached))
+    return Response.json(JSON.parse(cached));
   }
-  
-  const data = await fetchDocumentationData()
-  await setCachedData('docs-data', data)
-  
-  return Response.json(data)
+
+  const data = await fetchDocumentationData();
+  await setCachedData('docs-data', data);
+
+  return Response.json(data);
 }
 ```
 
@@ -461,6 +462,7 @@ export async function GET(request: Request) {
 ### Common Issues
 
 **Build Failures:**
+
 ```bash
 # Check build logs
 vercel logs --since 1h
@@ -470,6 +472,7 @@ npm run build
 ```
 
 **Domain Configuration:**
+
 ```bash
 # Verify DNS propagation
 dig docs.yoursite.com
@@ -479,6 +482,7 @@ curl -I https://docs.yoursite.com
 ```
 
 **Function Timeouts:**
+
 ```typescript
 // Increase timeout in vercel.json
 {
@@ -509,6 +513,7 @@ DEBUG=1 vercel dev
 ### Performance Issues
 
 **Slow builds:**
+
 ```json
 {
   "installCommand": "npm ci --prefer-offline",
@@ -517,6 +522,7 @@ DEBUG=1 vercel dev
 ```
 
 **Large bundle size:**
+
 ```bash
 # Analyze bundle
 npm run build && npx @next/bundle-analyzer
@@ -527,6 +533,7 @@ npm run build && npx @next/bundle-analyzer
 ### Free Tier Limits
 
 Vercel Hobby plan includes:
+
 - **100GB** bandwidth per month
 - **1000** build executions per month
 - **10GB-hours** function execution time
@@ -534,6 +541,7 @@ Vercel Hobby plan includes:
 ### Pro Plan Benefits
 
 For production sites:
+
 - **1TB** bandwidth
 - **Advanced analytics**
 - **Team collaboration**
@@ -559,14 +567,14 @@ For production sites:
 ```typescript
 // middleware.ts
 export function middleware(request: NextRequest) {
-  const response = NextResponse.next()
-  
+  const response = NextResponse.next();
+
   response.headers.set(
     'Content-Security-Policy',
     "default-src 'self'; script-src 'self' 'unsafe-inline' vercel.live"
-  )
-  
-  return response
+  );
+
+  return response;
 }
 ```
 
@@ -574,20 +582,21 @@ export function middleware(request: NextRequest) {
 
 ```typescript
 // lib/rate-limit.ts
-import { kv } from '@vercel/kv'
+import { kv } from '@vercel/kv';
 
 export async function rateLimit(request: Request) {
-  const ip = request.headers.get('x-forwarded-for') || 'anonymous'
-  const key = `rate_limit:${ip}`
-  
-  const current = await kv.incr(key)
-  
+  const ip = request.headers.get('x-forwarded-for') || 'anonymous';
+  const key = `rate_limit:${ip}`;
+
+  const current = await kv.incr(key);
+
   if (current === 1) {
-    await kv.expire(key, 60) // 1 minute window
+    await kv.expire(key, 60); // 1 minute window
   }
-  
-  if (current > 60) { // 60 requests per minute
-    throw new Error('Rate limit exceeded')
+
+  if (current > 60) {
+    // 60 requests per minute
+    throw new Error('Rate limit exceeded');
   }
 }
 ```
@@ -597,12 +606,14 @@ export async function rateLimit(request: Request) {
 ### From Other Platforms
 
 **From Netlify:**
+
 1. Export existing build configuration
 2. Update `vercel.json` with redirects/headers
 3. Migrate environment variables
 4. Update DNS records
 
 **From Cloudflare Pages:**
+
 1. Import Git repository
 2. Configure build settings
 3. Set up custom domains
@@ -620,4 +631,4 @@ export async function rateLimit(request: Request) {
 
 - **[Netlify Deployment](./netlify)** - Alternative platform guide
 - **[Production Setup](../production-setup)** - Advanced configuration
-- **[Monitoring](../../user-guide/troubleshooting)** - Error tracking and analytics 
+- **[Monitoring](../../user-guide/troubleshooting)** - Error tracking and analytics

@@ -13,7 +13,7 @@ import { DocumentationGraph } from '../components/DocumentationGraph';
 
 function MyPage() {
   return (
-    <DocumentationGraph 
+    <DocumentationGraph
       currentPath="user-guide/advanced-features"
       onNodeClick={(path) => {
         // Navigate to the selected documentation page
@@ -27,6 +27,7 @@ function MyPage() {
 
 **Live Example:**
 The documentation graph you can see in our navigation demonstrates real-time visualization of our actual documentation structure, with:
+
 - Interactive nodes representing each documentation page
 - Dynamic connections showing relationships
 - Smooth animations and hover effects
@@ -41,25 +42,24 @@ import { useTheme } from '../providers/ThemeProvider';
 
 function ThemeDemo() {
   const { isDarkMode, toggleTheme, prefersReducedMotion } = useTheme();
-  
+
   return (
     <div className="p-4 rounded-lg doc-card">
       <h3>Current Theme: {isDarkMode ? 'Dark' : 'Light'}</h3>
-      <button 
+      <button
         onClick={toggleTheme}
         className="mt-2 px-4 py-2 rounded bg-primary-color text-background-color"
       >
         Switch to {isDarkMode ? 'Light' : 'Dark'} Mode
       </button>
-      <p className="mt-2 text-muted-color">
-        Motion: {prefersReducedMotion ? 'Reduced' : 'Full'}
-      </p>
+      <p className="mt-2 text-muted-color">Motion: {prefersReducedMotion ? 'Reduced' : 'Full'}</p>
     </div>
   );
 }
 ```
 
 **Current Implementation:**
+
 - Automatic system preference detection
 - Smooth color transitions with CSS variables
 - Persistent theme storage in localStorage
@@ -74,10 +74,10 @@ import { BackgroundSelector } from '../components/BackgroundSelector';
 
 // Current background types available:
 const backgrounds = [
-  'wave',    // Animated wave patterns with mouse interaction
-  'stars',   // 3D star field with cursor effects  
-  'dither',  // Shader-based dithering effects
-  'solid'    // Static background for reduced motion
+  'wave', // Animated wave patterns with mouse interaction
+  'stars', // 3D star field with cursor effects
+  'dither', // Shader-based dithering effects
+  'solid', // Static background for reduced motion
 ];
 
 function BackgroundDemo() {
@@ -91,8 +91,9 @@ function BackgroundDemo() {
 ```
 
 **Working Features:**
+
 - Wave background: Real-time mouse interaction with elastic deformation
-- Stars background: 3D WebGL star field with subtle cursor influence  
+- Stars background: 3D WebGL star field with subtle cursor influence
 - Dither background: GPU-accelerated dithering patterns
 - Automatic fallback to solid backgrounds for reduced motion preferences
 
@@ -106,24 +107,25 @@ Our documentation uses a carefully designed typography scale:
 /* Real CSS variables from our system */
 :root {
   --title-font: 'Urbanist', sans-serif;
-  --body-font: 'Urbanist', sans-serif;  
+  --body-font: 'Urbanist', sans-serif;
   --mono-font: 'MapleMono', 'SF Mono', monospace;
-  
+
   /* Light mode colors */
-  --text-color: #1F2937;
+  --text-color: #1f2937;
   --text-secondary: #374151;
-  --muted-color: #6B7280;
+  --muted-color: #6b7280;
 }
 
 .dark {
   /* Dark mode colors */
-  --text-color: #F8FAFC;
-  --text-secondary: #E2E8F0;
-  --muted-color: #94A3B8;
+  --text-color: #f8fafc;
+  --text-secondary: #e2e8f0;
+  --muted-color: #94a3b8;
 }
 ```
 
 **Typography Features:**
+
 - High contrast ratios for accessibility (WCAG AA compliant)
 - Optimized line heights for reading (1.75 for body text)
 - Proper font loading with `font-display: swap`
@@ -145,22 +147,22 @@ const codeExamples = [
   content: string;
   lastModified: Date;
 }`,
-    label: 'TypeScript'
+    label: 'TypeScript',
   },
   {
-    language: 'javascript', 
+    language: 'javascript',
     code: `const config = {
   theme: 'auto',
   animations: true,
   background: 'wave'
 };`,
-    label: 'JavaScript'
-  }
+    label: 'JavaScript',
+  },
 ];
 
 function CodeDemo() {
   return (
-    <CodeBlock 
+    <CodeBlock
       snippets={codeExamples}
       title="Configuration Examples"
       defaultLanguage="typescript"
@@ -171,6 +173,7 @@ function CodeDemo() {
 ```
 
 **Features:**
+
 - Multi-language syntax highlighting (powered by Prism.js)
 - One-click copy functionality
 - Tab-based language switching
@@ -188,20 +191,16 @@ import { SettingsMenu } from '../components/SettingsMenu';
 const availableSettings = {
   theme: ['light', 'dark', 'system'],
   motion: ['full', 'reduced'],
-  background: ['wave', 'stars', 'dither', 'solid']
+  background: ['wave', 'stars', 'dither', 'solid'],
 };
 
 function Settings() {
-  return (
-    <SettingsMenu 
-      className="relative"
-      isCompact={false}
-    />
-  );
+  return <SettingsMenu className="relative" isCompact={false} />;
 }
 ```
 
 **Live Settings:**
+
 - Theme persistence across browser sessions
 - Motion preference detection and respect
 - Background type switching with page reload
@@ -214,6 +213,7 @@ function Settings() {
 Our documentation site implements several performance optimizations:
 
 **Bundle Optimization:**
+
 - **Code Splitting**: Routes are dynamically imported
   - Main bundle: ~102kB (gzipped)
   - Docs pages: ~419kB (includes syntax highlighting)
@@ -221,20 +221,21 @@ Our documentation site implements several performance optimizations:
 - **Static Generation**: All routes pre-rendered at build time
 
 **Asset Optimization:**
+
 - **Font Loading**: WOFF2 format with `font-display: swap`
   - Urbanist: ~42KB per variant
-  - Urbanist: ~42KB per variant  
+  - Urbanist: ~42KB per variant
   - MapleMono: ~17MB (loaded on demand for code blocks)
 - **Image Optimization**: Next.js automatic WebP/AVIF conversion
 - **Static Assets**: Served from CDN with proper caching headers
 
 **JavaScript Performance:**
+
 ```tsx
 // Lazy loading for heavy components
-const DocumentationGraph = dynamic(
-  () => import('../components/DocumentationGraph'),
-  { ssr: false }
-);
+const DocumentationGraph = dynamic(() => import('../components/DocumentationGraph'), {
+  ssr: false,
+});
 
 // Background components loaded on demand
 const BackgroundComponents = {
@@ -246,12 +247,14 @@ const BackgroundComponents = {
 ### Animation Performance
 
 **Optimized Animations:**
+
 - CSS transforms instead of layout changes
 - `requestAnimationFrame` for smooth updates
 - Hardware acceleration with `transform3d`
 - Automatic animation disabling for reduced motion preferences
 
 **Real Performance Data:**
+
 - 60 FPS animations on modern devices
 - <16ms frame times for smooth interactions
 - Graceful degradation on lower-end devices
@@ -268,28 +271,27 @@ import { useTheme } from '../providers/ThemeProvider';
 
 function MotionAwareComponent() {
   const { prefersReducedMotion } = useTheme();
-  
-  const animations = prefersReducedMotion ? {
-    // Static fallbacks
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    transition: { duration: 0.05 }
-  } : {
-    // Full animations
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.3, ease: "easeOut" }
-  };
-  
-  return (
-    <motion.div {...animations}>
-      Content adapts to user preferences
-    </motion.div>
-  );
+
+  const animations = prefersReducedMotion
+    ? {
+        // Static fallbacks
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        transition: { duration: 0.05 },
+      }
+    : {
+        // Full animations
+        initial: { opacity: 0, y: 20 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.3, ease: 'easeOut' },
+      };
+
+  return <motion.div {...animations}>Content adapts to user preferences</motion.div>;
 }
 ```
 
 **Accessibility Features:**
+
 - Automatic `prefers-reduced-motion` detection
 - Keyboard navigation support throughout
 - Screen reader compatible markup
@@ -299,12 +301,14 @@ function MotionAwareComponent() {
 ### Real Accessibility Testing
 
 **WCAG Compliance:**
+
 - Color contrast ratios exceed WCAG AA standards
 - All interactive elements have focus indicators
 - Semantic HTML structure for screen readers
 - Proper heading hierarchy maintained
 
 **Keyboard Navigation:**
+
 - Tab order follows logical reading flow
 - All functionality accessible via keyboard
 - Custom focus management for modal dialogs
@@ -313,7 +317,8 @@ function MotionAwareComponent() {
 ---
 
 **Related Documentation:**
+
 - [Basic Usage](./basic-usage) - Getting started with core features
-- [Configuration](./configuration) - Customizing your experience  
+- [Configuration](./configuration) - Customizing your experience
 - [Code Examples](../developer-guides/code-examples) - Implementation details
-- [Icon Customization](../developer-guides/icon-customization) - Adding custom icons 
+- [Icon Customization](../developer-guides/icon-customization) - Adding custom icons

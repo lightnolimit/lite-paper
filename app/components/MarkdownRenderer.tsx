@@ -1,13 +1,15 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { processMarkdown, CodeBlockData } from '../utils/markdown-processor';
+import React, { useEffect, useRef, useState } from 'react';
+
 import { processLinks, processWalletAddresses } from '../utils/contentProcessor';
+import logger from '../utils/logger';
+import { processMarkdown, CodeBlockData } from '../utils/markdown-processor';
+
 import CodeBlock from './CodeBlock';
 import ColorPalette from './ColorPalette';
-import logger from '../utils/logger';
 
 const componentLogger = logger;
 
@@ -33,9 +35,9 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
       try {
         setIsProcessing(true);
         componentLogger.debug('Processing markdown content');
-        
+
         const result = await processMarkdown(content);
-        
+
         if (isMounted) {
           setProcessedData(result);
           setIsProcessing(false);
@@ -45,7 +47,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
         if (isMounted) {
           setProcessedData({
             html: '<p>Error loading content. Please try again.</p>',
-            codeBlocks: new Map()
+            codeBlocks: new Map(),
           });
           setIsProcessing(false);
         }
@@ -73,9 +75,10 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
 
     // Add click handlers for internal links
     const links = currentRef.querySelectorAll('a[href^="/docs/"]');
-    const clickHandlers: Array<{ element: HTMLAnchorElement; handler: (e: MouseEvent) => void }> = [];
+    const clickHandlers: Array<{ element: HTMLAnchorElement; handler: (e: MouseEvent) => void }> =
+      [];
 
-    links.forEach(rawLink => {
+    links.forEach((rawLink) => {
       const link = rawLink as HTMLAnchorElement;
       const href = link.getAttribute('href');
       if (href) {
@@ -102,55 +105,51 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
 
     // Handle code block placeholders
     const codeBlockPlaceholders = contentRef.current.querySelectorAll('[data-codeblock-id]');
-    
-    codeBlockPlaceholders.forEach(placeholder => {
+
+    codeBlockPlaceholders.forEach((placeholder) => {
       const blockId = placeholder.getAttribute('data-codeblock-id');
       if (blockId && processedData.codeBlocks.has(blockId)) {
         const snippets = processedData.codeBlocks.get(blockId)!;
-        
+
         // Create a container for the React component
         const container = document.createElement('div');
         placeholder.parentNode?.replaceChild(container, placeholder);
-        
+
         // Use createRoot for React 18+
-        import('react-dom/client').then(({ createRoot }) => {
-          const root = createRoot(container);
-          root.render(
-            <CodeBlock 
-              snippets={snippets} 
-              showLineNumbers={true}
-              className="my-6"
-            />
-          );
-        }).catch(() => {
-          // This fallback should not be needed for React 18+ but just in case
-          console.warn('Could not load React 18 createRoot, this should not happen');
-        });
+        import('react-dom/client')
+          .then(({ createRoot }) => {
+            const root = createRoot(container);
+            root.render(<CodeBlock snippets={snippets} showLineNumbers={true} className="my-6" />);
+          })
+          .catch(() => {
+            // This fallback should not be needed for React 18+ but just in case
+            console.warn('Could not load React 18 createRoot, this should not happen');
+          });
       }
     });
 
     // Handle color palette placeholders
     const colorPalettePlaceholders = contentRef.current.querySelectorAll('[data-colorpalette-id]');
-    
-    colorPalettePlaceholders.forEach(placeholder => {
+
+    colorPalettePlaceholders.forEach((placeholder) => {
       const paletteData = placeholder.getAttribute('data-palette');
       if (paletteData) {
         try {
           const parsedData = JSON.parse(paletteData);
-          
+
           // Create a container for the React component
           const container = document.createElement('div');
           placeholder.parentNode?.replaceChild(container, placeholder);
-          
+
           // Use createRoot for React 18+
-          import('react-dom/client').then(({ createRoot }) => {
-            const root = createRoot(container);
-            root.render(
-              <ColorPalette colors={parsedData.colors} />
-            );
-          }).catch(() => {
-            console.warn('Could not load React 18 createRoot, this should not happen');
-          });
+          import('react-dom/client')
+            .then(({ createRoot }) => {
+              const root = createRoot(container);
+              root.render(<ColorPalette colors={parsedData.colors} />);
+            })
+            .catch(() => {
+              console.warn('Could not load React 18 createRoot, this should not happen');
+            });
         } catch (error) {
           console.error('Error parsing color palette data:', error);
         }
@@ -160,11 +159,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
 
   if (isProcessing) {
     return (
-      <motion.div
-        initial={{ opacity: 0.9 }}
-        animate={{ opacity: 1 }}
-        className="w-full"
-      >
+      <motion.div initial={{ opacity: 0.9 }} animate={{ opacity: 1 }} className="w-full">
         <div className="animate-pulse space-y-4">
           <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
           <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
@@ -178,11 +173,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
 
   if (!processedData) {
     return (
-      <motion.div
-        initial={{ opacity: 0.9 }}
-        animate={{ opacity: 1 }}
-        className="w-full"
-      >
+      <motion.div initial={{ opacity: 0.9 }} animate={{ opacity: 1 }} className="w-full">
         <p className="text-gray-500 dark:text-gray-400">No content available.</p>
       </motion.div>
     );
@@ -204,4 +195,4 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
   );
 };
 
-export default MarkdownRenderer; 
+export default MarkdownRenderer;

@@ -13,20 +13,20 @@ window.codeBlockData = window.codeBlockData || {};
 function switchCodeTab(blockId, tabIndex) {
   const container = document.getElementById(blockId);
   if (!container) return;
-  
+
   // Update tabs
   const tabs = container.querySelectorAll('.code-block-tab');
   tabs.forEach((tab, index) => {
     tab.classList.toggle('active', index === tabIndex);
   });
-  
+
   // Update content
   const contents = container.querySelectorAll('.code-block-content');
   contents.forEach((content, index) => {
     content.classList.toggle('hidden', index !== tabIndex);
     content.classList.toggle('active', index === tabIndex);
   });
-  
+
   // Update language display
   const languageElement = document.getElementById(`${blockId}-language`);
   const snippets = window.codeBlockData[blockId];
@@ -43,36 +43,36 @@ function switchCodeTab(blockId, tabIndex) {
 async function copyCodeBlock(blockId) {
   const container = document.getElementById(blockId);
   if (!container) return;
-  
+
   // Find the active content
   const activeContent = container.querySelector('.code-block-content.active');
   if (!activeContent) return;
-  
+
   const codeElement = activeContent.querySelector('code');
   if (!codeElement) return;
-  
+
   const code = codeElement.textContent || codeElement.innerText;
-  
+
   try {
     await navigator.clipboard.writeText(code);
-    
+
     // Update button to show success
     const copyButton = container.querySelector('.code-block-copy-btn');
     if (copyButton) {
       const originalContent = copyButton.innerHTML;
-      
+
       copyButton.innerHTML = `
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M20 6L9 17l-5-5"/>
         </svg>
         <span class="text-xs font-medium">Copied!</span>
       `;
-      
+
       copyButton.style.backgroundColor = 'rgba(var(--primary-color-rgb), 0.2)';
-      
+
       // Show success toast
       showCopyToast();
-      
+
       // Reset button after delay
       setTimeout(() => {
         copyButton.innerHTML = originalContent;
@@ -81,7 +81,7 @@ async function copyCodeBlock(blockId) {
     }
   } catch (error) {
     console.error('Failed to copy code:', error);
-    
+
     // Show error feedback
     const copyButton = container.querySelector('.code-block-copy-btn');
     if (copyButton) {
@@ -93,7 +93,7 @@ async function copyCodeBlock(blockId) {
         </svg>
         <span class="text-xs font-medium">Error</span>
       `;
-      
+
       setTimeout(() => {
         copyButton.innerHTML = `
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -114,25 +114,25 @@ async function copyCodeBlock(blockId) {
  */
 function getLanguageDisplay(language) {
   const languageMap = {
-    'javascript': 'JavaScript',
-    'typescript': 'TypeScript',
-    'python': 'Python',
-    'solidity': 'Solidity',
-    'bash': 'Bash',
-    'shell': 'Shell',
-    'json': 'JSON',
-    'css': 'CSS',
-    'html': 'HTML',
-    'sql': 'SQL',
-    'yaml': 'YAML',
-    'toml': 'TOML',
-    'go': 'Go',
-    'rust': 'Rust',
-    'java': 'Java',
-    'cpp': 'C++',
-    'c': 'C'
+    javascript: 'JavaScript',
+    typescript: 'TypeScript',
+    python: 'Python',
+    solidity: 'Solidity',
+    bash: 'Bash',
+    shell: 'Shell',
+    json: 'JSON',
+    css: 'CSS',
+    html: 'HTML',
+    sql: 'SQL',
+    yaml: 'YAML',
+    toml: 'TOML',
+    go: 'Go',
+    rust: 'Rust',
+    java: 'Java',
+    cpp: 'C++',
+    c: 'C',
   };
-  
+
   return languageMap[language.toLowerCase()] || language.toUpperCase();
 }
 
@@ -145,7 +145,7 @@ function showCopyToast() {
   if (existingToast) {
     existingToast.remove();
   }
-  
+
   const toast = document.createElement('div');
   toast.className = 'copy-toast';
   toast.innerText = 'Copied to clipboard!';
@@ -167,18 +167,18 @@ function showCopyToast() {
     pointer-events: none;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   `;
-  
+
   document.body.appendChild(toast);
-  
+
   // Show the toast
   requestAnimationFrame(() => {
     toast.style.opacity = '1';
   });
-  
+
   // Remove toast after delay
   setTimeout(() => {
     toast.style.opacity = '0';
-    
+
     setTimeout(() => {
       if (toast.parentNode) {
         document.body.removeChild(toast);
@@ -193,6 +193,6 @@ if (typeof module !== 'undefined' && module.exports) {
     switchCodeTab,
     copyCodeBlock,
     getLanguageDisplay,
-    showCopyToast
+    showCopyToast,
   };
-} 
+}

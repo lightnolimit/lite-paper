@@ -7,6 +7,7 @@ A comprehensive guide to the design system, color palettes, typography, and comp
 Our design system uses two primary color schemes that automatically adapt based on the user's theme preference, providing a cohesive visual experience across light and dark modes.
 
 ### Matcha Green (Light Mode)
+
 The light mode uses a nature-inspired matcha green palette that promotes readability and calmness.
 
 ```ColorPalette
@@ -19,14 +20,14 @@ The light mode uses a nature-inspired matcha green palette that promotes readabi
       "usage": "Primary actions, links, focus states"
     },
     {
-      "name": "Secondary", 
+      "name": "Secondary",
       "hex": "#A3C9A8",
       "rgb": "163, 201, 168",
       "usage": "Secondary elements, hover states"
     },
     {
       "name": "Accent",
-      "hex": "#557153", 
+      "hex": "#557153",
       "rgb": "85, 113, 83",
       "usage": "Accent elements, highlights"
     }
@@ -35,6 +36,7 @@ The light mode uses a nature-inspired matcha green palette that promotes readabi
 ```
 
 ### Sakura Pink (Dark Mode)
+
 The dark mode features a vibrant sakura pink palette that maintains excellent contrast while creating an engaging nighttime experience.
 
 ```ColorPalette
@@ -43,7 +45,7 @@ The dark mode features a vibrant sakura pink palette that maintains excellent co
     {
       "name": "Primary",
       "hex": "#FF85A1",
-      "rgb": "255, 133, 161", 
+      "rgb": "255, 133, 161",
       "usage": "Primary actions, links, focus states"
     },
     {
@@ -53,7 +55,7 @@ The dark mode features a vibrant sakura pink palette that maintains excellent co
       "usage": "Secondary elements, hover states"
     },
     {
-      "name": "Accent", 
+      "name": "Accent",
       "hex": "#FF4989",
       "rgb": "255, 73, 137",
       "usage": "Accent elements, highlights"
@@ -63,6 +65,7 @@ The dark mode features a vibrant sakura pink palette that maintains excellent co
 ```
 
 ### Neutral Colors
+
 Supporting colors that work across both themes for backgrounds, text, and borders.
 
 ```ColorPalette
@@ -75,7 +78,7 @@ Supporting colors that work across both themes for backgrounds, text, and border
       "usage": "Main background in light mode"
     },
     {
-      "name": "Dark Background", 
+      "name": "Dark Background",
       "hex": "#0B0D0F",
       "rgb": "11, 13, 15",
       "usage": "Main background in dark mode"
@@ -83,7 +86,7 @@ Supporting colors that work across both themes for backgrounds, text, and border
     {
       "name": "Text Color",
       "hex": "#1F2937",
-      "rgb": "31, 41, 55", 
+      "rgb": "31, 41, 55",
       "usage": "Primary text color"
     },
     {
@@ -101,6 +104,7 @@ Supporting colors that work across both themes for backgrounds, text, and border
 Our design system includes interactive wallet address components with copy functionality. Here's how to implement them:
 
 ### Basic Wallet Address
+
 ```html
 <code class="wallet-address" data-address="0x1234567890abcdef1234567890abcdef12345678">
   0x1234567890abcdef1234567890abcdef12345678
@@ -108,6 +112,7 @@ Our design system includes interactive wallet address components with copy funct
 ```
 
 ### Wallet Info Block
+
 ```html
 <div class="wallet-info">
   <p class="profile-info">
@@ -171,40 +176,37 @@ The wallet addresses automatically get copy buttons when processed by the conten
 ## Design Tokens
 
 ### CSS Custom Properties
+
 All colors are available as CSS custom properties that automatically adapt to the current theme:
 
 ```css
 /* Primary colors (theme-aware) */
---primary-color: /* #678D58 (light) | #FF85A1 (dark) */
---secondary-color: /* #A3C9A8 (light) | #FFC4DD (dark) */
---accent-color: /* #557153 (light) | #FF4989 (dark) */
-
-/* Background colors */
---background-color: /* #FAFBF9 (light) | #0B0D0F (dark) */
---card-color: /* #FFFFFF (light) | #111317 (dark) */
-
-/* Text colors */
---text-color: /* #1F2937 (light) | #F8FAFC (dark) */
---text-secondary: /* #374151 (light) | #E2E8F0 (dark) */
---muted-color: /* #6B7280 (light) | #94A3B8 (dark) */
-
-/* Border colors */
---border-color: /* #222 (light) | #bbb (dark) */
---border-soft: /* #f2f2f2 (light) | #23232a (dark) */
---border-unified: /* #d1d5db (light) | #374151 (dark) */
+--primary-color: /* #678D58 (light) | #FF85A1 (dark) */ --secondary-color:
+  /* #A3C9A8 (light) | #FFC4DD (dark) */
+  --accent-color: /* #557153 (light) | #FF4989 (dark) */ /* Background colors */
+  --background-color: /* #FAFBF9 (light) | #0B0D0F (dark) */
+  --card-color: /* #FFFFFF (light) | #111317 (dark) */ /* Text colors */
+  --text-color: /* #1F2937 (light) | #F8FAFC (dark) */
+  --text-secondary: /* #374151 (light) | #E2E8F0 (dark) */
+  --muted-color: /* #6B7280 (light) | #94A3B8 (dark) */ /* Border colors */
+  --border-color: /* #222 (light) | #bbb (dark) */
+  --border-soft: /* #f2f2f2 (light) | #23232a (dark) */
+  --border-unified: /* #d1d5db (light) | #374151 (dark) */;
 ```
 
 ### RGB Values
+
 For opacity and rgba() usage:
 
 ```css
 /* RGB values for transparency effects */
---primary-color-rgb: /* 103, 141, 88 (light) | 255, 133, 161 (dark) */
+--primary-color-rgb: /* 103, 141, 88 (light) | 255, 133, 161 (dark) */;
 ```
 
 ## Typography
 
 ### Font Families
+
 The design system uses two primary font families:
 
 <div style="margin: 2rem 0;">
@@ -244,29 +246,49 @@ The design system uses two primary font families:
 
 ```css
 /* Font family classes */
-.font-title { font-family: var(--title-font); } /* Urbanist */
-.font-mono { font-family: var(--mono-font); }   /* MapleMono */
+.font-title {
+  font-family: var(--title-font);
+} /* Urbanist */
+.font-mono {
+  font-family: var(--mono-font);
+} /* MapleMono */
 
 /* Heading styles */
-h1, h2, h3, h4, h5, h6 { font-family: var(--title-font); }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--title-font);
+}
 ```
 
 ## Component Examples
 
 ### Interactive Copy Buttons
+
 The system includes reusable copy button functionality for various use cases:
 
 #### Color Value Copy
+
 ```html
 <!-- Example: Color value with copy functionality -->
-<div style="background-color: var(--primary-color); padding: 1rem; border-radius: 8px; position: relative;">
-  <code class="wallet-address" data-address="#678D58" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);">
+<div
+  style="background-color: var(--primary-color); padding: 1rem; border-radius: 8px; position: relative;"
+>
+  <code
+    class="wallet-address"
+    data-address="#678D58"
+    style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);"
+  >
     #678D58
   </code>
 </div>
 ```
 
 #### API Key Copy
+
 ```html
 <!-- Example: API key with copy functionality -->
 <code class="wallet-address" data-address="sk-1234567890abcdef1234567890abcdef">
@@ -275,6 +297,7 @@ The system includes reusable copy button functionality for various use cases:
 ```
 
 ### Notification Styles
+
 The system includes styled notifications using our design tokens:
 
 <div class="notification notification-info">
@@ -358,6 +381,7 @@ Consistent border radius values across components:
 ## Accessibility
 
 ### Color Contrast
+
 All color combinations meet WCAG 2.1 AA standards:
 
 - **Text on Primary**: White text on primary colors meets 4.5:1 contrast ratio
@@ -365,6 +389,7 @@ All color combinations meet WCAG 2.1 AA standards:
 - **Muted Text**: Secondary text colors maintain at least 4.5:1 contrast with backgrounds
 
 ### Reduced Motion
+
 The design system respects user preferences for reduced motion:
 
 ```css
@@ -377,10 +402,12 @@ The design system respects user preferences for reduced motion:
 ```
 
 ### Focus States
+
 All interactive elements include visible focus indicators:
 
 ```css
-input:focus, button:focus {
+input:focus,
+button:focus {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
 }
@@ -404,13 +431,14 @@ input:focus, button:focus {
 
 /* Avoid */
 .my-component {
-  background-color: #FFFFFF;
-  color: #1F2937;
+  background-color: #ffffff;
+  color: #1f2937;
   border: 1px solid #d1d5db;
 }
 ```
 
 ### Adding Copy Functionality
+
 To add copy buttons to any element:
 
 1. **Add the data-address attribute** with the value to copy
@@ -418,9 +446,7 @@ To add copy buttons to any element:
 3. **The system automatically adds** copy buttons and functionality
 
 ```html
-<code class="wallet-address" data-address="VALUE_TO_COPY">
-  Displayed Text
-</code>
+<code class="wallet-address" data-address="VALUE_TO_COPY"> Displayed Text </code>
 ```
 
 ### Adding New Colors
@@ -447,19 +473,22 @@ When extending the palette:
 ## Resources
 
 ### Color Tools
+
 - [Contrast Checker](https://webaim.org/resources/contrastchecker/) - Verify WCAG compliance
 - [Coolors.co](https://coolors.co/) - Generate harmonious color palettes
 - [Adobe Color](https://color.adobe.com/) - Advanced color theory tools
 
 ### Typography Resources
+
 - [Google Fonts](https://fonts.google.com/) - Web font hosting
 - [Font Squirrel](https://www.fontsquirrel.com/) - Font testing and optimization
 
 ### Design System Examples
+
 - [Material Design](https://material.io/design/color/) - Google's design system
 - [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/) - Apple's design principles
 - [Atlassian Design System](https://atlassian.design/) - Enterprise design system example
 
 ---
 
-This design system provides the foundation for consistent, accessible, and beautiful user interfaces across the Phantasy documentation platform. 
+This design system provides the foundation for consistent, accessible, and beautiful user interfaces across the Phantasy documentation platform.

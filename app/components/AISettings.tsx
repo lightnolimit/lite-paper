@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+
 import styles from './ChatBot.module.css';
 
 export function AISettings({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
@@ -70,7 +71,8 @@ export function AISettings({ isOpen, onClose }: { isOpen: boolean; onClose: () =
               <span className="text-sm text-text-color">Enable AI-powered responses</span>
             </label>
             <p className="text-xs text-muted-color">
-              When enabled, uses Akash Network&apos;s AI to generate better responses based on your documentation.
+              When enabled, uses Akash Network&apos;s AI to generate better responses based on your
+              documentation.
             </p>
           </div>
 
@@ -87,9 +89,7 @@ export function AISettings({ isOpen, onClose }: { isOpen: boolean; onClose: () =
                 className="w-full px-3 py-2 border border-border-color rounded-lg bg-card-background text-text-color placeholder-muted-color focus:outline-none focus:ring-2 focus:ring-primary-color focus:border-transparent"
               />
               <div className="flex items-center justify-between mt-2">
-                <p className="text-xs text-muted-color">
-                  Get a free API key from Akash Network
-                </p>
+                <p className="text-xs text-muted-color">Get a free API key from Akash Network</p>
                 <button
                   onClick={handleGetKey}
                   className="text-xs text-primary-color hover:underline"
@@ -134,4 +134,4 @@ function CloseIcon({ className }: { className?: string }) {
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
     </svg>
   );
-} 
+}
