@@ -55,7 +55,15 @@ export default function DocumentationGraph({
   const [links, setLinks] = useState<GraphLink[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [focusedNodeId, setFocusedNodeId] = useState<string | null>(null);
-  // Zoom and drag disabled - using fixed viewBox
+  // Zoom and pan state with limits
+  const [scale, setScale] = useState(1);
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const MIN_SCALE = 0.5;
+  const MAX_SCALE = 2;
+  const PAN_LIMIT = 200; // Maximum pan distance from center
   const [clickedNodeId, setClickedNodeId] = useState<string | null>(null);
   const [isNavigating, setIsNavigating] = useState(false);
   const [pendingSwitchNodeId, setPendingSwitchNodeId] = useState<string | null>(null);
@@ -323,30 +331,94 @@ export default function DocumentationGraph({
     setLinks(graphLinks);
   }, [graphNodes, graphLinks, dimensions, focusedNodeId, currentPath]);
 
-  // Disabled zoom and drag functionality
-  const handleMouseDown = useCallback(() => {
-    // Disable drag functionality
-    return;
+  // Zoom functionality with buttons
+  const zoomIn = useCallback(() => {
+    const newScale = Math.min(MAX_SCALE, scale * 1.2);
+    setScale(newScale);
+  }, [scale]);
+
+  const zoomOut = useCallback(() => {
+    const newScale = Math.max(MIN_SCALE, scale / 1.2);
+    setScale(newScale);
+  }, [scale]);
+
+  // Zoom with wheel (prevent page scroll)
+  const handleWheel = useCallback(
+    (e: React.WheelEvent) => {
+      // Only handle if the mindmap is focused/hovered
+      const container = e.currentTarget.closest('.graph-container');
+      if (!container || !container.contains(e.target as Node)) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (e.deltaY > 0) {
+        zoomOut();
+      } else {
+        zoomIn();
+      }
+    },
+    [zoomIn, zoomOut]
+  );
+
+  // Reset zoom and pan
+  const resetZoom = useCallback(() => {
+    setScale(1);
+    setTranslate({ x: 0, y: 0 });
   }, []);
 
-  const handleMouseMove = useCallback(() => {
-    // Disable drag functionality
-    return;
+  // Drag functionality with limits
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent<SVGSVGElement>) => {
+      // Only start drag on SVG background, not on nodes
+      if ((e.target as SVGElement).tagName !== 'svg') return;
+
+      setIsDragging(true);
+      setDragStart({ x: e.clientX, y: e.clientY });
+      setDragOffset({ x: translate.x, y: translate.y });
+      e.currentTarget.style.cursor = 'grabbing';
+    },
+    [translate]
+  );
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<SVGSVGElement>) => {
+      if (!isDragging) return;
+
+      const deltaX = e.clientX - dragStart.x;
+      const deltaY = e.clientY - dragStart.y;
+
+      // Calculate new translation with limits
+      let newX = dragOffset.x + deltaX;
+      let newY = dragOffset.y + deltaY;
+
+      // Apply pan limits
+      const maxPan = PAN_LIMIT * scale;
+      newX = Math.max(-maxPan, Math.min(maxPan, newX));
+      newY = Math.max(-maxPan, Math.min(maxPan, newY));
+
+      setTranslate({ x: newX, y: newY });
+    },
+    [isDragging, dragStart, dragOffset, scale]
+  );
+
+  const handleMouseUp = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
+    setIsDragging(false);
+    e.currentTarget.style.cursor = 'grab';
   }, []);
 
-  const handleMouseUp = useCallback(() => {
-    // Disable drag functionality
-    return;
-  }, []);
+  // Add keyboard shortcut for zoom reset
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === '0' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        resetZoom();
+      }
+    };
 
-  const handleWheel = useCallback((e: React.WheelEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    // Completely disable zoom functionality
-    return;
-  }, []);
-
-  // Zoom and drag disabled - no view reset needed
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [resetZoom]);
 
   // Handle window resize
   useEffect(() => {
@@ -476,16 +548,81 @@ export default function DocumentationGraph({
             color: isDarkMode ? 'rgba(240, 240, 245, 0.4)' : 'rgba(46, 58, 35, 0.4)',
           }}
         >
-          mind-map
+          mind-map {scale !== 1 ? `(${Math.round(scale * 100)}%)` : ''}
         </div>
+
+        {/* Zoom controls */}
+        {!isSidebarView && (
+          <div className="absolute bottom-2 right-3 flex items-center gap-1 z-10">
+            <button
+              onClick={zoomOut}
+              className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              style={{
+                fontSize: '14px',
+                fontFamily: 'var(--mono-font)',
+                color: isDarkMode ? 'rgba(240, 240, 245, 0.6)' : 'rgba(46, 58, 35, 0.6)',
+                border: '1px solid',
+                borderColor: isDarkMode ? 'rgba(240, 240, 245, 0.2)' : 'rgba(46, 58, 35, 0.2)',
+                width: '24px',
+                height: '24px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              title="Zoom out"
+              disabled={scale <= MIN_SCALE}
+            >
+              −
+            </button>
+            <button
+              onClick={zoomIn}
+              className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              style={{
+                fontSize: '14px',
+                fontFamily: 'var(--mono-font)',
+                color: isDarkMode ? 'rgba(240, 240, 245, 0.6)' : 'rgba(46, 58, 35, 0.6)',
+                border: '1px solid',
+                borderColor: isDarkMode ? 'rgba(240, 240, 245, 0.2)' : 'rgba(46, 58, 35, 0.2)',
+                width: '24px',
+                height: '24px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              title="Zoom in"
+              disabled={scale >= MAX_SCALE}
+            >
+              +
+            </button>
+            {(scale !== 1 || translate.x !== 0 || translate.y !== 0) && (
+              <button
+                onClick={resetZoom}
+                className="px-2 py-1 text-xs rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors ml-1"
+                style={{
+                  fontSize: '10px',
+                  fontFamily: 'var(--mono-font)',
+                  color: isDarkMode ? 'rgba(240, 240, 245, 0.6)' : 'rgba(46, 58, 35, 0.6)',
+                  border: '1px solid',
+                  borderColor: isDarkMode ? 'rgba(240, 240, 245, 0.2)' : 'rgba(46, 58, 35, 0.2)',
+                }}
+                title="Reset view (Ctrl/Cmd + 0)"
+              >
+                Reset
+              </button>
+            )}
+          </div>
+        )}
 
         <svg
           ref={svgRef}
           width="100%"
           height="100%"
           className="documentation-graph-svg"
-          viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
-          style={{ backgroundColor: 'var(--card-color)' }}
+          viewBox={`${-translate.x / scale} ${-translate.y / scale} ${dimensions.width / scale} ${dimensions.height / scale}`}
+          style={{
+            backgroundColor: 'var(--card-color)',
+            cursor: isDragging ? 'grabbing' : 'grab',
+          }}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}

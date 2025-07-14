@@ -100,7 +100,7 @@ export async function searchAndAnswer(
   useAI: boolean = true
 ): Promise<{ answer: string; sources: DocumentSource[] }> {
   if (documentationIndex.length === 0) {
-    loadEmbeddedDocs();
+    await loadEmbeddedDocs();
   }
 
   const sources = searchDocuments(query);
@@ -193,42 +193,105 @@ function getApiKey(): string {
   );
 }
 
-// Fallback: embedded documentation content
-function loadEmbeddedDocs(): void {
-  const docs: DocumentChunk[] = [
+// Load actual documentation content dynamically
+async function loadEmbeddedDocs(): Promise<void> {
+  if (documentationIndex.length > 0) return; // Already loaded
+
+  // Define the actual documentation files that exist
+  const docFiles = [
     {
-      content: `# Getting Started\n\nThis documentation site provides comprehensive guides for building and customizing your documentation platform.\n\n## Quick Start\n\n1. Clone the repository\n2. Install dependencies with npm install\n3. Run npm run dev\n4. Visit http://localhost:3000\n\n## Features\n\n- Dark/light theme switching\n- Interactive backgrounds\n- Responsive design\n- Fast search\n- Code highlighting\n- Icon customization`,
-      metadata: {
-        title: 'Getting Started',
-        path: 'getting-started/introduction',
-        section: 'intro',
-      },
+      path: 'getting-started/introduction',
+      title: 'Getting Started - Introduction',
+      file: '/app/docs/content/getting-started/introduction.md',
     },
     {
-      content: `# Theme Customization\n\nThe theme system supports automatic dark/light mode switching.\n\n## How to Customize\n\n1. Update CSS variables in globals.css\n2. Modify ThemeProvider component\n3. Add custom theme options\n4. Test in both modes\n\n## Variables\n\n- --background-color: Main background\n- --text-color: Primary text\n- --primary-color: Accent color`,
-      metadata: {
-        title: 'Theme Customization',
-        path: 'developer-guides/ui-configuration',
-        section: 'themes',
-      },
+      path: 'getting-started/installation',
+      title: 'Installation Guide',
+      file: '/app/docs/content/getting-started/installation.md',
     },
     {
-      content: `# Icon System\n\nAdd custom icons from iconify.design or create your own.\n\n## Adding Icons\n\n1. Visit iconify.design\n2. Copy SVG code\n3. Save to /public/assets/icons/\n4. Import in components\n\n## Standards\n\n- Use pixel-name.svg naming\n- Optimize for light/dark themes\n- Include alt text\n- Test on different screens`,
-      metadata: {
-        title: 'Icon Customization',
-        path: 'developer-guides/icon-customization',
-        section: 'intro',
-      },
+      path: 'getting-started/quick-start',
+      title: 'Quick Start',
+      file: '/app/docs/content/getting-started/quick-start.md',
     },
     {
-      content: `# Interactive Backgrounds\n\nMultiple animated background options.\n\n## Available Types\n\n- Wave: Mouse-interactive patterns\n- Stars: 3D star field\n- Dither: Shader effects\n- Solid: Static for reduced motion\n\n## Performance\n\nOptimized for 60 FPS, automatically disables for reduced motion preferences.`,
-      metadata: {
-        title: 'Interactive Backgrounds',
-        path: 'user-guide/advanced-features',
-        section: 'backgrounds',
-      },
+      path: 'deployment/overview',
+      title: 'Deployment Overview',
+      file: '/app/docs/content/deployment/overview.md',
+    },
+    {
+      path: 'deployment/platforms/cloudflare',
+      title: 'Deploying to Cloudflare Pages',
+      file: '/app/docs/content/deployment/platforms/cloudflare.md',
+    },
+    {
+      path: 'deployment/platforms/vercel',
+      title: 'Deploying to Vercel',
+      file: '/app/docs/content/deployment/platforms/vercel.md',
+    },
+    {
+      path: 'deployment/platforms/netlify',
+      title: 'Deploying to Netlify',
+      file: '/app/docs/content/deployment/platforms/netlify.md',
+    },
+    {
+      path: 'developer-guides/ui-configuration',
+      title: 'UI Configuration',
+      file: '/app/docs/content/developer-guides/ui-configuration.md',
+    },
+    {
+      path: 'developer-guides/icon-customization',
+      title: 'Icon Customization',
+      file: '/app/docs/content/developer-guides/icon-customization.md',
+    },
+    {
+      path: 'user-guide/advanced-features',
+      title: 'Advanced Features',
+      file: '/app/docs/content/user-guide/advanced-features.md',
+    },
+    {
+      path: 'user-guide/basic-usage',
+      title: 'Basic Usage',
+      file: '/app/docs/content/user-guide/basic-usage.md',
+    },
+    {
+      path: 'api-reference/overview',
+      title: 'API Reference',
+      file: '/app/docs/content/api-reference/overview.md',
     },
   ];
 
-  documentationIndex.push(...docs);
+  // Load actual content from files using our API endpoint
+  for (const doc of docFiles) {
+    try {
+      const response = await fetch(`/api/docs/${doc.path}`);
+      if (response.ok) {
+        const content = await response.text();
+        if (content.trim()) {
+          documentationIndex.push({
+            content: content,
+            metadata: {
+              title: doc.title,
+              path: doc.path,
+              section: doc.path.split('/')[0],
+            },
+          });
+        }
+      }
+    } catch (error) {
+      console.warn(`Failed to load ${doc.path}:`, error);
+    }
+  }
+
+  // Fallback content if no files loaded
+  if (documentationIndex.length === 0) {
+    documentationIndex.push({
+      content: `# Documentation\n\nThis is a documentation site template. You can customize the content by editing the markdown files in the docs/content directory.\n\n## Features\n\n- Dark/light theme switching\n- Interactive backgrounds\n- Responsive design\n- Fast search\n- Command palette\n- AI assistant`,
+      metadata: {
+        title: 'Documentation',
+        path: 'overview',
+        section: 'general',
+      },
+    });
+  }
 }
