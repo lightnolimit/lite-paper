@@ -32,7 +32,9 @@
       "Bash(mkdir:*)",
       "Bash(npx tsc:*)",
       "Bash(npm outdated)",
-      "Bash(npm update:*)"
+      "Bash(npm update:*)",
+      "Bash(npm search:*)",
+      "Bash(npx -y serve -p 3334)"
     ],
     "deny": []
   }
