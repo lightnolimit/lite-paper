@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
-import CommandPalette from '../components/CommandPalette';
+import CommandPalette from '../components/CommandPalette/OptimizedCommandPalette';
 
 interface CommandPaletteContextType {
   isOpen: boolean;

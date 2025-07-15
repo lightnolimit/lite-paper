@@ -30,7 +30,9 @@
       "Bash(gh pr edit:*)",
       "Bash(mv:*)",
       "Bash(mkdir:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(npm outdated)",
+      "Bash(npm update:*)"
     ],
     "deny": []
   }
