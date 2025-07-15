@@ -326,10 +326,10 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                 className="hidden lg:block shrink-0 h-full overflow-hidden border-l border-gray-300 dark:border-gray-700 bg-[#f3f5f0] dark:bg-[#18151a]"
               >
                 <div className="w-72 xl:w-80 h-full flex flex-col p-4">
-                  <div className="mb-4">
+                  <div className="mb-2">
                     <h3
-                      className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
-                      style={{ fontFamily: 'var(--mono-font)' }}
+                      className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 font-mono"
+                      style={{ fontFamily: 'var(--mono-font) !important' }}
                     >
                       Interactive Map
                     </h3>
@@ -406,7 +406,10 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
               </button>
 
               {/* Title */}
-              <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: 'var(--mono-font)' }}>
+              <h3
+                className="text-lg font-semibold mb-4 font-mono"
+                style={{ fontFamily: 'var(--mono-font) !important' }}
+              >
                 Interactive Map
               </h3>
 

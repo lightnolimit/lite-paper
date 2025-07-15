@@ -713,7 +713,7 @@ code {
   font-size: var(--text-3xl);
   padding-bottom: var(--space-3);
   margin-bottom: var(--space-4);
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   border-bottom: none;
   font-weight: 700;
   line-height: var(--leading-tight);
