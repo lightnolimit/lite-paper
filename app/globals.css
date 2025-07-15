@@ -55,8 +55,8 @@
 }
 
 @font-face {
-  font-family: 'Oranienbaum';
-  src: url('/fonts/Oranienbaum-Regular.ttf') format('truetype');
+  font-family: 'Noto Serif JP';
+  src: url('/fonts/NotoSerifJP.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -78,7 +78,7 @@
   --mono-font: 'MapleMono', 'SF Mono', 'Monaco', 'Consolas', monospace;
   --title-font: 'Hubot Sans', sans-serif;
   --body-font: 'Mona Sans', sans-serif;
-  --serif-font: 'Oranienbaum', 'DM Serif Display', 'Times New Roman', serif;
+  --serif-font: 'Noto Serif JP', 'DM Serif Display', 'Times New Roman', serif;
   --icon-color: #1f2937; /* Icon color for light mode */
   --primary-color-rgb: 103, 141, 88; /* RGB value of #678D58 */
   --hover-color: rgba(0, 0, 0, 0.05);
