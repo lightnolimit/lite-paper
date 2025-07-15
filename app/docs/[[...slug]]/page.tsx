@@ -3,8 +3,11 @@ import path from 'path';
 
 import { Suspense } from 'react';
 
+import { createLogger } from '../../utils/logger';
 import { loadMarkdownContent } from '../../utils/markdown-loader';
 import DocumentationPage from '../components/DocumentationPage';
+
+const logger = createLogger('DocsPage');
 
 interface PageProps {
   params: Promise<{
@@ -44,7 +47,7 @@ export async function generateStaticParams() {
         }
       }
     } catch (error) {
-      console.error('Error generating static params:', error);
+      logger.error('Error generating static params:', error);
     }
   }
 
@@ -53,7 +56,7 @@ export async function generateStaticParams() {
   // Add the root docs path (no slug)
   paths.push({ slug: [] });
 
-  console.log('Generated static params:', paths);
+  logger.debug('Generated static params:', paths);
   return paths;
 }
 

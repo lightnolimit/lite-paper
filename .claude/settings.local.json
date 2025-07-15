@@ -20,7 +20,12 @@
       "Bash(git commit:*)",
       "Bash(touch:*)",
       "Bash(gh pr view:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "WebFetch(domain:developers.cloudflare.com)",
+      "Bash(ls:*)",
+      "Bash(cat:*)"
     ],
     "deny": []
   }

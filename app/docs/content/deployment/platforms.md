@@ -19,6 +19,6 @@ This documentation site can be deployed to various cloud platforms. Choose the p
 | Edge Functions      | Workers          | Edge Functions | Edge Functions    |
 | Analytics           | Basic            | Advanced       | Basic             |
 
-## Quick Deploy
+## Deployment Methods
 
-Each platform offers one-click deployment options. Check the individual platform guides for detailed instructions.
+Each platform offers automated deployment options through Git integration or CLI tools. Check the individual platform guides for detailed instructions.

@@ -6,6 +6,10 @@
  * don't work with static exports.
  */
 
+import { createLogger } from './logger';
+
+const logger = createLogger('DocsClient');
+
 interface DocsContentResponse {
   generated: string;
   content: Record<string, string>;
@@ -41,7 +45,7 @@ export async function loadDocsContent(): Promise<DocsContentResponse> {
     cachedContent = data;
     return data;
   } catch (error) {
-    console.error('Error loading documentation content:', error);
+    logger.error('Error loading documentation content:', error);
     throw new Error(
       `Failed to load documentation content: ${error instanceof Error ? error.message : 'Unknown error'}`
     );
@@ -67,7 +71,7 @@ export async function loadDocsIndex(): Promise<DocsIndexResponse> {
     cachedIndex = data;
     return data;
   } catch (error) {
-    console.error('Error loading documentation index:', error);
+    logger.error('Error loading documentation index:', error);
     throw new Error(
       `Failed to load documentation index: ${error instanceof Error ? error.message : 'Unknown error'}`
     );
@@ -97,7 +101,7 @@ Please check the path and try again.`;
 
     return content;
   } catch (error) {
-    console.error(`Error getting documentation content for path "${path}":`, error);
+    logger.error(`Error getting documentation content for path "${path}":`, error);
     return `# Error Loading Documentation
 
 Failed to load documentation for path "${path}".
@@ -116,7 +120,7 @@ export async function documentationPathExists(path: string): Promise<boolean> {
     const docsIndex = await loadDocsIndex();
     return docsIndex.paths.includes(path);
   } catch (error) {
-    console.error(`Error checking if path "${path}" exists:`, error);
+    logger.error(`Error checking if path "${path}" exists:`, error);
     return false;
   }
 }
@@ -129,7 +133,7 @@ export async function getAvailableDocumentationPaths(): Promise<string[]> {
     const docsIndex = await loadDocsIndex();
     return docsIndex.paths;
   } catch (error) {
-    console.error('Error getting available documentation paths:', error);
+    logger.error('Error getting available documentation paths:', error);
     return [];
   }
 }
@@ -169,7 +173,7 @@ export async function searchDocumentation(
 
     return results;
   } catch (error) {
-    console.error('Error searching documentation:', error);
+    logger.error('Error searching documentation:', error);
     return [];
   }
 }
@@ -198,7 +202,7 @@ export async function getDocumentationStats(): Promise<{
       paths: docsContent.paths,
     };
   } catch (error) {
-    console.error('Error getting documentation statistics:', error);
+    logger.error('Error getting documentation statistics:', error);
     return {
       totalFiles: 0,
       totalContent: 0,

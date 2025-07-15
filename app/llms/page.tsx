@@ -13,7 +13,7 @@ export default function LLMSPage() {
     const llmsPath = path.join(process.cwd(), 'public', 'llms.txt');
     const llmsContent = fs.readFileSync(llmsPath, 'utf8');
     content = content.replace('{llms-preview}', llmsContent);
-  } catch (error) {
+  } catch {
     content = content.replace('{llms-preview}', '# LLMs.txt content will appear here');
   }
 

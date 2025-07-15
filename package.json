@@ -13,6 +13,7 @@
     "type-check": "tsc --noEmit",
     "pages:build": "next build",
     "deploy": "npx wrangler pages deploy out",
+    "deploy:create": "npx wrangler pages deploy out --create",
     "prepare": "husky",
     "generate:llms": "node scripts/generate-llms.mjs",
     "generate:docs": "node scripts/generate-docs.mjs"
@@ -21,8 +22,6 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
-    "@react-three/drei": "^10.0.7",
-    "@react-three/fiber": "^9.1.2",
     "@types/marked": "^5.0.2",
     "@types/react-syntax-highlighter": "^15.5.13",
     "critters": "^0.0.23",
@@ -38,8 +37,7 @@
     "react-markdown": "^10.1.0",
     "react-syntax-highlighter": "^15.6.1",
     "react-use": "^17.6.0",
-    "server-only": "^0.0.1",
-    "three": "^0.176.0"
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
@@ -49,7 +47,6 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/three": "^0.176.0",
     "autoprefixer": "^10.4.15",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",

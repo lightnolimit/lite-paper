@@ -25,7 +25,7 @@ export interface AIDocumentationQuery {
 
 export interface AIDocumentationResponse {
   success: boolean;
-  data?: any;
+  data?: unknown;
   error?: string;
   suggestions?: string[];
 }

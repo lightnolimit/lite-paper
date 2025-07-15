@@ -52,7 +52,7 @@ renderer.code = function (token: { text: string; lang?: string; escaped?: boolea
       // Return a placeholder that we'll replace with ColorPalette component
       return `<div data-colorpalette-id="${blockId}" data-palette='${JSON.stringify(paletteData)}' class="color-palette-placeholder"></div>`;
     } catch (error) {
-      console.error('Invalid ColorPalette JSON:', error);
+      processorLogger.error('Invalid ColorPalette JSON:', error);
       return `<div class="notification notification-error">Invalid ColorPalette JSON format</div>`;
     }
   }

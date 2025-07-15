@@ -8,6 +8,9 @@ import {
   searchDocumentation,
   getDocumentationStats,
 } from '../utils/docs-client';
+import { createLogger } from '../utils/logger';
+
+const logger = createLogger('TestDocs');
 
 export default function TestDocsPage() {
   const [selectedPath, setSelectedPath] = useState<string>('');
@@ -34,7 +37,7 @@ export default function TestDocsPage() {
           setSelectedPath(paths[0]);
         }
       } catch (error) {
-        console.error('Error loading paths:', error);
+        logger.error('Error loading paths:', error);
       }
     };
 
@@ -48,7 +51,7 @@ export default function TestDocsPage() {
         const docStats = await getDocumentationStats();
         setStats(docStats);
       } catch (error) {
-        console.error('Error loading stats:', error);
+        logger.error('Error loading stats:', error);
       }
     };
 
@@ -64,7 +67,7 @@ export default function TestDocsPage() {
           const docContent = await getDocumentationContent(selectedPath);
           setContent(docContent);
         } catch (error) {
-          console.error('Error loading content:', error);
+          logger.error('Error loading content:', error);
           setContent('Error loading content');
         } finally {
           setLoading(false);
@@ -86,7 +89,7 @@ export default function TestDocsPage() {
       const results = await searchDocumentation(searchQuery);
       setSearchResults(results);
     } catch (error) {
-      console.error('Error searching:', error);
+      logger.error('Error searching:', error);
       setSearchResults([]);
     }
   };

@@ -2,13 +2,14 @@
 
 Cloudflare Pages is the **recommended hosting platform** for this documentation template. It offers excellent performance, global CDN, automatic SSL, and seamless integration with GitHub.
 
-## Quick Deploy
+## Deployment Overview
 
-Deploy this documentation site to Cloudflare Pages in one click:
+Cloudflare Pages provides two main deployment methods:
 
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/your-username/your-repo)
+1. **Dashboard Deployment** - Connect your GitHub repository through the web interface
+2. **CLI Deployment** - Deploy directly using Wrangler CLI
 
-> **Note**: Replace `your-username/your-repo` with your actual GitHub repository URL. The button will automatically detect your repository settings and guide you through the deployment process.
+Both methods offer automatic deployments on every push to your repository.
 
 ## Why Cloudflare Pages?
 
@@ -27,6 +28,110 @@ Before deploying, ensure you have:
 - A **GitHub repository** with your documentation site
 - A **Cloudflare account** (free at [cloudflare.com](https://cloudflare.com))
 - Your site **builds successfully** locally with `npm run build`
+- A **Cloudflare API Token** with proper permissions (see below)
+
+## API Token Configuration
+
+### Creating an API Token for Deployment
+
+To deploy using the CLI or GitHub Actions, you need a Cloudflare API token with specific permissions:
+
+1. **Go to API Tokens**
+   - Navigate to [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
+   - Click **"Create Token"**
+
+2. **Use Custom Template**
+   - Select **"Create Custom Token"**
+   - Give it a descriptive name: `Pages Deployment Token`
+
+3. **Required Permissions**
+
+   Configure these **exact permissions**:
+
+   ```yaml
+   Account Permissions:
+     - Cloudflare Pages:Edit
+     - Account Settings:Read (for account ID verification)
+
+   Zone Permissions (if using custom domain):
+     - Zone:Read
+     - Page Rules:Edit
+     - DNS:Edit (for custom domain setup)
+   ```
+
+4. **Account Resources**
+   - Include: Select your specific account
+   - Zone Resources: Include all zones (or specific zone for custom domain)
+
+5. **Token Summary**
+
+   Your token configuration should look like:
+
+   ```
+   Token name: Pages Deployment Token
+
+   Permissions:
+   ├── Account
+   │   ├── Cloudflare Pages:Edit
+   │   └── Account Settings:Read
+   └── Zone (optional for custom domains)
+       ├── Zone:Read
+       ├── Page Rules:Edit
+       └── DNS:Edit
+
+   Account Resources:
+   └── Include: Your Account Name
+
+   Zone Resources:
+   └── Include: All zones (or specific zone)
+   ```
+
+6. **Create and Save Token**
+   - Click **"Continue to summary"**
+   - Review permissions
+   - Click **"Create Token"**
+   - **Copy the token immediately** (it won't be shown again!)
+
+### Using the API Token
+
+**For Manual Deployment (Wrangler CLI):**
+
+```bash
+# Set as environment variable
+export CLOUDFLARE_API_TOKEN="your-token-here"
+
+# Or use in command
+CLOUDFLARE_API_TOKEN="your-token-here" npm run deploy
+```
+
+**For GitHub Actions:**
+
+1. Go to your GitHub repository
+2. Settings → Secrets and variables → Actions
+3. Add new secret: `CLOUDFLARE_API_TOKEN`
+4. Paste your token value
+
+**For Cloudflare Dashboard:**
+
+- No API token needed when using the web interface
+- Cloudflare handles authentication automatically
+
+### Troubleshooting Token Issues
+
+**"Authentication error [code: 10000]"**
+
+- Token lacks required permissions
+- Regenerate token with all permissions listed above
+
+**"Project not found [code: 8000007]"**
+
+- Project doesn't exist yet
+- Create project first via dashboard or use `--create` flag
+
+**"Insufficient permissions"**
+
+- Token missing specific permission
+- Check token summary at [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
 
 ## Deployment Steps
 
@@ -53,7 +158,7 @@ Configure your project with these **exact settings**:
 ```yaml
 # Build Configuration
 Build command: npm run build
-Build output directory: .next
+Build output directory: out
 Root directory: / (leave empty)
 
 # Environment Variables
@@ -66,7 +171,7 @@ NPM_VERSION: 9
 - **Framework preset**: Next.js (Static HTML Export)
 - **Node.js version**: 18 or higher
 - **Build command**: `npm run build`
-- **Build directory**: `.next`
+- **Build directory**: `out`
 
 ### Step 3: Set Environment Variables
 
@@ -88,7 +193,34 @@ To add environment variables:
 2. Click **Settings** → **Environment variables**
 3. Add each variable with **Production** scope
 
-### Step 4: Advanced Configuration
+### Step 4: Configure Wrangler (For CLI Deployment)
+
+If you're deploying via CLI using Wrangler, create or update `wrangler.toml`:
+
+```toml
+# wrangler.toml
+name = "your-project-name"  # Must match your Cloudflare Pages project
+compatibility_date = "2025-01-14"
+pages_build_output_dir = "out"
+
+[env.production]
+compatibility_date = "2025-01-14"
+```
+
+**Important**: The `name` field must match one of these:
+
+- An existing Cloudflare Pages project name
+- A new project name (will be created on first deploy)
+- Your desired project URL: `your-project-name.pages.dev`
+
+To create a new project automatically:
+
+```bash
+# Use the --create flag on first deployment
+npx wrangler pages deploy out --create
+```
+
+### Step 5: Advanced Configuration
 
 Create a `next.config.js` file optimized for Cloudflare:
 
@@ -122,19 +254,52 @@ const nextConfig = {
 module.exports = nextConfig;
 ```
 
-### Step 5: Deploy
+### Step 5: Deploy Your Site
 
-1. **Trigger Deployment**
-   - Cloudflare automatically builds when you push to your main branch
-   - Or click **"Deploy site"** in the dashboard
+#### Dashboard Deployment
 
-2. **Monitor Build**
-   - Watch the build log in real-time
-   - Typical build time: 2-5 minutes
+After configuring your project:
+
+1. **Initial Deployment**
+   - Click **"Save and Deploy"**
+   - Cloudflare will clone your repository
+   - Build process starts automatically
+   - Monitor progress in the build log
+
+2. **Automatic Deployments**
+   - Every push to your main branch triggers a new deployment
+   - Pull requests create preview deployments
+   - No manual intervention required
 
 3. **Access Your Site**
-   - Your site will be available at: `https://your-project.pages.dev`
-   - Cloudflare provides a random subdomain
+   - Production: `https://your-project.pages.dev`
+   - Preview: `https://[branch].[project].pages.dev`
+
+#### CLI Deployment
+
+Using Wrangler for direct deployment:
+
+```bash
+# First time setup
+npm install -g wrangler
+wrangler login
+
+# Build your site
+npm run build
+
+# Deploy (first time - creates project)
+npm run deploy:create
+
+# Deploy (subsequent updates)
+npm run deploy
+```
+
+**CLI Deployment Benefits:**
+
+- Deploy without pushing to Git
+- Test production builds locally
+- Automate with scripts
+- Use in CI/CD pipelines
 
 ## Custom Domain Setup
 
@@ -268,6 +433,19 @@ For more detailed analytics:
     "start": "next start"
   }
 }
+```
+
+**"Project not found [code: 8000007]" during deployment**
+
+```bash
+# Solution 1: Create project first via dashboard
+# Go to Cloudflare Pages → Create a project
+
+# Solution 2: Use deploy:create command for first deployment
+npm run deploy:create
+
+# Solution 3: Update wrangler.toml with correct project name
+name = "your-existing-project-name"
 ```
 
 **Static export fails**

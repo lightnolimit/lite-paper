@@ -525,7 +525,7 @@ export default function DocumentationGraph({
           value={searchTerm}
           onChange={handleSearchChange}
           className={`w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-opacity-50 ${
-            isSidebarView ? 'text-xs py-1 px-2' : ''
+            isSidebarView ? 'text-xs py-1 px-2' : 'text-sm'
           }`}
           style={{
             fontFamily: 'var(--mono-font)',
@@ -644,33 +644,6 @@ export default function DocumentationGraph({
               </feMerge>
             </filter>
           </defs>
-
-          {/* Background particles */}
-          {!isSidebarView && (
-            <g className="background-particles" opacity="0.1">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <motion.circle
-                  key={`particle-${i}`}
-                  r={1}
-                  fill={themeColors.primary}
-                  initial={{
-                    x: Math.random() * dimensions.width,
-                    y: Math.random() * dimensions.height,
-                  }}
-                  animate={{
-                    x: Math.random() * dimensions.width,
-                    y: Math.random() * dimensions.height,
-                  }}
-                  transition={{
-                    duration: Math.random() * 20 + 10,
-                    repeat: Infinity,
-                    repeatType: 'reverse',
-                    ease: 'linear',
-                  }}
-                />
-              ))}
-            </g>
-          )}
 
           {/* Links */}
           <g className="links">

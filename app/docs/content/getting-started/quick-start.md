@@ -107,7 +107,7 @@ Verify that:
 
 ## Step 5: Deploy to Cloudflare
 
-The easiest way to deploy is using Cloudflare Pages:
+### Option 1: Deploy via Dashboard (Recommended)
 
 1. **Connect Repository**
    - Go to [Cloudflare Pages](https://pages.cloudflare.com)
@@ -117,13 +117,37 @@ The easiest way to deploy is using Cloudflare Pages:
 
    ```
    Build command: npm run build
-   Build directory: .next
+   Build directory: out
    Node.js version: 18+
    ```
 
 3. **Deploy**
    - Cloudflare will automatically build and deploy
    - Your site will be live at `your-project.pages.dev`
+
+### Option 2: Deploy via CLI
+
+1. **Update Project Name**
+   - Edit `wrangler.toml` and set your project name:
+
+   ```toml
+   name = "your-project-name"
+   ```
+
+2. **First Deployment**
+
+   ```bash
+   # Create project and deploy
+   npm run deploy:create
+   ```
+
+3. **Subsequent Deployments**
+   ```bash
+   # Deploy updates
+   npm run deploy
+   ```
+
+**Note**: If you get a "Project not found" error, use `npm run deploy:create` for the first deployment.
 
 ## Alternative Deployment Options
 

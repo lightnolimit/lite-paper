@@ -1,6 +1,10 @@
 // Client-side RAG implementation with optional AI enhancement
 // This module provides documentation search functionality with optional AI-powered responses
 
+import { createLogger } from '../utils/logger';
+
+const logger = createLogger('ClientRAG');
+
 export interface DocumentChunk {
   content: string;
   metadata: {
@@ -117,7 +121,7 @@ export async function searchAndAnswer(
       const aiAnswer = await getAIResponse(query, sources);
       return { answer: aiAnswer, sources };
     } catch (error) {
-      console.warn('AI response failed, falling back to local generation:', error);
+      logger.warn('AI response failed, falling back to local generation:', error);
       // Fallback to local generation
     }
   }
@@ -192,7 +196,7 @@ Assistant Response:`;
     // Fallback
     return 'Unable to generate response. Please try again.';
   } catch (error) {
-    console.warn('AI response failed:', error);
+    logger.warn('AI response failed:', error);
     throw error; // Let the caller handle fallback
   }
 }
@@ -233,7 +237,7 @@ async function loadEmbeddedDocs(): Promise<void> {
       }
     }
   } catch (error) {
-    console.warn('Failed to load docs content:', error);
+    logger.warn('Failed to load docs content:', error);
   }
 
   // Fallback content if no files loaded

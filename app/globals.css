@@ -329,35 +329,9 @@ select:focus {
   background-clip: padding-box;
 }
 
-/* Enhanced documentation card for better readability */
-.doc-card {
-  background-color: var(--card-color);
-  border: 1px solid var(--border-unified);
-  border-radius: var(--space-3);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  max-width: 100%;
-  width: 100%;
-  margin: 0 auto;
+/* Documentation content styling */
+.doc-content {
   line-height: var(--leading-loose);
-}
-
-.dark .doc-card {
-  border-color: var(--border-unified);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-}
-
-@media (min-width: 768px) {
-  .doc-card {
-    width: 95%;
-    max-width: none;
-  }
-}
-
-@media (min-width: 1400px) {
-  .doc-card {
-    max-width: 75rem;
-  }
 }
 
 /* Logo styling */
@@ -496,7 +470,7 @@ select:focus {
 }
 
 /* Reduced motion styles for settings menu and other components */
-.reduce-motion .doc-card {
+.reduce-motion .doc-content {
   transition: none;
 }
 
@@ -702,32 +676,32 @@ code {
   }
 
   /* Mobile typography adjustments */
-  .doc-card h1 {
+  .doc-content h1 {
     font-size: var(--text-3xl);
   }
 
-  .doc-card h2 {
+  .doc-content h2 {
     font-size: var(--text-2xl);
     margin-top: var(--space-8);
   }
 
-  .doc-card h3 {
+  .doc-content h3 {
     font-size: var(--text-xl);
     margin-top: var(--space-6);
   }
 
-  .doc-card h4 {
+  .doc-content h4 {
     font-size: var(--text-lg);
     margin-top: var(--space-6);
   }
 
-  .doc-card p {
+  .doc-content p {
     font-size: var(--text-base);
     margin-bottom: var(--space-4);
   }
 
-  .doc-card ul,
-  .doc-card ol {
+  .doc-content ul,
+  .doc-content ol {
     padding-left: var(--space-4);
   }
 }
@@ -767,12 +741,12 @@ code {
 }
 
 /* Enhanced Markdown content styling for better readability */
-.doc-card h1,
-.doc-card h2,
-.doc-card h3,
-.doc-card h4,
-.doc-card h5,
-.doc-card h6 {
+.doc-content h1,
+.doc-content h2,
+.doc-content h3,
+.doc-content h4,
+.doc-content h5,
+.doc-content h6 {
   font-family: var(--title-font);
   margin-top: var(--space-10);
   margin-bottom: var(--space-3);
@@ -783,8 +757,8 @@ code {
   letter-spacing: -0.025em;
 }
 
-.doc-card h1 {
-  font-size: var(--text-4xl);
+.doc-content h1 {
+  font-size: var(--text-3xl);
   padding-bottom: var(--space-3);
   margin-bottom: var(--space-4);
   margin-top: 0;
@@ -793,33 +767,33 @@ code {
   line-height: var(--leading-tight);
 }
 
-.doc-card h2 {
-  font-size: var(--text-3xl);
+.doc-content h2 {
+  font-size: var(--text-2xl);
   padding-bottom: var(--space-2);
-  border-bottom: none;
+  border-bottom: 1px solid var(--border-unified);
   margin-top: var(--space-12);
   margin-bottom: var(--space-3);
   font-weight: 650;
   line-height: var(--leading-tight);
 }
 
-.doc-card h3 {
-  font-size: var(--text-2xl);
+.doc-content h3 {
+  font-size: var(--text-xl);
   margin-top: var(--space-10);
   margin-bottom: var(--space-3);
   font-weight: 600;
   line-height: var(--leading-snug);
 }
 
-.doc-card h4 {
-  font-size: var(--text-xl);
+.doc-content h4 {
+  font-size: var(--text-lg);
   margin-top: var(--space-8);
   margin-bottom: var(--space-3);
   font-weight: 600;
   line-height: var(--leading-snug);
 }
 
-.doc-card h5 {
+.doc-content h5 {
   font-size: var(--text-lg);
   margin-top: var(--space-6);
   margin-bottom: var(--space-3);
@@ -827,7 +801,7 @@ code {
   line-height: var(--leading-normal);
 }
 
-.doc-card h6 {
+.doc-content h6 {
   font-size: var(--text-base);
   margin-top: var(--space-6);
   margin-bottom: var(--space-3);
@@ -837,7 +811,7 @@ code {
   line-height: var(--leading-normal);
 }
 
-.doc-card p {
+.doc-content p {
   font-family: var(--body-font);
   margin-bottom: var(--space-6);
   line-height: var(--leading-loose);
@@ -847,7 +821,7 @@ code {
 }
 
 /* Enhanced first paragraph for better reading flow */
-.doc-card > p:first-of-type {
+.doc-content > p:first-of-type {
   font-size: var(--text-lg);
   line-height: var(--leading-loose);
   margin-bottom: var(--space-8);
@@ -855,26 +829,26 @@ code {
 }
 
 /* Improved spacing between sections */
-.doc-card h1 + p,
-.doc-card h2 + p,
-.doc-card h3 + p,
-.doc-card h4 + p,
-.doc-card h5 + p,
-.doc-card h6 + p {
+.doc-content h1 + p,
+.doc-content h2 + p,
+.doc-content h3 + p,
+.doc-content h4 + p,
+.doc-content h5 + p,
+.doc-content h6 + p {
   margin-top: 0.5rem;
 }
 
 /* Better spacing for content following headings */
-.doc-card h1 + *,
-.doc-card h2 + *,
-.doc-card h3 + *,
-.doc-card h4 + *,
-.doc-card h5 + *,
-.doc-card h6 + * {
+.doc-content h1 + *,
+.doc-content h2 + *,
+.doc-content h3 + *,
+.doc-content h4 + *,
+.doc-content h5 + *,
+.doc-content h6 + * {
   margin-top: 0;
 }
 
-.doc-card a {
+.doc-content a {
   color: var(--primary-color);
   text-decoration: none;
   transition: all 0.2s ease;
@@ -882,26 +856,50 @@ code {
   border-bottom: 1px solid transparent;
 }
 
-.doc-card a:hover {
+.doc-content a:hover {
   text-decoration: none;
   border-bottom: 1px solid var(--primary-color);
   opacity: 0.8;
 }
 
-.doc-card a:focus {
+.doc-content a:focus {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
   border-radius: calc(var(--space-1) / 2);
 }
 
-.doc-card ul,
-.doc-card ol {
+/* Prose link styles to override Tailwind's defaults */
+.prose a,
+.markdown-content a {
+  color: var(--primary-color) !important;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  border-bottom: 1px solid transparent;
+}
+
+.prose a:hover,
+.markdown-content a:hover {
+  text-decoration: none;
+  border-bottom: 1px solid var(--primary-color);
+  opacity: 0.8;
+}
+
+/* Ensure dark mode links use pink */
+.dark .prose a,
+.dark .markdown-content a,
+.dark .doc-content a {
+  color: var(--primary-color) !important;
+}
+
+.doc-content ul,
+.doc-content ol {
   margin-bottom: var(--space-6);
   padding-left: var(--space-6);
   line-height: var(--leading-loose);
 }
 
-.doc-card li {
+.doc-content li {
   margin-bottom: var(--space-2);
   font-family: var(--body-font);
   font-size: var(--text-base);
@@ -909,16 +907,16 @@ code {
   color: var(--text-color);
 }
 
-.doc-card li p {
+.doc-content li p {
   margin-bottom: var(--space-3);
 }
 
-.doc-card li:last-child {
+.doc-content li:last-child {
   margin-bottom: 0;
 }
 
 /* Enhanced blockquotes for better readability */
-.doc-card blockquote {
+.doc-content blockquote {
   position: relative;
   border-left: 4px solid var(--primary-color);
   padding: var(--space-6) var(--space-10) var(--space-6) var(--space-12);
@@ -932,12 +930,12 @@ code {
   line-height: var(--leading-loose);
 }
 
-.dark .doc-card blockquote {
+.dark .doc-content blockquote {
   background-color: rgba(255, 255, 255, 0.03);
   color: var(--text-secondary);
 }
 
-.doc-card blockquote::before {
+.doc-content blockquote::before {
   content: '';
   position: absolute;
   top: var(--space-6);
@@ -951,25 +949,25 @@ code {
   filter: brightness(0.2);
 }
 
-.dark .doc-card blockquote::before {
+.dark .doc-content blockquote::before {
   filter: brightness(2.5);
   opacity: 0.6;
 }
 
 /* Right quote removed */
 
-.doc-card blockquote p {
+.doc-content blockquote p {
   margin-bottom: 1rem;
   font-size: inherit;
   line-height: inherit;
   color: inherit;
 }
 
-.doc-card blockquote p:last-child {
+.doc-content blockquote p:last-child {
   margin-bottom: 0;
 }
 
-.doc-card blockquote cite {
+.doc-content blockquote cite {
   display: block;
   text-align: right;
   font-style: normal;
@@ -979,14 +977,14 @@ code {
   font-size: 0.9rem;
 }
 
-.doc-card hr {
+.doc-content hr {
   margin: var(--space-12) 0;
   border: 0;
   border-top: 1px solid var(--border-unified);
   opacity: 0.6;
 }
 
-.doc-card table {
+.doc-content table {
   width: 100%;
   border-collapse: collapse;
   margin: var(--space-8) 0;
@@ -995,26 +993,26 @@ code {
   line-height: 1.6;
 }
 
-.doc-card th,
-.doc-card td {
+.doc-content th,
+.doc-content td {
   border: 1px solid var(--border-unified);
   padding: var(--space-3) var(--space-4);
   text-align: left;
   vertical-align: top;
 }
 
-.doc-card th {
+.doc-content th {
   background-color: rgba(0, 0, 0, 0.03);
   font-weight: 600;
   color: var(--text-color);
   letter-spacing: -0.025em;
 }
 
-.dark .doc-card th {
+.dark .doc-content th {
   background-color: rgba(255, 255, 255, 0.03);
 }
 
-.doc-card td {
+.doc-content td {
   color: var(--text-color);
 }
 
@@ -1027,15 +1025,15 @@ code {
 }
 
 /* Clean up any conflicting old styles */
-.doc-card div[style*='display: flex'],
-.doc-card [style*='display: flex; gap: 24px'],
-.doc-card [style*='display: flex; margin-bottom: 8px'],
-.doc-card [style*='display: flex; align-items: center; margin: 5px'],
-.doc-card [style*='flex: 1; min-width: 250px; max-width: 50%'],
-.doc-card [style*='flex: 1; min-width: 250px;'],
-.doc-card [style*='flex-grow: 1; font-family: monospace;'],
-.doc-card [style*='display: flex; align-items: center; width: 100%;'],
-.doc-card [style*='margin: 30px 0'] {
+.doc-content div[style*='display: flex'],
+.doc-content [style*='display: flex; gap: 24px'],
+.doc-content [style*='display: flex; margin-bottom: 8px'],
+.doc-content [style*='display: flex; align-items: center; margin: 5px'],
+.doc-content [style*='flex: 1; min-width: 250px; max-width: 50%'],
+.doc-content [style*='flex: 1; min-width: 250px;'],
+.doc-content [style*='flex-grow: 1; font-family: monospace;'],
+.doc-content [style*='display: flex; align-items: center; width: 100%;'],
+.doc-content [style*='margin: 30px 0'] {
   /* Reset any conflicting styles */
   all: unset;
 }
@@ -1099,7 +1097,7 @@ code {
 }
 
 /* Remove profile image styling that's now handled by the container */
-.doc-card > p > img:first-of-type {
+.doc-content > p > img:first-of-type {
   display: none;
 }
 
@@ -1221,7 +1219,7 @@ code.wallet-address {
 }
 
 /* Fix for profile info layout */
-.doc-card p.profile-info strong {
+.doc-content p.profile-info strong {
   font-weight: bold;
   display: inline-block;
   min-width: calc(var(--space-16) * 2);
@@ -1229,7 +1227,7 @@ code.wallet-address {
 }
 
 /* Style the paragraphs following a strong element to maintain alignment */
-.doc-card p.profile-info {
+.doc-content p.profile-info {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
@@ -1238,12 +1236,12 @@ code.wallet-address {
 }
 
 /* Fix for image size in dark mode */
-.dark .doc-card img[src*='pixel'] {
+.dark .doc-content img[src*='pixel'] {
   filter: invert(1);
 }
 
 /* Style for regular code blocks */
-.doc-card code {
+.doc-content code {
   font-family: var(--mono-font);
   background-color: rgba(0, 0, 0, 0.05);
   padding: 0.2rem 0.4rem;
@@ -1251,12 +1249,12 @@ code.wallet-address {
   font-size: 0.9em;
 }
 
-.dark .doc-card code {
+.dark .doc-content code {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Inline icons in headings */
-.doc-card h2 img {
+.doc-content h2 img {
   height: var(--space-6);
   width: auto;
   vertical-align: middle;
@@ -1383,12 +1381,12 @@ code.wallet-address {
   display: inline;
 }
 
-.doc-card ol {
+.doc-content ol {
   font-family: var(--mono-font);
   margin-bottom: 1rem;
 }
 
-.doc-card ol li {
+.doc-content ol li {
   font-family: var(--mono-font);
   margin-bottom: 0.5rem;
 }
