@@ -225,15 +225,29 @@ h6,
   transform: none !important;
 }
 
+/* Focus styles with theme colors for all interactive elements */
+*:focus,
+*:focus-visible {
+  outline: 2px solid var(--primary-color) !important;
+  outline-offset: 2px;
+}
+
 /* Input focus styles with theme colors */
 input:focus,
 textarea:focus,
 select:focus {
-  outline: none !important;
-  ring: 2px;
-  ring-color: var(--primary-color);
+  outline: 2px solid var(--primary-color) !important;
+  outline-offset: 2px;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
+}
+
+button:focus,
+button:focus-visible,
+a:focus,
+a:focus-visible {
+  outline: 2px solid var(--primary-color) !important;
+  outline-offset: 2px;
 }
 
 .dark input:focus,
@@ -699,7 +713,7 @@ code {
   font-size: var(--text-3xl);
   padding-bottom: var(--space-3);
   margin-bottom: var(--space-4);
-  margin-top: 0.5rem;
+  margin-top: 1rem;
   border-bottom: none;
   font-weight: 700;
   line-height: var(--leading-tight);

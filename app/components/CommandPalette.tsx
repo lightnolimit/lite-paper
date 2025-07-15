@@ -113,8 +113,8 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
       shortcut: 'L',
     });
 
-    // Add FAQ items early so they appear in default results
-    FAQ_ITEMS.forEach((faq, index) => {
+    // Add only first 2 FAQ items for default results
+    FAQ_ITEMS.slice(0, 2).forEach((faq, index) => {
       results.push({
         title: faq.question,
         path: `faq-${index}`,
@@ -157,12 +157,31 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
     return results;
   }, [isDarkMode, toggleDarkMode]);
 
+  // Create a complete searchable index that includes all FAQ items for searching
+  const completeSearchIndex = useMemo(() => {
+    const allResults = [...searchIndex];
+
+    // Add remaining FAQ items (beyond first 2) only for search purposes
+    FAQ_ITEMS.slice(2).forEach((faq, index) => {
+      allResults.push({
+        title: faq.question,
+        path: `faq-${index + 2}`,
+        type: 'faq',
+        description: 'Frequently Asked Question',
+        answer: faq.answer,
+        icon: <Icon icon="mingcute:question-line" className="w-5 h-5" />,
+      });
+    });
+
+    return allResults;
+  }, [searchIndex]);
+
   // Filter results based on query
   const filteredResults = useMemo(() => {
     if (!query) return searchIndex.slice(0, 8); // Show top results when no query
 
     const lowerQuery = query.toLowerCase();
-    return searchIndex
+    return completeSearchIndex
       .filter((item) => {
         const titleMatch = item.title.toLowerCase().includes(lowerQuery);
         const descMatch = item.description?.toLowerCase().includes(lowerQuery);
