@@ -1,5 +1,5 @@
 {
-  "generated": "2025-07-15T20:57:15.921Z",
+  "generated": "2025-07-15T23:04:13.758Z",
   "paths": [
     "getting-started/introduction",
     "getting-started/quick-start",
@@ -9,12 +9,12 @@
     "user-guide/configuration",
     "user-guide/troubleshooting",
     "user-guide/chatbot",
+    "user-guide/interactive-map",
     "api-reference/overview",
     "api-reference/authentication",
     "api-reference/endpoints",
     "developer-guides/code-examples",
     "developer-guides/best-practices",
-    "developer-guides/contributing",
     "developer-guides/design-system",
     "developer-guides/ui-configuration",
     "developer-guides/icon-customization",
@@ -22,7 +22,8 @@
     "deployment/production-setup",
     "deployment/platforms/cloudflare",
     "deployment/platforms/vercel",
-    "deployment/platforms/netlify"
+    "deployment/platforms/netlify",
+    "llms"
   ],
-  "count": 22
+  "count": 23
 }

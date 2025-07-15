@@ -42,8 +42,9 @@ const nextConfig = {
    * TypeScript configuration
    */
   typescript: {
-    // Ignore type errors in production builds to prevent CI failures
-    ignoreBuildErrors: true,
+    // Only ignore type errors in production builds when explicitly set
+    ignoreBuildErrors:
+      process.env.NODE_ENV === 'production' && process.env.IGNORE_BUILD_ERRORS === 'true',
   },
 
   /**
@@ -51,8 +52,36 @@ const nextConfig = {
    */
   experimental: {
     optimizeCss: true,
-    optimizePackageImports: ['framer-motion', '@react-three/fiber', '@react-three/drei'],
+    optimizePackageImports: [
+      'framer-motion',
+      '@iconify/react',
+      'react-markdown',
+      'react-syntax-highlighter',
+      'marked',
+      'marked-highlight',
+      'prismjs',
+      'dompurify',
+      'next-themes',
+      'react-use',
+    ],
     viewTransition: true,
+  },
+
+  /**
+   * Webpack configuration for bundle optimization
+   */
+  webpack: (config, { isServer }) => {
+    // Optimize dynamic imports
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+        os: false,
+      };
+    }
+
+    return config;
   },
 
   // Headers configuration removed as it doesn't work with 'export' mode

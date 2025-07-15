@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
 import ContentRenderer from '../../components/ContentRenderer';
-import DocumentationGraph from '../../components/DocumentationGraph';
+import DocumentationGraph from '../../components/DocumentationGraph/OptimizedDocumentationGraph';
 import FileTree from '../../components/FileTree';
 import fileTreeStyles from '../../components/FileTree.module.css';
 import Navigation from '../../components/Navigation';
