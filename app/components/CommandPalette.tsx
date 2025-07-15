@@ -8,6 +8,9 @@ import ReactMarkdown from 'react-markdown';
 import { documentationTree } from '../data/documentation';
 import { isAIAvailable } from '../lib/clientRAG';
 import { useTheme } from '../providers/ThemeProvider';
+import { createLogger } from '../utils/logger';
+
+const logger = createLogger('CommandPalette');
 
 import type { FileItem } from './FileTree';
 
@@ -390,7 +393,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                           // Clear the query after successful submission
                           setQuery('');
                         } catch (error) {
-                          console.error('AI search error:', error);
+                          logger.error('AI search error:', error);
                           setAIResponse(
                             'I apologize, but I encountered an error while searching for information. Please try rephrasing your question or check the documentation directly.'
                           );

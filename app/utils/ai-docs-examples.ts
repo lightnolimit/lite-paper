@@ -13,12 +13,15 @@ import {
   validateDocumentationPath,
   AIDocumentationQuery,
 } from './ai-docs-integration';
+import { createLogger } from './logger';
+
+const logger = createLogger('AIDocsExamples');
 
 /**
  * Example 1: AI Assistant handling user question about Cloudflare deployment
  */
 export async function handleCloudflareDeploymentQuestion() {
-  console.log('🤖 AI Assistant: User asked about Cloudflare deployment...');
+  logger.debug('🤖 AI Assistant: User asked about Cloudflare deployment...');
 
   // First, check if the path exists and get the content
   const validation = await validateDocumentationPath('deployment/platforms/cloudflare');
@@ -26,7 +29,7 @@ export async function handleCloudflareDeploymentQuestion() {
   if (validation.exists) {
     const docData = await getDocumentationForAI('deployment/platforms/cloudflare');
 
-    console.log('📄 Found documentation:', {
+    logger.debug('📄 Found documentation:', {
       path: docData.metadata.path,
       contentLength: docData.metadata.length,
       relatedPaths: docData.metadata.relatedPaths,
@@ -44,7 +47,7 @@ Would you like me to explain any specific part of the deployment process?`;
       relatedTopics: docData.metadata.relatedPaths,
     };
   } else {
-    console.log('❌ Path not found, suggesting alternatives:', validation.suggestions);
+    logger.debug('❌ Path not found, suggesting alternatives:', validation.suggestions);
     return {
       response: `I couldn't find specific Cloudflare deployment documentation. Here are some related topics: ${validation.suggestions.join(', ')}`,
       relatedTopics: validation.suggestions,
@@ -56,14 +59,14 @@ Would you like me to explain any specific part of the deployment process?`;
  * Example 2: AI Assistant searching for information about configuration
  */
 export async function handleConfigurationSearch() {
-  console.log('🤖 AI Assistant: Searching for configuration information...');
+  logger.debug('🤖 AI Assistant: Searching for configuration information...');
 
   const searchResults = await smartSearchForAI('configuration settings', {
     maxResults: 5,
     includeContent: false,
   });
 
-  console.log('🔍 Search results:', {
+  logger.debug('🔍 Search results:', {
     query: searchResults.searchQuery,
     totalResults: searchResults.totalResults,
     topResults: searchResults.results.slice(0, 3).map((r) => ({
@@ -95,11 +98,11 @@ Would you like me to get the full content for any of these topics?`;
  * Example 3: AI Assistant providing documentation overview
  */
 export async function provideDocumentationOverview() {
-  console.log('🤖 AI Assistant: Providing documentation overview...');
+  logger.debug('🤖 AI Assistant: Providing documentation overview...');
 
   const outline = await getDocumentationOutline();
 
-  console.log('📋 Documentation outline:', {
+  logger.debug('📋 Documentation outline:', {
     totalFiles: outline.totalFiles,
     categories: outline.structure.map((s) => ({ category: s.category, count: s.count })),
   });
@@ -128,7 +131,7 @@ What specific topic would you like to explore?`;
  * Example 4: AI Assistant handling multiple queries in sequence
  */
 export async function handleMultipleQueries() {
-  console.log('🤖 AI Assistant: Handling multiple queries...');
+  logger.debug('🤖 AI Assistant: Handling multiple queries...');
 
   // Query 1: Get available paths
   const pathsQuery: AIDocumentationQuery = { type: 'paths' };
@@ -146,7 +149,7 @@ export async function handleMultipleQueries() {
   };
   const searchResult = await queryDocumentation(searchQuery);
 
-  console.log('📊 Query results:', {
+  logger.debug('📊 Query results:', {
     pathsSuccess: pathsResult.success,
     statsSuccess: statsResult.success,
     searchSuccess: searchResult.success,
@@ -163,7 +166,10 @@ export async function handleMultipleQueries() {
 
 **Getting Started Resources:**
 ${searchResult.data.results
-  .map((result: any, index: number) => `${index + 1}. ${result.path}\n   ${result.excerpt}`)
+  .map(
+    (result: { path: string; content: string; excerpt: string }, index: number) =>
+      `${index + 1}. ${result.path}\n   ${result.excerpt}`
+  )
   .join('\n\n')}
 
 What would you like to know more about?`;
@@ -185,7 +191,7 @@ What would you like to know more about?`;
  * Example 5: AI Assistant providing contextual help
  */
 export async function provideContextualHelp(userQuery: string) {
-  console.log(`🤖 AI Assistant: Providing contextual help for: "${userQuery}"`);
+  logger.debug(`🤖 AI Assistant: Providing contextual help for: "${userQuery}"`);
 
   // First, try to understand what the user is asking about
   const searchResults = await smartSearchForAI(userQuery, { maxResults: 3 });
@@ -237,29 +243,29 @@ Would you like me to explain any specific part in more detail?`;
  * Example usage in a chat interface
  */
 export async function simulateAIChatSession() {
-  console.log('🚀 Starting AI Documentation Chat Session...\n');
+  logger.debug('🚀 Starting AI Documentation Chat Session...\n');
 
   // User: "How do I deploy to Cloudflare?"
-  console.log('👤 User: How do I deploy to Cloudflare?');
+  logger.debug('👤 User: How do I deploy to Cloudflare?');
   const cloudflareResponse = await handleCloudflareDeploymentQuestion();
-  console.log('🤖 AI:', cloudflareResponse.response.substring(0, 200) + '...\n');
+  logger.debug('🤖 AI:', cloudflareResponse.response.substring(0, 200) + '...\n');
 
   // User: "What configuration options are available?"
-  console.log('👤 User: What configuration options are available?');
+  logger.debug('👤 User: What configuration options are available?');
   const configResponse = await handleConfigurationSearch();
-  console.log('🤖 AI:', configResponse.response.substring(0, 200) + '...\n');
+  logger.debug('🤖 AI:', configResponse.response.substring(0, 200) + '...\n');
 
   // User: "Can you give me an overview of all documentation?"
-  console.log('👤 User: Can you give me an overview of all documentation?');
+  logger.debug('👤 User: Can you give me an overview of all documentation?');
   const overviewResponse = await provideDocumentationOverview();
-  console.log('🤖 AI:', overviewResponse.response.substring(0, 200) + '...\n');
+  logger.debug('🤖 AI:', overviewResponse.response.substring(0, 200) + '...\n');
 
   // User: "Help me with authentication"
-  console.log('👤 User: Help me with authentication');
+  logger.debug('👤 User: Help me with authentication');
   const authResponse = await provideContextualHelp('authentication');
-  console.log('🤖 AI:', authResponse.response.substring(0, 200) + '...\n');
+  logger.debug('🤖 AI:', authResponse.response.substring(0, 200) + '...\n');
 
-  console.log('✅ AI Documentation Chat Session Complete!');
+  logger.debug('✅ AI Documentation Chat Session Complete!');
 }
 
 // Export the simulation function for testing

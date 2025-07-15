@@ -1,16 +1,17 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
 import ContentRenderer from '../../components/ContentRenderer';
+import DocumentationGraph from '../../components/DocumentationGraph';
 import FileTree from '../../components/FileTree';
 import { FileItem } from '../../components/FileTree';
 import fileTreeStyles from '../../components/FileTree.module.css';
 import Navigation from '../../components/Navigation';
 import { uiConfig, getMobileTogglePositionClasses } from '../../config/ui';
+import { socialLinks } from '../../constants/social';
 import { documentationTree } from '../../data/documentation';
 import { useTheme } from '../../providers/ThemeProvider';
 
@@ -19,21 +20,13 @@ interface DocumentationPageProps {
   currentPath: string;
 }
 
-// Memoized dynamic imports to prevent recreating on every render
-const BackgroundComponents = {
-  wave: dynamic(() => import('../../components/WaveBackground'), { ssr: false }),
-  stars: dynamic(() => import('../../components/StarsBackground'), { ssr: false }),
-  dither: dynamic(() => import('../../components/DitherBackground'), { ssr: false }),
-  solid: dynamic(() => import('../../components/SolidBackground'), { ssr: false }),
-};
-
 const DocumentationPage = React.memo(({ initialContent, currentPath }: DocumentationPageProps) => {
   const router = useRouter();
   const { prefersReducedMotion } = useTheme();
   const [content, setContent] = useState<string>(initialContent);
   const [path, setPath] = useState<string>(currentPath);
   const [sidebarVisible, setSidebarVisible] = useState(false);
-  const [backgroundType, setBackgroundType] = useState<string>('wave');
+  const [rightSidebarVisible, setRightSidebarVisible] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
   // Memoized animation variants (disabled if motion is reduced)
@@ -103,15 +96,10 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
     setIsMobile(mobile);
     setSidebarVisible(!mobile); // Show on desktop, hide on mobile by default
 
-    // Load background preference
-    const savedBackground = localStorage.getItem('backgroundType');
-    const envDefault = process.env.NEXT_PUBLIC_BACKGROUND_TYPE || 'wave';
-    const validBackgrounds = ['wave', 'stars', 'dither', 'solid'];
-
-    if (savedBackground && validBackgrounds.includes(savedBackground)) {
-      setBackgroundType(savedBackground);
-    } else {
-      setBackgroundType(envDefault);
+    // Load right sidebar state from localStorage
+    const savedRightSidebarState = localStorage.getItem('rightSidebarVisible');
+    if (savedRightSidebarState !== null) {
+      setRightSidebarVisible(savedRightSidebarState === 'true');
     }
   }, [currentPath]);
 
@@ -120,14 +108,6 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
     setContent(initialContent);
     setPath(currentPath);
   }, [initialContent, currentPath]);
-
-  // Memoized background component selection
-  const BackgroundComponent = useMemo(() => {
-    return (
-      BackgroundComponents[backgroundType as keyof typeof BackgroundComponents] ||
-      BackgroundComponents.wave
-    );
-  }, [backgroundType]);
 
   // Optimized resize handler with useCallback
   const handleResize = useCallback(() => {
@@ -187,6 +167,12 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
     setSidebarVisible(!sidebarVisible);
   }, [sidebarVisible]);
 
+  const toggleRightSidebar = useCallback(() => {
+    const newState = !rightSidebarVisible;
+    setRightSidebarVisible(newState);
+    localStorage.setItem('rightSidebarVisible', newState.toString());
+  }, [rightSidebarVisible]);
+
   // Memoized style objects
   const sidebarStyle = useMemo(
     () => ({
@@ -222,7 +208,6 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
 
   return (
     <main className="flex h-screen flex-col overflow-hidden">
-      <BackgroundComponent />
       <Navigation docsPath={path} onToggleSidebar={toggleSidebar} sidebarVisible={sidebarVisible} />
 
       <div className="w-full flex flex-1 z-10 pt-12 overflow-hidden">
@@ -247,7 +232,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                     : sidebarAnimationVariants.desktop.exit
                 }
                 transition={isMobile ? transitionConfig : { duration: 0 }}
-                className={`w-full md:w-56 lg:w-64 shrink-0 ${fileTreeStyles.fileTreePanel} p-3 h-[calc(100vh-48px)] top-12 overflow-y-auto z-20 scrollbar-hide`}
+                className={`w-full md:w-60 lg:w-64 shrink-0 ${fileTreeStyles.fileTreePanel} p-3 h-[calc(100vh-48px)] top-12 overflow-y-auto z-20 scrollbar-hide`}
                 style={sidebarStyle}
               >
                 {/* Mobile close button - positioned absolutely */}
@@ -276,8 +261,8 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
             )}
           </AnimatePresence>
 
-          {/* Content */}
-          <div className={`flex-1 h-full overflow-hidden ${contentOpacityClass}`}>
+          {/* Main Content Area - Center Column */}
+          <div className={`flex-1 h-full overflow-hidden ${contentOpacityClass} relative`}>
             {/* Mobile file tree toggle button - configurable via uiConfig */}
             {uiConfig.showMobileFileTreeToggle &&
               isMobile &&
@@ -332,7 +317,91 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
               ))}
 
             <ContentRenderer content={content} path={path} />
+
+            {/* Right sidebar toggle button */}
+            <button
+              onClick={toggleRightSidebar}
+              className="hidden lg:flex absolute top-4 right-4 z-20 items-center justify-center w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors border border-gray-300 dark:border-gray-600"
+              aria-label={rightSidebarVisible ? 'Hide documentation map' : 'Show documentation map'}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                {rightSidebarVisible ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+                  />
+                )}
+              </svg>
+            </button>
           </div>
+
+          {/* Right Column - Documentation Graph/Mindmap */}
+          <AnimatePresence>
+            {rightSidebarVisible && (
+              <motion.div
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: 'auto' }}
+                exit={{ opacity: 0, width: 0 }}
+                transition={{ duration: prefersReducedMotion ? 0.05 : 0.3 }}
+                className="hidden lg:block shrink-0 h-full overflow-hidden border-l border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800"
+              >
+                <div className="w-72 xl:w-80 h-full flex flex-col p-4">
+                  <div className="mb-4">
+                    <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                      Documentation Map
+                    </h3>
+                  </div>
+                  <DocumentationGraph
+                    currentPath={path}
+                    onNodeClick={(nodePath) => {
+                      router.push(`/docs/${nodePath}`, { scroll: false });
+                    }}
+                    className="w-full h-96"
+                  />
+
+                  {/* Footer with social icons and copyright */}
+                  <div className="mt-auto pt-4 border-t border-gray-200 dark:border-gray-800">
+                    {/* Social Icons */}
+                    <div className="flex items-center justify-center gap-3 mb-3">
+                      {socialLinks.map((link) => (
+                        <a
+                          key={link.name}
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={link.name}
+                          className="opacity-40 hover:opacity-60 transition-opacity"
+                        >
+                          <div className="w-5 h-5">{link.icon}</div>
+                        </a>
+                      ))}
+                    </div>
+
+                    {/* Copyright */}
+                    <div className="text-center">
+                      <p className="text-xs text-gray-400 dark:text-gray-600">
+                        © 2024 @lightnolimit
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </main>

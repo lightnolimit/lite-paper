@@ -7,7 +7,6 @@ import React, { useState, useMemo, useCallback } from 'react';
 
 import { useTheme } from '../providers/ThemeProvider';
 
-import DocumentationGraph from './DocumentationGraph';
 import styles from './FileTree.module.css';
 
 export type FileItem = {
@@ -116,7 +115,7 @@ const FileTreeItem: React.FC<FileTreeItemProps> = React.memo(
     return (
       <div style={{ paddingLeft: depth > 1 ? `${(depth - 1) * 12}px` : '0px' }}>
         <div
-          className={`${styles.fileTreeItem} flex items-center py-1 ${isActive ? 'active' : ''}`}
+          className={`${styles.fileTreeItem} flex items-center py-0.5 ${isActive ? 'active' : ''}`}
           onClick={handleClick}
           onKeyDown={handleKeyDown}
           tabIndex={0}
@@ -126,7 +125,7 @@ const FileTreeItem: React.FC<FileTreeItemProps> = React.memo(
             cursor: 'pointer',
             fontFamily: 'var(--mono-font)',
             letterSpacing: '-0.5px',
-            fontSize: '0.9rem',
+            fontSize: '0.8rem',
           }}
         >
           {isDirectory && (
@@ -162,7 +161,9 @@ const FileTreeItem: React.FC<FileTreeItemProps> = React.memo(
             />
           </span>
 
-          <span className="truncate">{item.name}</span>
+          <span className="truncate">
+            {item.type === 'file' ? item.name.replace(/ /g, '-').toLowerCase() : item.name}
+          </span>
         </div>
 
         <AnimatePresence>
@@ -243,19 +244,6 @@ const FileTree: React.FC<FileTreeProps> = ({ items, onSelect, currentPath }) => 
           currentPath={currentPath}
         />
       ))}
-
-      {/* Documentation Graph - placed at the bottom of sidebar */}
-      <div className="mt-3 border-t pt-3" style={{ borderColor: 'var(--border-unified)' }}>
-        <div className="h-64 w-full">
-          <DocumentationGraph
-            currentPath={currentPath || ''}
-            onNodeClick={(nodePath) => {
-              router.push(`/docs/${nodePath}`, { scroll: false });
-            }}
-            className="w-full h-full"
-          />
-        </div>
-      </div>
     </div>
   );
 };

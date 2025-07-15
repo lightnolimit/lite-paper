@@ -2,7 +2,7 @@
 
 A beautiful, fast, and customizable documentation website template built with Next.js 15, TypeScript, and Tailwind CSS. Features an interactive mindmap visualization and optional AI-powered documentation assistant.
 
-[![Deploy to Cloudflare Pages](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/lightnolimit/lite-paper&projectName=lite-paper-docs)
+[![Fork on GitHub](https://img.shields.io/badge/Fork%20on-GitHub-black?logo=github)](https://github.com/lightnolimit/lite-paper/fork)
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Next.js 15](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
@@ -89,18 +89,73 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to see your documentation site.
 
-## 🚀 Quick Deploy
+## 🚀 Deployment
 
-Deploy this documentation site to Cloudflare Pages in one click using the button at the top of this README!
+### Deploy to Cloudflare Pages (Recommended)
 
-The deployment will:
+#### Option 1: Via Cloudflare Dashboard
 
-- Clone this repository to your GitHub account
-- Set up automatic builds and deployments
-- Create a Cloudflare Pages project
-- Deploy your documentation site globally
+1. **Fork this repository** using the button above
 
-No API tokens or manual configuration required!
+2. **Create a new Pages project**:
+   - Go to [dash.cloudflare.com](https://dash.cloudflare.com) → Pages
+   - Click "Create a project" → "Connect to Git"
+   - Select your forked repository
+
+3. **Configure build settings**:
+
+   ```
+   Build command: npm run build
+   Build output directory: out
+   ```
+
+4. **Deploy**: Click "Save and Deploy"
+
+Your site will be live at `https://your-project.pages.dev` within minutes!
+
+#### Option 2: Via Wrangler CLI
+
+1. **Install and authenticate**:
+
+   ```bash
+   npm install -g wrangler
+   wrangler login
+   ```
+
+2. **Configure project name** in `wrangler.toml`:
+
+   ```toml
+   name = "your-project-name"  # This will be your subdomain
+   ```
+
+3. **Deploy**:
+
+   ```bash
+   # First deployment (creates the project)
+   npm run build
+   npm run deploy:create
+
+   # Subsequent deployments
+   npm run build
+   npm run deploy
+   ```
+
+#### API Token Setup (for CLI/CI)
+
+If deploying via CLI or GitHub Actions, create an API token:
+
+1. Go to [Cloudflare API Tokens](https://dash.cloudflare.com/profile/api-tokens)
+2. Create token with permissions:
+   - **Account**: `Cloudflare Pages:Edit`
+   - **Zone** (optional): `DNS:Edit` for custom domains
+3. Set as environment variable: `CLOUDFLARE_API_TOKEN`
+
+### Deploy to Other Platforms
+
+- **[Vercel](./app/docs/content/deployment/platforms/vercel.md)**: `npx vercel`
+- **[Netlify](./app/docs/content/deployment/platforms/netlify.md)**: `npx netlify deploy`
+
+See the [deployment guide](./app/docs/content/deployment/overview.md) for detailed instructions.
 
 ## 📁 Project Structure
 

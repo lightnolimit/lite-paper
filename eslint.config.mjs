@@ -14,7 +14,7 @@ const eslintConfig = [
   {
     rules: {
       // Allow console.log in development
-      'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
       // Enforce consistent imports
       'import/order': [
         'error',
@@ -41,6 +41,25 @@ const eslintConfig = [
       'react/prop-types': 'off', // We use TypeScript for prop validation
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
+    },
+  },
+  // Disable console rules for specific files
+  {
+    files: ['scripts/**/*.mjs', 'scripts/**/*.js'],
+    rules: {
+      'no-console': 'off',
+    },
+  },
+  {
+    files: ['app/utils/logger.ts'],
+    rules: {
+      'no-console': 'off',
+    },
+  },
+  {
+    files: ['app/components/StarsBackground.tsx', 'app/components/WaveBackground.tsx'],
+    rules: {
+      'no-console': 'off',
     },
   },
 ];

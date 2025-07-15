@@ -2,13 +2,13 @@
 
 Guide to deploying your documentation site to various hosting platforms.
 
-## Quick Deploy
+## Deployment Options
 
-Deploy this documentation site to Cloudflare Pages in one click:
+Choose your preferred deployment method based on your needs:
 
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/your-username/your-repo)
-
-> **Note**: Replace `your-username/your-repo` with your actual GitHub repository URL. For other platforms, see the specific platform guides below.
+- **Git-based deployment** - Connect your repository for automatic deployments
+- **CLI deployment** - Deploy directly from your development environment
+- **CI/CD pipelines** - Integrate with GitHub Actions or other CI tools
 
 ## Supported Platforms
 

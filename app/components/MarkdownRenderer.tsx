@@ -128,7 +128,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
               link.textContent = originalText;
             }, 2000);
           } catch (err) {
-            console.error('Failed to copy:', err);
+            logger.error('Failed to copy:', err);
           }
         };
         link.addEventListener('click', clickHandler);
@@ -168,7 +168,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
           })
           .catch(() => {
             // This fallback should not be needed for React 18+ but just in case
-            console.warn('Could not load React 18 createRoot, this should not happen');
+            logger.warn('Could not load React 18 createRoot, this should not happen');
           });
       }
     });
@@ -193,10 +193,10 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
               root.render(<ColorPalette colors={parsedData.colors} />);
             })
             .catch(() => {
-              console.warn('Could not load React 18 createRoot, this should not happen');
+              logger.warn('Could not load React 18 createRoot, this should not happen');
             });
         } catch (error) {
-          console.error('Error parsing color palette data:', error);
+          logger.error('Error parsing color palette data:', error);
         }
       }
     });

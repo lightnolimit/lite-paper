@@ -2,6 +2,10 @@
 
 import React, { useState } from 'react';
 
+import { createLogger } from '../utils/logger';
+
+const logger = createLogger('ColorPalette');
+
 interface ColorData {
   name: string;
   hex: string;
@@ -23,7 +27,7 @@ export default function ColorPalette({ colors }: ColorPaletteProps) {
       setCopiedColor(`${value}-${type}`);
       setTimeout(() => setCopiedColor(null), 2000);
     } catch (error) {
-      console.error('Failed to copy to clipboard:', error);
+      logger.error('Failed to copy to clipboard:', error);
     }
   };
 

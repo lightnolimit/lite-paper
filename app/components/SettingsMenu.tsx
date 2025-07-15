@@ -6,7 +6,6 @@ import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 
 import { useTheme } from '../providers/ThemeProvider';
 
-import BackgroundSelector from './BackgroundSelector';
 import MotionToggle from './MotionToggle';
 import ThemeSwitcher from './ThemeSwitcher';
 
@@ -233,14 +232,6 @@ const SettingsMenu = React.memo(
                     </span>
                     <MotionToggle />
                   </div>
-                </div>
-
-                {/* Background section */}
-                <div>
-                  <h3 className="text-sm font-medium mb-1" style={headingStyle}>
-                    BACKGROUND
-                  </h3>
-                  <BackgroundSelector className="w-full justify-between" />
                 </div>
               </div>
             </motion.div>

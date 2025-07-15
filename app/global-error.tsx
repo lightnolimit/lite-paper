@@ -2,6 +2,10 @@
 
 import React from 'react';
 
+import { createLogger } from './utils/logger';
+
+const logger = createLogger('GlobalError');
+
 /**
  * Props for the GlobalError component
  */
@@ -22,7 +26,7 @@ interface GlobalErrorProps {
 export default function GlobalError({ error, reset }: GlobalErrorProps) {
   React.useEffect(() => {
     // Log the error to console in global error case
-    console.error('Global application error:', error);
+    logger.error('Global application error:', error);
   }, [error]);
 
   return (
