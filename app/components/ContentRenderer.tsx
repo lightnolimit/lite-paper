@@ -112,7 +112,7 @@ export default function ContentRenderer({
   return (
     <div className="w-full h-full overflow-hidden" role="article">
       <div className="flex-1 overflow-y-auto doc-content-scroll h-full">
-        <div className="doc-content pt-2 pb-6 px-6 md:pt-2 md:pb-8 md:px-8 lg:pt-4 lg:pb-12 lg:px-12 max-w-4xl mx-auto">
+        <div className="doc-content pt-8 pb-6 px-6 md:pt-10 md:pb-8 md:px-8 lg:pt-12 lg:pb-12 lg:px-12 max-w-4xl mx-auto">
           {/* Banner for synopsis pages */}
           {isSynopsisPage && (
             <div className="w-full mb-6 overflow-hidden rounded-lg relative">

@@ -301,7 +301,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
             {/* Right sidebar toggle button - positioned absolutely */}
             <button
               onClick={toggleRightSidebar}
-              className="hidden lg:flex absolute top-2 right-4 z-20 items-center justify-center w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors border border-gray-300 dark:border-gray-600"
+              className="hidden lg:flex absolute top-4 right-6 z-20 items-center justify-center w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors border border-gray-300 dark:border-gray-600"
               aria-label={rightSidebarVisible ? 'Hide documentation map' : 'Show documentation map'}
             >
               <Icon
