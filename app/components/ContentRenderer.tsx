@@ -1,5 +1,6 @@
 'use client';
 
+import { Icon } from '@iconify/react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -105,6 +106,9 @@ export default function ContentRenderer({
   // Check if this is a synopsis page to show banner
   const isSynopsisPage = useMemo(() => path.toLowerCase().includes('synopsis'), [path]);
 
+  // Get GitHub branch (default to 'main' if not set)
+  const githubBranch = process.env.NEXT_PUBLIC_GITHUB_BRANCH || 'main';
+
   return (
     <motion.div
       initial={{ opacity: 0.9, y: 0 }}
@@ -138,41 +142,89 @@ export default function ContentRenderer({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.3 }}
-              className="mt-12 pt-8 border-t border-unified"
+              className="mt-12 pt-4 border-t border-gray-200 dark:border-gray-800/50"
             >
               <div className="pagination-links">
                 {prevPage ? (
-                  <motion.button
+                  <button
                     onClick={() => router.push(`/docs/${prevPage.path}`)}
-                    className="nav-button text-left p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900/30 transition-colors"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    className="nav-button text-left p-4 rounded-lg transition-opacity hover:opacity-70"
                   >
-                    <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">← Previous</div>
-                    <div className="font-medium text-gray-900 dark:text-gray-100">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">← Previous</div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {prevPage.title}
                     </div>
-                  </motion.button>
+                  </button>
                 ) : (
                   <div></div>
                 )}
 
                 {nextPage && (
-                  <motion.button
+                  <button
                     onClick={() => router.push(`/docs/${nextPage.path}`)}
-                    className="nav-button text-right p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900/30 transition-colors"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    className="nav-button text-right p-4 rounded-lg transition-opacity hover:opacity-70"
                   >
-                    <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Next →</div>
-                    <div className="font-medium text-gray-900 dark:text-gray-100">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Next →</div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {nextPage.title}
                     </div>
-                  </motion.button>
+                  </button>
                 )}
               </div>
             </motion.div>
           )}
+
+          {/* Contribution Links */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.3 }}
+            className="mt-12 pt-4 border-t border-gray-200 dark:border-gray-800/50"
+          >
+            <div className="flex flex-wrap gap-3 justify-center items-center">
+              {/* Edit this page on GitHub */}
+              {process.env.NEXT_PUBLIC_GITHUB_URL && (
+                <a
+                  href={`${process.env.NEXT_PUBLIC_GITHUB_URL}/edit/${githubBranch}/app/docs/content/${path}.md`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                  style={{ fontFamily: 'var(--mono-font)' }}
+                >
+                  <Icon icon="mingcute:edit-2-line" className="w-3.5 h-3.5" />
+                  <span>edit</span>
+                </a>
+              )}
+
+              {/* Report an issue */}
+              {process.env.NEXT_PUBLIC_GITHUB_URL && (
+                <a
+                  href={`${process.env.NEXT_PUBLIC_GITHUB_URL}/issues/new?title=Issue with ${encodeURIComponent(path)}&body=${encodeURIComponent(`I found an issue with the documentation page: ${path}\n\nDescription:\n`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                  style={{ fontFamily: 'var(--mono-font)' }}
+                >
+                  <Icon icon="mingcute:bug-2-line" className="w-3.5 h-3.5" />
+                  <span>issue</span>
+                </a>
+              )}
+
+              {/* View source */}
+              {process.env.NEXT_PUBLIC_GITHUB_URL && (
+                <a
+                  href={`${process.env.NEXT_PUBLIC_GITHUB_URL}/blob/${githubBranch}/app/docs/content/${path}.md`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                  style={{ fontFamily: 'var(--mono-font)' }}
+                >
+                  <Icon icon="mingcute:code-2-line" className="w-3.5 h-3.5" />
+                  <span>source</span>
+                </a>
+              )}
+            </div>
+          </motion.div>
         </div>
       </div>
     </motion.div>

@@ -97,8 +97,8 @@ export const useTheme = () => {
   --border-color: #E5E7EB;
 
   /* Typography */
-  --title-font: 'Urbanist', sans-serif;
-  --body-font: 'Urbanist', sans-serif;
+  --title-font: 'Hubot Sans', sans-serif;
+  --body-font: 'Mona Sans', sans-serif;
   --mono-font: 'MapleMono', 'SF Mono', monospace;
 
   /* Transitions */

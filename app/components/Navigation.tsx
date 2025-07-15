@@ -1,15 +1,19 @@
 'use client';
 
+import { Icon } from '@iconify/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 
+import { socialLinks } from '../constants/social';
 import { useCommandPalette } from '../providers/CommandPaletteProvider';
 import { useTheme } from '../providers/ThemeProvider';
 
+import MotionToggle from './MotionToggle';
 import SettingsMenu from './SettingsMenu';
+import ThemeSwitcher from './ThemeSwitcher';
 
 /**
  * Props for the Navigation component
@@ -80,6 +84,7 @@ export default function Navigation({
   const { isDarkMode, prefersReducedMotion } = useTheme();
   const { openCommandPalette } = useCommandPalette();
   const isDocsPage = docsPath !== undefined;
+  const [mobileMapVisible, setMobileMapVisible] = useState(false);
 
   // Close mobile menu when window is resized to desktop size
   useEffect(() => {
@@ -242,7 +247,7 @@ export default function Navigation({
         style={{
           color: 'var(--text-color)',
           fontFamily: 'var(--mono-font)',
-          ...(isMobile ? {} : { letterSpacing: '-0.5px', fontSize: '0.9rem' }),
+          ...(isMobile ? {} : { letterSpacing: '-0.02em' }),
         }}
         onClick={isMobile ? handleMobileNavClick : undefined}
         onMouseEnter={() => setHoveredItem(item.label)}
@@ -302,22 +307,33 @@ export default function Navigation({
           style={{ color: 'var(--text-color)' }}
           tabIndex={0}
         >
+          {/* Replace the star below with your own logo:
           <Image
             src={
               isDarkMode
-                ? '/assets/logo/phantasy-icon-pink.png'
-                : '/assets/logo/phantasy-icon-black.png'
+                ? '/assets/logo/your-logo-dark.png'
+                : '/assets/logo/your-logo-light.png'
             }
-            alt="Phantasy Logo"
+            alt="Your Logo"
             width={32}
             height={32}
             className="h-8 w-auto logo-image"
           />
+          */}
           <span
-            className="font-title text-xl tracking-tighter"
-            style={{ fontFamily: 'var(--title-font)' }}
+            className="flex items-center justify-center w-7 h-7 text-base rounded-md"
+            style={{
+              backgroundColor: 'var(--primary-color)',
+              color: isDarkMode ? '#000' : '#fff',
+            }}
           >
-            Lite Paper
+            ✰
+          </span>
+          <span
+            className="text-xl tracking-wider uppercase font-black"
+            style={{ fontFamily: 'var(--mono-font)' }}
+          >
+            LITE PAPER
           </span>
         </Link>
 
@@ -349,24 +365,10 @@ export default function Navigation({
             style={{
               color: 'var(--muted-color)',
               fontFamily: 'var(--mono-font)',
-              fontSize: '0.875rem',
             }}
             title="Open command palette"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-4 h-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-              />
-            </svg>
+            <Icon icon="mingcute:search-ai-line" className="w-4 h-4" />
             <kbd
               className="hidden lg:inline-block px-1.5 py-0.5 text-xs border rounded"
               style={{ borderColor: 'var(--border-color)' }}
@@ -384,11 +386,8 @@ export default function Navigation({
             <SettingsMenu className="hover:text-primary-color" />
           </div>
 
-          {/* Mobile menu toggle and settings */}
-          <div className="flex md:hidden items-center gap-3">
-            {/* Settings menu for mobile */}
-            <SettingsMenu className="hover:text-primary-color" isCompact={true} />
-
+          {/* Mobile menu toggle */}
+          <div className="flex md:hidden items-center">
             {/* Mobile menu button */}
             <button
               onClick={handleMobileMenuToggle}
@@ -398,31 +397,9 @@ export default function Navigation({
               tabIndex={0}
             >
               {mobileMenuOpen ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <Icon icon="mingcute:close-line" className="w-6 h-6" />
               ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                  />
-                </svg>
+                <Icon icon="mingcute:menu-line" className="w-6 h-6" />
               )}
             </button>
           </div>
@@ -452,37 +429,106 @@ export default function Navigation({
                 <div key={item.label}>{renderNavLink(item, true)}</div>
               ))}
 
-              {/* File tree toggle for mobile docs pages */}
+              {/* Theme and Motion settings */}
+              <div
+                className="pt-3 pb-2 px-4 border-t mt-2"
+                style={{ borderColor: 'var(--border-color)' }}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <span
+                    className="text-base"
+                    style={{
+                      color: 'var(--muted-color)',
+                      fontFamily: 'var(--mono-font)',
+                    }}
+                  >
+                    theme
+                  </span>
+                  <ThemeSwitcher />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span
+                    className="text-base"
+                    style={{
+                      color: 'var(--muted-color)',
+                      fontFamily: 'var(--mono-font)',
+                    }}
+                  >
+                    motion
+                  </span>
+                  <MotionToggle />
+                </div>
+              </div>
+
+              {/* File tree and mind map toggles for mobile docs pages */}
               {isDocsPage && onToggleSidebar && (
                 <div
-                  className="pt-4 pb-2 px-4 border-t mt-2 mb-0"
+                  className="pt-3 pb-2 px-4 border-t"
                   style={{ borderColor: 'var(--border-color)' }}
                 >
                   <button
                     onClick={handleSidebarToggle}
-                    className="flex items-center gap-2 py-0.5 w-full hover:text-primary-color transition-colors"
-                    style={{ color: 'var(--text-color)' }}
+                    className="flex items-center gap-2 py-2 w-full hover:text-primary-color transition-colors text-base"
+                    style={{
+                      color: 'var(--text-color)',
+                      fontFamily: 'var(--mono-font)',
+                    }}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-5 h-5"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
-                      />
-                    </svg>
-                    <span style={{ paddingTop: '0px' }}>
-                      {sidebarVisible ? 'Hide Documentation Tree' : 'Show Documentation Tree'}
-                    </span>
+                    <Icon icon="mingcute:folder-line" className="w-5 h-5" />
+                    <span>show documentation tree</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      // We need to communicate with DocumentationPage to open the mind map
+                      const event = new CustomEvent('openMindMap');
+                      window.dispatchEvent(event);
+                    }}
+                    className="flex items-center gap-2 py-2 w-full hover:text-primary-color transition-colors text-base"
+                    style={{
+                      color: 'var(--text-color)',
+                      fontFamily: 'var(--mono-font)',
+                    }}
+                  >
+                    <Icon icon="mingcute:brain-fill" className="w-5 h-5" />
+                    <span>show mind map</span>
                   </button>
                 </div>
               )}
+
+              {/* Social links */}
+              <div
+                className="pt-3 pb-3 px-4 border-t"
+                style={{ borderColor: 'var(--border-color)' }}
+              >
+                <div className="flex items-center gap-3">
+                  <span
+                    className="text-sm text-gray-500 dark:text-gray-500"
+                    style={{ fontFamily: 'var(--mono-font)' }}
+                  >
+                    follow us:
+                  </span>
+                  <div className="flex items-center gap-2">
+                    {socialLinks.map((link) => (
+                      <a
+                        key={link.name}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={link.name}
+                        className="opacity-60 hover:opacity-100 transition-opacity"
+                      >
+                        <div className="w-4 h-4">
+                          {React.cloneElement(link.icon as React.ReactElement, {
+                            width: '16',
+                            height: '16',
+                          })}
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </nav>
           </motion.div>
         )}

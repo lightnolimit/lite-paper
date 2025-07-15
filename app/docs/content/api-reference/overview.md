@@ -172,8 +172,8 @@ Theme-aware styling using CSS variables:
 
 ```css
 :root {
-  --title-font: 'Urbanist', sans-serif;
-  --body-font: 'Urbanist', sans-serif;
+  --title-font: 'Hubot Sans', sans-serif;
+  --body-font: 'Mona Sans', sans-serif;
   --mono-font: 'MapleMono', 'SF Mono', monospace;
 }
 ```

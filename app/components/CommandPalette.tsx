@@ -1,5 +1,6 @@
 'use client';
 
+import { Icon } from '@iconify/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
@@ -17,17 +18,47 @@ import type { FileItem } from './FileTree';
 interface SearchResult {
   title: string;
   path: string;
-  type: 'page' | 'action' | 'theme' | 'ai';
+  type: 'page' | 'action' | 'theme' | 'ai' | 'faq';
   description?: string;
   action?: () => void;
   icon?: React.ReactNode;
   shortcut?: string;
+  answer?: string; // For FAQ preset answers
 }
 
 interface CommandPaletteProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+// Frequently Asked Questions with preset answers
+const FAQ_ITEMS = [
+  {
+    question: 'How do I change the theme?',
+    answer:
+      'You can change the theme using Cmd + Shift + D (Mac) or Ctrl + Shift + D (Windows/Linux). Alternatively, use the theme toggle button in the navigation bar or select "Switch to Dark/Light Mode" from this command palette.',
+  },
+  {
+    question: 'How do I search the documentation?',
+    answer:
+      'Use Cmd + K (Mac) or Ctrl + K (Windows/Linux) to open this command palette, then type your search query. You can also use the AI Assistant for more complex questions.',
+  },
+  {
+    question: 'How can I contribute to the documentation?',
+    answer:
+      'At the bottom of each documentation page, you\'ll find "edit", "issue", and "source" links. Click "edit" to propose changes directly on GitHub, or "issue" to report problems.',
+  },
+  {
+    question: 'What keyboard shortcuts are available?',
+    answer:
+      'Key shortcuts: Cmd/Ctrl + K (Command Palette), Cmd/Ctrl + Shift + D (Theme Toggle), Escape (Close dialogs), Arrow keys (Navigate), Enter (Select).',
+  },
+  {
+    question: 'How do I navigate between pages?',
+    answer:
+      'Use the file tree on the left sidebar, the interactive mindmap on the right, or the Previous/Next buttons at the bottom of each page. You can also use this command palette to quickly jump to any page.',
+  },
+];
 
 export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
   const router = useRouter();
@@ -52,7 +83,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
         type: 'ai',
         description: 'Get help from AI about the documentation',
         action: () => setIsAIMode(true),
-        icon: '🤖',
+        icon: <Icon icon="mingcute:ai-fill" className="w-5 h-5" />,
         shortcut: 'A',
       });
     }
@@ -62,10 +93,14 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
       title: isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode',
       path: 'theme-toggle',
       type: 'action',
-      description: 'Toggle between dark and light themes (Cmd+Shift+T)',
+      description: 'Toggle between dark and light themes (Cmd + Shift + D)',
       action: toggleDarkMode,
-      icon: isDarkMode ? '☀️' : '🌙',
-      shortcut: 'Shift+T',
+      icon: isDarkMode ? (
+        <Icon icon="mingcute:sun-line" className="w-5 h-5" />
+      ) : (
+        <Icon icon="mingcute:moon-line" className="w-5 h-5" />
+      ),
+      shortcut: 'Shift+D',
     });
 
     // Add navigation to llms.txt page
@@ -74,7 +109,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
       path: '/llms',
       type: 'page',
       description: 'View and download AI-friendly documentation format',
-      icon: '📄',
+      icon: <Icon icon="mingcute:file-line" className="w-5 h-5" />,
       shortcut: 'L',
     });
 
@@ -87,7 +122,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
             path: `/docs/${item.path}`,
             type: 'page',
             description: parentPath,
-            icon: '📄',
+            icon: <Icon icon="mingcute:file-line" className="w-5 h-5" />,
           });
         } else if (item.type === 'directory' && item.children) {
           processTree(item.children, item.name);
@@ -103,8 +138,20 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
       path: '/',
       type: 'action',
       description: 'Navigate to the main page',
-      icon: '🏠',
+      icon: <Icon icon="mingcute:home-2-line" className="w-5 h-5" />,
       shortcut: 'H',
+    });
+
+    // Add FAQ items
+    FAQ_ITEMS.forEach((faq, index) => {
+      results.push({
+        title: faq.question,
+        path: `faq-${index}`,
+        type: 'faq',
+        description: 'Frequently Asked Question',
+        answer: faq.answer,
+        icon: <Icon icon="mingcute:question-line" className="w-5 h-5" />,
+      });
     });
 
     return results;
@@ -142,7 +189,12 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
   // Define handleSelect before it's used
   const handleSelect = useCallback(
     (result: SearchResult) => {
-      if (result.action) {
+      if (result.type === 'faq' && result.answer) {
+        // Handle FAQ selection - show preset answer in AI mode
+        setIsAIMode(true);
+        setAIResponse(result.answer);
+        setQuery('');
+      } else if (result.action) {
         result.action();
         // Don't close the palette for AI assistant
         if (result.type !== 'ai') {
@@ -339,7 +391,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                 <div className="p-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
                   {isAIMode && (
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xl">🤖</span>
+                      <Icon icon="mingcute:ai-fill" className="w-5 h-5" />
                       <span className="text-sm font-medium" style={{ color: 'var(--text-color)' }}>
                         AI Assistant
                       </span>
@@ -350,69 +402,74 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                           setAIResponse('');
                         }}
                         className="ml-auto text-xs px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                        style={{ color: 'var(--muted-color)' }}
+                        style={{
+                          color: 'var(--muted-color)',
+                          fontFamily: 'var(--mono-font)',
+                        }}
                       >
-                        Exit AI Mode
+                        exit ai mode
                       </button>
                     </div>
                   )}
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={query}
-                    onChange={(e) => {
-                      setQuery(e.target.value);
-                      setSelectedIndex(0);
-                    }}
-                    onKeyDown={async (e) => {
-                      if (isAIMode && e.key === 'Enter' && query.trim()) {
-                        e.preventDefault();
-                        // Handle AI query submission
-                        setIsAILoading(true);
+                  <div className="relative">
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      value={query}
+                      onChange={(e) => {
+                        setQuery(e.target.value);
+                        setSelectedIndex(0);
+                      }}
+                      onKeyDown={async (e) => {
+                        if (isAIMode && e.key === 'Enter' && query.trim()) {
+                          e.preventDefault();
+                          // Handle AI query submission
+                          setIsAILoading(true);
 
-                        try {
-                          // Import and use the clientRAG search function
-                          const { searchAndAnswer } = await import('../lib/clientRAG');
-                          const response = await searchAndAnswer(query.trim());
+                          try {
+                            // Import and use the clientRAG search function
+                            const { searchAndAnswer } = await import('../lib/clientRAG');
+                            const response = await searchAndAnswer(query.trim());
 
-                          setAIResponse(response.answer);
+                            setAIResponse(response.answer);
 
-                          // Store sources for display if needed
-                          if (response.sources && response.sources.length > 0) {
-                            // We'll add source display in the UI
-                            setAIResponse((prev) => {
-                              let answer = prev;
-                              answer += '\n\n**Sources:**\n';
-                              response.sources.forEach((source) => {
-                                answer += `- [${source.title}](${source.path})\n`;
+                            // Store sources for display if needed
+                            if (response.sources && response.sources.length > 0) {
+                              // We'll add source display in the UI
+                              setAIResponse((prev) => {
+                                let answer = prev;
+                                answer += '\n\n**Sources:**\n';
+                                response.sources.forEach((source) => {
+                                  answer += `- [${source.title}](${source.path})\n`;
+                                });
+                                return answer;
                               });
-                              return answer;
-                            });
-                          }
+                            }
 
-                          // Clear the query after successful submission
-                          setQuery('');
-                        } catch (error) {
-                          logger.error('AI search error:', error);
-                          setAIResponse(
-                            'I apologize, but I encountered an error while searching for information. Please try rephrasing your question or check the documentation directly.'
-                          );
-                        } finally {
-                          setIsAILoading(false);
+                            // Clear the query after successful submission
+                            setQuery('');
+                          } catch (error) {
+                            logger.error('AI search error:', error);
+                            setAIResponse(
+                              'I apologize, but I encountered an error while searching for information. Please try rephrasing your question or check the documentation directly.'
+                            );
+                          } finally {
+                            setIsAILoading(false);
+                          }
                         }
+                      }}
+                      placeholder={
+                        isAIMode
+                          ? 'Ask me anything about the documentation...'
+                          : 'Search documentation or type a command...'
                       }
-                    }}
-                    placeholder={
-                      isAIMode
-                        ? 'Ask me anything about the documentation...'
-                        : 'Search documentation or type a command...'
-                    }
-                    className="w-full px-3 py-2 bg-transparent outline-none"
-                    style={{
-                      color: 'var(--text-color)',
-                      fontFamily: 'var(--mono-font)',
-                    }}
-                  />
+                      className="w-full px-3 py-2 rounded-md outline-none text-base"
+                      style={{
+                        color: 'var(--text-color)',
+                        fontFamily: 'var(--mono-font)',
+                      }}
+                    />
+                  </div>
                 </div>
 
                 {/* Results */}
@@ -428,9 +485,9 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                       <div className="flex-1 overflow-y-auto p-4 space-y-3">
                         {!aiResponse && !isAILoading && (
                           <div className="flex justify-start">
-                            <div className="max-w-[85%] bg-gray-100 dark:bg-gray-800 rounded-2xl rounded-bl-md px-4 py-3">
+                            <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-3">
                               <div className="flex items-center gap-2 mb-2">
-                                <span className="text-lg">🤖</span>
+                                <Icon icon="mingcute:ai-fill" className="w-5 h-5" />
                                 <span
                                   className="text-sm font-medium"
                                   style={{ color: 'var(--text-color)' }}
@@ -438,7 +495,13 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                                   AI Assistant
                                 </span>
                               </div>
-                              <p className="text-sm" style={{ color: 'var(--text-color)' }}>
+                              <p
+                                className="text-sm"
+                                style={{
+                                  color: 'var(--text-color)',
+                                  fontFamily: 'var(--mono-font)',
+                                }}
+                              >
                                 Hi! I can help you find information in the documentation. What would
                                 you like to know?
                               </p>
@@ -448,9 +511,9 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
 
                         {isAILoading && (
                           <div className="flex justify-start">
-                            <div className="max-w-[85%] bg-gray-100 dark:bg-gray-800 rounded-2xl rounded-bl-md px-4 py-3">
+                            <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-3">
                               <div className="flex items-center gap-3">
-                                <span className="text-lg">🤖</span>
+                                <Icon icon="mingcute:ai-fill" className="w-5 h-5" />
                                 <div className="flex gap-1">
                                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce animation-delay-200"></div>
@@ -466,9 +529,9 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
 
                         {aiResponse && (
                           <div className="flex justify-start">
-                            <div className="max-w-[85%] bg-gray-100 dark:bg-gray-800 rounded-2xl rounded-bl-md px-4 py-3">
+                            <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-3">
                               <div className="flex items-center gap-2 mb-2">
-                                <span className="text-lg">🤖</span>
+                                <Icon icon="mingcute:ai-fill" className="w-5 h-5" />
                                 <span
                                   className="text-sm font-medium"
                                   style={{ color: 'var(--text-color)' }}
@@ -497,7 +560,10 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                                     p: ({ children }) => (
                                       <p
                                         className="text-sm mb-2 last:mb-0"
-                                        style={{ color: 'var(--text-color)' }}
+                                        style={{
+                                          color: 'var(--text-color)',
+                                          fontFamily: 'var(--mono-font)',
+                                        }}
                                       >
                                         {children}
                                       </p>
@@ -512,13 +578,23 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                                     ul: ({ children }) => (
                                       <ul
                                         className="list-disc list-inside space-y-1 text-sm"
-                                        style={{ color: 'var(--text-color)' }}
+                                        style={{
+                                          color: 'var(--text-color)',
+                                          fontFamily: 'var(--mono-font)',
+                                        }}
                                       >
                                         {children}
                                       </ul>
                                     ),
                                     li: ({ children }) => (
-                                      <li style={{ color: 'var(--text-color)' }}>{children}</li>
+                                      <li
+                                        style={{
+                                          color: 'var(--text-color)',
+                                          fontFamily: 'var(--mono-font)',
+                                        }}
+                                      >
+                                        {children}
+                                      </li>
                                     ),
                                     h1: ({ children }) => (
                                       <h1
@@ -555,7 +631,10 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                       <div className="p-3 border-t" style={{ borderColor: 'var(--border-color)' }}>
                         <div
                           className="text-xs text-center mb-2"
-                          style={{ color: 'var(--muted-color)' }}
+                          style={{
+                            color: 'var(--muted-color)',
+                            fontFamily: 'var(--mono-font)',
+                          }}
                         >
                           Press Enter to ask • Esc to go back
                         </div>
@@ -574,10 +653,6 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                               ? 'rgba(var(--primary-color-rgb), 0.1)'
                               : 'transparent',
                           color: 'var(--text-color)',
-                          borderLeft:
-                            index === selectedIndex
-                              ? '3px solid var(--primary-color)'
-                              : '3px solid transparent',
                         }}
                       >
                         <span className="text-xl">{result.icon}</span>
@@ -585,8 +660,11 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                           <div className="font-medium">{result.title}</div>
                           {result.description && (
                             <div
-                              className="text-sm opacity-70"
-                              style={{ color: 'var(--muted-color)' }}
+                              className="text-xs opacity-70"
+                              style={{
+                                color: 'var(--muted-color)',
+                                fontFamily: 'var(--mono-font)',
+                              }}
                             >
                               {result.description}
                             </div>
@@ -597,7 +675,10 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                             <kbd
                               className="px-2 py-1 text-xs rounded border font-mono"
                               style={{
-                                borderColor: 'var(--border-color)',
+                                borderColor:
+                                  index === selectedIndex
+                                    ? 'var(--primary-color)'
+                                    : 'var(--border-color)',
                                 backgroundColor:
                                   index === selectedIndex
                                     ? 'var(--primary-color)'
@@ -619,9 +700,22 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                               style={{
                                 backgroundColor: 'var(--primary-color)',
                                 color: isDarkMode ? '#000' : '#fff',
+                                fontFamily: 'var(--mono-font)',
                               }}
                             >
-                              Action
+                              action
+                            </span>
+                          )}
+                          {result.type === 'faq' && (
+                            <span
+                              className="text-xs px-2 py-1 rounded"
+                              style={{
+                                backgroundColor: 'var(--secondary-color)',
+                                color: isDarkMode ? '#000' : '#fff',
+                                fontFamily: 'var(--mono-font)',
+                              }}
+                            >
+                              faq
                             </span>
                           )}
                         </div>
@@ -656,7 +750,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                       >
                         ↓
                       </kbd>{' '}
-                      to navigate
+                      <span style={{ fontFamily: 'var(--mono-font)' }}>to navigate</span>
                     </span>
                     <span>
                       <kbd
@@ -665,7 +759,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                       >
                         ↵
                       </kbd>{' '}
-                      to select
+                      <span style={{ fontFamily: 'var(--mono-font)' }}>to select</span>
                     </span>
                     <span>
                       <kbd
@@ -674,7 +768,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                       >
                         esc
                       </kbd>{' '}
-                      to close
+                      <span style={{ fontFamily: 'var(--mono-font)' }}>to close</span>
                     </span>
                   </div>
                 </div>

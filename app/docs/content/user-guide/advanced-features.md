@@ -106,8 +106,8 @@ Our documentation uses a carefully designed typography scale:
 ```css
 /* Real CSS variables from our system */
 :root {
-  --title-font: 'Urbanist', sans-serif;
-  --body-font: 'Urbanist', sans-serif;
+  --title-font: 'Hubot Sans', sans-serif;
+  --body-font: 'Mona Sans', sans-serif;
   --mono-font: 'MapleMono', 'SF Mono', monospace;
 
   /* Light mode colors */
@@ -223,8 +223,8 @@ Our documentation site implements several performance optimizations:
 **Asset Optimization:**
 
 - **Font Loading**: WOFF2 format with `font-display: swap`
-  - Urbanist: ~42KB per variant
-  - Urbanist: ~42KB per variant
+  - Hubot Sans: ~42KB per variant
+  - Mona Sans: ~42KB per variant
   - MapleMono: ~17MB (loaded on demand for code blocks)
 - **Image Optimization**: Next.js automatic WebP/AVIF conversion
 - **Static Assets**: Served from CDN with proper caching headers

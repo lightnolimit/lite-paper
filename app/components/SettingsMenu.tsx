@@ -1,7 +1,7 @@
 'use client';
 
+import { Icon } from '@iconify/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 
 import { useTheme } from '../providers/ThemeProvider';
@@ -165,14 +165,7 @@ const SettingsMenu = React.memo(
             aria-controls="settings-dropdown"
             style={buttonStyle}
           >
-            <Image
-              src="/assets/icons/pixel-cog-solid.svg"
-              alt="Settings"
-              width={20}
-              height={20}
-              style={{ display: 'block' }}
-              aria-hidden="true"
-            />
+            <Icon icon="mingcute:settings-3-fill" className="w-5 h-5" aria-hidden="true" />
           </button>
         ) : (
           <motion.button
@@ -185,14 +178,7 @@ const SettingsMenu = React.memo(
             aria-controls="settings-dropdown"
             style={buttonStyle}
           >
-            <Image
-              src="/assets/icons/pixel-cog-solid.svg"
-              alt="Settings"
-              width={20}
-              height={20}
-              style={{ display: 'block' }}
-              aria-hidden="true"
-            />
+            <Icon icon="mingcute:settings-3-fill" className="w-5 h-5" aria-hidden="true" />
           </motion.button>
         )}
 
@@ -221,14 +207,20 @@ const SettingsMenu = React.memo(
                     APPEARANCE
                   </h3>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm" style={textStyle}>
-                      Theme
+                    <span
+                      className="text-sm"
+                      style={{ ...textStyle, fontFamily: 'var(--mono-font)' }}
+                    >
+                      theme
                     </span>
                     <ThemeSwitcher />
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm" style={textStyle}>
-                      Motion
+                    <span
+                      className="text-sm"
+                      style={{ ...textStyle, fontFamily: 'var(--mono-font)' }}
+                    >
+                      motion
                     </span>
                     <MotionToggle />
                   </div>

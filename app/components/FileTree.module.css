@@ -3,7 +3,9 @@
   padding-left: 0.5rem;
   transition: all 0.3s ease;
   font-family: var(--mono-font);
-  letter-spacing: -0.5px;
+  letter-spacing: -0.02em;
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
 }
 
 /* File Tree Items */
@@ -58,29 +60,30 @@
   filter: invert(1);
 }
 
-/* File tree icon hover effects */
-.fileTreeItem:hover img[src*='pixel-folder'],
-.fileTreeItem:hover img[src*='pixel-file'] {
-  filter: brightness(0) saturate(100%) invert(43%) sepia(20%) saturate(1027%) hue-rotate(88deg)
-    brightness(95%) contrast(89%);
+/* File tree icon default colors */
+.fileTreeItem svg {
+  color: currentColor;
 }
 
-.dark .fileTreeItem:hover img[src*='pixel-folder'],
-.dark .fileTreeItem:hover img[src*='pixel-file'] {
-  filter: brightness(0) saturate(100%) invert(64%) sepia(87%) saturate(1392%) hue-rotate(316deg)
-    brightness(105%) contrast(101%);
+.dark .fileTreeItem svg {
+  color: white;
 }
 
-.fileTreeItem.active img[src*='pixel-folder'],
-.fileTreeItem.active img[src*='pixel-file'] {
-  filter: brightness(0) saturate(100%) invert(43%) sepia(20%) saturate(1027%) hue-rotate(88deg)
-    brightness(95%) contrast(89%);
+/* File tree icon hover effects - for Iconify icons */
+.fileTreeItem:hover svg {
+  color: var(--primary-color);
 }
 
-.dark .fileTreeItem.active img[src*='pixel-folder'],
-.dark .fileTreeItem.active img[src*='pixel-file'] {
-  filter: brightness(0) saturate(100%) invert(64%) sepia(87%) saturate(1392%) hue-rotate(316deg)
-    brightness(105%) contrast(101%);
+.dark .fileTreeItem:hover svg {
+  color: #ff85a1; /* Sakura pink */
+}
+
+.fileTreeItem.active svg {
+  color: var(--primary-color);
+}
+
+.dark .fileTreeItem.active svg {
+  color: #ff85a1; /* Sakura pink */
 }
 
 /* Reduced motion styles for file tree */

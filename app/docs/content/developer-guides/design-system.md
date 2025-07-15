@@ -211,13 +211,13 @@ The design system uses two primary font families:
 
 <div style="margin: 2rem 0;">
   <div style="font-family: var(--title-font); font-size: 2rem; margin-bottom: 1rem; color: var(--text-color);">
-    Urbanist - Display & Headings
+    Hubot Sans - Display & Headings
   </div>
   <div style="font-family: var(--mono-font); font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text-secondary);">
     MapleMono - Code & Technical Text
   </div>
   <div style="font-family: var(--body-font); font-size: 1rem; color: var(--text-color);">
-    Urbanist - Body text and general content for optimal readability.
+    Mona Sans - Body text and general content for optimal readability.
   </div>
 </div>
 
@@ -226,19 +226,19 @@ The design system uses two primary font families:
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
   <div style="padding: 1rem; border: 1px solid var(--border-unified); border-radius: 8px;">
     <div style="font-family: var(--title-font); font-weight: 300; font-size: 1.2rem; margin-bottom: 0.5rem;">Light (300)</div>
-    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">Urbanist Light</div>
+    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">Hubot Sans Light</div>
   </div>
   <div style="padding: 1rem; border: 1px solid var(--border-unified); border-radius: 8px;">
     <div style="font-family: var(--title-font); font-weight: 400; font-size: 1.2rem; margin-bottom: 0.5rem;">Regular (400)</div>
-    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">Urbanist Regular</div>
+    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">Hubot Sans Regular</div>
   </div>
   <div style="padding: 1rem; border: 1px solid var(--border-unified); border-radius: 8px;">
     <div style="font-family: var(--title-font); font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem;">Bold (700)</div>
-    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">Urbanist Bold</div>
+    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">Hubot Sans Bold</div>
   </div>
   <div style="padding: 1rem; border: 1px solid var(--border-unified); border-radius: 8px;">
     <div style="font-family: var(--title-font); font-weight: 900; font-size: 1.2rem; margin-bottom: 0.5rem;">Black (900)</div>
-    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">Urbanist Black</div>
+    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">Hubot Sans Black</div>
   </div>
 </div>
 
@@ -248,7 +248,7 @@ The design system uses two primary font families:
 /* Font family classes */
 .font-title {
   font-family: var(--title-font);
-} /* Urbanist */
+} /* Hubot Sans */
 .font-mono {
   font-family: var(--mono-font);
 } /* MapleMono */
