@@ -149,8 +149,17 @@ export default function ContentRenderer({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className="mt-8 mb-4 flex flex-wrap gap-2"
+              className="mt-8 mb-4 flex flex-wrap gap-2 items-center"
             >
+              <span
+                className="text-xs font-medium mr-2"
+                style={{
+                  color: 'var(--muted-color)',
+                  fontFamily: 'var(--mono-font)',
+                }}
+              >
+                tags:
+              </span>
               {pageTags.map((tag) => (
                 <span
                   key={tag}
