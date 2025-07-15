@@ -553,7 +553,7 @@ export default function DocumentationGraph({
 
         {/* Zoom controls */}
         {!isSidebarView && (
-          <div className="absolute bottom-2 right-3 flex items-center gap-1 z-10">
+          <div className="absolute bottom-2 left-3 flex items-center gap-1 z-10">
             <button
               onClick={zoomOut}
               className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
@@ -873,18 +873,18 @@ export default function DocumentationGraph({
                       {/* Switch button text */}
                       <motion.text
                         x={node.x}
-                        y={node.y - nodeRadius - (isSidebarView ? 16 : 22)}
+                        y={node.y - nodeRadius - (isSidebarView ? 14 : 19)}
                         textAnchor="middle"
                         className="cursor-pointer pointer-events-none"
                         style={{
-                          fontSize: isSidebarView ? '7px' : '9px',
+                          fontSize: isSidebarView ? '8px' : '11px',
                           fontFamily: 'var(--mono-font)',
                           fill: 'white',
                           fontWeight: 'bold',
                           dominantBaseline: 'central',
                         }}
                       >
-                        switch?
+                        jump?
                       </motion.text>
                     </motion.g>
                   )}
@@ -903,16 +903,28 @@ export default function DocumentationGraph({
       >
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: themeColors.primary }} />
-          <span style={{ fontSize: isSidebarView ? '9px' : '11px' }}>Pages</span>
+          <span
+            style={{ fontSize: isSidebarView ? '9px' : '11px', fontFamily: 'var(--mono-font)' }}
+          >
+            Pages
+          </span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: themeColors.current }} />
-          <span style={{ fontSize: isSidebarView ? '9px' : '11px' }}>Current</span>
+          <span
+            style={{ fontSize: isSidebarView ? '9px' : '11px', fontFamily: 'var(--mono-font)' }}
+          >
+            Current
+          </span>
         </div>
         {searchTerm && (
           <div className="flex items-center gap-1">
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: themeColors.search }} />
-            <span style={{ fontSize: isSidebarView ? '9px' : '11px' }}>Matches</span>
+            <span
+              style={{ fontSize: isSidebarView ? '9px' : '11px', fontFamily: 'var(--mono-font)' }}
+            >
+              Matches
+            </span>
           </div>
         )}
       </div>

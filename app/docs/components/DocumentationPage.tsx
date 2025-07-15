@@ -1,5 +1,6 @@
 'use client';
 
+import { Icon } from '@iconify/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
@@ -28,6 +29,17 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [rightSidebarVisible, setRightSidebarVisible] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [mobileMapVisible, setMobileMapVisible] = useState(false);
+
+  // Handle custom event from Navigation to open mind map
+  useEffect(() => {
+    const handleOpenMindMap = () => {
+      setMobileMapVisible(true);
+    };
+
+    window.addEventListener('openMindMap', handleOpenMindMap);
+    return () => window.removeEventListener('openMindMap', handleOpenMindMap);
+  }, []);
 
   // Memoized animation variants (disabled if motion is reduced)
   const sidebarAnimationVariants = useMemo(() => {
@@ -241,21 +253,13 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                   className="absolute top-3 right-3 p-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors z-10 md:hidden"
                   aria-label="Close sidebar"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                    stroke="currentColor"
-                    className="w-4 h-4"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <Icon icon="mingcute:close-line" className="w-4 h-4" />
                 </button>
                 <FileTree
                   items={documentationTree}
                   onSelect={handleSelectFile}
                   currentPath={path}
+                  defaultOpenAll={isMobile}
                 />
               </motion.aside>
             )}
@@ -274,21 +278,10 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                   aria-label="Show documentation tree"
                   style={buttonStyle}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-5 h-5"
-                    style={iconStyle}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
-                    />
-                  </svg>
+                  <Icon icon="mingcute:folder-line" className="w-5 h-5" style={iconStyle} />
+                  <span className="sr-only" style={{ fontFamily: 'var(--mono-font)' }}>
+                    show documentation tree
+                  </span>
                 </button>
               ) : (
                 <motion.button
@@ -298,21 +291,34 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                   aria-label="Show documentation tree"
                   style={buttonStyle}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-5 h-5"
-                    style={iconStyle}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
-                    />
-                  </svg>
+                  <Icon icon="mingcute:folder-line" className="w-5 h-5" style={iconStyle} />
+                  <span className="sr-only" style={{ fontFamily: 'var(--mono-font)' }}>
+                    show documentation tree
+                  </span>
+                </motion.button>
+              ))}
+
+            {/* Mobile mind map toggle button */}
+            {isMobile &&
+              !mobileMapVisible &&
+              (prefersReducedMotion ? (
+                <button
+                  onClick={() => setMobileMapVisible(true)}
+                  className={`fixed z-30 ${uiConfig.mobileTogglePosition === 'bottom-left' || uiConfig.mobileTogglePosition === 'top-left' ? 'left-6' : 'right-6'} ${uiConfig.mobileTogglePosition === 'bottom-left' || uiConfig.mobileTogglePosition === 'bottom-right' ? 'bottom-20' : 'top-20'} rounded p-3 shadow-lg`}
+                  aria-label="Show mind map"
+                  style={buttonStyle}
+                >
+                  <Icon icon="mingcute:mindmap-line" className="w-5 h-5" style={iconStyle} />
+                </button>
+              ) : (
+                <motion.button
+                  onClick={() => setMobileMapVisible(true)}
+                  className={`fixed z-30 ${uiConfig.mobileTogglePosition === 'bottom-left' || uiConfig.mobileTogglePosition === 'top-left' ? 'left-6' : 'right-6'} ${uiConfig.mobileTogglePosition === 'bottom-left' || uiConfig.mobileTogglePosition === 'bottom-right' ? 'bottom-20' : 'top-20'} rounded p-3 shadow-lg`}
+                  {...buttonAnimationConfig}
+                  aria-label="Show mind map"
+                  style={buttonStyle}
+                >
+                  <Icon icon="mingcute:mindmap-line" className="w-5 h-5" style={iconStyle} />
                 </motion.button>
               ))}
 
@@ -324,28 +330,12 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
               className="hidden lg:flex absolute top-4 right-4 z-20 items-center justify-center w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors border border-gray-300 dark:border-gray-600"
               aria-label={rightSidebarVisible ? 'Hide documentation map' : 'Show documentation map'}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
+              <Icon
+                icon={
+                  rightSidebarVisible ? 'mingcute:arrow-right-line' : 'mingcute:arrow-left-line'
+                }
                 className="w-4 h-4"
-              >
-                {rightSidebarVisible ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-                  />
-                )}
-              </svg>
+              />
             </button>
           </div>
 
@@ -357,12 +347,15 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                 animate={{ opacity: 1, width: 'auto' }}
                 exit={{ opacity: 0, width: 0 }}
                 transition={{ duration: prefersReducedMotion ? 0.05 : 0.3 }}
-                className="hidden lg:block shrink-0 h-full overflow-hidden border-l border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800"
+                className="hidden lg:block shrink-0 h-full overflow-hidden border-l border-gray-300 dark:border-gray-700 bg-[#f3f5f0] dark:bg-[#18151a]"
               >
                 <div className="w-72 xl:w-80 h-full flex flex-col p-4">
                   <div className="mb-4">
-                    <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      Documentation Map
+                    <h3
+                      className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+                      style={{ fontFamily: 'var(--mono-font)' }}
+                    >
+                      Interactive Map
                     </h3>
                   </div>
                   <DocumentationGraph
@@ -393,7 +386,10 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
 
                     {/* Copyright */}
                     <div className="text-center">
-                      <p className="text-xs text-gray-400 dark:text-gray-600">
+                      <p
+                        className="text-xs text-gray-400 dark:text-gray-600"
+                        style={{ fontFamily: 'var(--mono-font)' }}
+                      >
                         © 2024 @lightnolimit
                       </p>
                     </div>
@@ -404,6 +400,55 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
           </AnimatePresence>
         </div>
       </div>
+
+      {/* Mobile Mind Map Modal */}
+      <AnimatePresence>
+        {isMobile && mobileMapVisible && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 bg-black/50"
+            onClick={() => setMobileMapVisible(false)}
+          >
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 100, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="absolute inset-x-4 bottom-4 top-24 bg-white dark:bg-gray-900 rounded-lg shadow-xl p-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setMobileMapVisible(false)}
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                aria-label="Close mind map"
+              >
+                <Icon icon="mingcute:close-line" className="w-5 h-5" />
+              </button>
+
+              {/* Title */}
+              <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: 'var(--mono-font)' }}>
+                Interactive Map
+              </h3>
+
+              {/* Mind Map */}
+              <div className="h-full pb-16">
+                <DocumentationGraph
+                  currentPath={path}
+                  onNodeClick={(nodePath) => {
+                    router.push(`/docs/${nodePath}`, { scroll: false });
+                    setMobileMapVisible(false);
+                  }}
+                  className="w-full h-full"
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 });

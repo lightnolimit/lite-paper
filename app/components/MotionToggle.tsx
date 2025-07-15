@@ -1,5 +1,6 @@
 'use client';
 
+import { Icon } from '@iconify/react';
 import { motion } from 'framer-motion';
 import React, { useMemo, useCallback } from 'react';
 
@@ -61,49 +62,21 @@ const MotionToggle = React.memo(({ className = '' }: MotionToggleProps): React.R
 
   /**
    * Renders the appropriate icon based on the current motion preference
-   * @returns {React.ReactElement} The motion or static icon SVG
+   * @returns {React.ReactElement} The motion or static icon
    */
   const renderMotionIcon = useCallback((): React.ReactElement => {
     if (prefersReducedMotion) {
       // Static icon (reduced motion)
-      return (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          style={{ display: 'block' }}
-          aria-hidden="true"
-        >
-          <path
-            fill="currentColor"
-            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"
-          />
-        </svg>
-      );
+      return <Icon icon="mingcute:pause-circle-line" className="w-5 h-5" aria-hidden="true" />;
     } else {
       // Motion icon (animations enabled)
-      return (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          style={{ display: 'block' }}
-          aria-hidden="true"
-        >
-          <path
-            fill="currentColor"
-            d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.77 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"
-          />
-        </svg>
-      );
+      return <Icon icon="mingcute:play-circle-line" className="w-5 h-5" aria-hidden="true" />;
     }
   }, [prefersReducedMotion]);
 
   // Memoized text display
   const displayText = useMemo(() => {
-    return prefersReducedMotion ? 'Static' : 'Motion';
+    return prefersReducedMotion ? 'static' : 'motion';
   }, [prefersReducedMotion]);
 
   const ButtonComponent = prefersReducedMotion ? 'button' : motion.button;

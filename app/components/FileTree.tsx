@@ -1,5 +1,6 @@
 'use client';
 
+import { Icon } from '@iconify/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -21,6 +22,7 @@ type FileTreeProps = {
   items: FileItem[];
   onSelect: (item: FileItem) => void;
   currentPath?: string;
+  defaultOpenAll?: boolean;
 };
 
 type FileTreeItemProps = {
@@ -40,7 +42,7 @@ type FolderIcons = {
 type FileOrFolderIcon = string | FolderIcons;
 
 // Memoized icon getter function to prevent recreation on every render
-const getCustomIcon = (item: FileItem): FileOrFolderIcon => {
+const getCustomIcon = (item: FileItem): FileOrFolderIcon | null => {
   if (item.type === 'directory') {
     // Custom folder icon for @rally (case insensitive)
     if (item.name.toLowerCase() === '@rally') {
@@ -50,11 +52,8 @@ const getCustomIcon = (item: FileItem): FileOrFolderIcon => {
       };
     }
 
-    // Default folder icons
-    return {
-      open: '/assets/icons/pixel-folder-open.svg',
-      closed: '/assets/icons/pixel-folder.svg',
-    };
+    // Return null for default folder icons (will use Iconify)
+    return null;
   } else {
     // Custom file icons for Platform.md in each Phase
     if (item.name === 'Platform.md') {
@@ -68,8 +67,8 @@ const getCustomIcon = (item: FileItem): FileOrFolderIcon => {
       }
     }
 
-    // Default file icon
-    return '/assets/icons/pixel-file.svg';
+    // Return null for default file icon (will use Iconify)
+    return null;
   }
 };
 
@@ -83,14 +82,16 @@ const FileTreeItem: React.FC<FileTreeItemProps> = React.memo(
     // Memoize icon data to prevent recalculation
     const iconData = useMemo(() => getCustomIcon(item), [item]);
 
-    const iconSrc = isDirectory
-      ? item.expanded
-        ? (iconData as FolderIcons).open
-        : (iconData as FolderIcons).closed
-      : (iconData as string);
+    const iconSrc = iconData
+      ? isDirectory
+        ? item.expanded
+          ? (iconData as FolderIcons).open
+          : (iconData as FolderIcons).closed
+        : (iconData as string)
+      : null;
 
-    // Check if this is a custom PNG icon (not an SVG)
-    const isCustomIcon = iconSrc.endsWith('.png');
+    // Check if this is a custom icon
+    const isCustomIcon = iconSrc !== null;
 
     // Memoize click handlers
     const handleClick = useCallback(() => {
@@ -148,17 +149,26 @@ const FileTreeItem: React.FC<FileTreeItemProps> = React.memo(
           )}
 
           <span className="mr-2 flex items-center">
-            <Image
-              src={iconSrc}
-              alt={isDirectory ? (item.expanded ? 'Folder Open' : 'Folder') : 'File'}
-              width={16}
-              height={16}
-              className={`inline ${isCustomIcon ? 'rounded-sm border dark:border-white border-black' : ''}`}
-              style={{
-                borderWidth: isCustomIcon ? '1px' : '0px',
-                overflow: 'hidden',
-              }}
-            />
+            {isCustomIcon ? (
+              <Image
+                src={iconSrc}
+                alt={isDirectory ? (item.expanded ? 'Folder Open' : 'Folder') : 'File'}
+                width={16}
+                height={16}
+                className="inline rounded-sm border dark:border-white border-black"
+                style={{
+                  borderWidth: '1px',
+                  overflow: 'hidden',
+                }}
+              />
+            ) : isDirectory ? (
+              <Icon
+                icon={item.expanded ? 'mingcute:folder-open-line' : 'mingcute:folder-line'}
+                className="w-4 h-4"
+              />
+            ) : (
+              <Icon icon="mingcute:file-line" className="w-4 h-4" />
+            )}
           </span>
 
           <span className="truncate">
@@ -208,8 +218,46 @@ const FileTreeItem: React.FC<FileTreeItemProps> = React.memo(
 
 FileTreeItem.displayName = 'FileTreeItem';
 
-const FileTree: React.FC<FileTreeProps> = ({ items, onSelect, currentPath }) => {
-  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+const FileTree: React.FC<FileTreeProps> = ({
+  items,
+  onSelect,
+  currentPath,
+  defaultOpenAll = false,
+}) => {
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(() => {
+    if (defaultOpenAll && currentPath) {
+      // Only expand the path to the current file
+      const expanded: Record<string, boolean> = {};
+
+      // Find the path to the current file
+      const findPathToFile = (
+        items: FileItem[],
+        targetPath: string,
+        parentPaths: string[] = []
+      ): string[] | null => {
+        for (const item of items) {
+          if (item.path === targetPath) {
+            return parentPaths;
+          }
+          if (item.type === 'directory' && item.children) {
+            const result = findPathToFile(item.children, targetPath, [...parentPaths, item.path]);
+            if (result) return result;
+          }
+        }
+        return null;
+      };
+
+      const pathsToExpand = findPathToFile(items, currentPath);
+      if (pathsToExpand) {
+        pathsToExpand.forEach((path) => {
+          expanded[path] = true;
+        });
+      }
+
+      return expanded;
+    }
+    return {};
+  });
   const router = useRouter();
 
   const toggleItem = useCallback((path: string) => {

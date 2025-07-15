@@ -2,37 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Removed Yeezy T-Star fonts - files deleted */
-
-/* Import Urbanist font */
+/* Import Mona Sans font - primary font for body text */
 @font-face {
-  font-family: 'Urbanist';
-  src: url('/fonts/Urbanist-Regular.ttf') format('truetype');
-  font-weight: 400;
+  font-family: 'Mona Sans';
+  src: url('/fonts/Mona-Sans.ttf') format('truetype');
+  font-weight: 100 900; /* Variable font weight */
   font-style: normal;
   font-display: swap;
 }
 
+/* Import Hubot Sans font - for headings and UI elements */
 @font-face {
-  font-family: 'Urbanist';
-  src: url('/fonts/Urbanist-Light.ttf') format('truetype');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Urbanist';
-  src: url('/fonts/Urbanist-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Urbanist';
-  src: url('/fonts/Urbanist-Black.ttf') format('truetype');
-  font-weight: 900;
+  font-family: 'Hubot Sans';
+  src: url('/fonts/Hubot-Sans.ttf') format('truetype');
+  font-weight: 100 900; /* Variable font weight */
   font-style: normal;
   font-display: swap;
 }
@@ -67,7 +50,7 @@
   --primary-color: #678d58;
   --secondary-color: #a3c9a8;
   --accent-color: #557153;
-  --background-color: #fafbf9;
+  --background-color: #fafafa;
   --card-color: #ffffff;
   --border-color: #222; /* Main card border (full brightness) */
   --border-soft: #f2f2f2; /* Even lighter border for header/sidebar */
@@ -76,22 +59,22 @@
   --text-secondary: #374151; /* Secondary text color */
   --muted-color: #6b7280; /* Better contrast for muted text */
   --mono-font: 'MapleMono', 'SF Mono', 'Monaco', 'Consolas', monospace;
-  --title-font: 'Urbanist', sans-serif;
-  --body-font: 'Urbanist', sans-serif;
+  --title-font: 'Hubot Sans', sans-serif;
+  --body-font: 'Mona Sans', sans-serif;
   --icon-color: #1f2937; /* Icon color for light mode */
   --primary-color-rgb: 103, 141, 88; /* RGB value of #678D58 */
   --hover-color: rgba(0, 0, 0, 0.05);
 
-  /* Typography Scale - Mobile First (scaled down by ~20% to match 80% zoom) */
-  --text-xs: 0.6rem; /* ~10px */
-  --text-sm: 0.7rem; /* ~11px */
-  --text-base: 0.8rem; /* ~13px */
-  --text-lg: 0.9rem; /* ~14px */
-  --text-xl: 1rem; /* ~16px */
-  --text-2xl: 1.2rem; /* ~19px */
-  --text-3xl: 1.5rem; /* ~24px */
-  --text-4xl: 1.8rem; /* ~29px */
-  --text-5xl: 2.4rem; /* ~38px */
+  /* Typography Scale - Mobile First */
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem; /* 16px */
+  --text-lg: 1.125rem; /* 18px */
+  --text-xl: 1.25rem; /* 20px */
+  --text-2xl: 1.5rem; /* 24px */
+  --text-3xl: 1.875rem; /* 30px */
+  --text-4xl: 2.25rem; /* 36px */
+  --text-5xl: 3rem; /* 48px */
 
   /* Line Heights */
   --leading-tight: 1.25;
@@ -100,17 +83,17 @@
   --leading-relaxed: 1.625;
   --leading-loose: 1.75;
 
-  /* Spacing Scale (scaled down by ~20% to match 80% zoom) */
-  --space-1: 0.2rem;
-  --space-2: 0.4rem;
-  --space-3: 0.6rem;
-  --space-4: 0.8rem;
-  --space-5: 1rem;
-  --space-6: 1.2rem;
-  --space-8: 1.6rem;
-  --space-10: 2rem;
-  --space-12: 2.4rem;
-  --space-16: 3.2rem;
+  /* Spacing Scale */
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-8: 2rem; /* 32px */
+  --space-10: 2.5rem; /* 40px */
+  --space-12: 3rem; /* 48px */
+  --space-16: 4rem; /* 64px */
 }
 
 .dark {
@@ -131,10 +114,28 @@
   --hover-color: rgba(255, 255, 255, 0.08);
 }
 
-/* Responsive Typography Scale */
+/* Responsive Typography Scale - Tablet and up */
 @media (min-width: 768px) {
   :root {
-    --text-base: 1.125rem; /* 18px on desktop */
+    --text-xs: 0.875rem; /* 14px */
+    --text-sm: 1rem; /* 16px */
+    --text-base: 1.125rem; /* 18px */
+    --text-lg: 1.25rem; /* 20px */
+    --text-xl: 1.5rem; /* 24px */
+    --text-2xl: 1.875rem; /* 30px */
+    --text-3xl: 2.25rem; /* 36px */
+    --text-4xl: 3rem; /* 48px */
+    --text-5xl: 3.75rem; /* 60px */
+  }
+}
+
+/* Responsive Typography Scale - Desktop */
+@media (min-width: 1024px) {
+  :root {
+    /* Maintain same sizes as tablet for consistency */
+    --text-xs: 0.875rem; /* 14px */
+    --text-sm: 1rem; /* 16px */
+    --text-base: 1.125rem; /* 18px */
     --text-lg: 1.25rem; /* 20px */
     --text-xl: 1.5rem; /* 24px */
     --text-2xl: 1.875rem; /* 30px */
@@ -420,53 +421,9 @@ select:focus {
   scrollbar-width: none; /* Firefox */
 }
 
-/* Navigation button hover effect */
+/* Navigation button - minimal styling */
 .nav-button {
-  position: relative;
-  overflow: hidden;
-  transition: color 0.3s ease;
-  z-index: 1;
   font-family: var(--title-font);
-}
-
-.nav-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0%;
-  height: 100%;
-  background-color: var(--primary-color);
-  transition: width 0.3s ease;
-  z-index: -1;
-  opacity: 0.1;
-}
-
-.nav-button:hover::before {
-  width: 100%;
-}
-
-.nav-button:hover {
-  color: var(--primary-color);
-}
-
-/* Reduced motion styles for navigation */
-.reduce-motion .nav-button::before {
-  transition: none;
-  width: 0%;
-}
-
-.reduce-motion .nav-button:hover::before {
-  width: 0%;
-}
-
-.reduce-motion .nav-button {
-  transition: none;
-}
-
-.reduce-motion .nav-button:hover {
-  background-color: rgba(var(--primary-color-rgb), 0.1);
-  color: var(--primary-color);
 }
 
 /* Reduced motion styles for settings menu and other components */
@@ -1235,10 +1192,7 @@ code.wallet-address {
   width: 100%;
 }
 
-/* Fix for image size in dark mode */
-.dark .doc-content img[src*='pixel'] {
-  filter: invert(1);
-}
+/* Removed conflicting dark mode image filter - handled in component-specific CSS */
 
 /* Style for regular code blocks */
 .doc-content code {
@@ -1381,16 +1335,6 @@ code.wallet-address {
   display: inline;
 }
 
-.doc-content ol {
-  font-family: var(--mono-font);
-  margin-bottom: 1rem;
-}
-
-.doc-content ol li {
-  font-family: var(--mono-font);
-  margin-bottom: 0.5rem;
-}
-
 /* Mobile specific adjustments for profile */
 @media (max-width: 767px) {
   /* Using 767px to target mobile before md breakpoint */
@@ -1423,6 +1367,161 @@ code.wallet-address {
   .social-links-inline img {
     height: calc(var(--space-5) - 2px); /* Slightly smaller icons on mobile */
   }
+}
+
+/* Typography Utility Classes */
+.text-xs {
+  font-size: var(--text-xs);
+}
+.text-sm {
+  font-size: var(--text-sm);
+}
+.text-base {
+  font-size: var(--text-base);
+}
+.text-lg {
+  font-size: var(--text-lg);
+}
+.text-xl {
+  font-size: var(--text-xl);
+}
+.text-2xl {
+  font-size: var(--text-2xl);
+}
+.text-3xl {
+  font-size: var(--text-3xl);
+}
+.text-4xl {
+  font-size: var(--text-4xl);
+}
+.text-5xl {
+  font-size: var(--text-5xl);
+}
+
+/* Line Height Utilities */
+.leading-tight {
+  line-height: var(--leading-tight);
+}
+.leading-snug {
+  line-height: var(--leading-snug);
+}
+.leading-normal {
+  line-height: var(--leading-normal);
+}
+.leading-relaxed {
+  line-height: var(--leading-relaxed);
+}
+.leading-loose {
+  line-height: var(--leading-loose);
+}
+
+/* Spacing Utilities */
+.space-y-1 > * + * {
+  margin-top: var(--space-1);
+}
+.space-y-2 > * + * {
+  margin-top: var(--space-2);
+}
+.space-y-3 > * + * {
+  margin-top: var(--space-3);
+}
+.space-y-4 > * + * {
+  margin-top: var(--space-4);
+}
+.space-y-5 > * + * {
+  margin-top: var(--space-5);
+}
+.space-y-6 > * + * {
+  margin-top: var(--space-6);
+}
+
+/* Documentation-specific typography */
+.doc-content {
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+}
+
+.doc-content h1 {
+  font-size: var(--text-3xl);
+  line-height: var(--leading-tight);
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-4);
+}
+
+.doc-content h2 {
+  font-size: var(--text-2xl);
+  line-height: var(--leading-tight);
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-3);
+}
+
+.doc-content h3 {
+  font-size: var(--text-xl);
+  line-height: var(--leading-snug);
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-2);
+}
+
+.doc-content h4 {
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.doc-content p {
+  margin-bottom: var(--space-4);
+}
+
+.doc-content ul,
+.doc-content ol {
+  margin-bottom: var(--space-4);
+  padding-left: var(--space-6);
+}
+
+.doc-content li {
+  margin-bottom: var(--space-2);
+  line-height: var(--leading-relaxed);
+}
+
+.doc-content code {
+  font-size: 0.9em;
+  padding: 0.125rem 0.375rem;
+}
+
+.doc-content pre {
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-4);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+/* Navigation typography */
+.nav-link {
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+/* Mobile navigation adjustments */
+@media (max-width: 767px) {
+  .nav-link {
+    font-size: var(--text-base);
+    padding: var(--space-2) var(--space-4);
+  }
+}
+
+/* Button typography */
+button {
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+/* Form elements */
+input,
+textarea,
+select {
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
 }
 
 /* Ensure proper color transitions */
