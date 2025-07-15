@@ -651,9 +651,11 @@ code {
   width: 100%;
 }
 
-.pagination-links a {
+.pagination-links a,
+.pagination-links button {
   flex: 1;
   min-width: 0;
+  font-family: var(--mono-font) !important;
 }
 
 @media (max-width: 640px) {
@@ -701,6 +703,7 @@ code {
   border-bottom: none;
   font-weight: 700;
   line-height: var(--leading-tight);
+  font-family: var(--mono-font) !important;
 }
 
 .doc-content h2 {

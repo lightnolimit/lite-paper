@@ -36,7 +36,7 @@ const FAQ_ITEMS = [
   {
     question: 'How do I change the theme?',
     answer:
-      'You can change the theme using Cmd + Shift + D (Mac) or Ctrl + Shift + D (Windows/Linux). Alternatively, use the theme toggle button in the navigation bar or select "Switch to Dark/Light Mode" from this command palette.',
+      'You can change the theme using Cmd + T (Mac) or Ctrl + T (Windows/Linux). Alternatively, use the theme toggle button in the navigation bar or select "Switch to Dark/Light Mode" from this command palette.',
   },
   {
     question: 'How do I search the documentation?',
@@ -51,7 +51,7 @@ const FAQ_ITEMS = [
   {
     question: 'What keyboard shortcuts are available?',
     answer:
-      'Key shortcuts: Cmd/Ctrl + K (Command Palette), Cmd/Ctrl + Shift + D (Theme Toggle), Escape (Close dialogs), Arrow keys (Navigate), Enter (Select).',
+      'Key shortcuts: Cmd/Ctrl + K (Command Palette), Cmd/Ctrl + T (Theme Toggle), Escape (Close dialogs), Arrow keys (Navigate), Enter (Select).',
   },
   {
     question: 'How do I navigate between pages?',
@@ -100,7 +100,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
       ) : (
         <Icon icon="mingcute:moon-line" className="w-5 h-5" />
       ),
-      shortcut: 'Shift+D',
+      shortcut: 'T',
     });
 
     // Add navigation to llms.txt page
@@ -467,6 +467,8 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                       style={{
                         color: 'var(--text-color)',
                         fontFamily: 'var(--mono-font)',
+                        backgroundColor: 'transparent',
+                        border: '1px solid transparent',
                       }}
                     />
                   </div>
@@ -691,8 +693,8 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                                     : 'var(--text-color)',
                               }}
                             >
-                              {result.shortcut === 'Shift+D'
-                                ? '⌘ + SHIFT + D'
+                              {result.shortcut === 'T'
+                                ? '⌘ + T'
                                 : result.shortcut === 'A' || result.shortcut === 'L'
                                   ? `⌘ + ${result.shortcut}`
                                   : `⌘${result.shortcut}`}

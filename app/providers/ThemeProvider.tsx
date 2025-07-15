@@ -180,8 +180,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (typeof window === 'undefined') return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Use Cmd/Ctrl + Shift + D for Dark mode toggle
-      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'D') {
+      // Use Cmd/Ctrl + T for Theme toggle (easier than Shift+D)
+      if ((e.metaKey || e.ctrlKey) && e.key === 't') {
         e.preventDefault();
         e.stopPropagation();
         toggleTheme();
