@@ -7,8 +7,8 @@ import { useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';
 
 import { documentationTree } from '../data/documentation';
+import type { FileItem } from '../types/documentation';
 
-import { FileItem } from './FileTree';
 import MarkdownRenderer from './MarkdownRenderer';
 
 /**
@@ -29,12 +29,12 @@ type AdjacentPage = {
 
 // Memoized flatten function to avoid recreation
 const flattenDocumentationTree = (() => {
-  let cachedFlattened: { path: string; name: string }[] | null = null;
+  let cachedFlattened: { path: string; name: string; tags?: string[] }[] | null = null;
 
-  return (): { path: string; name: string }[] => {
+  return (): { path: string; name: string; tags?: string[] }[] => {
     if (cachedFlattened) return cachedFlattened;
 
-    const flattenedItems: { path: string; name: string }[] = [];
+    const flattenedItems: { path: string; name: string; tags?: string[] }[] = [];
 
     function flattenTree(items: FileItem[]) {
       items.forEach((item) => {
@@ -42,6 +42,7 @@ const flattenDocumentationTree = (() => {
           flattenedItems.push({
             path: item.path,
             name: item.name.replace(/\.md$/, ''),
+            tags: item.tags,
           });
         } else if (item.type === 'directory' && item.children) {
           flattenTree(item.children);
@@ -92,6 +93,15 @@ const findAdjacentPages = (
 };
 
 /**
+ * Find tags for the current page
+ */
+const findPageTags = (currentPath: string): string[] => {
+  const flattenedItems = flattenDocumentationTree();
+  const currentItem = flattenedItems.find((item) => item.path === currentPath);
+  return currentItem?.tags || [];
+};
+
+/**
  * ContentRenderer component that renders markdown content with styling and navigation
  */
 export default function ContentRenderer({
@@ -103,6 +113,9 @@ export default function ContentRenderer({
   // Memoize adjacent pages to prevent recalculation
   const { prevPage, nextPage } = useMemo(() => findAdjacentPages(path), [path]);
 
+  // Get tags for current page
+  const pageTags = useMemo(() => findPageTags(path), [path]);
+
   // Check if this is a synopsis page to show banner
   const isSynopsisPage = useMemo(() => path.toLowerCase().includes('synopsis'), [path]);
 
@@ -112,7 +125,7 @@ export default function ContentRenderer({
   return (
     <div className="w-full h-full overflow-hidden" role="article">
       <div className="flex-1 overflow-y-auto doc-content-scroll h-full">
-        <div className="doc-content pt-2 pb-6 px-6 md:pt-2 md:pb-8 md:px-8 lg:pt-4 lg:pb-12 lg:px-12 max-w-4xl mx-auto">
+        <div className="doc-content pt-2 pb-6 px-6 md:pt-3 md:pb-8 md:px-8 lg:pt-4 lg:pb-12 lg:px-12 max-w-4xl mx-auto">
           {/* Banner for synopsis pages */}
           {isSynopsisPage && (
             <div className="w-full mb-6 overflow-hidden rounded-lg relative">
@@ -129,6 +142,31 @@ export default function ContentRenderer({
 
           {/* Main content area - use new MarkdownRenderer */}
           <MarkdownRenderer content={content} path={path} />
+
+          {/* Tags display - at bottom of content, before navigation */}
+          {pageTags.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="mt-8 mb-4 flex flex-wrap gap-2"
+            >
+              {pageTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition-all hover:brightness-110"
+                  style={{
+                    backgroundColor: 'var(--tag-bg-color)',
+                    color: 'var(--tag-text-color)',
+                    fontFamily: 'var(--mono-font)',
+                  }}
+                >
+                  <Icon icon="mingcute:tag-line" className="w-3 h-3 mr-1" />
+                  {tag}
+                </span>
+              ))}
+            </motion.div>
+          )}
 
           {/* Navigation between pages */}
           {(prevPage || nextPage) && (
@@ -173,7 +211,7 @@ export default function ContentRenderer({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.3 }}
-            className="mt-12 pt-4 border-t border-gray-200 dark:border-gray-800/50"
+            className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-800/50"
           >
             <div className="flex flex-wrap gap-3 justify-center items-center">
               {/* Edit this page on GitHub */}

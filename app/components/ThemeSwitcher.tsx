@@ -87,7 +87,9 @@ const ThemeSwitcher = React.memo(({ className = '' }: ThemeSwitcherProps): React
       tabIndex={0}
     >
       {renderThemeIcon()}
-      <span className="text-sm">{displayText}</span>
+      <span className="text-2xs" style={{ fontFamily: 'var(--mono-font)' }}>
+        {displayText}
+      </span>
     </motion.button>
   );
 });

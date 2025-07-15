@@ -7,16 +7,9 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useMemo, useCallback } from 'react';
 
 import { useTheme } from '../providers/ThemeProvider';
+import type { FileItem } from '../types/documentation';
 
 import styles from './FileTree.module.css';
-
-export type FileItem = {
-  name: string;
-  path: string;
-  type: 'file' | 'directory';
-  children?: FileItem[];
-  expanded?: boolean;
-};
 
 type FileTreeProps = {
   items: FileItem[];
@@ -112,9 +105,9 @@ const FileTreeItem: React.FC<FileTreeItemProps> = React.memo(
       [handleClick]
     );
 
-    // Use standard depth for the container, but only apply padding for nested items (depth > 1)
+    // Simple consistent indentation based on depth
     return (
-      <div style={{ paddingLeft: depth > 1 ? `${(depth - 1) * 12}px` : '0px' }}>
+      <div>
         <div
           className={`${styles.fileTreeItem} flex items-center py-0.5 ${isActive ? 'active' : ''}`}
           onClick={handleClick}
@@ -127,25 +120,26 @@ const FileTreeItem: React.FC<FileTreeItemProps> = React.memo(
             fontFamily: 'var(--mono-font)',
             letterSpacing: '-0.5px',
             fontSize: '0.8rem',
+            paddingLeft: `${(depth - 1) * 16 + (item.type === 'file' ? 12 : 0)}px`,
           }}
         >
           {isDirectory && (
-            <motion.span
-              className="mr-1"
+            <span
+              className="mr-1 flex items-center justify-center"
               style={{
                 display: 'inline-block',
                 width: '20px',
               }}
-              animate={{
-                rotate: item.expanded ? 90 : 0,
-              }}
-              transition={{
-                duration: prefersReducedMotion ? 0.01 : 0.2,
-                ease: 'easeOut',
-              }}
             >
-              {hasChildren ? '›' : ' '}
-            </motion.span>
+              {hasChildren ? (
+                <Icon
+                  icon={item.expanded ? 'mingcute:down-line' : 'mingcute:right-line'}
+                  className="w-3 h-3"
+                />
+              ) : (
+                <span className="w-3 h-3"></span>
+              )}
+            </span>
           )}
 
           <span className="mr-2 flex items-center">
@@ -258,7 +252,7 @@ const FileTree: React.FC<FileTreeProps> = ({
     }
     return {};
   });
-  const router = useRouter();
+  const _router = useRouter();
 
   const toggleItem = useCallback((path: string) => {
     setExpandedItems((prev) => ({

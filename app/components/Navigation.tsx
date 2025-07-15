@@ -8,6 +8,7 @@ import React from 'react';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 
 import { socialLinks } from '../constants/social';
+import { UI_CLASSES } from '../constants/ui';
 import { useCommandPalette } from '../providers/CommandPaletteProvider';
 import { useTheme } from '../providers/ThemeProvider';
 
@@ -27,7 +28,7 @@ import ThemeSwitcher from './ThemeSwitcher';
 type NavigationProps = {
   docsPath?: string;
   onToggleSidebar?: () => void;
-  sidebarVisible?: boolean;
+  _sidebarVisible?: boolean;
 };
 
 /**
@@ -44,8 +45,9 @@ type NavItem = {
  * Main navigation links
  */
 const navItems: NavItem[] = [
-  { label: 'API', href: '/docs/api-reference/overview' },
-  { label: 'Deploy', href: '/docs/deployment/overview' },
+  { label: 'Repository', href: 'https://github.com/lightnolimit/lite-paper' },
+  { label: 'Design System', href: '/docs/developer-guides/design-system' },
+  { label: 'Deployment', href: '/docs/deployment/overview' },
   { label: 'AI/LLMs', href: '/llms' },
 ];
 
@@ -76,14 +78,14 @@ const exitAnimationConfig = {
 export default function Navigation({
   docsPath,
   onToggleSidebar,
-  sidebarVisible,
+  _sidebarVisible,
 }: NavigationProps): React.ReactElement {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isDarkMode, prefersReducedMotion } = useTheme();
   const { openCommandPalette } = useCommandPalette();
   const isDocsPage = docsPath !== undefined;
-  const [mobileMapVisible, setMobileMapVisible] = useState(false);
+  const [_mobileMapVisible, _setMobileMapVisible] = useState(false);
 
   // Close mobile menu when window is resized to desktop size
   useEffect(() => {
@@ -302,34 +304,19 @@ export default function Navigation({
         {/* Logo and site title */}
         <Link
           href="/"
-          className="flex items-center gap-2"
+          className="logo-link flex items-center gap-2"
           style={{ color: 'var(--text-color)' }}
           tabIndex={0}
         >
-          {/* Replace the star below with your own logo:
           <Image
-            src={
-              isDarkMode
-                ? '/assets/logo/your-logo-dark.png'
-                : '/assets/logo/your-logo-light.png'
-            }
-            alt="Your Logo"
+            src={isDarkMode ? '/icon-sakura.png' : '/icon-matcha.png'}
+            alt="Lite Paper Logo"
             width={32}
             height={32}
             className="h-8 w-auto logo-image"
           />
-          */}
           <span
-            className="flex items-center justify-center w-7 h-7 text-base rounded-md"
-            style={{
-              backgroundColor: 'var(--primary-color)',
-              color: isDarkMode ? '#000' : '#fff',
-            }}
-          >
-            ✰
-          </span>
-          <span
-            className="text-xl tracking-wider uppercase font-black"
+            className="text-lg tracking-wider uppercase font-black"
             style={{ fontFamily: 'var(--mono-font)' }}
           >
             LITE PAPER
@@ -435,7 +422,7 @@ export default function Navigation({
               >
                 <div className="flex items-center justify-between mb-3">
                   <span
-                    className="text-base"
+                    className="text-sm"
                     style={{
                       color: 'var(--muted-color)',
                       fontFamily: 'var(--mono-font)',
@@ -447,7 +434,7 @@ export default function Navigation({
                 </div>
                 <div className="flex items-center justify-between mb-3">
                   <span
-                    className="text-base"
+                    className="text-sm"
                     style={{
                       color: 'var(--muted-color)',
                       fontFamily: 'var(--mono-font)',
@@ -459,7 +446,7 @@ export default function Navigation({
                 </div>
                 <div className="flex items-center justify-between">
                   <span
-                    className="text-base"
+                    className="text-sm"
                     style={{
                       color: 'var(--muted-color)',
                       fontFamily: 'var(--mono-font)',
@@ -484,7 +471,7 @@ export default function Navigation({
                       const event = new CustomEvent('openMindMap');
                       window.dispatchEvent(event);
                     }}
-                    className="flex items-center gap-2 py-2 w-full hover:text-primary-color transition-colors text-base"
+                    className="flex items-center gap-2 py-2 w-full hover:text-primary-color transition-colors text-sm"
                     style={{
                       color: 'var(--text-color)',
                       fontFamily: 'var(--mono-font)',
@@ -495,7 +482,7 @@ export default function Navigation({
                   </button>
                   <button
                     onClick={handleSidebarToggle}
-                    className="flex items-center gap-2 py-2 w-full hover:text-primary-color transition-colors text-base"
+                    className="flex items-center gap-2 py-2 w-full hover:text-primary-color transition-colors text-sm"
                     style={{
                       color: 'var(--text-color)',
                       fontFamily: 'var(--mono-font)',
@@ -525,18 +512,15 @@ export default function Navigation({
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1 opacity-60 hover:opacity-100 transition-opacity"
+                      className={`social-link flex items-center gap-1 ${UI_CLASSES.button}`}
+                      style={{
+                        color: 'var(--muted-color)',
+                      }}
                     >
-                      <div className="w-4 h-4">
-                        {React.cloneElement(link.icon as React.ReactElement, {
-                          width: '16',
-                          height: '16',
-                        })}
-                      </div>
+                      <div className="w-4 h-4">{link.icon}</div>
                       <span
                         className="text-xs"
                         style={{
-                          color: 'var(--text-color)',
                           fontFamily: 'var(--mono-font)',
                         }}
                       >

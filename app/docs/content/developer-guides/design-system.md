@@ -117,14 +117,42 @@ Our design system includes interactive wallet address components with copy funct
 <div class="wallet-info">
   <p class="profile-info">
     <strong>Ethereum:</strong>
-    <code class="wallet-address" data-address="0x1234567890abcdef1234567890abcdef12345678">
+    <code
+      class="wallet-address"
+      data-address="0x1234567890abcdef1234567890abcdef12345678"
+      data-chain="eth"
+    >
       0x1234567890abcdef1234567890abcdef12345678
     </code>
   </p>
   <p class="profile-info">
     <strong>Bitcoin:</strong>
-    <code class="wallet-address" data-address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh">
+    <code
+      class="wallet-address"
+      data-address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+      data-chain="btc"
+    >
       bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+    </code>
+  </p>
+  <p class="profile-info">
+    <strong>Base:</strong>
+    <code
+      class="wallet-address"
+      data-address="0x742d35Cc6634C0532925a3b844Bc9e7595f8fA6B"
+      data-chain="base"
+    >
+      0x742d35Cc6634C0532925a3b844Bc9e7595f8fA6B
+    </code>
+  </p>
+  <p class="profile-info">
+    <strong>Solana:</strong>
+    <code
+      class="wallet-address"
+      data-address="7VK4A5bh6XwFZMYiKcGDxRF8DzWrr8HMVBgCMhwuCCsF"
+      data-chain="solana"
+    >
+      7VK4A5bh6XwFZMYiKcGDxRF8DzWrr8HMVBgCMhwuCCsF
     </code>
   </p>
 </div>
@@ -173,6 +201,33 @@ The wallet addresses automatically get copy buttons when processed by the conten
 }
 ```
 
+### Live Example:
+
+```html
+<div class="wallet-info">
+  <p class="profile-info">
+    <strong>Ethereum:</strong>
+    <code
+      class="wallet-address"
+      data-address="0x742d35Cc6634C0532925a3b844Bc9e7595f8e7c9"
+      data-chain="eth"
+    >
+      0x742d35Cc6634C0532925a3b844Bc9e7595f8e7c9
+    </code>
+  </p>
+  <p class="profile-info">
+    <strong>Solana:</strong>
+    <code
+      class="wallet-address"
+      data-address="7VK4A5bh6XwFZMYiKcGDxRF8DzWrr8HMVBgCMhwuCCsF"
+      data-chain="solana"
+    >
+      7VK4A5bh6XwFZMYiKcGDxRF8DzWrr8HMVBgCMhwuCCsF
+    </code>
+  </p>
+</div>
+```
+
 ## Design Tokens
 
 ### CSS Custom Properties
@@ -205,42 +260,113 @@ For opacity and rgba() usage:
 
 ## Typography
 
+Our design system includes multiple font families for different purposes, providing flexibility and accessibility similar to design systems like Notion. Users can select their preferred font theme through the **Font Selector** in the settings.
+
+### Font Sets
+
+#### Sans-serif Fonts
+
+- **Hubot Sans** - Clean, modern display font for headings and UI elements
+- **Mona Sans** - Highly readable body font for general content
+
+#### Serif Fonts
+
+- **DM Serif Display** - Classic serif for elegant headings
+- **Noto Serif JP** - International serif with excellent readability and Japanese character support
+
+#### Monospace Font
+
+- **MapleMono** - Clear, distinct monospace for code and technical content
+
 ### Font Families
 
-The design system uses two primary font families:
+The design system uses these font families across different contexts:
 
+```html
 <div style="margin: 2rem 0;">
-  <div style="font-family: var(--title-font); font-size: 2rem; margin-bottom: 1rem; color: var(--text-color);">
+  <div
+    style="font-family: var(--title-font); font-size: 2rem; margin-bottom: 1rem; color: var(--text-color);"
+  >
     Hubot Sans - Display & Headings
   </div>
-  <div style="font-family: var(--mono-font); font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text-secondary);">
+  <div
+    style="font-family: var(--serif-font); font-size: 1.8rem; margin-bottom: 1rem; color: var(--text-color);"
+  >
+    Noto Serif JP - Elegant Serif Option
+  </div>
+  <div
+    style="font-family: var(--mono-font); font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text-secondary);"
+  >
     MapleMono - Code & Technical Text
   </div>
   <div style="font-family: var(--body-font); font-size: 1rem; color: var(--text-color);">
     Mona Sans - Body text and general content for optimal readability.
   </div>
 </div>
+```
+
+### Font Theme Selection
+
+Users can choose between different font themes using the font selector in the settings. This provides:
+
+- **Accessibility**: Users can select fonts that work best for their reading preferences
+- **Familiarity**: Similar to Notion and other modern design tools
+- **Flexibility**: Different fonts for different use cases and aesthetics
+
+Available font themes:
+
+- **Sans (Default)**: Hubot Sans + Mona Sans
+- **Serif**: DM Serif Display + Noto Serif JP
+- **Mono**: MapleMono for all text
 
 ### Font Weights & Styles
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
+```html
+<div
+  style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;"
+>
   <div style="padding: 1rem; border: 1px solid var(--border-unified); border-radius: 8px;">
-    <div style="font-family: var(--title-font); font-weight: 300; font-size: 1.2rem; margin-bottom: 0.5rem;">Light (300)</div>
-    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">Hubot Sans Light</div>
+    <div
+      style="font-family: var(--title-font); font-weight: 300; font-size: 1.2rem; margin-bottom: 0.5rem;"
+    >
+      Light (300)
+    </div>
+    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">
+      Hubot Sans Light
+    </div>
   </div>
   <div style="padding: 1rem; border: 1px solid var(--border-unified); border-radius: 8px;">
-    <div style="font-family: var(--title-font); font-weight: 400; font-size: 1.2rem; margin-bottom: 0.5rem;">Regular (400)</div>
-    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">Hubot Sans Regular</div>
+    <div
+      style="font-family: var(--title-font); font-weight: 400; font-size: 1.2rem; margin-bottom: 0.5rem;"
+    >
+      Regular (400)
+    </div>
+    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">
+      Hubot Sans Regular
+    </div>
   </div>
   <div style="padding: 1rem; border: 1px solid var(--border-unified); border-radius: 8px;">
-    <div style="font-family: var(--title-font); font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem;">Bold (700)</div>
-    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">Hubot Sans Bold</div>
+    <div
+      style="font-family: var(--title-font); font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem;"
+    >
+      Bold (700)
+    </div>
+    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">
+      Hubot Sans Bold
+    </div>
   </div>
   <div style="padding: 1rem; border: 1px solid var(--border-unified); border-radius: 8px;">
-    <div style="font-family: var(--title-font); font-weight: 900; font-size: 1.2rem; margin-bottom: 0.5rem;">Black (900)</div>
-    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">Hubot Sans Black</div>
+    <div
+      style="font-family: var(--title-font); font-weight: 900; font-size: 1.2rem; margin-bottom: 0.5rem;"
+    >
+      Black (900)
+    </div>
+    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">
+      Hubot Sans Black
+    </div>
   </div>
 </div>
+```
 
 ### CSS Font Classes
 
@@ -264,6 +390,22 @@ h6 {
 }
 ```
 
+### Live Font Example:
+
+```html
+<div style="display: grid; gap: 1rem;">
+  <div style="font-family: var(--title-font); font-size: 1.5rem; font-weight: 700;">
+    Hubot Sans - Display Font
+  </div>
+  <div style="font-family: var(--mono-font); font-size: 1rem;">
+    MapleMono - Monospace Font for Code
+  </div>
+  <div style="font-family: var(--body-font); font-size: 1rem;">
+    Mona Sans - Body text for optimal readability
+  </div>
+</div>
+```
+
 ## Component Examples
 
 ### Interactive Copy Buttons
@@ -275,7 +417,7 @@ The system includes reusable copy button functionality for various use cases:
 ```html
 <!-- Example: Color value with copy functionality -->
 <div
-  style="background-color: var(--primary-color); padding: 1rem; border-radius: 8px; position: relative;"
+  style="background-color: var(--primary-color); padding: 1rem; border-radius: 8px; position: relative; margin-bottom: 1rem;"
 >
   <code
     class="wallet-address"
@@ -291,42 +433,18 @@ The system includes reusable copy button functionality for various use cases:
 
 ```html
 <!-- Example: API key with copy functionality -->
-<code class="wallet-address" data-address="sk-1234567890abcdef1234567890abcdef">
-  sk-1234567890abcdef1234567890abcdef
-</code>
+<div
+  style="background-color: var(--card-color); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-unified);"
+>
+  <code class="wallet-address" data-address="sk-1234567890abcdef1234567890abcdef">
+    sk-1234567890abcdef1234567890abcdef
+  </code>
+</div>
 ```
 
 ### Notification Styles
 
 The system includes clean, minimal notifications with rounded borders and muted colors:
-
-<div class="notification notification-info">
-  <i class="mingcute:info-circle-fill" style="width: 20px; height: 20px; color: rgba(100, 149, 200, 0.8);"></i>
-  <div>
-    <strong>Info:</strong> This notification uses rounded borders and muted blue tones for a clean appearance.
-  </div>
-</div>
-
-<div class="notification notification-success">
-  <i class="mingcute:check-circle-fill" style="width: 20px; height: 20px; color: rgba(120, 180, 120, 0.8);"></i>
-  <div>
-    <strong>Success:</strong> Success notifications use subtle green colors and clean typography.
-  </div>
-</div>
-
-<div class="notification notification-warning">
-  <i class="mingcute:alert-triangle-fill" style="width: 20px; height: 20px; color: rgba(200, 160, 80, 0.8);"></i>
-  <div>
-    <strong>Warning:</strong> Warning notifications feature muted amber tones with proper contrast.
-  </div>
-</div>
-
-<div class="notification notification-error">
-  <i class="mingcute:close-circle-fill" style="width: 20px; height: 20px; color: rgba(200, 120, 120, 0.8);"></i>
-  <div>
-    <strong>Error:</strong> Error notifications use soft red colors while maintaining readability.
-  </div>
-</div>
 
 #### Notification CSS Structure
 
@@ -363,55 +481,126 @@ The system includes clean, minimal notifications with rounded borders and muted 
 }
 ```
 
+### Live Notification Examples:
+
+```html
+<div class="notification notification-info">
+  <i
+    class="mingcute:info-circle-fill"
+    style="width: 20px; height: 20px; color: rgba(100, 149, 200, 0.8); margin-right: 8px;"
+  ></i>
+  <div>
+    <strong>Info:</strong> This notification uses rounded borders and muted blue tones for a clean
+    appearance.
+  </div>
+</div>
+
+<div class="notification notification-success">
+  <i
+    class="mingcute:check-circle-fill"
+    style="width: 20px; height: 20px; color: rgba(120, 180, 120, 0.8); margin-right: 8px;"
+  ></i>
+  <div>
+    <strong>Success:</strong> Success notifications use subtle green colors and clean typography.
+  </div>
+</div>
+
+<div class="notification notification-warning">
+  <i
+    class="mingcute:alert-triangle-fill"
+    style="width: 20px; height: 20px; color: rgba(200, 160, 80, 0.8); margin-right: 8px;"
+  ></i>
+  <div>
+    <strong>Warning:</strong> Warning notifications feature muted amber tones with proper contrast.
+  </div>
+</div>
+
+<div class="notification notification-error">
+  <i
+    class="mingcute:close-circle-fill"
+    style="width: 20px; height: 20px; color: rgba(200, 120, 120, 0.8); margin-right: 8px;"
+  ></i>
+  <div>
+    <strong>Error:</strong> Error notifications use soft red colors while maintaining readability.
+  </div>
+</div>
+```
+
 ## Spacing System
 
 The design system uses a consistent spacing scale:
 
+```html
 <div style="margin: 2rem 0;">
   <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-    <div style="width: 0.25rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"></div>
-    <code>0.25rem (4px)</code> - Minimal spacing
+    <div
+      style="width: 0.25rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"
+    ></div>
+    <code style="font-family: var(--mono-font);">0.25rem (4px)</code> - Minimal spacing
   </div>
   <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-    <div style="width: 0.5rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"></div>
-    <code>0.5rem (8px)</code> - Small spacing
+    <div
+      style="width: 0.5rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"
+    ></div>
+    <code style="font-family: var(--mono-font);">0.5rem (8px)</code> - Small spacing
   </div>
   <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-    <div style="width: 1rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"></div>
-    <code>1rem (16px)</code> - Base spacing
+    <div
+      style="width: 1rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"
+    ></div>
+    <code style="font-family: var(--mono-font);">1rem (16px)</code> - Base spacing
   </div>
   <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-    <div style="width: 1.5rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"></div>
-    <code>1.5rem (24px)</code> - Medium spacing
+    <div
+      style="width: 1.5rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"
+    ></div>
+    <code style="font-family: var(--mono-font);">1.5rem (24px)</code> - Medium spacing
   </div>
   <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-    <div style="width: 2rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"></div>
-    <code>2rem (32px)</code> - Large spacing
+    <div
+      style="width: 2rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"
+    ></div>
+    <code style="font-family: var(--mono-font);">2rem (32px)</code> - Large spacing
   </div>
   <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-    <div style="width: 3rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"></div>
-    <code>3rem (48px)</code> - Extra large spacing
+    <div
+      style="width: 3rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"
+    ></div>
+    <code style="font-family: var(--mono-font);">3rem (48px)</code> - Extra large spacing
   </div>
 </div>
+```
 
 ## Border Radius
 
 Consistent border radius values across components:
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 2rem 0;">
-  <div style="background-color: var(--card-color); border: 1px solid var(--border-unified); border-radius: 4px; padding: 1rem; text-align: center;">
-    <code>4px</code><br/>Small radius
+```html
+<div
+  style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 2rem 0;"
+>
+  <div
+    style="background-color: var(--card-color); border: 1px solid var(--border-unified); border-radius: 4px; padding: 1rem; text-align: center;"
+  >
+    <code style="font-family: var(--mono-font);">4px</code><br />Small radius
   </div>
-  <div style="background-color: var(--card-color); border: 1px solid var(--border-unified); border-radius: 6px; padding: 1rem; text-align: center;">
-    <code>6px</code><br/>Medium radius
+  <div
+    style="background-color: var(--card-color); border: 1px solid var(--border-unified); border-radius: 6px; padding: 1rem; text-align: center;"
+  >
+    <code style="font-family: var(--mono-font);">6px</code><br />Medium radius
   </div>
-  <div style="background-color: var(--card-color); border: 1px solid var(--border-unified); border-radius: 8px; padding: 1rem; text-align: center;">
-    <code>8px</code><br/>Base radius
+  <div
+    style="background-color: var(--card-color); border: 1px solid var(--border-unified); border-radius: 8px; padding: 1rem; text-align: center;"
+  >
+    <code style="font-family: var(--mono-font);">8px</code><br />Base radius
   </div>
-  <div style="background-color: var(--card-color); border: 1px solid var(--border-unified); border-radius: 12px; padding: 1rem; text-align: center;">
-    <code>12px</code><br/>Large radius
+  <div
+    style="background-color: var(--card-color); border: 1px solid var(--border-unified); border-radius: 12px; padding: 1rem; text-align: center;"
+  >
+    <code style="font-family: var(--mono-font);">12px</code><br />Large radius
   </div>
 </div>
+```
 
 ## Accessibility
 

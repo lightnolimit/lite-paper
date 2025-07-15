@@ -6,14 +6,14 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 
+import { TIMING_CONSTANTS } from '../constants/ui';
 import { documentationTree } from '../data/documentation';
 import { isAIAvailable } from '../lib/clientRAG';
 import { useTheme } from '../providers/ThemeProvider';
+import type { FileItem } from '../types/documentation';
 import { createLogger } from '../utils/logger';
 
 const logger = createLogger('CommandPalette');
-
-import type { FileItem } from './FileTree';
 
 interface SearchResult {
   title: string;
@@ -36,7 +36,7 @@ const FAQ_ITEMS = [
   {
     question: 'How do I change the theme?',
     answer:
-      'You can change the theme using Cmd + Shift + D (Mac) or Ctrl + Shift + D (Windows/Linux). Alternatively, use the theme toggle button in the navigation bar or select "Switch to Dark/Light Mode" from this command palette.',
+      'You can change the theme using Cmd + I (Mac) or Ctrl + I (Windows/Linux). Alternatively, use the theme toggle button in the navigation bar or select "Switch to Dark/Light Mode" from this command palette.',
   },
   {
     question: 'How do I search the documentation?',
@@ -51,7 +51,7 @@ const FAQ_ITEMS = [
   {
     question: 'What keyboard shortcuts are available?',
     answer:
-      'Key shortcuts: Cmd/Ctrl + K (Command Palette), Cmd/Ctrl + Shift + D (Theme Toggle), Escape (Close dialogs), Arrow keys (Navigate), Enter (Select).',
+      'Key shortcuts: Cmd/Ctrl + K (Command Palette), Cmd/Ctrl + I (Theme Toggle), Escape (Close dialogs), Arrow keys (Navigate), Enter (Select).',
   },
   {
     question: 'How do I navigate between pages?',
@@ -100,7 +100,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
       ) : (
         <Icon icon="mingcute:moon-line" className="w-5 h-5" />
       ),
-      shortcut: 'Shift+D',
+      shortcut: 'I',
     });
 
     // Add navigation to llms.txt page
@@ -113,8 +113,8 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
       shortcut: 'L',
     });
 
-    // Add FAQ items early so they appear in default results
-    FAQ_ITEMS.forEach((faq, index) => {
+    // Add only first 2 FAQ items for default results
+    FAQ_ITEMS.slice(0, 2).forEach((faq, index) => {
       results.push({
         title: faq.question,
         path: `faq-${index}`,
@@ -157,12 +157,31 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
     return results;
   }, [isDarkMode, toggleDarkMode]);
 
+  // Create a complete searchable index that includes all FAQ items for searching
+  const completeSearchIndex = useMemo(() => {
+    const allResults = [...searchIndex];
+
+    // Add remaining FAQ items (beyond first 2) only for search purposes
+    FAQ_ITEMS.slice(2).forEach((faq, index) => {
+      allResults.push({
+        title: faq.question,
+        path: `faq-${index + 2}`,
+        type: 'faq',
+        description: 'Frequently Asked Question',
+        answer: faq.answer,
+        icon: <Icon icon="mingcute:question-line" className="w-5 h-5" />,
+      });
+    });
+
+    return allResults;
+  }, [searchIndex]);
+
   // Filter results based on query
   const filteredResults = useMemo(() => {
     if (!query) return searchIndex.slice(0, 8); // Show top results when no query
 
     const lowerQuery = query.toLowerCase();
-    return searchIndex
+    return completeSearchIndex
       .filter((item) => {
         const titleMatch = item.title.toLowerCase().includes(lowerQuery);
         const descMatch = item.description?.toLowerCase().includes(lowerQuery);
@@ -184,7 +203,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
         return 0;
       })
       .slice(0, 8);
-  }, [query, searchIndex]);
+  }, [query, searchIndex, completeSearchIndex]);
 
   // Define handleSelect before it's used
   const handleSelect = useCallback(
@@ -218,7 +237,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
       // Lock body scroll
       document.body.style.overflow = 'hidden';
       // Focus input after a short delay to ensure it's rendered
-      setTimeout(() => inputRef.current?.focus(), 50);
+      setTimeout(() => inputRef.current?.focus(), TIMING_CONSTANTS.autoFocusDelay);
     } else {
       // Restore body scroll
       document.body.style.overflow = '';
@@ -467,6 +486,8 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                       style={{
                         color: 'var(--text-color)',
                         fontFamily: 'var(--mono-font)',
+                        backgroundColor: 'transparent',
+                        border: '1px solid transparent',
                       }}
                     />
                   </div>
@@ -480,21 +501,12 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                   style={{ outline: 'none' }}
                 >
                   {isAIMode ? (
-                    <div className="flex flex-col h-64 bg-gradient-to-b from-transparent to-gray-50/50 dark:to-gray-900/50">
+                    <div className="flex flex-col h-96 bg-gradient-to-b from-transparent to-gray-50/50 dark:to-gray-900/50">
                       {/* Chat messages area */}
                       <div className="flex-1 overflow-y-auto p-4 space-y-3">
                         {!aiResponse && !isAILoading && (
                           <div className="flex justify-start">
                             <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-3">
-                              <div className="flex items-center gap-2 mb-2">
-                                <Icon icon="mingcute:ai-fill" className="w-5 h-5" />
-                                <span
-                                  className="text-sm font-medium"
-                                  style={{ color: 'var(--text-color)' }}
-                                >
-                                  AI Assistant
-                                </span>
-                              </div>
                               <p
                                 className="text-sm"
                                 style={{
@@ -530,22 +542,28 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                         {aiResponse && (
                           <div className="flex justify-start">
                             <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-3">
-                              <div className="flex items-center gap-2 mb-2">
-                                <Icon icon="mingcute:ai-fill" className="w-5 h-5" />
-                                <span
-                                  className="text-sm font-medium"
-                                  style={{ color: 'var(--text-color)' }}
-                                >
-                                  AI Assistant
-                                </span>
-                              </div>
                               <div className="prose prose-sm dark:prose-invert max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
                                 <ReactMarkdown
                                   components={{
                                     a: ({ href, children }) => (
                                       <a
                                         href={href}
-                                        className="text-blue-600 dark:text-blue-400 hover:underline"
+                                        style={{
+                                          color: 'var(--primary-color)',
+                                          textDecoration: 'none',
+                                          borderBottom: '1px solid transparent',
+                                          transition: 'all 0.2s ease',
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          (e.target as HTMLAnchorElement).style.borderBottom =
+                                            '1px solid var(--primary-color)';
+                                          (e.target as HTMLAnchorElement).style.opacity = '0.8';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                          (e.target as HTMLAnchorElement).style.borderBottom =
+                                            '1px solid transparent';
+                                          (e.target as HTMLAnchorElement).style.opacity = '1';
+                                        }}
                                         onClick={(e) => {
                                           if (href?.startsWith('/')) {
                                             e.preventDefault();
@@ -691,9 +709,11 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                                     : 'var(--text-color)',
                               }}
                             >
-                              {result.shortcut === 'Shift+D'
-                                ? '⌘ + SHIFT + D'
-                                : result.shortcut === 'A' || result.shortcut === 'L'
+                              {result.shortcut === 'T'
+                                ? '⌘ + T'
+                                : result.shortcut === 'A' ||
+                                    result.shortcut === 'L' ||
+                                    result.shortcut === 'I'
                                   ? `⌘ + ${result.shortcut}`
                                   : `⌘${result.shortcut}`}
                             </kbd>

@@ -7,7 +7,7 @@ import {
   getAvailableDocumentationPaths,
   searchDocumentation,
   getDocumentationStats,
-} from '../utils/docs-client';
+} from '../utils/docsClient';
 import { createLogger } from '../utils/logger';
 
 const logger = createLogger('TestDocs');
@@ -122,7 +122,7 @@ export default function TestDocsPage() {
           />
           <button
             onClick={handleSearch}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            className="px-4 py-2 bg-light-primary dark:bg-dark-primary text-white rounded-md hover:bg-light-accent dark:hover:bg-dark-accent transition-colors"
           >
             Search
           </button>
@@ -135,7 +135,9 @@ export default function TestDocsPage() {
                 key={index}
                 className="p-4 border border-gray-200 rounded-lg dark:border-gray-700"
               >
-                <h3 className="font-semibold text-blue-600 dark:text-blue-400">{result.path}</h3>
+                <h3 className="font-semibold text-light-primary dark:text-dark-primary">
+                  {result.path}
+                </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">{result.excerpt}</p>
                 <button
                   onClick={() => setSelectedPath(result.path)}
@@ -186,7 +188,7 @@ export default function TestDocsPage() {
           <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
             <h3 className="font-semibold mb-2">Get Documentation Content</h3>
             <code className="text-sm">
-              {`import { getDocumentationContent } from '@/utils/docs-client';
+              {`import { getDocumentationContent } from '@/utils/docsClient';
 
 const content = await getDocumentationContent('deployment/platforms/cloudflare');`}
             </code>
@@ -195,7 +197,7 @@ const content = await getDocumentationContent('deployment/platforms/cloudflare')
           <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
             <h3 className="font-semibold mb-2">Search Documentation</h3>
             <code className="text-sm">
-              {`import { searchDocumentation } from '@/utils/docs-client';
+              {`import { searchDocumentation } from '@/utils/docsClient';
 
 const results = await searchDocumentation('cloudflare');`}
             </code>
@@ -204,7 +206,7 @@ const results = await searchDocumentation('cloudflare');`}
           <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
             <h3 className="font-semibold mb-2">Get Available Paths</h3>
             <code className="text-sm">
-              {`import { getAvailableDocumentationPaths } from '@/utils/docs-client';
+              {`import { getAvailableDocumentationPaths } from '@/utils/docsClient';
 
 const paths = await getAvailableDocumentationPaths();`}
             </code>
