@@ -110,15 +110,9 @@ export default function ContentRenderer({
   const githubBranch = process.env.NEXT_PUBLIC_GITHUB_BRANCH || 'main';
 
   return (
-    <motion.div
-      initial={{ opacity: 0.9, y: 0 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.15 }}
-      className="w-full h-full overflow-hidden"
-      role="article"
-    >
+    <div className="w-full h-full overflow-hidden" role="article">
       <div className="flex-1 overflow-y-auto doc-content-scroll h-full">
-        <div className="doc-content p-6 md:p-8 lg:p-12 max-w-4xl mx-auto">
+        <div className="doc-content pt-2 pb-6 px-6 md:pt-2 md:pb-8 md:px-8 lg:pt-4 lg:pb-12 lg:px-12 max-w-4xl mx-auto">
           {/* Banner for synopsis pages */}
           {isSynopsisPage && (
             <div className="w-full mb-6 overflow-hidden rounded-lg relative">
@@ -227,6 +221,6 @@ export default function ContentRenderer({
           </motion.div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

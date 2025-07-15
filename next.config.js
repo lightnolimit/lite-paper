@@ -52,6 +52,7 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ['framer-motion', '@react-three/fiber', '@react-three/drei'],
+    viewTransition: true,
   },
 
   // Headers configuration removed as it doesn't work with 'export' mode

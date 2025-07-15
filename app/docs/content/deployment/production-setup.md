@@ -748,7 +748,7 @@ interface Config {
 
 const configs: Record<string, Config> = {
   development: {
-    apiUrl: 'http://localhost:3000/api',
+    apiUrl: 'http://localhost:3333/api',
     databaseUrl: process.env.DEV_DATABASE_URL!,
     cacheEnabled: false,
     analyticsEnabled: false,

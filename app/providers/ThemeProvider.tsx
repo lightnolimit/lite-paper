@@ -10,12 +10,16 @@ import React, {
   useCallback,
 } from 'react';
 
+type FontFamily = 'sans-serif' | 'mono' | 'serif';
+
 type ThemeContextType = {
   isDarkMode: boolean;
   toggleTheme: () => void;
   toggleDarkMode: () => void;
   prefersReducedMotion: boolean;
   toggleReducedMotion: () => void;
+  fontFamily: FontFamily;
+  setFontFamily: (font: FontFamily) => void;
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -23,6 +27,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [fontFamily, setFontFamilyState] = useState<FontFamily>('mono');
 
   // Memoized theme application function
   const applyTheme = useCallback((darkMode: boolean) => {
@@ -48,6 +53,19 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
 
     localStorage.setItem('prefersReducedMotion', reducedMotion.toString());
+  }, []);
+
+  // Memoized font family application
+  const applyFontFamily = useCallback((font: FontFamily) => {
+    const html = document.documentElement;
+
+    // Remove existing font classes
+    html.classList.remove('font-sans', 'font-mono', 'font-serif');
+
+    // Add new font class
+    html.classList.add(`font-${font}`);
+
+    localStorage.setItem('fontFamily', font);
   }, []);
 
   // Initialize theme and motion preferences
@@ -83,6 +101,18 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('prefersReducedMotion', 'true');
     }
 
+    // Font family initialization
+    const storedFontPreference = localStorage.getItem('fontFamily') as FontFamily;
+    const defaultFont: FontFamily = 'mono';
+    const selectedFont = storedFontPreference || defaultFont;
+
+    setFontFamilyState(selectedFont);
+    applyFontFamily(selectedFont);
+
+    if (!storedFontPreference) {
+      localStorage.setItem('fontFamily', defaultFont);
+    }
+
     // Listen for system preference changes
     const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const motionMediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -108,7 +138,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       darkModeMediaQuery.removeEventListener('change', handleDarkModeChange);
       motionMediaQuery.removeEventListener('change', handleMotionChange);
     };
-  }, [applyTheme, applyMotionPreference]);
+  }, [applyTheme, applyMotionPreference, applyFontFamily]);
 
   // Apply theme changes when isDarkMode changes
   useEffect(() => {
@@ -162,6 +192,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [toggleTheme]);
 
+  // Font family setter function
+  const setFontFamily = useCallback(
+    (font: FontFamily) => {
+      setFontFamilyState(font);
+      applyFontFamily(font);
+    },
+    [applyFontFamily]
+  );
+
   // Memoized context value to prevent re-renders when children don't need to update
   const contextValue = useMemo(
     () => ({
@@ -170,8 +209,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       toggleDarkMode: toggleTheme,
       prefersReducedMotion,
       toggleReducedMotion,
+      fontFamily,
+      setFontFamily,
     }),
-    [isDarkMode, toggleTheme, prefersReducedMotion, toggleReducedMotion]
+    [isDarkMode, toggleTheme, prefersReducedMotion, toggleReducedMotion, fontFamily, setFontFamily]
   );
 
   return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;

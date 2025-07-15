@@ -25,7 +25,8 @@
       "Bash(grep:*)",
       "WebFetch(domain:developers.cloudflare.com)",
       "Bash(ls:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(npm install:*)"
     ],
     "deny": []
   }

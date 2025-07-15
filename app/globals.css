@@ -45,6 +45,23 @@
   font-display: swap;
 }
 
+/* Import DM Serif fonts for serif text */
+@font-face {
+  font-family: 'DM Serif Display';
+  src: url('/fonts/DMSerifDisplay-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Oranienbaum';
+  src: url('/fonts/Oranienbaum-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Light mode - Enhanced readability with better contrast */
   --primary-color: #678d58;
@@ -61,6 +78,7 @@
   --mono-font: 'MapleMono', 'SF Mono', 'Monaco', 'Consolas', monospace;
   --title-font: 'Hubot Sans', sans-serif;
   --body-font: 'Mona Sans', sans-serif;
+  --serif-font: 'Oranienbaum', 'DM Serif Display', 'Times New Roman', serif;
   --icon-color: #1f2937; /* Icon color for light mode */
   --primary-color-rgb: 103, 141, 88; /* RGB value of #678D58 */
   --hover-color: rgba(0, 0, 0, 0.05);
@@ -502,57 +520,18 @@ select:focus {
 .notification {
   padding: var(--space-4);
   margin: var(--space-4) 0;
-  border-radius: 0;
-  border: 2px solid;
+  border-radius: 12px;
+  border: 1px solid;
   font-family: var(--mono-font);
   display: flex;
   align-items: flex-start;
   position: relative;
   background-color: transparent;
   overflow: hidden;
-  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.2);
   width: 100%;
   max-width: 100%;
   word-break: break-word;
   box-sizing: border-box;
-  text-transform: uppercase;
-}
-
-.dark .notification {
-  box-shadow: 4px 4px 0px rgba(255, 255, 255, 0.1);
-}
-
-.notification::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: linear-gradient(
-    45deg,
-    transparent 25%,
-    rgba(0, 0, 0, 0.05) 25%,
-    rgba(0, 0, 0, 0.05) 50%,
-    transparent 50%,
-    transparent 75%,
-    rgba(0, 0, 0, 0.05) 75%
-  );
-  background-size: 8px 8px;
-  opacity: 0.3;
-  z-index: -1;
-}
-
-.dark .notification::before {
-  background-image: linear-gradient(
-    45deg,
-    transparent 25%,
-    rgba(255, 255, 255, 0.05) 25%,
-    rgba(255, 255, 255, 0.05) 50%,
-    transparent 50%,
-    transparent 75%,
-    rgba(255, 255, 255, 0.05) 75%
-  );
 }
 
 .notification img {
@@ -563,23 +542,23 @@ select:focus {
 }
 
 .notification-info {
-  background-color: rgba(0, 149, 255, 0.05);
-  border-color: #0095ff;
+  background-color: rgba(100, 149, 200, 0.1);
+  border-color: rgba(100, 149, 200, 0.3);
 }
 
 .notification-warning {
-  background-color: rgba(255, 192, 0, 0.05);
-  border-color: #ffc000;
+  background-color: rgba(200, 160, 80, 0.1);
+  border-color: rgba(200, 160, 80, 0.3);
 }
 
 .notification-error {
-  background-color: rgba(255, 71, 87, 0.05);
-  border-color: #ff4757;
+  background-color: rgba(200, 120, 120, 0.1);
+  border-color: rgba(200, 120, 120, 0.3);
 }
 
 .notification-success {
-  background-color: rgba(46, 213, 115, 0.05);
-  border-color: #2ed573;
+  background-color: rgba(120, 180, 120, 0.1);
+  border-color: rgba(120, 180, 120, 0.3);
 }
 
 /* Inline code styles for markdown */
@@ -718,7 +697,7 @@ code {
   font-size: var(--text-3xl);
   padding-bottom: var(--space-3);
   margin-bottom: var(--space-4);
-  margin-top: 0;
+  margin-top: 0.5rem;
   border-bottom: none;
   font-weight: 700;
   line-height: var(--leading-tight);
@@ -899,7 +878,7 @@ code {
   left: var(--space-3);
   width: var(--space-6);
   height: var(--space-6);
-  background-image: url('/assets/icons/pixel-quote-left-solid.svg');
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='currentColor' d='M14 17h3l2-4V7h-6v6h3l-2 4zm-8 0h3l2-4V7H5v6h3l-2 4z'/%3E%3C/svg%3E");
   background-size: contain;
   background-repeat: no-repeat;
   opacity: 0.7;
@@ -1444,7 +1423,7 @@ code.wallet-address {
 .doc-content h1 {
   font-size: var(--text-3xl);
   line-height: var(--leading-tight);
-  margin-top: var(--space-8);
+  margin-top: 0;
   margin-bottom: var(--space-4);
 }
 
@@ -1529,4 +1508,101 @@ select {
   transition-property:
     color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
     transform, filter, backdrop-filter;
+}
+
+/* View Transitions for smooth navigation */
+@supports (view-transition-name: none) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01s;
+  }
+
+  ::view-transition-old(root) {
+    animation-name: fade-out;
+  }
+
+  ::view-transition-new(root) {
+    animation-name: fade-in;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.95;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0.95;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Font family overrides */
+.font-sans-serif .doc-content,
+.font-sans-serif body,
+.font-sans-serif p,
+.font-sans-serif li,
+.font-sans-serif td,
+.font-sans-serif th {
+  font-family: var(--body-font) !important;
+}
+
+.font-sans-serif h1,
+.font-sans-serif h2,
+.font-sans-serif h3,
+.font-sans-serif h4,
+.font-sans-serif h5,
+.font-sans-serif h6 {
+  font-family: var(--title-font) !important;
+}
+
+.font-mono .doc-content,
+.font-mono body,
+.font-mono h1,
+.font-mono h2,
+.font-mono h3,
+.font-mono h4,
+.font-mono h5,
+.font-mono h6,
+.font-mono p,
+.font-mono li,
+.font-mono td,
+.font-mono th {
+  font-family: var(--mono-font) !important;
+}
+
+.font-serif .doc-content,
+.font-serif body,
+.font-serif p,
+.font-serif li,
+.font-serif td,
+.font-serif th {
+  font-family: var(--serif-font) !important;
+}
+
+.font-serif h1,
+.font-serif h2,
+.font-serif h3,
+.font-serif h4,
+.font-serif h5,
+.font-serif h6 {
+  font-family: 'DM Serif Display', var(--serif-font) !important;
+}
+
+/* Prevent layout shift during content changes */
+.doc-content {
+  min-height: 50vh;
+  will-change: auto;
+}
+
+/* Stable layout for main content area */
+.flex-1 {
+  contain: layout style;
 }

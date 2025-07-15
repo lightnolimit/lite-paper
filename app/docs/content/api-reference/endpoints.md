@@ -5,7 +5,7 @@ Reference for all available API endpoints in the documentation system.
 ## Base URL
 
 ```
-Development: http://localhost:3000
+Development: http://localhost:3333
 Production: https://your-domain.com
 ```
 

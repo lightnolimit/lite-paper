@@ -1,136 +1,84 @@
-# AI Assistant Setup - Simplified Architecture
+# AI Assistant Setup
 
-This documentation site uses a direct integration with Cloudflare's Llama3 AI model for intelligent documentation assistance.
-
-## Architecture
-
-```
-User Query → RAG Search → Llama3 Worker → AI Response
-     ↓                                          ↓
-Command Palette → Local Doc Search → Fallback Response
-```
+Direct integration with Cloudflare Workers AI for intelligent documentation assistance.
 
 ## How It Works
 
-1. **User asks a question** in the command palette (Cmd/Ctrl + K)
-2. **RAG searches** your documentation for relevant content
-3. **Context is built** from the top 3 most relevant documentation sections
-4. **Llama3 processes** the query with the documentation context
-5. **Intelligent response** is returned to the user
+1. User asks question (Cmd/Ctrl + K)
+2. RAG searches documentation
+3. Context built from top 3 relevant sections
+4. Llama3 processes query with context
+5. Returns intelligent response
 
 ## Configuration
 
-The AI assistant is configured via environment variables:
-
 ```bash
-# Enable AI features
 NEXT_PUBLIC_ENABLE_AI="true"
-
-# Your Cloudflare Llama3 worker URL
-NEXT_PUBLIC_AI_WORKER_URL="https://llama3-8b-instruct.lightnolimit.workers.dev/"
+NEXT_PUBLIC_AI_WORKER_URL="https://your-worker.workers.dev"
 ```
 
-## Security Considerations
+## Security
 
-### Option 1: CORS Protection (Recommended)
-
-To protect your Llama3 worker from unauthorized use, add CORS headers to your worker:
+**CORS Protection** (recommended):
 
 ```javascript
-// In your Llama3 worker, add:
 const corsHeaders = {
   'Access-Control-Allow-Origin': 'https://your-domain.com',
   'Access-Control-Allow-Methods': 'POST',
-  'Access-Control-Allow-Headers': 'Content-Type',
 };
 ```
 
-### Option 2: Rate Limiting
+**Rate Limiting**: Use Cloudflare dashboard → Security → Rate Limiting
 
-Use Cloudflare's built-in rate limiting:
+**Public Usage**: Workers have DDoS protection, 100k requests/day free
 
-- Dashboard → Security → Rate Limiting
-- Create rule for your worker endpoint
-- Limit to reasonable requests per minute
+## Cost
 
-### Option 3: Accept Public Usage
+**Direct approach benefits**:
 
-- The Llama3 worker URL being exposed isn't critical
-- Cloudflare Workers have built-in DDoS protection
-- Free tier allows 100,000 requests/day
-- Monitor usage and add protection if needed
+- Single API call per query
+- 100k requests/day free tier
+- Llama3 included in Workers AI
+- Simple architecture
 
-## Cost Analysis
+## Fallback
 
-**Direct Llama3 approach:**
+If AI unavailable:
 
-- ✅ No proxy worker needed (saves requests)
-- ✅ Single API call per query
-- ✅ Cloudflare Workers free tier: 100,000 requests/day
-- ✅ Llama3 model included in Workers AI free tier
-
-**Previous proxy approach:**
-
-- ❌ Double the requests (client → proxy → AI)
-- ❌ More complex architecture
-- ❌ Additional worker to maintain
-
-## Fallback System
-
-If Llama3 is unavailable, the system automatically falls back to:
-
-1. Local keyword-based response generation
-2. Returns relevant documentation snippets
-3. Suggests related topics
+1. Local keyword responses
+2. Documentation snippets
+3. Related topic suggestions
 
 ## Testing
 
-1. Enable AI in your `.env.local`
-2. Start dev server: `npm run dev`
-3. Open command palette: `Cmd/Ctrl + K`
-4. Select "Ask AI Assistant"
-5. Ask a question about your documentation
+1. Enable AI in `.env.local`
+2. `npm run dev`
+3. Cmd/Ctrl + K → "Ask AI Assistant"
+4. Ask about documentation
 
 ## Monitoring
 
-View Llama3 worker analytics:
-
-1. Cloudflare Dashboard → Workers & Pages
-2. Select your Llama3 worker
-3. View metrics, logs, and usage
+Cloudflare Dashboard → Workers & Pages → your worker → metrics
 
 ## Troubleshooting
 
-**AI not responding:**
+**AI not responding**:
 
-- Check `NEXT_PUBLIC_ENABLE_AI` is set to "true"
-- Verify `NEXT_PUBLIC_AI_WORKER_URL` is correct
-- Check browser console for errors
-- Test Llama3 worker directly:
+- Check `NEXT_PUBLIC_ENABLE_AI="true"`
+- Verify `NEXT_PUBLIC_AI_WORKER_URL`
+- Check browser console
+- Test worker directly with curl
 
-```bash
-curl -X POST https://llama3-8b-instruct.lightnolimit.workers.dev/ \
-  -H "Content-Type: application/json" \
-  -d '{
-    "messages": [
-      {"role": "user", "content": "Hello"}
-    ],
-    "max_tokens": 100
-  }'
-```
+**Poor responses**:
 
-**Poor AI responses:**
+- Check documentation indexing
+- Verify RAG finding context
+- Adjust temperature in clientRAG.ts
 
-- Ensure documentation is properly indexed
-- Check that RAG is finding relevant context
-- Adjust temperature in clientRAG.ts (lower = more factual)
+## Benefits
 
-## Benefits of This Approach
-
-1. **Simplicity** - Direct integration, no proxy needed
-2. **Cost-effective** - Single API call, uses free tier
-3. **Performance** - Fewer hops, faster responses
-4. **Maintainability** - Less code to maintain
-5. **Security** - Cloudflare's built-in protections
-
-The simplified architecture provides the same AI capabilities with less complexity and cost!
+- Simple direct integration
+- Cost-effective (free tier)
+- Fast responses
+- Easy maintenance
+- Built-in security

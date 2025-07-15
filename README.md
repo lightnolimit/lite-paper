@@ -1,25 +1,23 @@
 # Lite Paper - Modern Documentation Template
 
-A beautiful, fast, and customizable documentation website template built with Next.js 15, TypeScript, and Tailwind CSS. Features an interactive mindmap visualization and optional AI-powered documentation assistant.
+Modern documentation template built with Next.js 15, TypeScript, and Tailwind CSS. Features interactive visualization and optional AI assistance.
 
 [![Fork on GitHub](https://img.shields.io/badge/Fork%20on-GitHub-black?logo=github)](https://github.com/lightnolimit/lite-paper/fork)
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Next.js 15](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
+[![Next.js 15](https://img.shields.io/badge/Next.js-15.4-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
 
-## ✨ Features
+## Features
 
-- 🎨 **Modern Design**: Clean, responsive interface with dark/light mode support
-- 📱 **Mobile-First**: Optimized for all screen sizes
-- 🔍 **Fast Search**: Instant search across all documentation
-- 🧭 **Interactive Mindmap**: Visualize your documentation structure
-- 📖 **File Tree Navigation**: Intuitive sidebar navigation
-- 🤖 **AI Assistant** (Optional): Powered by your choice of LLM
-- 🎯 **TypeScript**: Full type safety throughout
-- 🚀 **Static Export**: Deploy anywhere with no server required
-- 📝 **Markdown Support**: Write content in Markdown with syntax highlighting
-- 🎨 **Customizable**: Easy to theme and customize
-- ☁️ **Deploy Anywhere**: Works on Cloudflare Pages, Vercel, Netlify, and more
+- Clean, responsive design with dark/light themes
+- Fast search across documentation
+- Interactive documentation visualization
+- File tree navigation
+- Optional AI assistant (Cloudflare Workers AI)
+- Full TypeScript support
+- Static export for any hosting platform
+- Markdown with syntax highlighting
+- Customizable themes
 
 ## 🚀 Quick Start
 
@@ -38,10 +36,6 @@ cd YOUR_REPO_NAME
 
 ```bash
 npm install
-# or
-pnpm install
-# or
-yarn install
 ```
 
 ### 4. Set up environment variables
@@ -87,91 +81,37 @@ Create Markdown files in the structure you defined. The file paths in `documenta
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your documentation site.
+Open [http://localhost:3333](http://localhost:3333) to see your documentation site.
 
 ## 🚀 Deployment
 
-### Deploy to Cloudflare Pages (Recommended)
+### Cloudflare Pages
 
-#### Option 1: Via Cloudflare Dashboard
+1. Fork this repository
+2. Connect to Cloudflare Pages
+3. Set build command: `npm run build`
+4. Set output directory: `out`
+5. Deploy
 
-1. **Fork this repository** using the button above
+### Other Platforms
 
-2. **Create a new Pages project**:
-   - Go to [dash.cloudflare.com](https://dash.cloudflare.com) → Pages
-   - Click "Create a project" → "Connect to Git"
-   - Select your forked repository
+- **Vercel**: `npx vercel`
+- **Netlify**: `npx netlify deploy`
 
-3. **Configure build settings**:
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.
 
-   ```
-   Build command: npm run build
-   Build output directory: out
-   ```
-
-4. **Deploy**: Click "Save and Deploy"
-
-Your site will be live at `https://your-project.pages.dev` within minutes!
-
-#### Option 2: Via Wrangler CLI
-
-1. **Install and authenticate**:
-
-   ```bash
-   npm install -g wrangler
-   wrangler login
-   ```
-
-2. **Configure project name** in `wrangler.toml`:
-
-   ```toml
-   name = "your-project-name"  # This will be your subdomain
-   ```
-
-3. **Deploy**:
-
-   ```bash
-   # First deployment (creates the project)
-   npm run build
-   npm run deploy:create
-
-   # Subsequent deployments
-   npm run build
-   npm run deploy
-   ```
-
-#### API Token Setup (for CLI/CI)
-
-If deploying via CLI or GitHub Actions, create an API token:
-
-1. Go to [Cloudflare API Tokens](https://dash.cloudflare.com/profile/api-tokens)
-2. Create token with permissions:
-   - **Account**: `Cloudflare Pages:Edit`
-   - **Zone** (optional): `DNS:Edit` for custom domains
-3. Set as environment variable: `CLOUDFLARE_API_TOKEN`
-
-### Deploy to Other Platforms
-
-- **[Vercel](./app/docs/content/deployment/platforms/vercel.md)**: `npx vercel`
-- **[Netlify](./app/docs/content/deployment/platforms/netlify.md)**: `npx netlify deploy`
-
-See the [deployment guide](./app/docs/content/deployment/overview.md) for detailed instructions.
-
-## 📁 Project Structure
+## Project Structure
 
 ```
-├── app/
-│   ├── components/          # React components
-│   │   ├── FileTree.tsx    # Navigation sidebar
-│   │   ├── SearchBar.tsx   # Search functionality
-│   │   └── ...
-│   ├── data/
-│   │   └── documentation.ts # Your documentation structure
-│   ├── globals.css         # Global styles
-│   └── layout.tsx          # App layout
-├── public/                 # Static assets
-├── types/                  # TypeScript type definitions
-└── ...
+app/
+├── components/          # React components
+├── data/               # Documentation structure
+├── docs/               # Documentation pages
+├── lib/                # Utilities (clientRAG)
+├── providers/          # React contexts
+└── utils/              # Helper functions
+public/                 # Static assets
+scripts/                # Build scripts
 ```
 
 ## 🎨 Customization
@@ -182,146 +122,51 @@ See the [deployment guide](./app/docs/content/deployment/overview.md) for detail
 - Customize colors, fonts, and layout in `tailwind.config.js`
 - Override styles in `app/globals.css`
 
-### Navigation Structure
+Edit `app/data/documentation.ts` to define your structure. Write content in Markdown files under `app/docs/content/`.
 
-- Define your documentation structure in `app/data/documentation.ts`
-- Supports nested directories and files
-- Each entry maps to a route in your application
+## AI Assistant (Optional)
 
-### Content
+Enable AI-powered documentation assistance:
 
-- Write your documentation in Markdown
-- Files are loaded dynamically based on the structure you define
-- Supports syntax highlighting and rich formatting
-
-## 🤖 AI Assistant (Optional)
-
-The template includes an optional AI-powered documentation assistant. To enable it:
-
-1. **Set up environment variables** in `.env.local`:
+1. Set environment variables in `.env.local`:
 
    ```env
    NEXT_PUBLIC_ENABLE_AI="true"
-   NEXT_PUBLIC_AI_WORKER_URL="https://your-ai-endpoint.workers.dev"
+   NEXT_PUBLIC_AI_WORKER_URL="https://your-worker.workers.dev"
    ```
 
-2. **Deploy an AI endpoint** (choose one):
-   - **Cloudflare Workers AI**: Deploy your own Llama model
-   - **OpenAI API**: Use any OpenAI-compatible endpoint
-   - **Local LLM**: Connect to Ollama or similar
+2. Use Cmd/Ctrl + K → "Ask AI Assistant"
 
-3. **Test the integration**:
-   - Open Command Palette (Cmd/Ctrl + K)
-   - Select "Ask AI Assistant"
-   - Ask questions about your documentation
+Uses RAG with Cloudflare Workers AI. See [AI_SETUP.md](AI_SETUP.md) for details.
 
-The AI assistant uses RAG (Retrieval Augmented Generation) to provide accurate answers based on your documentation content.
-
-## 📦 Deployment
-
-### Cloudflare Pages
-
-1. Connect your GitHub repository to Cloudflare Pages
-2. Set build command: `npm run build`
-3. Set output directory: `out`
-4. Deploy!
-
-### Vercel
-
-1. Connect your GitHub repository to Vercel
-2. Deploy with default settings
-
-### Netlify
-
-1. Connect your GitHub repository to Netlify
-2. Set build command: `npm run build`
-3. Set publish directory: `out`
-4. Deploy!
-
-## 🔄 Keeping Your Fork Updated
-
-To receive updates from the template while keeping your content:
-
-### Setup upstream remote (one-time setup)
+## Updating Your Fork
 
 ```bash
 git remote add upstream https://github.com/ORIGINAL_OWNER/ORIGINAL_REPO.git
-```
-
-### Update from upstream
-
-```bash
-# Fetch latest changes from upstream
 git fetch upstream
-
-# Merge upstream changes (this will update code, not your content)
 git merge upstream/main
-
-# Resolve any conflicts and commit
-git commit -m "Merge upstream changes"
-
-# Push to your fork
-git push origin main
 ```
 
-## 🛠️ Configuration
+## Configuration
 
-### Environment Variables
+Copy `.env.example` to `.env.local` and customize.
 
-See `.env.example` for all available options:
+Theme colors are in `tailwind.config.js`. The template uses:
 
-| Variable                    | Description           | Default                   |
-| --------------------------- | --------------------- | ------------------------- |
-| `NEXT_PUBLIC_SITE_NAME`     | Your site name        | "Your Documentation Site" |
-| `NEXT_PUBLIC_SITE_URL`      | Production URL        | "https://your-domain.com" |
-| `NEXT_PUBLIC_GITHUB_URL`    | GitHub repository URL | -                         |
-| `NEXT_PUBLIC_ENABLE_AI`     | Enable AI assistant   | "false"                   |
-| `NEXT_PUBLIC_AI_WORKER_URL` | AI endpoint URL       | -                         |
+- Hubot Sans (headings)
+- Mona Sans (body)
+- MapleMono (code)
 
-### Theming
+## Contributing
 
-Customize colors in `app/globals.css`:
+See [CONTRIBUTING.md](CONTRIBUTING.md)
 
-```css
-:root {
-  --primary-color: #3b82f6;
-  --secondary-color: #64748b;
-  --accent-color: #10b981;
-  /* ... more variables */
-}
-```
+## License
 
-### Typography
+MIT License - see [LICENSE](LICENSE)
 
-The template uses custom fonts:
+## Built With
 
-- **Headings**: Urbanist
-- **Body**: Urbanist
-- **Code**: MapleMono
-
-## 🤝 Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🔒 Security
-
-For security issues, please see [SECURITY.md](SECURITY.md).
-
-## 🆘 Support
-
-If you have questions or need help:
-
-1. Check the [documentation](https://lite-paper.pages.dev)
-2. Join our [GitHub Discussions](https://github.com/lightnolimit/lite-paper/discussions)
-3. Open an [issue](https://github.com/lightnolimit/lite-paper/issues)
-
-## 🙏 Acknowledgments
-
-- Built with [Next.js](https://nextjs.org/)
-- Styled with [Tailwind CSS](https://tailwindcss.com/)
-- Animations by [Framer Motion](https://www.framer.com/motion/)
-- Icons from various pixel art collections
+- [Next.js](https://nextjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Framer Motion](https://www.framer.com/motion/)

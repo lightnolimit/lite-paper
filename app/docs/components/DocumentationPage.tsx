@@ -163,7 +163,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
   const handleSelectFile = useCallback(
     (item: FileItem) => {
       if (item.type === 'file') {
-        router.push(`/docs/${item.path}`, { scroll: false });
+        router.push(`/docs/${item.path}`);
 
         // Close sidebar on mobile after selection
         if (isMobile) {
@@ -298,36 +298,10 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                 </motion.button>
               ))}
 
-            {/* Mobile mind map toggle button */}
-            {isMobile &&
-              !mobileMapVisible &&
-              (prefersReducedMotion ? (
-                <button
-                  onClick={() => setMobileMapVisible(true)}
-                  className={`fixed z-30 ${uiConfig.mobileTogglePosition === 'bottom-left' || uiConfig.mobileTogglePosition === 'top-left' ? 'left-6' : 'right-6'} ${uiConfig.mobileTogglePosition === 'bottom-left' || uiConfig.mobileTogglePosition === 'bottom-right' ? 'bottom-20' : 'top-20'} rounded p-3 shadow-lg`}
-                  aria-label="Show mind map"
-                  style={buttonStyle}
-                >
-                  <Icon icon="mingcute:mindmap-line" className="w-5 h-5" style={iconStyle} />
-                </button>
-              ) : (
-                <motion.button
-                  onClick={() => setMobileMapVisible(true)}
-                  className={`fixed z-30 ${uiConfig.mobileTogglePosition === 'bottom-left' || uiConfig.mobileTogglePosition === 'top-left' ? 'left-6' : 'right-6'} ${uiConfig.mobileTogglePosition === 'bottom-left' || uiConfig.mobileTogglePosition === 'bottom-right' ? 'bottom-20' : 'top-20'} rounded p-3 shadow-lg`}
-                  {...buttonAnimationConfig}
-                  aria-label="Show mind map"
-                  style={buttonStyle}
-                >
-                  <Icon icon="mingcute:mindmap-line" className="w-5 h-5" style={iconStyle} />
-                </motion.button>
-              ))}
-
-            <ContentRenderer content={content} path={path} />
-
-            {/* Right sidebar toggle button */}
+            {/* Right sidebar toggle button - positioned absolutely */}
             <button
               onClick={toggleRightSidebar}
-              className="hidden lg:flex absolute top-4 right-4 z-20 items-center justify-center w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors border border-gray-300 dark:border-gray-600"
+              className="hidden lg:flex absolute top-2 right-4 z-20 items-center justify-center w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors border border-gray-300 dark:border-gray-600"
               aria-label={rightSidebarVisible ? 'Hide documentation map' : 'Show documentation map'}
             >
               <Icon
@@ -337,6 +311,8 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                 className="w-4 h-4"
               />
             </button>
+
+            <ContentRenderer content={content} path={path} />
           </div>
 
           {/* Right Column - Documentation Graph/Mindmap */}
@@ -361,7 +337,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                   <DocumentationGraph
                     currentPath={path}
                     onNodeClick={(nodePath) => {
-                      router.push(`/docs/${nodePath}`, { scroll: false });
+                      router.push(`/docs/${nodePath}`);
                     }}
                     className="w-full h-96"
                   />
@@ -439,7 +415,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                 <DocumentationGraph
                   currentPath={path}
                   onNodeClick={(nodePath) => {
-                    router.push(`/docs/${nodePath}`, { scroll: false });
+                    router.push(`/docs/${nodePath}`);
                     setMobileMapVisible(false);
                   }}
                   className="w-full h-full"

@@ -4,7 +4,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        urbanist: ['Urbanist', 'sans-serif'],
+        'mona-sans': ['Mona Sans', 'sans-serif'],
+        'hubot-sans': ['Hubot Sans', 'sans-serif'],
       },
       colors: {
         // Dark mode - Japanese pink aesthetic

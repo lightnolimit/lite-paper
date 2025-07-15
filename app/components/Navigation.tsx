@@ -11,6 +11,7 @@ import { socialLinks } from '../constants/social';
 import { useCommandPalette } from '../providers/CommandPaletteProvider';
 import { useTheme } from '../providers/ThemeProvider';
 
+import FontSelector from './FontSelector';
 import MotionToggle from './MotionToggle';
 import SettingsMenu from './SettingsMenu';
 import ThemeSwitcher from './ThemeSwitcher';
@@ -43,9 +44,7 @@ type NavItem = {
  * Main navigation links
  */
 const navItems: NavItem[] = [
-  { label: 'Docs', href: '/docs/getting-started/introduction' },
   { label: 'API', href: '/docs/api-reference/overview' },
-  { label: 'Guide', href: '/docs/user-guide/basic-usage' },
   { label: 'Deploy', href: '/docs/deployment/overview' },
   { label: 'AI/LLMs', href: '/llms' },
 ];
@@ -446,7 +445,7 @@ export default function Navigation({
                   </span>
                   <ThemeSwitcher />
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-3">
                   <span
                     className="text-base"
                     style={{
@@ -458,6 +457,18 @@ export default function Navigation({
                   </span>
                   <MotionToggle />
                 </div>
+                <div className="flex items-center justify-between">
+                  <span
+                    className="text-base"
+                    style={{
+                      color: 'var(--muted-color)',
+                      fontFamily: 'var(--mono-font)',
+                    }}
+                  >
+                    font
+                  </span>
+                  <FontSelector />
+                </div>
               </div>
 
               {/* File tree and mind map toggles for mobile docs pages */}
@@ -466,17 +477,6 @@ export default function Navigation({
                   className="pt-3 pb-2 px-4 border-t"
                   style={{ borderColor: 'var(--border-color)' }}
                 >
-                  <button
-                    onClick={handleSidebarToggle}
-                    className="flex items-center gap-2 py-2 w-full hover:text-primary-color transition-colors text-base"
-                    style={{
-                      color: 'var(--text-color)',
-                      fontFamily: 'var(--mono-font)',
-                    }}
-                  >
-                    <Icon icon="mingcute:folder-line" className="w-5 h-5" />
-                    <span>show documentation tree</span>
-                  </button>
                   <button
                     onClick={() => {
                       setMobileMenuOpen(false);
@@ -493,6 +493,17 @@ export default function Navigation({
                     <Icon icon="mingcute:brain-fill" className="w-5 h-5" />
                     <span>show mind map</span>
                   </button>
+                  <button
+                    onClick={handleSidebarToggle}
+                    className="flex items-center gap-2 py-2 w-full hover:text-primary-color transition-colors text-base"
+                    style={{
+                      color: 'var(--text-color)',
+                      fontFamily: 'var(--mono-font)',
+                    }}
+                  >
+                    <Icon icon="mingcute:folder-line" className="w-5 h-5" />
+                    <span>show documentation tree</span>
+                  </button>
                 </div>
               )}
 
@@ -501,32 +512,38 @@ export default function Navigation({
                 className="pt-3 pb-3 px-4 border-t"
                 style={{ borderColor: 'var(--border-color)' }}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-wrap">
                   <span
                     className="text-sm text-gray-500 dark:text-gray-500"
                     style={{ fontFamily: 'var(--mono-font)' }}
                   >
                     follow us:
                   </span>
-                  <div className="flex items-center gap-2">
-                    {socialLinks.map((link) => (
-                      <a
-                        key={link.name}
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={link.name}
-                        className="opacity-60 hover:opacity-100 transition-opacity"
+                  {socialLinks.map((link) => (
+                    <a
+                      key={link.name}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 opacity-60 hover:opacity-100 transition-opacity"
+                    >
+                      <div className="w-4 h-4">
+                        {React.cloneElement(link.icon as React.ReactElement, {
+                          width: '16',
+                          height: '16',
+                        })}
+                      </div>
+                      <span
+                        className="text-xs"
+                        style={{
+                          color: 'var(--text-color)',
+                          fontFamily: 'var(--mono-font)',
+                        }}
                       >
-                        <div className="w-4 h-4">
-                          {React.cloneElement(link.icon as React.ReactElement, {
-                            width: '16',
-                            height: '16',
-                          })}
-                        </div>
-                      </a>
-                    ))}
-                  </div>
+                        {link.name}
+                      </span>
+                    </a>
+                  ))}
                 </div>
               </div>
             </nav>

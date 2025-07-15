@@ -223,11 +223,13 @@ Verify that:
 
 1. **Update Project Name**
    - Edit `wrangler.toml` and set your project name:
+
    ```toml
    name = "your-project-name"
    ```
 
 2. **First Deployment**
+
    ```bash
    # Create project and deploy
    npm run deploy:create
@@ -7609,18 +7611,18 @@ To deploy using the CLI or GitHub Actions, you need a Cloudflare API token with 
    - Give it a descriptive name: `Pages Deployment Token`
 
 3. **Required Permissions**
-   
+
    Configure these **exact permissions**:
 
    ```yaml
    Account Permissions:
-   - Cloudflare Pages:Edit
-   - Account Settings:Read (for account ID verification)
-   
+     - Cloudflare Pages:Edit
+     - Account Settings:Read (for account ID verification)
+
    Zone Permissions (if using custom domain):
-   - Zone:Read
-   - Page Rules:Edit
-   - DNS:Edit (for custom domain setup)
+     - Zone:Read
+     - Page Rules:Edit
+     - DNS:Edit (for custom domain setup)
    ```
 
 4. **Account Resources**
@@ -7628,12 +7630,12 @@ To deploy using the CLI or GitHub Actions, you need a Cloudflare API token with 
    - Zone Resources: Include all zones (or specific zone for custom domain)
 
 5. **Token Summary**
-   
+
    Your token configuration should look like:
 
    ```
    Token name: Pages Deployment Token
-   
+
    Permissions:
    ├── Account
    │   ├── Cloudflare Pages:Edit
@@ -7642,10 +7644,10 @@ To deploy using the CLI or GitHub Actions, you need a Cloudflare API token with 
        ├── Zone:Read
        ├── Page Rules:Edit
        └── DNS:Edit
-   
+
    Account Resources:
    └── Include: Your Account Name
-   
+
    Zone Resources:
    └── Include: All zones (or specific zone)
    ```
@@ -7683,14 +7685,17 @@ CLOUDFLARE_API_TOKEN="your-token-here" npm run deploy
 ### Troubleshooting Token Issues
 
 **"Authentication error [code: 10000]"**
+
 - Token lacks required permissions
 - Regenerate token with all permissions listed above
 
 **"Project not found [code: 8000007]"**
+
 - Project doesn't exist yet
 - Create project first via dashboard or use `--create` flag
 
 **"Insufficient permissions"**
+
 - Token missing specific permission
 - Check token summary at [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
 
@@ -7769,6 +7774,7 @@ compatibility_date = "2025-01-14"
 ```
 
 **Important**: The `name` field must match one of these:
+
 - An existing Cloudflare Pages project name
 - A new project name (will be created on first deploy)
 - Your desired project URL: `your-project-name.pages.dev`
@@ -7855,6 +7861,7 @@ npm run deploy
 ```
 
 **CLI Deployment Benefits:**
+
 - Deploy without pushing to Git
 - Test production builds locally
 - Automate with scripts

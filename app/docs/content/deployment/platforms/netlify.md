@@ -124,7 +124,7 @@ Netlify provides automatic HTTPS with Let's Encrypt certificates.
 
 ```bash
 # .env.local
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SITE_URL=http://localhost:3333
 NEXT_PUBLIC_BACKGROUND_TYPE=wave
 ```
 

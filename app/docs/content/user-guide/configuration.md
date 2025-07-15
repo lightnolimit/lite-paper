@@ -1,78 +1,97 @@
 # Configuration
 
-Customize your project settings and behavior.
+Customize your documentation site settings.
 
-## Configuration Files
+## Environment Variables
 
-### Main Config
+Create `.env.local`:
+
+```bash
+# Site Configuration
+NEXT_PUBLIC_SITE_NAME="Your Documentation"
+NEXT_PUBLIC_SITE_URL="https://your-domain.com"
+NEXT_PUBLIC_GITHUB_URL="https://github.com/user/repo"
+
+# AI Features (Optional)
+NEXT_PUBLIC_ENABLE_AI="false"
+NEXT_PUBLIC_AI_WORKER_URL=""
+```
+
+## Theme Configuration
+
+Edit `tailwind.config.js`:
+
+```javascript
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        dark: {
+          primary: '#FF85A1', // Sakura pink
+          secondary: '#FFC4DD', // Light pink
+          background: '#0F0F12', // Dark background
+        },
+        light: {
+          primary: '#678D58', // Matcha green
+          secondary: '#A3C9A8', // Light green
+          background: '#F3F5F0', // Light background
+        },
+      },
+    },
+  },
+};
+```
+
+## Documentation Structure
+
+Edit `app/data/documentation.ts`:
+
+```typescript
+export const documentationTree: FileItem[] = [
+  {
+    type: 'directory',
+    name: 'Getting Started',
+    path: 'getting-started',
+    children: [
+      {
+        type: 'file',
+        name: 'Introduction.md',
+        path: 'getting-started/introduction',
+      },
+    ],
+  },
+];
+```
+
+## Next.js Configuration
+
+Edit `next.config.js`:
+
+```javascript
+const nextConfig = {
+  output: 'export', // Static export
+  images: {
+    unoptimized: true, // Required for static export
+  },
+  env: {
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+  },
+};
+```
+
+## Build Scripts
+
+Custom npm scripts in `package.json`:
 
 ```json
 {
-  "name": "my-project",
-  "version": "1.0.0",
-  "description": "My awesome project",
-  "main": "index.js",
-  "config": {
-    "environment": "development",
-    "debug": true,
-    "features": {
-      "analytics": true,
-      "notifications": false
-    }
+  "scripts": {
+    "dev": "npm run generate:docs && next dev -p 3333",
+    "build": "npm run generate:llms && npm run generate:docs && next build",
+    "generate:docs": "node scripts/generate-docs.mjs",
+    "deploy": "npx wrangler pages deploy out"
   }
 }
 ```
 
-### Environment Variables
-
-```bash
-# .env.local
-NODE_ENV=development
-API_URL=http://localhost:3000/api
-DATABASE_URL=postgresql://user:pass@localhost:5432/db
-SECRET_KEY=your-secret-key
-```
-
-## Settings
-
-| Setting   | Type    | Default | Description          |
-| --------- | ------- | ------- | -------------------- |
-| `debug`   | boolean | `false` | Enable debug mode    |
-| `port`    | number  | `3000`  | Server port          |
-| `timeout` | number  | `5000`  | Request timeout (ms) |
-| `cache`   | boolean | `true`  | Enable caching       |
-
-## Advanced Options
-
-### Custom Middleware
-
-```javascript
-// middleware.js
-export default function customMiddleware(options) {
-  return (req, res, next) => {
-    // Custom logic here
-    console.log(`Request: ${req.method} ${req.url}`);
-    next();
-  };
-}
-```
-
-### Plugin Configuration
-
-```javascript
-// plugins.config.js
-export default {
-  plugins: [
-    'essential-plugin',
-    ['advanced-plugin', { option: 'value' }],
-    {
-      name: 'custom-plugin',
-      config: { enabled: true },
-    },
-  ],
-};
-```
-
----
-
-_Having issues? See our [troubleshooting guide](./troubleshooting)._
+_Issues? See [troubleshooting guide](./troubleshooting)._

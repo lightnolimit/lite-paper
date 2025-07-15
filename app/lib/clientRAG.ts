@@ -130,59 +130,58 @@ export async function searchAndAnswer(
   return { answer, sources };
 }
 
-// Optional AI enhancement for responses
-// This function is only called if AI is enabled via environment variable
+// AI enhancement using Cloudflare Llama3 directly
+// This function calls your Llama3 worker with proper formatting
 async function getAIResponse(query: string, sources: DocumentSource[]): Promise<string> {
-  const workerUrl = process.env.NEXT_PUBLIC_AI_WORKER_URL;
+  // Your Cloudflare Llama3 worker URL
+  const llama3WorkerUrl =
+    process.env.NEXT_PUBLIC_AI_WORKER_URL || 'https://llama3-8b-instruct.lightnolimit.workers.dev/';
 
-  if (!workerUrl) {
-    throw new Error('AI worker URL not configured');
-  }
+  // Build context from documentation sources for RAG
+  const context =
+    sources.length > 0
+      ? sources
+          .slice(0, 3)
+          .map((source) => `**${source.title}** (from ${source.path}):\n${source.snippet}`)
+          .join('\n\n')
+      : '';
 
-  // Build context from relevant documentation
-  const context = sources
-    .slice(0, 3)
-    .map((source) => `**${source.title}** (from ${source.path}):\n${source.snippet}`)
-    .join('\n\n');
-
-  // Format the prompt for LLM
-  const prompt = `You are a helpful documentation assistant. Answer the user's question based ONLY on the provided documentation context.
-
-Keep your response:
-- Accurate and based only on the provided context
-- Helpful and actionable
-- Well-formatted with markdown
-- Concise but complete
-
-If the context doesn't contain enough information to answer the question, say so and suggest checking the referenced documentation sections.
-
-Documentation Context:
-${context}
-
-User Question: ${query}
-
-Assistant Response:`;
+  // Format the messages for Llama3
+  const messages = [
+    {
+      role: 'system',
+      content:
+        "You are a helpful documentation assistant. Answer questions based on the provided documentation context. Keep responses concise, accurate, and well-formatted with markdown. If the context doesn't contain enough information, say so and suggest checking the referenced documentation sections.",
+    },
+    {
+      role: 'user',
+      content: context
+        ? `Based on the following documentation context, answer my question:\n\nDocumentation Context:\n${context}\n\nQuestion: ${query}`
+        : query,
+    },
+  ];
 
   try {
-    const response = await fetch(workerUrl, {
+    const response = await fetch(llama3WorkerUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        prompt: prompt,
+        messages: messages,
         max_tokens: 500,
         temperature: 0.1, // Low temperature for factual responses
+        stream: false,
       }),
     });
 
     if (!response.ok) {
-      throw new Error(`AI service error: ${response.status}`);
+      throw new Error(`Llama3 service error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
 
-    // Extract the response based on common LLM response formats
+    // Extract response based on Llama3 worker response format
     if (typeof data === 'string') {
       return data;
     } else if (data.response) {
@@ -191,12 +190,14 @@ Assistant Response:`;
       return data.choices[0].text || data.choices[0].message?.content || '';
     } else if (data.result) {
       return data.result;
+    } else if (data.content) {
+      return data.content;
     }
 
     // Fallback
     return 'Unable to generate response. Please try again.';
   } catch (error) {
-    logger.warn('AI response failed:', error);
+    logger.warn('Llama3 AI response failed:', error);
     throw error; // Let the caller handle fallback
   }
 }

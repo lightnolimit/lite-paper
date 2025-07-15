@@ -357,7 +357,7 @@ Where to go from here.
 npm run dev
 
 # Test your content
-# Preview in browser at localhost:3000
+# Preview in browser at localhost:3333
 
 # Check for build errors
 npm run build

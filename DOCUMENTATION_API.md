@@ -1,14 +1,12 @@
 # Documentation API
 
-This documentation API provides access to markdown content from the `app/docs/content` directory for AI assistants and client-side applications. Since this is a static export project, traditional API routes don't work, so this implementation uses pre-generated JSON files served statically.
+Access markdown content for AI assistants and client apps. Uses pre-generated JSON files for static export compatibility.
 
 ## Overview
 
-The system consists of:
-
-1. **Build-time generation**: A script that reads all markdown files and generates JSON files
-2. **Client-side utilities**: Functions to access the documentation content
-3. **AI integration helpers**: Specialized functions for AI assistants
+1. Build-time generation: Script reads markdown → JSON
+2. Client utilities: Access documentation content
+3. AI helpers: Specialized AI assistant functions
 
 ## Architecture
 
@@ -27,38 +25,26 @@ The system consists of:
 
 ## Quick Start
 
-### 1. Generate Documentation Files
-
-The documentation JSON files are generated during the build process:
+### 1. Generate Files
 
 ```bash
 npm run generate:docs
 ```
 
-This creates:
+Creates `docs-content.json` and `docs-index.json`
 
-- `public/docs-content.json`: Contains all markdown content
-- `public/docs-index.json`: Contains the documentation index
-
-### 2. Access Documentation Content
+### 2. Get Content
 
 ```typescript
 import { getDocumentationContent } from '@/utils/docs-client';
-
-// Get specific documentation
 const content = await getDocumentationContent('deployment/platforms/cloudflare');
-console.log(content); // Raw markdown content
 ```
 
-### 3. Search Documentation
+### 3. Search
 
 ```typescript
 import { searchDocumentation } from '@/utils/docs-client';
-
 const results = await searchDocumentation('cloudflare deployment');
-results.forEach((result) => {
-  console.log(`${result.path}: ${result.excerpt}`);
-});
 ```
 
 ## API Reference
@@ -67,142 +53,62 @@ results.forEach((result) => {
 
 #### `getDocumentationContent(path: string): Promise<string>`
 
-Retrieves the raw markdown content for a specific documentation path.
-
-**Parameters:**
-
-- `path`: Documentation path (e.g., 'deployment/platforms/cloudflare')
-
-**Returns:** Raw markdown content as string
-
-**Example:**
-
-```typescript
-const content = await getDocumentationContent('getting-started/introduction');
-```
+Returns raw markdown for specified path.
 
 #### `searchDocumentation(query: string): Promise<SearchResult[]>`
 
-Searches through all documentation content.
-
-**Parameters:**
-
-- `query`: Search query string
-
-**Returns:** Array of search results with path, content, and excerpt
-
-**Example:**
-
-```typescript
-const results = await searchDocumentation('authentication API');
-```
+Searches all content, returns results with path/excerpt.
 
 #### `getAvailableDocumentationPaths(): Promise<string[]>`
 
-Gets all available documentation paths.
-
-**Returns:** Array of available documentation paths
+Returns all available documentation paths.
 
 #### `documentationPathExists(path: string): Promise<boolean>`
 
-Checks if a documentation path exists.
+Checks if path exists.
 
-**Parameters:**
+### AI Functions (`ai-docs-integration.ts`)
 
-- `path`: Documentation path to check
+#### `queryDocumentation(query: AIDocumentationQuery)`
 
-**Returns:** Boolean indicating if path exists
+Main AI query function. Types: `content`, `search`, `paths`, `stats`.
 
-### AI Integration Functions (`ai-docs-integration.ts`)
+#### `getDocumentationForAI(path: string)`
 
-#### `queryDocumentation(query: AIDocumentationQuery): Promise<AIDocumentationResponse>`
+Enhanced access with metadata for AI.
 
-Main query function for AI assistants.
-
-**Query Types:**
-
-- `content`: Get content for a specific path
-- `search`: Search documentation
-- `paths`: Get all available paths
-- `stats`: Get documentation statistics
-
-**Example:**
-
-```typescript
-// Get content
-const response = await queryDocumentation({
-  type: 'content',
-  path: 'deployment/platforms/cloudflare',
-});
-
-// Search
-const searchResponse = await queryDocumentation({
-  type: 'search',
-  query: 'cloudflare',
-  limit: 5,
-});
-```
-
-#### `getDocumentationForAI(path: string): Promise<DocumentationWithMetadata>`
-
-Enhanced documentation access with metadata for AI assistants.
-
-**Returns:** Content with metadata including related paths, existence status, etc.
-
-#### `smartSearchForAI(query: string, options?): Promise<SmartSearchResult>`
+#### `smartSearchForAI(query: string, options?)`
 
 Advanced search with relevance scoring.
 
-**Options:**
+#### `getDocumentationOutline()`
 
-- `maxResults`: Maximum number of results (default: 10)
-- `includeContent`: Include full content in results (default: false)
+Returns documentation structure by category.
 
-#### `getDocumentationOutline(): Promise<DocumentationOutline>`
+#### `validateDocumentationPath(path: string)`
 
-Gets the documentation structure organized by category.
+Validates path, provides suggestions if invalid.
 
-#### `validateDocumentationPath(path: string): Promise<ValidationResult>`
-
-Validates a documentation path and provides suggestions for invalid paths.
-
-## File Structure
-
-The documentation follows this structure:
+## Structure
 
 ```
 app/docs/content/
 ├── getting-started/
-│   ├── introduction.md
-│   ├── quick-start.md
-│   └── installation.md
 ├── user-guide/
-│   ├── basic-usage.md
-│   ├── advanced-features.md
-│   └── configuration.md
 ├── api-reference/
-│   ├── overview.md
-│   ├── authentication.md
-│   └── endpoints.md
 ├── developer-guides/
-│   └── ...
 └── deployment/
-    ├── overview.md
     └── platforms/
-        ├── cloudflare.md
-        ├── vercel.md
-        └── netlify.md
 ```
 
 ## Path Format
 
-Documentation paths use the format: `category/subcategory/file-name` (without .md extension)
+`category/subcategory/file-name` (no .md)
 
 Examples:
 
 - `getting-started/introduction`
 - `deployment/platforms/cloudflare`
-- `api-reference/authentication`
 
 ## AI Assistant Integration Examples
 
@@ -299,44 +205,16 @@ The API includes comprehensive error handling:
 - **Lazy loading**: Content is only loaded when requested
 - **Build-time generation**: Processing happens at build time, not runtime
 
-## Development Server
-
-The development server runs on port 3333 to avoid conflicts with other projects:
+## Development
 
 ```bash
-npm run dev
-# Visit http://localhost:3333
+npm run dev  # http://localhost:3333
 ```
 
-## Testing
+Test page: `/test-docs`
 
-A test page is available at `/test-docs` that demonstrates all API functionality:
+## Notes
 
-```bash
-npm run dev
-# Visit http://localhost:3333/test-docs
-```
+Replaces API routes (incompatible with static export) with build-time generation and client-side access.
 
-## Migration from API Routes
-
-This approach replaces traditional API routes (which don't work with static exports) with:
-
-1. Build-time content generation
-2. Static file serving
-3. Client-side content access
-
-This provides the same functionality while maintaining compatibility with static hosting platforms like Cloudflare Pages.
-
-## Future Enhancements
-
-Possible improvements:
-
-- Full-text search indexing
-- Content categorization and tagging
-- Version tracking
-- Content analytics
-- Multi-language support
-
-## Support
-
-For issues or questions about the documentation API, please refer to the examples in `app/utils/ai-docs-examples.ts` or create an issue in the repository.
+See `app/utils/ai-docs-examples.ts` for usage examples.

@@ -298,35 +298,70 @@ The system includes reusable copy button functionality for various use cases:
 
 ### Notification Styles
 
-The system includes styled notifications using our design tokens:
+The system includes clean, minimal notifications with rounded borders and muted colors:
 
 <div class="notification notification-info">
-  <img src="/assets/icons/pixel-info-solid.svg" alt="Info" width="20" height="20" />
+  <i class="mingcute:info-circle-fill" style="width: 20px; height: 20px; color: rgba(100, 149, 200, 0.8);"></i>
   <div>
-    <strong>Info:</strong> This notification uses the design system's info styling with proper spacing and typography.
+    <strong>Info:</strong> This notification uses rounded borders and muted blue tones for a clean appearance.
   </div>
 </div>
 
 <div class="notification notification-success">
-  <img src="/assets/icons/pixel-check-solid.svg" alt="Success" width="20" height="20" />
+  <i class="mingcute:check-circle-fill" style="width: 20px; height: 20px; color: rgba(120, 180, 120, 0.8);"></i>
   <div>
-    <strong>Success:</strong> Success notifications maintain consistency with the overall design system.
+    <strong>Success:</strong> Success notifications use subtle green colors and clean typography.
   </div>
 </div>
 
 <div class="notification notification-warning">
-  <img src="/assets/icons/pixel-warning-solid.svg" alt="Warning" width="20" height="20" />
+  <i class="mingcute:alert-triangle-fill" style="width: 20px; height: 20px; color: rgba(200, 160, 80, 0.8);"></i>
   <div>
-    <strong>Warning:</strong> Warning notifications use appropriate contrast ratios for accessibility.
+    <strong>Warning:</strong> Warning notifications feature muted amber tones with proper contrast.
   </div>
 </div>
 
 <div class="notification notification-error">
-  <img src="/assets/icons/pixel-error-solid.svg" alt="Error" width="20" height="20" />
+  <i class="mingcute:close-circle-fill" style="width: 20px; height: 20px; color: rgba(200, 120, 120, 0.8);"></i>
   <div>
-    <strong>Error:</strong> Error notifications stand out while maintaining design consistency.
+    <strong>Error:</strong> Error notifications use soft red colors while maintaining readability.
   </div>
 </div>
+
+#### Notification CSS Structure
+
+```css
+.notification {
+  padding: var(--space-4);
+  margin: var(--space-4) 0;
+  border-radius: 12px;
+  border: 1px solid;
+  font-family: var(--mono-font);
+  display: flex;
+  align-items: flex-start;
+}
+
+/* Color variants with muted tones */
+.notification-info {
+  background-color: rgba(100, 149, 200, 0.1);
+  border-color: rgba(100, 149, 200, 0.3);
+}
+
+.notification-success {
+  background-color: rgba(120, 180, 120, 0.1);
+  border-color: rgba(120, 180, 120, 0.3);
+}
+
+.notification-warning {
+  background-color: rgba(200, 160, 80, 0.1);
+  border-color: rgba(200, 160, 80, 0.3);
+}
+
+.notification-error {
+  background-color: rgba(200, 120, 120, 0.1);
+  border-color: rgba(200, 120, 120, 0.3);
+}
+```
 
 ## Spacing System
 
