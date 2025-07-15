@@ -36,7 +36,7 @@ const FAQ_ITEMS = [
   {
     question: 'How do I change the theme?',
     answer:
-      'You can change the theme using Cmd + T (Mac) or Ctrl + T (Windows/Linux). Alternatively, use the theme toggle button in the navigation bar or select "Switch to Dark/Light Mode" from this command palette.',
+      'You can change the theme using Cmd + I (Mac) or Ctrl + I (Windows/Linux). Alternatively, use the theme toggle button in the navigation bar or select "Switch to Dark/Light Mode" from this command palette.',
   },
   {
     question: 'How do I search the documentation?',
@@ -51,7 +51,7 @@ const FAQ_ITEMS = [
   {
     question: 'What keyboard shortcuts are available?',
     answer:
-      'Key shortcuts: Cmd/Ctrl + K (Command Palette), Cmd/Ctrl + T (Theme Toggle), Escape (Close dialogs), Arrow keys (Navigate), Enter (Select).',
+      'Key shortcuts: Cmd/Ctrl + K (Command Palette), Cmd/Ctrl + I (Theme Toggle), Escape (Close dialogs), Arrow keys (Navigate), Enter (Select).',
   },
   {
     question: 'How do I navigate between pages?',
@@ -100,7 +100,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
       ) : (
         <Icon icon="mingcute:moon-line" className="w-5 h-5" />
       ),
-      shortcut: 'T',
+      shortcut: 'I',
     });
 
     // Add navigation to llms.txt page

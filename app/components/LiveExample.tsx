@@ -3,6 +3,8 @@
 import { Icon } from '@iconify/react';
 import React, { useEffect, useRef, useState } from 'react';
 
+import CodeBlock from './CodeBlock';
+
 interface LiveExampleProps {
   code: string;
   language: string;
@@ -124,9 +126,7 @@ const LiveExample: React.FC<LiveExampleProps> = ({ code, language, showCode = tr
 
       {showCode && showCodeView && (
         <div className="example-code">
-          <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto">
-            <code className="text-sm font-mono">{code}</code>
-          </pre>
+          <CodeBlock snippets={[{ language, code }]} showLineNumbers={false} className="mt-2" />
         </div>
       )}
     </div>

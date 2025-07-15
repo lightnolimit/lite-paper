@@ -1174,22 +1174,28 @@ code.wallet-address {
 /* Chain icon styles for wallet addresses */
 .chain-icon-container {
   position: absolute;
-  left: 8px;
+  left: 10px;
   top: 50%;
   transform: translateY(-50%);
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   z-index: 1;
+  width: 20px;
+  height: 20px;
 }
 
 .wallet-address {
-  padding-left: 2.5rem !important; /* Make space for chain icon */
+  padding-left: 2.75rem !important; /* Make space for chain icon */
+  display: inline-flex !important;
+  align-items: center;
 }
 
 .chain-icon {
   position: absolute;
   left: 0;
-  top: 0;
+  top: 50%;
+  transform: translateY(-50%);
   transition: opacity 0.2s ease;
 }
 
@@ -1207,6 +1213,12 @@ code.wallet-address {
 
 .wallet-address:hover .chain-icon-branded {
   opacity: 1;
+}
+
+/* Ensure iconify icons display properly */
+.chain-icon-container iconify-icon {
+  display: inline-flex;
+  vertical-align: middle;
 }
 
 /* Fix for profile info layout */
