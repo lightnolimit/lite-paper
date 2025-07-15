@@ -1171,6 +1171,44 @@ code.wallet-address {
   vertical-align: middle;
 }
 
+/* Chain icon styles for wallet addresses */
+.chain-icon-container {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  z-index: 1;
+}
+
+.wallet-address {
+  padding-left: 2.5rem !important; /* Make space for chain icon */
+}
+
+.chain-icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: opacity 0.2s ease;
+}
+
+.chain-icon-default {
+  opacity: 1;
+}
+
+.chain-icon-branded {
+  opacity: 0;
+}
+
+.wallet-address:hover .chain-icon-default {
+  opacity: 0;
+}
+
+.wallet-address:hover .chain-icon-branded {
+  opacity: 1;
+}
+
 /* Fix for profile info layout */
 .doc-content p.profile-info strong {
   font-weight: bold;

@@ -43,7 +43,35 @@ export const processLinks = (element: HTMLElement): void => {
 };
 
 /**
- * Process wallet address elements by adding copy buttons
+ * Detect blockchain type from address
+ */
+const detectChainFromAddress = (address: string): string => {
+  // Ethereum/EVM addresses (0x + 40 hex chars)
+  if (/^0x[a-fA-F0-9]{40}$/.test(address)) {
+    return 'eth';
+  }
+
+  // Bitcoin addresses
+  if (/^(1|3|bc1)[a-zA-Z0-9]{25,62}$/.test(address)) {
+    return 'btc';
+  }
+
+  // Solana addresses (base58, 32-44 chars)
+  if (/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address)) {
+    return 'solana';
+  }
+
+  // Base (same as Ethereum format)
+  if (/^0x[a-fA-F0-9]{40}$/.test(address) && address.toLowerCase().includes('base')) {
+    return 'base';
+  }
+
+  // Default to Ethereum for 0x addresses
+  return 'eth';
+};
+
+/**
+ * Process wallet address elements by adding copy buttons and chain icons
  *
  * @param element - The parent element containing wallet addresses
  */
@@ -53,6 +81,8 @@ export const processWalletAddresses = (element: HTMLElement): void => {
 
   walletAddresses.forEach((walletElement) => {
     const address = walletElement.getAttribute('data-address');
+    const chainOverride = walletElement.getAttribute('data-chain');
+
     if (!address) {
       processorLogger.warn('Wallet element without data-address attribute found');
       return;
@@ -60,6 +90,30 @@ export const processWalletAddresses = (element: HTMLElement): void => {
 
     walletElement.setAttribute('data-copy-processed', 'true');
     processorLogger.debug(`Adding copy button for address: ${address.substring(0, 4)}...`);
+
+    // Detect chain type
+    const chain = chainOverride || detectChainFromAddress(address);
+
+    // Add chain icon container
+    const iconContainer = document.createElement('span');
+    iconContainer.className = 'chain-icon-container';
+    iconContainer.innerHTML = `
+      <iconify-icon 
+        icon="token:${chain}" 
+        width="20" 
+        height="20"
+        class="chain-icon chain-icon-default"
+      ></iconify-icon>
+      <iconify-icon 
+        icon="token-branded:${chain}" 
+        width="20" 
+        height="20"
+        class="chain-icon chain-icon-branded"
+      ></iconify-icon>
+    `;
+
+    // Insert icon at the beginning of the wallet element
+    walletElement.insertBefore(iconContainer, walletElement.firstChild);
 
     // Create the copy button
     const copyButton = document.createElement('button');

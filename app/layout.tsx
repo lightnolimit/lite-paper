@@ -160,6 +160,9 @@ export default function RootLayout({
         {/* Code block functionality */}
         <script src="/js/codeblock.js" defer />
 
+        {/* Iconify for crypto token icons */}
+        <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js" defer />
+
         {/* View Transitions API for smoother navigation */}
         <meta name="view-transition" content="same-origin" />
       </head>

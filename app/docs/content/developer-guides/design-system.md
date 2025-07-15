@@ -117,14 +117,42 @@ Our design system includes interactive wallet address components with copy funct
 <div class="wallet-info">
   <p class="profile-info">
     <strong>Ethereum:</strong>
-    <code class="wallet-address" data-address="0x1234567890abcdef1234567890abcdef12345678">
+    <code
+      class="wallet-address"
+      data-address="0x1234567890abcdef1234567890abcdef12345678"
+      data-chain="eth"
+    >
       0x1234567890abcdef1234567890abcdef12345678
     </code>
   </p>
   <p class="profile-info">
     <strong>Bitcoin:</strong>
-    <code class="wallet-address" data-address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh">
+    <code
+      class="wallet-address"
+      data-address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+      data-chain="btc"
+    >
       bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+    </code>
+  </p>
+  <p class="profile-info">
+    <strong>Base:</strong>
+    <code
+      class="wallet-address"
+      data-address="0x742d35Cc6634C0532925a3b844Bc9e7595f8fA6B"
+      data-chain="base"
+    >
+      0x742d35Cc6634C0532925a3b844Bc9e7595f8fA6B
+    </code>
+  </p>
+  <p class="profile-info">
+    <strong>Solana:</strong>
+    <code
+      class="wallet-address"
+      data-address="7VK4A5bh6XwFZMYiKcGDxRF8DzWrr8HMVBgCMhwuCCsF"
+      data-chain="solana"
+    >
+      7VK4A5bh6XwFZMYiKcGDxRF8DzWrr8HMVBgCMhwuCCsF
     </code>
   </p>
 </div>
@@ -178,9 +206,23 @@ The wallet addresses automatically get copy buttons when processed by the conten
 ```html
 <div class="wallet-info">
   <p class="profile-info">
-    <strong>Example Address:</strong>
-    <code class="wallet-address" data-address="0x742d35Cc6634C0532925a3b844Bc9e7595f8e7c9">
+    <strong>Ethereum:</strong>
+    <code
+      class="wallet-address"
+      data-address="0x742d35Cc6634C0532925a3b844Bc9e7595f8e7c9"
+      data-chain="eth"
+    >
       0x742d35Cc6634C0532925a3b844Bc9e7595f8e7c9
+    </code>
+  </p>
+  <p class="profile-info">
+    <strong>Solana:</strong>
+    <code
+      class="wallet-address"
+      data-address="7VK4A5bh6XwFZMYiKcGDxRF8DzWrr8HMVBgCMhwuCCsF"
+      data-chain="solana"
+    >
+      7VK4A5bh6XwFZMYiKcGDxRF8DzWrr8HMVBgCMhwuCCsF
     </code>
   </p>
 </div>

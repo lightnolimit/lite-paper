@@ -78,7 +78,7 @@ const LiveExample: React.FC<LiveExampleProps> = ({ code, language, showCode = tr
           return `<code class="${className}" data-address="0x1234...5678">
           0x1234...5678
         </code>`;
-        } else if (className.includes('button')) {
+        } else if (className.includes('button') && !className.includes('copy-button')) {
           return `<button class="${className}">Example Button</button>`;
         } else if (className.includes('font-')) {
           return `<div class="${className}">Example text with ${className}</div>`;

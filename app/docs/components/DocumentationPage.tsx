@@ -363,8 +363,8 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                     {/* Copyright */}
                     <div className="text-center">
                       <p
-                        className="text-xs text-gray-400 dark:text-gray-600"
-                        style={{ fontFamily: 'var(--mono-font)' }}
+                        className="text-xs text-gray-400 dark:text-gray-600 font-mono"
+                        style={{ fontFamily: 'var(--mono-font) !important' }}
                       >
                         © 2024 @lightnolimit
                       </p>
