@@ -501,21 +501,12 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                   style={{ outline: 'none' }}
                 >
                   {isAIMode ? (
-                    <div className="flex flex-col h-64 bg-gradient-to-b from-transparent to-gray-50/50 dark:to-gray-900/50">
+                    <div className="flex flex-col h-96 bg-gradient-to-b from-transparent to-gray-50/50 dark:to-gray-900/50">
                       {/* Chat messages area */}
                       <div className="flex-1 overflow-y-auto p-4 space-y-3">
                         {!aiResponse && !isAILoading && (
                           <div className="flex justify-start">
                             <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-3">
-                              <div className="flex items-center gap-2 mb-2">
-                                <Icon icon="mingcute:ai-fill" className="w-5 h-5" />
-                                <span
-                                  className="text-sm font-medium"
-                                  style={{ color: 'var(--text-color)' }}
-                                >
-                                  AI Assistant
-                                </span>
-                              </div>
                               <p
                                 className="text-sm"
                                 style={{
@@ -551,15 +542,6 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                         {aiResponse && (
                           <div className="flex justify-start">
                             <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-3">
-                              <div className="flex items-center gap-2 mb-2">
-                                <Icon icon="mingcute:ai-fill" className="w-5 h-5" />
-                                <span
-                                  className="text-sm font-medium"
-                                  style={{ color: 'var(--text-color)' }}
-                                >
-                                  AI Assistant
-                                </span>
-                              </div>
                               <div className="prose prose-sm dark:prose-invert max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
                                 <ReactMarkdown
                                   components={{
@@ -729,7 +711,9 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                             >
                               {result.shortcut === 'T'
                                 ? '⌘ + T'
-                                : result.shortcut === 'A' || result.shortcut === 'L'
+                                : result.shortcut === 'A' ||
+                                    result.shortcut === 'L' ||
+                                    result.shortcut === 'I'
                                   ? `⌘ + ${result.shortcut}`
                                   : `⌘${result.shortcut}`}
                             </kbd>

@@ -212,7 +212,7 @@ const applyBasicStyles = (html: string): string => {
     // Headings
     [
       /<h1([^>]*)>/g,
-      '<h1$1 class="font-title text-3xl mb-6 mt-8 text-gray-900 dark:text-gray-100">',
+      '<h1$1 class="font-title text-3xl mb-0 mt-8 text-gray-900 dark:text-gray-100" style="padding: 0;">',
     ],
     [
       /<h2([^>]*)>/g,

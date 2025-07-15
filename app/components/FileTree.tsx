@@ -117,7 +117,7 @@ const FileTreeItem: React.FC<FileTreeItemProps> = React.memo(
     return (
       <div
         style={{
-          paddingLeft: depth > 1 ? `${(depth - 1) * 12 + (item.type === 'file' ? 1 : 0)}px` : '0px',
+          paddingLeft: depth > 1 ? `${(depth - 1) * 12}px` : '0px',
         }}
       >
         <div
@@ -132,25 +132,26 @@ const FileTreeItem: React.FC<FileTreeItemProps> = React.memo(
             fontFamily: 'var(--mono-font)',
             letterSpacing: '-0.5px',
             fontSize: '0.8rem',
+            paddingLeft: depth > 1 && item.type === 'file' ? '8px' : undefined,
           }}
         >
           {isDirectory && (
-            <motion.span
-              className="mr-1"
+            <span
+              className="mr-1 flex items-center justify-center"
               style={{
                 display: 'inline-block',
                 width: '20px',
               }}
-              animate={{
-                rotate: item.expanded ? 90 : 0,
-              }}
-              transition={{
-                duration: prefersReducedMotion ? 0.01 : 0.2,
-                ease: 'easeOut',
-              }}
             >
-              {hasChildren ? '›' : ' '}
-            </motion.span>
+              {hasChildren ? (
+                <Icon
+                  icon={item.expanded ? 'mingcute:down-line' : 'mingcute:right-line'}
+                  className="w-3 h-3"
+                />
+              ) : (
+                <span className="w-3 h-3"></span>
+              )}
+            </span>
           )}
 
           <span className="mr-2 flex items-center">

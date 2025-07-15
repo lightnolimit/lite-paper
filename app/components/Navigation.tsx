@@ -330,7 +330,7 @@ export default function Navigation({
             ✰
           </span>
           <span
-            className="text-xl tracking-wider uppercase font-black"
+            className="text-lg tracking-wider uppercase font-black"
             style={{ fontFamily: 'var(--mono-font)' }}
           >
             LITE PAPER
@@ -436,7 +436,7 @@ export default function Navigation({
               >
                 <div className="flex items-center justify-between mb-3">
                   <span
-                    className="text-base"
+                    className="text-sm"
                     style={{
                       color: 'var(--muted-color)',
                       fontFamily: 'var(--mono-font)',
@@ -448,7 +448,7 @@ export default function Navigation({
                 </div>
                 <div className="flex items-center justify-between mb-3">
                   <span
-                    className="text-base"
+                    className="text-sm"
                     style={{
                       color: 'var(--muted-color)',
                       fontFamily: 'var(--mono-font)',
@@ -460,7 +460,7 @@ export default function Navigation({
                 </div>
                 <div className="flex items-center justify-between">
                   <span
-                    className="text-base"
+                    className="text-sm"
                     style={{
                       color: 'var(--muted-color)',
                       fontFamily: 'var(--mono-font)',
@@ -485,7 +485,7 @@ export default function Navigation({
                       const event = new CustomEvent('openMindMap');
                       window.dispatchEvent(event);
                     }}
-                    className="flex items-center gap-2 py-2 w-full hover:text-primary-color transition-colors text-base"
+                    className="flex items-center gap-2 py-2 w-full hover:text-primary-color transition-colors text-sm"
                     style={{
                       color: 'var(--text-color)',
                       fontFamily: 'var(--mono-font)',
@@ -496,7 +496,7 @@ export default function Navigation({
                   </button>
                   <button
                     onClick={handleSidebarToggle}
-                    className="flex items-center gap-2 py-2 w-full hover:text-primary-color transition-colors text-base"
+                    className="flex items-center gap-2 py-2 w-full hover:text-primary-color transition-colors text-sm"
                     style={{
                       color: 'var(--text-color)',
                       fontFamily: 'var(--mono-font)',

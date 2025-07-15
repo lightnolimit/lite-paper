@@ -1,7 +1,6 @@
 /* File Tree Container */
 .fileTree {
-  padding-left: 0.5rem;
-  padding-top: 0.25rem;
+  padding: 0.25rem 0.25rem 0.25rem 0.5rem;
   transition: all 0.3s ease;
   font-family: var(--mono-font);
   letter-spacing: -0.02em;
@@ -22,8 +21,22 @@
   color: var(--primary-color);
 }
 
+.fileTreeItem:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: -2px;
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--primary-color);
+}
+
 .dark .fileTreeItem:hover {
   background: rgba(255, 255, 255, 0.05);
+}
+
+.dark .fileTreeItem:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: -2px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--primary-color);
 }
 
 .fileTreeItem.active {
@@ -70,12 +83,14 @@
   color: white;
 }
 
-/* File tree icon hover effects - for Iconify icons */
-.fileTreeItem:hover svg {
+/* File tree icon hover and focus effects - for Iconify icons */
+.fileTreeItem:hover svg,
+.fileTreeItem:focus svg {
   color: var(--primary-color);
 }
 
-.dark .fileTreeItem:hover svg {
+.dark .fileTreeItem:hover svg,
+.dark .fileTreeItem:focus svg {
   color: #ff85a1; /* Sakura pink */
 }
 

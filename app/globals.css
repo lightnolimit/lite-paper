@@ -83,6 +83,12 @@
   --primary-color-rgb: 103, 141, 88; /* RGB value of #678D58 */
   --hover-color: rgba(0, 0, 0, 0.05);
 
+  /* Theme-specific customizable colors */
+  --tag-bg-color: #678d58; /* Matcha green for light mode */
+  --tag-text-color: #ffffff; /* White text on green bg */
+  --link-hover-color: #678d58; /* Matcha green for hovers */
+  --button-hover-bg: rgba(103, 141, 88, 0.1); /* Light green hover */
+
   /* Typography Scale - Mobile First */
   --text-xs: 0.75rem; /* 12px */
   --text-sm: 0.875rem; /* 14px */
@@ -130,6 +136,12 @@
   --icon-color: #f8fafc; /* Icon color for dark mode */
   --primary-color-rgb: 255, 133, 161; /* RGB value of #FF85A1 */
   --hover-color: rgba(255, 255, 255, 0.08);
+
+  /* Theme-specific customizable colors */
+  --tag-bg-color: #ff85a1; /* Sakura pink for dark mode */
+  --tag-text-color: #000000; /* Black text on pink bg */
+  --link-hover-color: #ff85a1; /* Sakura pink for hovers */
+  --button-hover-bg: rgba(255, 133, 161, 0.1); /* Light pink hover */
 }
 
 /* Responsive Typography Scale - Tablet and up */
@@ -329,15 +341,21 @@ a:focus-visible {
 
 .doc-content-scroll::-webkit-scrollbar-track {
   background: transparent;
-  margin: var(--space-2) 0;
+  margin: 4px 0;
 }
 
 .doc-content-scroll::-webkit-scrollbar-thumb {
-  background: rgba(var(--primary-color-rgb), 0.15);
+  background: rgba(var(--primary-color-rgb), 0);
   border-radius: var(--space-2);
   border: 2px solid transparent;
   background-clip: padding-box;
-  transition: background 0.2s ease;
+  transition: background 0.3s ease;
+}
+
+/* Show scrollbar on hover of container */
+.doc-content-scroll:hover::-webkit-scrollbar-thumb {
+  background: rgba(var(--primary-color-rgb), 0.15);
+  background-clip: padding-box;
 }
 
 .doc-content-scroll::-webkit-scrollbar-thumb:hover {
@@ -348,11 +366,16 @@ a:focus-visible {
 /* Firefox scrollbar styling for doc content */
 .doc-content-scroll {
   scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.3s ease;
+}
+
+.doc-content-scroll:hover {
   scrollbar-color: rgba(var(--primary-color-rgb), 0.15) transparent;
 }
 
 /* Dark mode adjustments */
-.dark .doc-content-scroll::-webkit-scrollbar-thumb {
+.dark .doc-content-scroll:hover::-webkit-scrollbar-thumb {
   background: rgba(var(--primary-color-rgb), 0.1);
   background-clip: padding-box;
 }
@@ -451,6 +474,43 @@ a:focus-visible {
 .scrollbar-hide {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+/* Table of Contents scrollbar styling */
+.toc-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.3s ease;
+}
+
+.toc-scroll:hover {
+  scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+}
+
+.dark .toc-scroll:hover {
+  scrollbar-color: rgba(107, 114, 128, 0.3) transparent;
+}
+
+.toc-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.toc-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.toc-scroll::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.toc-scroll:hover::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3);
+}
+
+.dark .toc-scroll:hover::-webkit-scrollbar-thumb {
+  background: rgba(107, 114, 128, 0.3);
 }
 
 /* Navigation button - minimal styling */

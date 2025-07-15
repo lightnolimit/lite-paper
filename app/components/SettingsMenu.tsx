@@ -140,7 +140,7 @@ const SettingsMenu = React.memo(
     const headingStyle = useMemo(
       () => ({
         color: 'var(--muted-color)',
-        fontFamily: 'var(--mono-font)',
+        fontFamily: "'MapleMono', 'SF Mono', 'Monaco', 'Consolas', monospace",
         marginTop: '0',
       }),
       []

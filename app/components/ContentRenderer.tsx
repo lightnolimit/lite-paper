@@ -125,7 +125,7 @@ export default function ContentRenderer({
   return (
     <div className="w-full h-full overflow-hidden" role="article">
       <div className="flex-1 overflow-y-auto doc-content-scroll h-full">
-        <div className="doc-content pt-4 pb-6 px-6 md:pt-6 md:pb-8 md:px-8 lg:pt-8 lg:pb-12 lg:px-12 max-w-4xl mx-auto">
+        <div className="doc-content pt-2 pb-6 px-6 md:pt-3 md:pb-8 md:px-8 lg:pt-4 lg:pb-12 lg:px-12 max-w-4xl mx-auto">
           {/* Banner for synopsis pages */}
           {isSynopsisPage && (
             <div className="w-full mb-6 overflow-hidden rounded-lg relative">
@@ -140,22 +140,24 @@ export default function ContentRenderer({
             </div>
           )}
 
-          {/* Tags display */}
+          {/* Main content area - use new MarkdownRenderer */}
+          <MarkdownRenderer content={content} path={path} />
+
+          {/* Tags display - at bottom of content, before navigation */}
           {pageTags.length > 0 && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className="mb-6 flex flex-wrap gap-2"
+              className="mt-8 mb-4 flex flex-wrap gap-2"
             >
               {pageTags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
+                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition-all hover:brightness-110"
                   style={{
-                    backgroundColor: 'var(--primary-color)',
-                    color: 'white',
-                    opacity: 0.8,
+                    backgroundColor: 'var(--tag-bg-color)',
+                    color: 'var(--tag-text-color)',
                     fontFamily: 'var(--mono-font)',
                   }}
                 >
@@ -165,9 +167,6 @@ export default function ContentRenderer({
               ))}
             </motion.div>
           )}
-
-          {/* Main content area - use new MarkdownRenderer */}
-          <MarkdownRenderer content={content} path={path} />
 
           {/* Navigation between pages */}
           {(prevPage || nextPage) && (
@@ -212,7 +211,7 @@ export default function ContentRenderer({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.3 }}
-            className="mt-12 pt-4 border-t border-gray-200 dark:border-gray-800/50"
+            className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-800/50"
           >
             <div className="flex flex-wrap gap-3 justify-center items-center">
               {/* Edit this page on GitHub */}

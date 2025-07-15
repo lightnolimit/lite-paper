@@ -90,7 +90,7 @@ export default function DocumentationGraph({
         // Light mode - Matcha green aesthetic
         primary: '#678D58', // Matcha green
         secondary: '#A3C9A8', // Light green
-        accent: '#557153', // Forest green
+        accent: '#2D4A2A', // Dark forest green for better contrast
         connected: '#8FB287', // Medium green
         current: '#4A6B42', // Deep green
         search: '#B8860B', // Gold
@@ -749,7 +749,10 @@ export default function DocumentationGraph({
                   stroke={link.linkType === 'tag' ? themeColors.accent : themeColors.connected}
                   strokeWidth={isSidebarView ? 1 : 1.5}
                   strokeOpacity={link.linkType === 'tag' ? 0.4 : 0.6}
-                  strokeDasharray={link.linkType === 'tag' ? '4,4' : undefined}
+                  strokeDasharray={link.linkType === 'tag' ? '4,4' : ''}
+                  style={{
+                    strokeDasharray: link.linkType === 'tag' ? '4,4' : 'none',
+                  }}
                   initial={{
                     pathLength: prefersReducedMotion ? 1 : 0,
                     opacity: prefersReducedMotion ? (link.linkType === 'tag' ? 0.4 : 0.6) : 0,
