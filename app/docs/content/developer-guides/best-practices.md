@@ -565,7 +565,7 @@ function getRequiredEnvVar(key: string): string {
 
 export const env = {
   // Public variables (prefixed with NEXT_PUBLIC_)
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3333',
 
   // Private variables (server-side only)
   databaseUrl: getRequiredEnvVar('DATABASE_URL'),

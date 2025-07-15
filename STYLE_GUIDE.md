@@ -1,6 +1,6 @@
 # Style Guide
 
-This document outlines the coding standards and best practices for the Lite Paper Documentation Template project.
+Coding standards for the Lite Paper template.
 
 ## Table of Contents
 
@@ -16,10 +16,9 @@ This document outlines the coding standards and best practices for the Lite Pape
 
 ### General Rules
 
-- **Use TypeScript** for all new code
-- **Enable strict mode** in tsconfig.json
-- **Avoid `any`** type - use `unknown` or proper types instead
-- **Use type inference** where possible, but be explicit for public APIs
+- Use TypeScript with strict mode
+- Avoid `any` - use `unknown` or proper types
+- Type inference for locals, explicit for public APIs
 
 ### Type Definitions
 
@@ -64,7 +63,6 @@ type ClickHandler = (event: MouseEvent<HTMLButtonElement>) => void;
 ### Component Structure
 
 ```typescript
-// ✅ Good - Functional component with typed props
 interface ButtonProps {
   variant?: 'primary' | 'secondary';
   onClick?: () => void;
@@ -77,17 +75,15 @@ export const Button: React.FC<ButtonProps> = ({
   onClick,
   children,
   disabled = false,
-}) => {
-  return (
-    <button
-      className={`btn btn-${variant}`}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      {children}
-    </button>
-  );
-};
+}) => (
+  <button
+    className={`btn btn-${variant}`}
+    onClick={onClick}
+    disabled={disabled}
+  >
+    {children}
+  </button>
+);
 ```
 
 ### Hooks Usage
@@ -118,10 +114,10 @@ useEffect(() => {
 
 ### Component Best Practices
 
-- **Use React.memo** for expensive components
-- **Use useCallback** for functions passed to memoized children
-- **Use useMemo** for expensive computations
-- **Avoid inline functions** in render when passing to memoized components
+- React.memo for expensive components
+- useCallback for memoized children functions
+- useMemo for expensive computations
+- Avoid inline functions in render
 
 ```typescript
 // ✅ Good - Memoized component
@@ -153,9 +149,9 @@ function ParentComponent() {
 
 ### Tailwind CSS
 
-- **Use Tailwind utilities** as the primary styling method
-- **Create custom utilities** in globals.css for repeated patterns
-- **Use CSS Modules** for complex component-specific styles
+- Use Tailwind utilities primarily
+- Custom utilities in globals.css for patterns
+- CSS Modules for complex component styles
 
 ```tsx
 // ✅ Good - Tailwind utilities
@@ -199,36 +195,35 @@ function ParentComponent() {
 
 ```
 app/
-├── components/           # Reusable components
-│   ├── common/          # Generic components (Button, Input, etc.)
-│   ├── features/        # Feature-specific components
-│   └── layouts/         # Layout components
-├── hooks/               # Custom React hooks
-├── utils/               # Utility functions
-├── types/               # TypeScript type definitions
-├── styles/              # Global styles and CSS modules
-└── public/              # Static assets
+├── components/          # React components
+├── utils/              # Utility functions
+├── types/              # TypeScript types
+├── lib/                # Core utilities
+└── providers/          # React contexts
+```
+
 ```
 
 ### Component Files
 
 ```
+
 components/Button/
-├── Button.tsx          # Component implementation
-├── Button.module.css   # Component styles (if needed)
-├── Button.test.tsx     # Component tests
-└── index.ts           # Export file
-```
+├── Button.tsx # Component implementation
+├── Button.module.css # Component styles (if needed)
+├── Button.test.tsx # Component tests
+└── index.ts # Export file
+
+````
 
 ## Naming Conventions
 
 ### Files and Folders
 
-- **Components**: PascalCase (`Button.tsx`, `NavigationBar.tsx`)
-- **Utilities**: camelCase (`formatDate.ts`, `validateEmail.ts`)
-- **Hooks**: camelCase with 'use' prefix (`useLocalStorage.ts`)
-- **Types**: PascalCase with descriptive names (`UserProfile.ts`)
-- **Constants**: UPPER_SNAKE_CASE in files (`API_ENDPOINTS.ts`)
+- Components: `PascalCase.tsx`
+- Utilities: `camelCase.ts`
+- Types: `PascalCase.ts`
+- Constants: `UPPER_SNAKE_CASE`
 
 ### Variables and Functions
 
@@ -250,7 +245,7 @@ const canEdit = true;
 // ❌ Avoid - Single letter or unclear names
 const d = new Date(); // Bad
 const u = user; // Bad
-```
+````
 
 ### React Components
 
@@ -308,26 +303,18 @@ function UserList({ users, loading }: UserListProps) {
 ### Compound Components
 
 ```typescript
-// ✅ Good - Compound component pattern
-interface CardComponents {
-  Header: React.FC<{ children: React.ReactNode }>;
-  Body: React.FC<{ children: React.ReactNode }>;
-  Footer: React.FC<{ children: React.ReactNode }>;
-}
+export const Card = ({ children }) => (
+  <div className="card">{children}</div>
+);
 
-export const Card: React.FC<{ children: React.ReactNode }> & CardComponents = ({ children }) => {
-  return <div className="card">{children}</div>;
-};
-
-Card.Header = ({ children }) => <div className="card-header">{children}</div>;
-Card.Body = ({ children }) => <div className="card-body">{children}</div>;
-Card.Footer = ({ children }) => <div className="card-footer">{children}</div>;
+Card.Header = ({ children }) => (
+  <div className="card-header">{children}</div>
+);
 
 // Usage
 <Card>
   <Card.Header>Title</Card.Header>
   <Card.Body>Content</Card.Body>
-  <Card.Footer>Actions</Card.Footer>
 </Card>
 ```
 
@@ -336,55 +323,39 @@ Card.Footer = ({ children }) => <div className="card-footer">{children}</div>;
 ### Code Splitting
 
 ```typescript
-// ✅ Good - Lazy load heavy components
 const ChatBot = lazy(() => import('./components/ChatBot'));
-
-// ✅ Good - Route-based code splitting
 const DocumentationPage = lazy(() => import('./pages/Documentation'));
 ```
 
-### Optimization Techniques
+### Optimization
 
-1. **Use React.memo** for components that receive stable props
-2. **Use useMemo** for expensive computations
-3. **Use useCallback** for stable function references
-4. **Debounce** user inputs and scroll handlers
-5. **Virtualize** long lists
-6. **Lazy load** images and heavy components
+- React.memo for stable props
+- useMemo for expensive computations
+- useCallback for stable references
+- Debounce inputs and scroll handlers
+- Virtualize long lists
+- Lazy load heavy components
 
 ### Three.js Performance
 
 ```typescript
-// ✅ Good - Dispose of Three.js resources
 useEffect(() => {
   const geometry = new THREE.BoxGeometry();
-  const material = new THREE.MeshBasicMaterial();
-
-  return () => {
-    geometry.dispose();
-    material.dispose();
-  };
+  return () => geometry.dispose();
 }, []);
 
-// ✅ Good - Reuse geometries and materials
 const starGeometry = useMemo(() => new THREE.SphereGeometry(0.1), []);
 ```
 
 ## Error Handling
 
 ```typescript
-// ✅ Good - Proper error boundaries
 class ErrorBoundary extends React.Component<Props, State> {
   static getDerivedStateFromError(error: Error) {
     return { hasError: true };
   }
-
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
-  }
 }
 
-// ✅ Good - Try-catch in async functions
 async function fetchData() {
   try {
     const response = await fetch('/api/data');
@@ -399,39 +370,31 @@ async function fetchData() {
 
 ## Accessibility
 
-- Use semantic HTML elements
-- Add proper ARIA labels
-- Ensure keyboard navigation works
-- Test with screen readers
-- Maintain proper color contrast
+- Semantic HTML
+- ARIA labels
+- Keyboard navigation
+- Screen reader testing
+- Color contrast
 
 ```tsx
-// ✅ Good - Accessible button
-<button
-  aria-label="Close dialog"
-  onClick={handleClose}
-  onKeyDown={(e) => e.key === 'Enter' && handleClose()}
->
+<button aria-label="Close dialog" onClick={handleClose}>
   <CloseIcon aria-hidden="true" />
 </button>
 ```
 
-## Comments and Documentation
+## Documentation
 
 ```typescript
 /**
- * Calculates the total price of items including tax
- * @param items - Array of items to calculate
- * @param taxRate - Tax rate as a decimal (e.g., 0.08 for 8%)
- * @returns Total price including tax
+ * Calculates total price including tax
+ * @param items Array of items
+ * @param taxRate Tax rate as decimal
+ * @returns Total with tax
  */
 export function calculateTotalWithTax(items: Item[], taxRate: number): number {
   const subtotal = items.reduce((sum, item) => sum + item.price, 0);
   return subtotal * (1 + taxRate);
 }
-
-// Use single-line comments for clarification
-const RETRY_DELAY = 1000; // 1 second in milliseconds
 ```
 
-Remember: **Consistency is key!** When in doubt, follow the existing patterns in the codebase.
+Follow existing patterns for consistency.

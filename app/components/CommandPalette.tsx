@@ -92,8 +92,8 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
     results.push({
       title: isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode',
       path: 'theme-toggle',
-      type: 'action',
-      description: 'Toggle between dark and light themes (Cmd + Shift + D)',
+      type: 'theme',
+      description: 'Toggle between light and dark themes',
       action: toggleDarkMode,
       icon: isDarkMode ? (
         <Icon icon="mingcute:sun-line" className="w-5 h-5" />
@@ -111,6 +111,18 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
       description: 'View and download AI-friendly documentation format',
       icon: <Icon icon="mingcute:file-line" className="w-5 h-5" />,
       shortcut: 'L',
+    });
+
+    // Add FAQ items early so they appear in default results
+    FAQ_ITEMS.forEach((faq, index) => {
+      results.push({
+        title: faq.question,
+        path: `faq-${index}`,
+        type: 'faq',
+        description: 'Frequently Asked Question',
+        answer: faq.answer,
+        icon: <Icon icon="mingcute:question-line" className="w-5 h-5" />,
+      });
     });
 
     // Process documentation tree
@@ -140,18 +152,6 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
       description: 'Navigate to the main page',
       icon: <Icon icon="mingcute:home-2-line" className="w-5 h-5" />,
       shortcut: 'H',
-    });
-
-    // Add FAQ items
-    FAQ_ITEMS.forEach((faq, index) => {
-      results.push({
-        title: faq.question,
-        path: `faq-${index}`,
-        type: 'faq',
-        description: 'Frequently Asked Question',
-        answer: faq.answer,
-        icon: <Icon icon="mingcute:question-line" className="w-5 h-5" />,
-      });
     });
 
     return results;
@@ -691,7 +691,11 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                                     : 'var(--text-color)',
                               }}
                             >
-                              ⌘{result.shortcut}
+                              {result.shortcut === 'Shift+D'
+                                ? '⌘ + SHIFT + D'
+                                : result.shortcut === 'A' || result.shortcut === 'L'
+                                  ? `⌘ + ${result.shortcut}`
+                                  : `⌘${result.shortcut}`}
                             </kbd>
                           )}
                           {result.type === 'action' && (
@@ -730,8 +734,9 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
 
                 {/* Footer */}
                 <div
-                  className="px-4 py-2 border-t flex items-center justify-between text-xs"
+                  className="px-4 py-2 border-t flex items-center justify-between"
                   style={{
+                    fontSize: '10px',
                     borderColor: 'var(--border-color)',
                     color: 'var(--muted-color)',
                   }}

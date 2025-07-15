@@ -1,107 +1,82 @@
 # Deployment Guide
 
-This guide covers deploying the Lite Paper Documentation Template to Cloudflare Pages using GitHub Actions.
+Deploy to Cloudflare Pages with GitHub Actions.
 
 ## Prerequisites
 
-- A Cloudflare account
-- A GitHub repository
-- Node.js 16+ installed locally
+- Cloudflare account
+- GitHub repository
+- Node.js 16+
 
 ## Cloudflare Pages Setup
 
-### 1. Create a Cloudflare Pages Project
+### 1. Create Cloudflare Pages Project
 
-1. Log in to your [Cloudflare dashboard](https://dash.cloudflare.com/)
-2. Go to **Pages** in the sidebar
-3. Click **Create a project**
-4. Choose **Connect to Git**
-5. Select your GitHub repository
-6. Configure build settings:
-   - **Build command**: `npm run build`
-   - **Build output directory**: `out`
-   - **Node version**: `20`
+1. [Cloudflare dashboard](https://dash.cloudflare.com/) → Pages
+2. Create project → Connect to Git
+3. Select repository
+4. Build settings:
+   - Command: `npm run build`
+   - Output: `out`
+   - Node: `20`
 
-### 2. Get Your API Credentials
+### 2. Get API Credentials
 
-1. Go to **My Profile** → **API Tokens**
-2. Click **Create Token**
-3. Use the **Custom token** template with these permissions:
-   - **Account** - Cloudflare Pages:Edit
-   - **Zone** - Zone:Read (optional, for custom domains)
-4. Copy the generated API token
-
-### 3. Get Your Account ID
-
-1. Go to any domain in your Cloudflare account
-2. In the right sidebar, find your **Account ID**
-3. Copy this value
+1. My Profile → API Tokens → Create Token
+2. Custom token permissions:
+   - Account: Cloudflare Pages:Edit
+   - Zone: Zone:Read (optional)
+3. Copy API token and Account ID
 
 ## GitHub Repository Setup
 
-### 1. Add Secrets
+### 1. Add GitHub Secrets
 
-In your GitHub repository, go to **Settings** → **Secrets and variables** → **Actions**, and add:
+Settings → Secrets and variables → Actions:
 
-- `CLOUDFLARE_API_TOKEN`: Your Cloudflare API token
-- `CLOUDFLARE_ACCOUNT_ID`: Your Cloudflare account ID
-- `CLOUDFLARE_PROJECT_NAME`: Your Cloudflare Pages project name
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_PROJECT_NAME`
 
-### 2. Enable GitHub Actions
+### 2. Enable Actions
 
-1. Go to **Actions** tab in your repository
-2. Enable workflows if not already enabled
+Go to Actions tab and enable workflows.
 
 ## Deployment Process
 
 ### Automatic Deployment
 
-Once configured, deployments happen automatically:
-
-1. **Production**: Push to `main` branch triggers deployment to production
-2. **Preview**: Opening a PR creates a preview deployment with a unique URL
+- **Production**: Push to `main`
+- **Preview**: Open PR
 
 ### Manual Deployment
 
-To deploy manually from your local machine:
-
 ```bash
-# Build the project
 npm run build
-
-# Deploy using Wrangler
 npm run deploy
 ```
 
-Note: You'll need to configure Wrangler with your Cloudflare credentials first:
-
-```bash
-npx wrangler login
-```
+First time: `npx wrangler login`
 
 ## Environment Variables
 
-Set these in your Cloudflare Pages project settings:
+In Cloudflare Pages settings:
 
-- `NEXT_PUBLIC_SITE_URL`: Your production URL
-- `NEXT_PUBLIC_BACKGROUND_TYPE`: Default background (dither, wave, stars, solid)
-- Any other API keys or configuration
+- `NEXT_PUBLIC_SITE_URL`
+- `NEXT_PUBLIC_BACKGROUND_TYPE`
+- Other config as needed
 
 ## Custom Domain
 
-To add a custom domain:
-
-1. Go to your Cloudflare Pages project
-2. Click **Custom domains** tab
-3. Click **Add a custom domain**
-4. Follow the instructions to configure DNS
+1. Pages project → Custom domains
+2. Add domain
+3. Configure DNS
 
 ## Build Configuration
 
-The project uses these build settings:
+`wrangler.toml`:
 
 ```toml
-# wrangler.toml
 name = "docs"
 compatibility_date = "2025-05-15"
 [assets]
@@ -110,76 +85,34 @@ directory = "./out"
 
 ## Troubleshooting
 
-### Build Failures
+**Build failures**: Check Node version, dependencies, TypeScript errors
+**Deployment issues**: Verify API permissions, project name, output directory
+**Preview issues**: PR must be from same repo with correct permissions
 
-1. Check Node version matches (20.x recommended)
-2. Ensure all dependencies are in `package.json`
-3. Check for TypeScript errors: `npm run type-check`
-4. Verify environment variables are set
+## Performance
 
-### Deployment Issues
+Cloudflare Pages provides: CDN, HTTPS, HTTP/3, compression, caching.
 
-1. Verify API token has correct permissions
-2. Check project name matches in secrets
-3. Ensure `out` directory is generated after build
-4. Check GitHub Actions logs for detailed errors
-
-### Preview Deployments Not Working
-
-1. Ensure PR is from a branch in the same repository
-2. Check Cloudflare Pages project settings allow preview deployments
-3. Verify GitHub token permissions
-
-## Performance Optimization
-
-Cloudflare Pages automatically provides:
-
-- Global CDN distribution
-- Automatic HTTPS
-- HTTP/3 support
-- Brotli compression
-- Cache headers optimization
-
-Additional optimizations in `_headers` file:
+Optimizations in `_headers`:
 
 ```
 /assets/*
-  Cache-Control: public, max-age=31536000, immutable
-
-/_next/static/*
   Cache-Control: public, max-age=31536000, immutable
 ```
 
 ## Monitoring
 
-1. **Build Status**: Check GitHub Actions tab
-2. **Deployment Status**: Cloudflare Pages dashboard
-3. **Analytics**: Enable Web Analytics in Cloudflare
-4. **Performance**: Use Lighthouse CI in PRs
-
-## Security
-
-The deployment process includes:
-
-- Automatic security headers via `_headers`
-- Environment variable protection
-- Secure API token handling
-- CSP (Content Security Policy) configuration
+- Build status: GitHub Actions
+- Deployment: Cloudflare dashboard
+- Analytics: Cloudflare Web Analytics
 
 ## Rollback
 
-To rollback a deployment:
+Cloudflare Pages → Deployments → Rollback
 
-1. Go to Cloudflare Pages dashboard
-2. Select your project
-3. Go to **Deployments** tab
-4. Click **Rollback** on a previous deployment
-
-Or use Git:
+Or:
 
 ```bash
-git revert <commit-hash>
+git revert <commit>
 git push origin main
 ```
-
-This will trigger a new deployment with the reverted code.

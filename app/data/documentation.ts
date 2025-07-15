@@ -94,11 +94,6 @@ export const documentationTree: FileItem[] = [
       },
       {
         type: 'file',
-        name: 'Contributing.md',
-        path: 'developer-guides/contributing',
-      },
-      {
-        type: 'file',
         name: 'Design System.md',
         path: 'developer-guides/design-system',
       },
@@ -152,6 +147,11 @@ export const documentationTree: FileItem[] = [
         ],
       },
     ],
+  },
+  {
+    type: 'file',
+    name: 'LLMs.txt Format.md',
+    path: 'llms',
   },
 ];
 

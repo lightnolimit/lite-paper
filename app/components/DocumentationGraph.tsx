@@ -420,18 +420,45 @@ export default function DocumentationGraph({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [resetZoom]);
 
-  // Handle window resize
+  // Handle container resize with ResizeObserver
   useEffect(() => {
     const handleResize = () => {
       if (svgRef.current) {
         const rect = svgRef.current.getBoundingClientRect();
-        setDimensions({ width: rect.width, height: rect.height });
+        if (rect.width > 0 && rect.height > 0) {
+          setDimensions({ width: rect.width, height: rect.height });
+        }
       }
     };
 
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    let resizeObserver: ResizeObserver | null = null;
+
+    if (svgRef.current) {
+      handleResize();
+
+      // Use ResizeObserver for more precise container size tracking
+      if (typeof ResizeObserver !== 'undefined') {
+        resizeObserver = new ResizeObserver((entries) => {
+          for (const entry of entries) {
+            const { width, height } = entry.contentRect;
+            if (width > 0 && height > 0) {
+              setDimensions({ width, height });
+            }
+          }
+        });
+        resizeObserver.observe(svgRef.current);
+      }
+
+      // Fallback to window resize
+      window.addEventListener('resize', handleResize);
+    }
+
+    return () => {
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   // Set focus when current path changes

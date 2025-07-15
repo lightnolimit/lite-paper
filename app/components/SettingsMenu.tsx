@@ -6,6 +6,7 @@ import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 
 import { useTheme } from '../providers/ThemeProvider';
 
+import FontSelector from './FontSelector';
 import MotionToggle from './MotionToggle';
 import ThemeSwitcher from './ThemeSwitcher';
 
@@ -215,7 +216,7 @@ const SettingsMenu = React.memo(
                     </span>
                     <ThemeSwitcher />
                   </div>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between mb-2">
                     <span
                       className="text-sm"
                       style={{ ...textStyle, fontFamily: 'var(--mono-font)' }}
@@ -223,6 +224,15 @@ const SettingsMenu = React.memo(
                       motion
                     </span>
                     <MotionToggle />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span
+                      className="text-sm"
+                      style={{ ...textStyle, fontFamily: 'var(--mono-font)' }}
+                    >
+                      font
+                    </span>
+                    <FontSelector />
                   </div>
                 </div>
               </div>

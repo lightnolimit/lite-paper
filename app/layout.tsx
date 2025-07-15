@@ -159,8 +159,11 @@ export default function RootLayout({
 
         {/* Code block functionality */}
         <script src="/js/codeblock.js" defer />
+
+        {/* View Transitions API for smoother navigation */}
+        <meta name="view-transition" content="same-origin" />
       </head>
-      <body className="min-h-screen font-urbanist">
+      <body className="min-h-screen font-mona-sans">
         <ThemeProvider>
           <CommandPaletteProvider>{children}</CommandPaletteProvider>
         </ThemeProvider>
