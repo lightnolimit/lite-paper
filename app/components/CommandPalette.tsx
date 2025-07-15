@@ -566,7 +566,22 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
                                     a: ({ href, children }) => (
                                       <a
                                         href={href}
-                                        className="text-blue-600 dark:text-blue-400 hover:underline"
+                                        style={{
+                                          color: 'var(--primary-color)',
+                                          textDecoration: 'none',
+                                          borderBottom: '1px solid transparent',
+                                          transition: 'all 0.2s ease',
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          (e.target as HTMLAnchorElement).style.borderBottom =
+                                            '1px solid var(--primary-color)';
+                                          (e.target as HTMLAnchorElement).style.opacity = '0.8';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                          (e.target as HTMLAnchorElement).style.borderBottom =
+                                            '1px solid transparent';
+                                          (e.target as HTMLAnchorElement).style.opacity = '1';
+                                        }}
                                         onClick={(e) => {
                                           if (href?.startsWith('/')) {
                                             e.preventDefault();

@@ -821,9 +821,11 @@ code {
   border-radius: calc(var(--space-1) / 2);
 }
 
-/* Prose link styles to override Tailwind's defaults */
+/* Consolidated link styles - use CSS variables for all links */
 .prose a,
-.markdown-content a {
+.markdown-content a,
+.markdown-link,
+.link-styled {
   color: var(--primary-color) !important;
   text-decoration: none;
   transition: all 0.2s ease;
@@ -832,17 +834,36 @@ code {
 }
 
 .prose a:hover,
-.markdown-content a:hover {
+.markdown-content a:hover,
+.markdown-link:hover,
+.link-styled:hover {
   text-decoration: none;
   border-bottom: 1px solid var(--primary-color);
   opacity: 0.8;
 }
 
-/* Ensure dark mode links use pink */
-.dark .prose a,
-.dark .markdown-content a,
-.dark .doc-content a {
-  color: var(--primary-color) !important;
+.prose a:focus,
+.markdown-content a:focus,
+.markdown-link:focus,
+.link-styled:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  border-radius: calc(var(--space-1) / 2);
+}
+
+/* Markdown blockquote styles - used by markdown processor */
+.markdown-blockquote {
+  border-left: 4px solid var(--primary-color);
+  padding-left: var(--space-4);
+  font-style: italic;
+  color: var(--text-secondary);
+  margin: var(--space-4) 0;
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.dark .markdown-blockquote {
+  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
 }
 
 .doc-content ul,

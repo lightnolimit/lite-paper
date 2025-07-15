@@ -260,9 +260,27 @@ For opacity and rgba() usage:
 
 ## Typography
 
+Our design system includes multiple font families for different purposes, providing flexibility and accessibility similar to design systems like Notion. Users can select their preferred font theme through the **Font Selector** in the settings.
+
+### Font Sets
+
+#### Sans-serif Fonts
+
+- **Hubot Sans** - Clean, modern display font for headings and UI elements
+- **Mona Sans** - Highly readable body font for general content
+
+#### Serif Fonts
+
+- **DM Serif Display** - Classic serif for elegant headings
+- **Noto Serif JP** - International serif with excellent readability and Japanese character support
+
+#### Monospace Font
+
+- **MapleMono** - Clear, distinct monospace for code and technical content
+
 ### Font Families
 
-The design system uses two primary font families:
+The design system uses these font families across different contexts:
 
 ```html
 <div style="margin: 2rem 0;">
@@ -270,6 +288,11 @@ The design system uses two primary font families:
     style="font-family: var(--title-font); font-size: 2rem; margin-bottom: 1rem; color: var(--text-color);"
   >
     Hubot Sans - Display & Headings
+  </div>
+  <div
+    style="font-family: var(--serif-font); font-size: 1.8rem; margin-bottom: 1rem; color: var(--text-color);"
+  >
+    Noto Serif JP - Elegant Serif Option
   </div>
   <div
     style="font-family: var(--mono-font); font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text-secondary);"
@@ -281,6 +304,20 @@ The design system uses two primary font families:
   </div>
 </div>
 ```
+
+### Font Theme Selection
+
+Users can choose between different font themes using the font selector in the settings. This provides:
+
+- **Accessibility**: Users can select fonts that work best for their reading preferences
+- **Familiarity**: Similar to Notion and other modern design tools
+- **Flexibility**: Different fonts for different use cases and aesthetics
+
+Available font themes:
+
+- **Sans (Default)**: Hubot Sans + Mona Sans
+- **Serif**: DM Serif Display + Noto Serif JP
+- **Mono**: MapleMono for all text
 
 ### Font Weights & Styles
 

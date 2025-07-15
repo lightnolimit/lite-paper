@@ -238,19 +238,16 @@ const applyBasicStyles = (html: string): string => {
     // Paragraphs
     [/<p([^>]*)>/g, '<p$1 class="font-body mb-4 text-gray-700 dark:text-gray-300">'],
 
-    // Links
-    [/<a([^>]*)>/g, '<a$1 class="text-blue-600 dark:text-blue-400 hover:underline">'],
+    // Links - use theme colors
+    [/<a([^>]*)>/g, '<a$1 class="markdown-link">'],
 
     // Lists
     [/<ul([^>]*)>/g, '<ul$1 class="list-disc pl-6 mb-4 text-gray-700 dark:text-gray-300">'],
     [/<ol([^>]*)>/g, '<ol$1 class="list-decimal pl-6 mb-4 text-gray-700 dark:text-gray-300">'],
     [/<li([^>]*)>/g, '<li$1 class="mb-1">'],
 
-    // Blockquotes
-    [
-      /<blockquote([^>]*)>/g,
-      '<blockquote$1 class="border-l-4 border-blue-500 pl-4 italic text-gray-600 dark:text-gray-400 my-4">',
-    ],
+    // Blockquotes - use theme colors
+    [/<blockquote([^>]*)>/g, '<blockquote$1 class="markdown-blockquote">'],
 
     // Tables
     [/<table([^>]*)>/g, '<table$1 class="w-full border-collapse my-4">'],

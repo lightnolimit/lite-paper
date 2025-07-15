@@ -29,12 +29,12 @@ type AdjacentPage = {
 
 // Memoized flatten function to avoid recreation
 const flattenDocumentationTree = (() => {
-  let cachedFlattened: { path: string; name: string }[] | null = null;
+  let cachedFlattened: { path: string; name: string; tags?: string[] }[] | null = null;
 
-  return (): { path: string; name: string }[] => {
+  return (): { path: string; name: string; tags?: string[] }[] => {
     if (cachedFlattened) return cachedFlattened;
 
-    const flattenedItems: { path: string; name: string }[] = [];
+    const flattenedItems: { path: string; name: string; tags?: string[] }[] = [];
 
     function flattenTree(items: FileItem[]) {
       items.forEach((item) => {
@@ -42,6 +42,7 @@ const flattenDocumentationTree = (() => {
           flattenedItems.push({
             path: item.path,
             name: item.name.replace(/\.md$/, ''),
+            tags: item.tags,
           });
         } else if (item.type === 'directory' && item.children) {
           flattenTree(item.children);
@@ -92,6 +93,15 @@ const findAdjacentPages = (
 };
 
 /**
+ * Find tags for the current page
+ */
+const findPageTags = (currentPath: string): string[] => {
+  const flattenedItems = flattenDocumentationTree();
+  const currentItem = flattenedItems.find((item) => item.path === currentPath);
+  return currentItem?.tags || [];
+};
+
+/**
  * ContentRenderer component that renders markdown content with styling and navigation
  */
 export default function ContentRenderer({
@@ -102,6 +112,9 @@ export default function ContentRenderer({
 
   // Memoize adjacent pages to prevent recalculation
   const { prevPage, nextPage } = useMemo(() => findAdjacentPages(path), [path]);
+
+  // Get tags for current page
+  const pageTags = useMemo(() => findPageTags(path), [path]);
 
   // Check if this is a synopsis page to show banner
   const isSynopsisPage = useMemo(() => path.toLowerCase().includes('synopsis'), [path]);
@@ -125,6 +138,32 @@ export default function ContentRenderer({
                 priority
               />
             </div>
+          )}
+
+          {/* Tags display */}
+          {pageTags.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="mb-6 flex flex-wrap gap-2"
+            >
+              {pageTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
+                  style={{
+                    backgroundColor: 'var(--primary-color)',
+                    color: 'white',
+                    opacity: 0.8,
+                    fontFamily: 'var(--mono-font)',
+                  }}
+                >
+                  <Icon icon="mingcute:tag-line" className="w-3 h-3 mr-1" />
+                  {tag}
+                </span>
+              ))}
+            </motion.div>
           )}
 
           {/* Main content area - use new MarkdownRenderer */}
