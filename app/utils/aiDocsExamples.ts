@@ -12,10 +12,33 @@ import {
   getDocumentationOutline,
   validateDocumentationPath,
   AIDocumentationQuery,
-} from './ai-docs-integration';
+} from './aiDocsIntegration';
 import { createLogger } from './logger';
 
 const logger = createLogger('AIDocsExamples');
+
+// Type definitions for queryDocumentation responses
+interface PathsQueryData {
+  paths: string[];
+  count: number;
+}
+
+interface StatsQueryData {
+  totalFiles: number;
+  totalContent: number;
+  generated: string;
+  paths: string[];
+}
+
+interface SearchQueryData {
+  query: string;
+  results: Array<{
+    path: string;
+    content: string;
+    excerpt: string;
+  }>;
+  totalResults: number;
+}
 
 /**
  * Example 1: AI Assistant handling user question about Cloudflare deployment
@@ -153,31 +176,34 @@ export async function handleMultipleQueries() {
     pathsSuccess: pathsResult.success,
     statsSuccess: statsResult.success,
     searchSuccess: searchResult.success,
-    searchResultCount: searchResult.success ? searchResult.data.results.length : 0,
+    searchResultCount: searchResult.success
+      ? (searchResult.data as SearchQueryData).results.length
+      : 0,
   });
 
   if (pathsResult.success && statsResult.success && searchResult.success) {
+    const pathsData = pathsResult.data as PathsQueryData;
+    const statsData = statsResult.data as StatsQueryData;
+    const searchData = searchResult.data as SearchQueryData;
+
     const response = `I can help you with the documentation! Here's what I found:
 
 **Available Documentation:**
-- ${pathsResult.data.count} total documents
-- Generated: ${new Date(statsResult.data.generated).toLocaleDateString()}
-- ${statsResult.data.totalContent.toLocaleString()} total characters
+- ${pathsData.count} total documents
+- Generated: ${new Date(statsData.generated).toLocaleDateString()}
+- ${statsData.totalContent.toLocaleString()} total characters
 
 **Getting Started Resources:**
-${searchResult.data.results
-  .map(
-    (result: { path: string; content: string; excerpt: string }, index: number) =>
-      `${index + 1}. ${result.path}\n   ${result.excerpt}`
-  )
+${searchData.results
+  .map((result, index) => `${index + 1}. ${result.path}\n   ${result.excerpt}`)
   .join('\n\n')}
 
 What would you like to know more about?`;
 
     return {
       response,
-      availablePaths: pathsResult.data.paths,
-      stats: statsResult.data,
+      availablePaths: pathsData.paths,
+      stats: statsData,
     };
   }
 
@@ -267,6 +293,3 @@ export async function simulateAIChatSession() {
 
   logger.debug('✅ AI Documentation Chat Session Complete!');
 }
-
-// Export the simulation function for testing
-export { simulateAIChatSession };

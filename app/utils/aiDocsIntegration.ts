@@ -11,7 +11,7 @@ import {
   searchDocumentation,
   documentationPathExists,
   getDocumentationStats,
-} from './docs-client';
+} from './docsClient';
 
 /**
  * AI-friendly interface for accessing documentation

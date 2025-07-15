@@ -115,7 +115,19 @@ const FontSelector = React.memo(({ className = '' }: FontSelectorProps): React.R
           aria-expanded={isOpen}
         >
           <Icon icon={currentFont.icon} className="w-5 h-5" aria-hidden="true" />
-          <span className="text-sm">{currentFont.label.toLowerCase()}</span>
+          <span
+            className="text-2xs"
+            style={{
+              fontFamily:
+                fontFamily === 'mono'
+                  ? 'var(--mono-font)'
+                  : fontFamily === 'serif'
+                    ? 'var(--title-font)'
+                    : 'var(--body-font)',
+            }}
+          >
+            {currentFont.label.toLowerCase()}
+          </span>
         </button>
       ) : (
         <motion.button
@@ -127,7 +139,19 @@ const FontSelector = React.memo(({ className = '' }: FontSelectorProps): React.R
           aria-expanded={isOpen}
         >
           <Icon icon={currentFont.icon} className="w-5 h-5" aria-hidden="true" />
-          <span className="text-sm">{currentFont.label.toLowerCase()}</span>
+          <span
+            className="text-2xs"
+            style={{
+              fontFamily:
+                fontFamily === 'mono'
+                  ? 'var(--mono-font)'
+                  : fontFamily === 'serif'
+                    ? 'var(--title-font)'
+                    : 'var(--body-font)',
+            }}
+          >
+            {currentFont.label.toLowerCase()}
+          </span>
         </motion.button>
       )}
 
@@ -143,11 +167,17 @@ const FontSelector = React.memo(({ className = '' }: FontSelectorProps): React.R
             <button
               key={option.value}
               onClick={() => handleFontSelect(option.value)}
-              className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-2"
+              className="w-full px-3 py-2 text-left text-2xs hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-2"
               style={{
                 backgroundColor:
                   fontFamily === option.value ? 'var(--primary-color)' : 'transparent',
                 color: fontFamily === option.value ? 'white' : 'var(--text-color)',
+                fontFamily:
+                  option.value === 'mono'
+                    ? 'var(--mono-font)'
+                    : option.value === 'serif'
+                      ? 'var(--title-font)'
+                      : 'var(--body-font)',
               }}
             >
               <Icon icon={option.icon} className="w-4 h-4" />

@@ -92,7 +92,9 @@ const MotionToggle = React.memo(({ className = '' }: MotionToggleProps): React.R
       tabIndex={0}
     >
       {renderMotionIcon()}
-      <span className="text-sm">{displayText}</span>
+      <span className="text-2xs" style={{ fontFamily: 'var(--mono-font)' }}>
+        {displayText}
+      </span>
     </ButtonComponent>
   );
 });

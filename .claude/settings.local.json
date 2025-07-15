@@ -27,7 +27,10 @@
       "Bash(ls:*)",
       "Bash(cat:*)",
       "Bash(npm install:*)",
-      "Bash(gh pr edit:*)"
+      "Bash(gh pr edit:*)",
+      "Bash(mv:*)",
+      "Bash(mkdir:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": []
   }

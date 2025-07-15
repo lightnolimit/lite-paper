@@ -8,13 +8,14 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import ContentRenderer from '../../components/ContentRenderer';
 import DocumentationGraph from '../../components/DocumentationGraph';
 import FileTree from '../../components/FileTree';
-import { FileItem } from '../../components/FileTree';
 import fileTreeStyles from '../../components/FileTree.module.css';
 import Navigation from '../../components/Navigation';
 import { uiConfig, getMobileTogglePositionClasses } from '../../config/ui';
 import { socialLinks } from '../../constants/social';
+import { UI_CLASSES } from '../../constants/ui';
 import { documentationTree } from '../../data/documentation';
 import { useTheme } from '../../providers/ThemeProvider';
+import type { FileItem } from '../../types/documentation';
 
 // Simple Table of Contents component
 function TableOfContents({
@@ -292,7 +293,11 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
 
   return (
     <main className="flex h-screen flex-col overflow-hidden">
-      <Navigation docsPath={path} onToggleSidebar={toggleSidebar} sidebarVisible={sidebarVisible} />
+      <Navigation
+        docsPath={path}
+        onToggleSidebar={toggleSidebar}
+        _sidebarVisible={sidebarVisible}
+      />
 
       <div className="w-full flex flex-1 z-10 pt-12 overflow-hidden">
         <div className="flex w-full h-full">
@@ -376,7 +381,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                 {rightSidebarVisible && (
                   <button
                     onClick={toggleRightSidebar}
-                    className="hidden lg:flex absolute top-4 right-6 z-20 items-center justify-center w-8 h-8 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border border-gray-300 dark:border-gray-600"
+                    className="hidden lg:flex absolute top-4 right-[23px] z-20 items-center justify-center w-8 h-8 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border border-gray-300 dark:border-gray-600"
                     aria-label="Hide documentation map"
                   >
                     <Icon icon="mingcute:arrow-right-line" className="w-3.5 h-3.5" />
@@ -436,7 +441,10 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={link.name}
-                          className="opacity-40 hover:opacity-60 transition-opacity"
+                          className={`social-link ${UI_CLASSES.button}`}
+                          style={{
+                            color: 'var(--muted-color)',
+                          }}
                         >
                           <div className="w-5 h-5">{link.icon}</div>
                         </a>

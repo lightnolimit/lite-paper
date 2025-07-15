@@ -4,7 +4,7 @@ import path from 'path';
 import { Suspense } from 'react';
 
 import { createLogger } from '../../utils/logger';
-import { loadMarkdownContent } from '../../utils/markdown-loader';
+import { loadMarkdownContent } from '../../utils/markdownLoader';
 import DocumentationPage from '../components/DocumentationPage';
 
 const logger = createLogger('DocsPage');

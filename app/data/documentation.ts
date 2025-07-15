@@ -1,4 +1,4 @@
-import type { FileItem } from '../components/FileTree';
+import type { FileItem } from '../types/documentation';
 
 export const documentationTree: FileItem[] = [
   {

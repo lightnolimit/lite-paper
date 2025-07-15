@@ -6,14 +6,14 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 
+import { TIMING_CONSTANTS } from '../constants/ui';
 import { documentationTree } from '../data/documentation';
 import { isAIAvailable } from '../lib/clientRAG';
 import { useTheme } from '../providers/ThemeProvider';
+import type { FileItem } from '../types/documentation';
 import { createLogger } from '../utils/logger';
 
 const logger = createLogger('CommandPalette');
-
-import type { FileItem } from './FileTree';
 
 interface SearchResult {
   title: string;
@@ -237,7 +237,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
       // Lock body scroll
       document.body.style.overflow = 'hidden';
       // Focus input after a short delay to ensure it's rendered
-      setTimeout(() => inputRef.current?.focus(), 50);
+      setTimeout(() => inputRef.current?.focus(), TIMING_CONSTANTS.autoFocusDelay);
     } else {
       // Restore body scroll
       document.body.style.overflow = '';

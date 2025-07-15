@@ -6,6 +6,8 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
+import { ANIMATION_DURATION } from '../constants/ui';
+
 import styles from './CodeBlock.module.css';
 
 /**
@@ -81,7 +83,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
     try {
       await navigator.clipboard.writeText(currentSnippet.code);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => setCopied(false), ANIMATION_DURATION.feedback);
     } catch {
       // Fallback for older browsers
       const textArea = document.createElement('textarea');
@@ -93,7 +95,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
       document.execCommand('copy');
       document.body.removeChild(textArea);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => setCopied(false), ANIMATION_DURATION.feedback);
     }
   }, [currentSnippet]);
 

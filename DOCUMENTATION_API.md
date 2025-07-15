@@ -14,9 +14,9 @@ Access markdown content for AI assistants and client apps. Uses pre-generated JS
 ├── scripts/
 │   └── generate-docs.mjs          # Build-time script to generate JSON files
 ├── app/utils/
-│   ├── docs-client.ts             # Client-side documentation access
-│   ├── ai-docs-integration.ts     # AI assistant integration helpers
-│   └── ai-docs-examples.ts        # Usage examples
+│   ├── docsClient.ts              # Client-side documentation access
+│   ├── aiDocsIntegration.ts       # AI assistant integration helpers
+│   └── aiDocsExamples.ts          # Usage examples
 ├── public/
 │   ├── docs-content.json          # Generated: all documentation content
 │   └── docs-index.json            # Generated: documentation index
@@ -36,20 +36,20 @@ Creates `docs-content.json` and `docs-index.json`
 ### 2. Get Content
 
 ```typescript
-import { getDocumentationContent } from '@/utils/docs-client';
+import { getDocumentationContent } from '@/utils/docsClient';
 const content = await getDocumentationContent('deployment/platforms/cloudflare');
 ```
 
 ### 3. Search
 
 ```typescript
-import { searchDocumentation } from '@/utils/docs-client';
+import { searchDocumentation } from '@/utils/docsClient';
 const results = await searchDocumentation('cloudflare deployment');
 ```
 
 ## API Reference
 
-### Core Functions (`docs-client.ts`)
+### Core Functions (`docsClient.ts`)
 
 #### `getDocumentationContent(path: string): Promise<string>`
 
@@ -67,7 +67,7 @@ Returns all available documentation paths.
 
 Checks if path exists.
 
-### AI Functions (`ai-docs-integration.ts`)
+### AI Functions (`aiDocsIntegration.ts`)
 
 #### `queryDocumentation(query: AIDocumentationQuery)`
 
@@ -115,7 +115,7 @@ Examples:
 ### Basic Content Retrieval
 
 ```typescript
-import { getDocumentationForAI } from '@/utils/ai-docs-integration';
+import { getDocumentationForAI } from '@/utils/aiDocsIntegration';
 
 async function handleUserQuestion(userPath: string) {
   const docData = await getDocumentationForAI(userPath);
@@ -137,7 +137,7 @@ async function handleUserQuestion(userPath: string) {
 ### Smart Search
 
 ```typescript
-import { smartSearchForAI } from '@/utils/ai-docs-integration';
+import { smartSearchForAI } from '@/utils/aiDocsIntegration';
 
 async function handleUserQuery(query: string) {
   const results = await smartSearchForAI(query, {
@@ -160,7 +160,7 @@ async function handleUserQuery(query: string) {
 ### Contextual Help
 
 ```typescript
-import { validateDocumentationPath, getDocumentationOutline } from '@/utils/ai-docs-integration';
+import { validateDocumentationPath, getDocumentationOutline } from '@/utils/aiDocsIntegration';
 
 async function provideHelp(userInput: string) {
   // Try to interpret as a path first
@@ -217,4 +217,4 @@ Test page: `/test-docs`
 
 Replaces API routes (incompatible with static export) with build-time generation and client-side access.
 
-See `app/utils/ai-docs-examples.ts` for usage examples.
+See `app/utils/aiDocsExamples.ts` for usage examples.

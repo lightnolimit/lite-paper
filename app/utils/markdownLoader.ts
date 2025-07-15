@@ -3,8 +3,8 @@ import path from 'path';
 
 import { cache } from 'react';
 
-import { FileItem } from '../components/FileTree';
 import { documentationTree } from '../data/documentation';
+import type { FileItem } from '../types/documentation';
 
 import logger from './logger';
 

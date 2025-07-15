@@ -10,79 +10,49 @@
 
 URL: /docs/getting-started/introduction
 
-# Welcome to Your Documentation Site
+# Documentation Template
 
-This is a **modern, interactive documentation template** built with Next.js 15, featuring an innovative Obsidian-style mindmap visualization and a beautiful, responsive design.
-
-## What This Template Provides
-
-This documentation site template offers:
-
-- **📚 Modern Documentation Framework**: Built with Next.js 15 and TypeScript
-- **🎨 Beautiful UI**: Clean, responsive design with dark/light mode support
-- **🧭 Interactive Navigation**: File tree sidebar with mindmap visualization
-- **⚡ Fast Performance**: Optimized for speed with static generation
-- **🔍 Smart Search**: Built-in search functionality
-- **📱 Mobile-First**: Responsive design that works on all devices
-- **🎭 Background Animations**: Dynamic visual effects to enhance user experience
-
-## Key Features
-
-### Interactive Mindmap
-
-Our unique documentation graph shows the relationships between your content pages, inspired by Obsidian's graph view. Navigate your documentation visually and discover connections between related topics.
-
-### Flexible Content Structure
-
-Organize your documentation with a hierarchical structure:
-
-- **Getting Started**: Onboarding and quick setup
-- **User Guides**: Detailed usage instructions
-- **API Reference**: Technical documentation
-- **Developer Resources**: Code examples and best practices
-- **Deployment**: Platform-specific deployment guides
-
-### Easy Customization
-
-- Modify content by editing markdown files
-- Customize styling through CSS variables
-- Add new sections through the data structure
-- Deploy anywhere (Cloudflare, Vercel, Netlify)
-
-## Perfect For
-
-This template is ideal for:
-
-- **Product Documentation**: Software and API docs
-- **Knowledge Bases**: Internal team documentation
-- **Project Wikis**: Open source project documentation
-- **Personal Blogs**: Technical writing and tutorials
-- **Educational Content**: Course materials and guides
-
-Ready to get started? Check out the [Quick Start Guide](./quick-start) to set up your documentation site in minutes!
+Modern, interactive documentation built with Next.js 15 and TypeScript.
 
 ## Features
 
-Our documentation template includes:
+- Modern framework with TypeScript
+- Responsive design with dark/light themes
+- Interactive navigation and graph visualization
+- Fast static generation
+- Built-in search
+- Mobile-optimized
 
-- 🎨 Modern, responsive design
-- 🔍 Fast search functionality
-- 📱 Mobile-friendly interface
-- 🌙 Dark/light mode support
-- 📊 Interactive elements
-- 🔗 Cross-references and links
+## Documentation Structure
+
+- **Getting Started**: Setup and onboarding
+- **User Guides**: Usage instructions
+- **API Reference**: Technical documentation
+- **Developer Guides**: Code examples and best practices
+- **Deployment**: Platform deployment guides
+
+## Customization
+
+- Edit markdown files for content
+- Customize themes via Tailwind config
+- Add sections via data structure
+- Deploy to any platform
+
+## Use Cases
+
+- Product documentation
+- Knowledge bases
+- Project wikis
+- Technical blogs
+- Educational content
+
+Ready to start? See the [Quick Start Guide](./quick-start).
 
 ## Getting Help
 
-If you need assistance:
-
-1. Check the troubleshooting guide
-2. Search our documentation
-3. Reach out to our support team
-
----
-
-_This template is designed to be customized for your specific project needs._
+1. Check troubleshooting guide
+2. Search documentation
+3. Create GitHub issue
 
 
 ---
@@ -94,55 +64,43 @@ URL: /docs/getting-started/quick-start
 
 # Quick Start Guide
 
-Get your documentation site up and running in just a few minutes! This guide will walk you through cloning the template, customizing it, and deploying it.
+Get your documentation site running in minutes.
 
 ## Prerequisites
 
-Before you begin, make sure you have:
-
-- **Node.js 18+** installed on your system
-- **npm** or **yarn** package manager
-- A **Git** client for version control
-- A **GitHub** account (for deployment automation)
+- Node.js 16+
+- npm package manager
+- Git
+- GitHub account (for deployment)
 
 ## Step 1: Clone the Template
 
 ```bash
-# Clone the repository
-git clone https://github.com/your-username/documentation-template.git
-cd documentation-template
-
-# Install dependencies
+git clone https://github.com/your-username/lite-paper.git
+cd lite-paper
 npm install
 ```
 
 ## Step 2: Start Development Server
 
 ```bash
-# Start the development server
 npm run dev
-
-# Your site will be available at:
-# http://localhost:3000
+# http://localhost:3333
 ```
 
-The development server includes:
-
-- **Hot reload** for instant updates
-- **Error overlay** for debugging
-- **TypeScript checking** in real-time
+Includes hot reload, error overlay, and TypeScript checking.
 
 ## Step 3: Customize Your Content
 
-### Update Site Configuration
+### Update Configuration
 
-Edit the main configuration in `app/data/documentation.ts`:
+Edit `app/data/documentation.ts`:
 
 ```typescript
 export const documentationTree: FileItem[] = [
   {
     type: 'directory',
-    name: 'Your Section Name',
+    name: 'Your Section',
     path: 'your-section',
     children: [
       {
@@ -155,135 +113,92 @@ export const documentationTree: FileItem[] = [
 ];
 ```
 
-### Create Your Content
+### Create Content
 
 Add markdown files in `app/docs/content/`:
 
 ```markdown
-# Your Page Title
+# Your Page
 
-Your content here! You can use:
+Content with:
 
-- Standard markdown syntax
-- Code blocks with syntax highlighting
-- Tables, lists, and links
-- Images and media
+- Markdown syntax
+- Code blocks
+- Tables and links
 ```
 
 ### Customize Styling
 
-Modify the visual appearance:
-
-- **Colors**: Edit CSS variables in `app/globals.css`
-- **Fonts**: Update font imports and CSS
-- **Layout**: Modify component styling
-- **Animations**: Adjust motion components
+- Colors: Edit `tailwind.config.js`
+- Fonts: Update `app/globals.css`
+- Layout: Modify components
 
 ## Step 4: Test Your Changes
 
 Before deploying, test your site:
 
 ```bash
-# Build for production
 npm run build
-
-# Start production server
 npm start
 ```
 
-Verify that:
+Verify:
 
-- ✅ All pages load correctly
-- ✅ Navigation works properly
-- ✅ Mindmap displays your content
-- ✅ Responsive design works on mobile
-- ✅ Dark/light mode toggles correctly
+- Pages load correctly
+- Navigation works
+- Graph displays content
+- Responsive design
+- Theme toggle
 
 ## Step 5: Deploy to Cloudflare
 
-### Option 1: Deploy via Dashboard (Recommended)
+### Option 1: Dashboard (Recommended)
 
-1. **Connect Repository**
-   - Go to [Cloudflare Pages](https://pages.cloudflare.com)
-   - Connect your GitHub repository
-
-2. **Configure Build**
-
+1. [Cloudflare Pages](https://pages.cloudflare.com) → Connect repository
+2. Build settings:
    ```
    Build command: npm run build
    Build directory: out
-   Node.js version: 18+
+   Node.js version: 20
    ```
+3. Deploy → Live at `your-project.pages.dev`
 
-3. **Deploy**
-   - Cloudflare will automatically build and deploy
-   - Your site will be live at `your-project.pages.dev`
+### Option 2: CLI
 
-### Option 2: Deploy via CLI
-
-1. **Update Project Name**
-   - Edit `wrangler.toml` and set your project name:
+1. Edit `wrangler.toml`:
 
    ```toml
    name = "your-project-name"
    ```
 
-2. **First Deployment**
-
+2. Deploy:
    ```bash
-   # Create project and deploy
-   npm run deploy:create
+   npm run deploy:create  # First time
+   npm run deploy         # Updates
    ```
 
-3. **Subsequent Deployments**
-   ```bash
-   # Deploy updates
-   npm run deploy
-   ```
-
-**Note**: If you get a "Project not found" error, use `npm run deploy:create` for the first deployment.
-
-## Alternative Deployment Options
+## Other Platforms
 
 ### Vercel
 
 ```bash
-# Install Vercel CLI
 npm i -g vercel
-
-# Deploy
 vercel
 ```
 
 ### Netlify
 
 ```bash
-# Install Netlify CLI
 npm i -g netlify-cli
-
-# Deploy
 netlify deploy --prod
-```
-
-### Static Export
-
-For static hosting:
-
-```bash
-# Build static version
-npm run build && npm run export
 ```
 
 ## What's Next?
 
-Now that your documentation site is running:
-
-1. 📖 Read the [Installation Guide](./installation) for detailed setup
-2. 📚 Check the [User Guide](../user-guide/basic-usage) for content management
-3. 🚀 Explore [Deployment Options](../../deployment/overview) for production setup
-4. 🛠️ Browse [Developer Guides](../../developer-guides/code-examples) for advanced customization
-
-Need help? Every section in this documentation includes detailed examples and troubleshooting tips!
+1. [Installation Guide](./installation) for detailed setup
+2. [User Guide](../user-guide/basic-usage) for content management
+3. [Deployment](../../deployment/overview) for production
+4. [Developer Guides](../../developer-guides/code-examples) for customization
 
 
 ---
@@ -295,308 +210,119 @@ URL: /docs/getting-started/installation
 
 # Installation Guide
 
-This comprehensive guide covers everything you need to know to install and set up your documentation site template.
+Detailed setup for the documentation template.
 
-## System Requirements
+## Requirements
 
-### Minimum Requirements
-
-- **Node.js**: Version 18.0 or higher
-- **RAM**: 4GB minimum (8GB recommended)
-- **Storage**: 1GB free space
-- **OS**: Windows 10+, macOS 10.15+, or Linux (Ubuntu 18.04+)
-
-### Recommended Development Environment
-
-- **Node.js**: Latest LTS version (20.x)
-- **Package Manager**: npm 9+ or yarn 3+
-- **Editor**: VS Code with TypeScript and React extensions
-- **Terminal**: Modern shell (zsh, fish, or PowerShell)
+- Node.js 16+
+- Git
+- 1GB free space
 
 ## Prerequisites
 
-### 1. Install Node.js
-
-Choose your installation method:
-
-**Option A: Official Installer**
+### Install Node.js
 
 ```bash
 # Download from https://nodejs.org
+node --version  # Should be v16.0.0+
+```
+
+### Install Git
+
+```bash
 # Verify installation
-node --version  # Should be v18.0.0 or higher
-npm --version   # Should be 9.0.0 or higher
-```
-
-**Option B: Node Version Manager (Recommended)**
-
-```bash
-# Install nvm (macOS/Linux)
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-
-# Install and use Node.js LTS
-nvm install --lts
-nvm use --lts
-```
-
-**Option C: Package Managers**
-
-```bash
-# macOS with Homebrew
-brew install node
-
-# Ubuntu/Debian
-sudo apt-get update
-sudo apt-get install nodejs npm
-
-# Windows with Chocolatey
-choco install nodejs
-```
-
-### 2. Install Git
-
-```bash
-# macOS with Homebrew
-brew install git
-
-# Ubuntu/Debian
-sudo apt-get install git
-
-# Windows
-# Download from https://git-scm.com/download/win
-```
-
-### 3. Set Up Your Environment
-
-```bash
-# Configure Git (first time only)
-git config --global user.name "Your Name"
-git config --global user.email "your.email@example.com"
-
-# Verify Git installation
 git --version
 ```
 
-## Installation Methods
+## Installation
 
-### Method 1: Clone from GitHub (Recommended)
+### Clone Repository
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/your-username/documentation-template.git
-cd documentation-template
-
-# 2. Install dependencies
+git clone https://github.com/your-username/lite-paper.git
+cd lite-paper
 npm install
-
-# 3. Start development server
 npm run dev
 ```
 
-### Method 2: Fork and Clone
+### Fork Method
 
 ```bash
-# 1. Fork the repository on GitHub (click "Fork" button)
+# 1. Fork on GitHub
 # 2. Clone your fork
-git clone https://github.com/YOUR_USERNAME/documentation-template.git
-cd documentation-template
-
-# 3. Add upstream remote (for updates)
-git remote add upstream https://github.com/original-owner/documentation-template.git
-
-# 4. Install dependencies
-npm install
-```
-
-### Method 3: Download ZIP
-
-```bash
-# 1. Download ZIP from GitHub
-# 2. Extract to your desired location
-# 3. Open terminal in extracted folder
-cd documentation-template-main
-
-# 4. Install dependencies
+git clone https://github.com/YOUR_USERNAME/lite-paper.git
+cd lite-paper
 npm install
 ```
 
 ## Project Structure
 
-After installation, your project structure will look like this:
-
 ```
-documentation-template/
-├── app/                          # Next.js app directory
-│   ├── components/              # React components
-│   │   ├── DocumentationGraph.tsx  # Interactive mindmap
-│   │   ├── FileTree.tsx         # Navigation sidebar
-│   │   └── ...                  # Other components
-│   ├── docs/                    # Documentation system
-│   │   ├── content/             # Markdown content files
-│   │   └── components/          # Doc-specific components
-│   ├── data/                    # Configuration data
-│   │   └── documentation.ts     # Site structure
-│   └── globals.css              # Global styles
-├── public/                      # Static assets
-│   └── assets/                  # Images, icons, etc.
-├── .next/                       # Build output (auto-generated)
-├── package.json                 # Dependencies and scripts
-├── next.config.js               # Next.js configuration
-├── tailwind.config.js           # Tailwind CSS config
-└── tsconfig.json                # TypeScript configuration
+app/
+├── components/          # React components
+├── docs/               # Documentation pages
+├── data/               # Site structure
+└── lib/                # Utilities
+public/                 # Static assets
+scripts/                # Build scripts
 ```
 
 ## Configuration
 
-### 1. Environment Variables
-
-Create a `.env.local` file in the root directory:
+### Environment Variables
 
 ```bash
 # .env.local
-NEXT_PUBLIC_SITE_NAME="Your Documentation Site"
+NEXT_PUBLIC_SITE_NAME="Your Site"
 NEXT_PUBLIC_SITE_URL="https://your-domain.com"
-NEXT_PUBLIC_GITHUB_URL="https://github.com/your-username/your-repo"
 ```
 
-### 2. Site Configuration
+### Site Structure
 
-Edit `app/data/documentation.ts` to customize your site structure:
+Edit `app/data/documentation.ts` for navigation structure.
 
-```typescript
-export const documentationTree: FileItem[] = [
-  {
-    type: 'directory',
-    name: 'Getting Started',
-    path: 'getting-started',
-    children: [
-      {
-        type: 'file',
-        name: 'Introduction.md',
-        path: 'getting-started/introduction',
-      },
-      // Add more files...
-    ],
-  },
-  // Add more sections...
-];
-```
+### Styling
 
-### 3. Styling Configuration
-
-Customize colors and theme in `app/globals.css`:
-
-```css
-:root {
-  --primary-color: #3b82f6; /* Blue */
-  --secondary-color: #64748b; /* Gray */
-  --accent-color: #10b981; /* Green */
-  --background-color: #ffffff; /* White */
-  --text-color: #1f2937; /* Dark Gray */
-}
-
-[data-theme='dark'] {
-  --background-color: #111827; /* Dark */
-  --text-color: #f9fafb; /* Light Gray */
-}
-```
+Customize colors in `tailwind.config.js`.
 
 ## Available Scripts
 
-Once installed, you can use these npm scripts:
-
 ```bash
-# Development
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
-npm run type-check   # Run TypeScript checks
-
-# Deployment
-npm run export       # Export static files
-npm run analyze      # Analyze bundle size
+npm run dev          # Development server
+npm run build        # Production build
+npm run lint         # ESLint
+npm run type-check   # TypeScript checks
+npm run deploy       # Deploy to Cloudflare
 ```
 
 ## Troubleshooting
 
-### Common Issues
-
-**Issue**: `Cannot find module` errors
-
-```bash
-# Solution: Clear cache and reinstall
-rm -rf node_modules package-lock.json
-npm install
-```
-
-**Issue**: TypeScript errors during build
-
-```bash
-# Solution: Check TypeScript configuration
-npm run type-check
-```
-
-**Issue**: Port already in use
-
-```bash
-# Solution: Use different port
-npm run dev -- --port 3001
-```
-
-**Issue**: Permission errors (macOS/Linux)
-
-```bash
-# Solution: Fix npm permissions
-sudo chown -R $(whoami) ~/.npm
-```
+**Module errors**: `rm -rf node_modules && npm install`
+**TypeScript errors**: `npm run type-check`
+**Port in use**: Change port in next.config.js
 
 ### Development Tips
 
-1. **Use TypeScript**: The template is fully typed for better development experience
-2. **Hot Reload**: Changes to components and content update automatically
-3. **Error Overlay**: Development server shows helpful error messages
-4. **Browser Dev Tools**: Use React Developer Tools for debugging
-
-### Performance Optimization
-
-```bash
-# Enable SWC compiler (faster builds)
-# Already configured in next.config.js
-
-# Analyze bundle size
-npm run analyze
-
-# Optimize images
-# Use next/image component for automatic optimization
-```
+- Hot reload updates automatically
+- Use TypeScript for better DX
+- React Developer Tools for debugging
 
 ## Verification
 
-Verify your installation is working correctly:
-
 ```bash
-# 1. Start development server
 npm run dev
-
-# 2. Open browser to http://localhost:3000
-# 3. Check that all features work:
-#    - Navigation sidebar
-#    - Mindmap visualization
-#    - Dark/light mode toggle
-#    - Responsive design
+# Open http://localhost:3333
 ```
+
+Verify navigation, graph visualization, and theme toggle work.
 
 ## Next Steps
 
-Your installation is complete! Here's what to do next:
+1. Customize content
+2. Style your site
+3. Deploy to platform
 
-1. 📝 **Customize Content**: Add your own markdown files
-2. 🎨 **Style Your Site**: Modify colors and layout
-3. 🚀 **Deploy**: Choose your hosting platform
-4. 📊 **Analytics**: Add tracking if needed
-
-Continue to the [Quick Start Guide](./quick-start) to begin customizing your site!
+See [Quick Start Guide](./quick-start) for next steps.
 
 
 ---
@@ -968,7 +694,7 @@ Where to go from here.
 npm run dev
 
 # Test your content
-# Preview in browser at localhost:3000
+# Preview in browser at localhost:3333
 
 # Check for build errors
 npm run build
@@ -1143,8 +869,8 @@ Our documentation uses a carefully designed typography scale:
 ```css
 /* Real CSS variables from our system */
 :root {
-  --title-font: 'Urbanist', sans-serif;
-  --body-font: 'Urbanist', sans-serif;
+  --title-font: 'Hubot Sans', sans-serif;
+  --body-font: 'Mona Sans', sans-serif;
   --mono-font: 'MapleMono', 'SF Mono', monospace;
 
   /* Light mode colors */
@@ -1260,8 +986,8 @@ Our documentation site implements several performance optimizations:
 **Asset Optimization:**
 
 - **Font Loading**: WOFF2 format with `font-display: swap`
-  - Urbanist: ~42KB per variant
-  - Urbanist: ~42KB per variant
+  - Hubot Sans: ~42KB per variant
+  - Mona Sans: ~42KB per variant
   - MapleMono: ~17MB (loaded on demand for code blocks)
 - **Image Optimization**: Next.js automatic WebP/AVIF conversion
 - **Static Assets**: Served from CDN with proper caching headers
@@ -1370,82 +1096,101 @@ URL: /docs/user-guide/configuration
 
 # Configuration
 
-Customize your project settings and behavior.
+Customize your documentation site settings.
 
-## Configuration Files
+## Environment Variables
 
-### Main Config
+Create `.env.local`:
+
+```bash
+# Site Configuration
+NEXT_PUBLIC_SITE_NAME="Your Documentation"
+NEXT_PUBLIC_SITE_URL="https://your-domain.com"
+NEXT_PUBLIC_GITHUB_URL="https://github.com/user/repo"
+
+# AI Features (Optional)
+NEXT_PUBLIC_ENABLE_AI="false"
+NEXT_PUBLIC_AI_WORKER_URL=""
+```
+
+## Theme Configuration
+
+Edit `tailwind.config.js`:
+
+```javascript
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        dark: {
+          primary: '#FF85A1', // Sakura pink
+          secondary: '#FFC4DD', // Light pink
+          background: '#0F0F12', // Dark background
+        },
+        light: {
+          primary: '#678D58', // Matcha green
+          secondary: '#A3C9A8', // Light green
+          background: '#F3F5F0', // Light background
+        },
+      },
+    },
+  },
+};
+```
+
+## Documentation Structure
+
+Edit `app/data/documentation.ts`:
+
+```typescript
+export const documentationTree: FileItem[] = [
+  {
+    type: 'directory',
+    name: 'Getting Started',
+    path: 'getting-started',
+    children: [
+      {
+        type: 'file',
+        name: 'Introduction.md',
+        path: 'getting-started/introduction',
+      },
+    ],
+  },
+];
+```
+
+## Next.js Configuration
+
+Edit `next.config.js`:
+
+```javascript
+const nextConfig = {
+  output: 'export', // Static export
+  images: {
+    unoptimized: true, // Required for static export
+  },
+  env: {
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+  },
+};
+```
+
+## Build Scripts
+
+Custom npm scripts in `package.json`:
 
 ```json
 {
-  "name": "my-project",
-  "version": "1.0.0",
-  "description": "My awesome project",
-  "main": "index.js",
-  "config": {
-    "environment": "development",
-    "debug": true,
-    "features": {
-      "analytics": true,
-      "notifications": false
-    }
+  "scripts": {
+    "dev": "npm run generate:docs && next dev -p 3333",
+    "build": "npm run generate:llms && npm run generate:docs && next build",
+    "generate:docs": "node scripts/generate-docs.mjs",
+    "deploy": "npx wrangler pages deploy out"
   }
 }
 ```
 
-### Environment Variables
-
-```bash
-# .env.local
-NODE_ENV=development
-API_URL=http://localhost:3000/api
-DATABASE_URL=postgresql://user:pass@localhost:5432/db
-SECRET_KEY=your-secret-key
-```
-
-## Settings
-
-| Setting   | Type    | Default | Description          |
-| --------- | ------- | ------- | -------------------- |
-| `debug`   | boolean | `false` | Enable debug mode    |
-| `port`    | number  | `3000`  | Server port          |
-| `timeout` | number  | `5000`  | Request timeout (ms) |
-| `cache`   | boolean | `true`  | Enable caching       |
-
-## Advanced Options
-
-### Custom Middleware
-
-```javascript
-// middleware.js
-export default function customMiddleware(options) {
-  return (req, res, next) => {
-    // Custom logic here
-    console.log(`Request: ${req.method} ${req.url}`);
-    next();
-  };
-}
-```
-
-### Plugin Configuration
-
-```javascript
-// plugins.config.js
-export default {
-  plugins: [
-    'essential-plugin',
-    ['advanced-plugin', { option: 'value' }],
-    {
-      name: 'custom-plugin',
-      config: { enabled: true },
-    },
-  ],
-};
-```
-
----
-
-_Having issues? See our [troubleshooting guide](./troubleshooting)._
+_Issues? See [troubleshooting guide](./troubleshooting)._
 
 
 ---
@@ -2136,8 +1881,8 @@ Theme-aware styling using CSS variables:
 
 ```css
 :root {
-  --title-font: 'Urbanist', sans-serif;
-  --body-font: 'Urbanist', sans-serif;
+  --title-font: 'Hubot Sans', sans-serif;
+  --body-font: 'Mona Sans', sans-serif;
   --mono-font: 'MapleMono', 'SF Mono', monospace;
 }
 ```
@@ -2385,7 +2130,7 @@ Reference for all available API endpoints in the documentation system.
 ## Base URL
 
 ```
-Development: http://localhost:3000
+Development: http://localhost:3333
 Production: https://your-domain.com
 ```
 
@@ -3028,8 +2773,8 @@ export const useTheme = () => {
   --border-color: #E5E7EB;
 
   /* Typography */
-  --title-font: 'Urbanist', sans-serif;
-  --body-font: 'Urbanist', sans-serif;
+  --title-font: 'Hubot Sans', sans-serif;
+  --body-font: 'Mona Sans', sans-serif;
   --mono-font: 'MapleMono', 'SF Mono', monospace;
 
   /* Transitions */
@@ -3751,7 +3496,7 @@ const nextConfig = {
 
   // Environment variables
   env: {
-    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3333',
   },
 };
 
@@ -4430,7 +4175,7 @@ function getRequiredEnvVar(key: string): string {
 
 export const env = {
   // Public variables (prefixed with NEXT_PUBLIC_)
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3333',
 
   // Private variables (server-side only)
   databaseUrl: getRequiredEnvVar('DATABASE_URL'),
@@ -4724,575 +4469,6 @@ For more specific guidance, refer to:
 ---
 
 
-### Contributing
-
-URL: /docs/developer-guides/contributing
-
-# Contributing
-
-Thank you for your interest in contributing to the documentation system! This guide will help you get started.
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- npm 8+
-- Git
-
-### Setup
-
-1. **Fork the repository**
-2. **Clone your fork**:
-
-   ```bash
-   git clone https://github.com/your-username/docs-template.git
-   cd docs-template
-   ```
-
-3. **Install dependencies**:
-
-   ```bash
-   npm install
-   ```
-
-4. **Start development server**:
-
-   ```bash
-   npm run dev
-   ```
-
-5. **Open** http://localhost:3000
-
-## Development Workflow
-
-### Branch Naming
-
-Use descriptive branch names:
-
-- `feature/add-search-functionality`
-- `fix/mobile-navigation-bug`
-- `docs/update-api-reference`
-- `refactor/simplify-theme-provider`
-
-### Commit Messages
-
-Follow conventional commit format:
-
-```
-type(scope): description
-
-[optional body]
-
-[optional footer]
-```
-
-**Types:**
-
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation changes
-- `style`: Code style changes
-- `refactor`: Code refactoring
-- `test`: Adding tests
-- `chore`: Maintenance tasks
-
-**Examples:**
-
-```
-feat(mindmap): add search functionality to documentation graph
-
-fix(mobile): resolve sidebar close button positioning issue
-
-docs(api): update endpoints documentation with new parameters
-```
-
-## Code Standards
-
-### TypeScript
-
-- Use strict type checking
-- Prefer interfaces over types for object shapes
-- Include JSDoc comments for public APIs
-
-```typescript
-/**
- * Configuration for the documentation graph component
- */
-interface GraphConfig {
-  /** Maximum number of nodes to display */
-  maxNodes: number;
-  /** Enable search functionality */
-  enableSearch: boolean;
-}
-```
-
-### React Components
-
-- Use functional components with hooks
-- Memoize expensive operations
-- Follow the single responsibility principle
-
-```typescript
-import React, { memo, useMemo } from 'react'
-
-interface Props {
-  data: GraphData
-  onNodeClick: (id: string) => void
-}
-
-export const DocumentationGraph = memo<Props>(({ data, onNodeClick }) => {
-  const processedNodes = useMemo(() => {
-    return data.nodes.map(processNode)
-  }, [data.nodes])
-
-  return (
-    <svg>
-      {processedNodes.map(node => (
-        <Node key={node.id} data={node} onClick={onNodeClick} />
-      ))}
-    </svg>
-  )
-})
-```
-
-### CSS/Styling
-
-- Use CSS custom properties for theming
-- Follow BEM methodology for class names
-- Ensure responsive design
-
-```css
-.documentation-graph {
-  --graph-primary: var(--primary-color);
-  --graph-background: var(--background-color);
-}
-
-.documentation-graph__node {
-  fill: var(--graph-primary);
-  transition: fill 0.2s ease;
-}
-
-.documentation-graph__node--active {
-  fill: var(--accent-color);
-}
-```
-
-## Testing
-
-### Running Tests
-
-```bash
-# Unit tests
-npm test
-
-# E2E tests
-npm run test:e2e
-
-# Test coverage
-npm run test:coverage
-```
-
-### Writing Tests
-
-Write tests for:
-
-- Component behavior
-- User interactions
-- Edge cases
-- Accessibility features
-
-```typescript
-import { render, screen, fireEvent } from '@testing-library/react'
-import { DocumentationGraph } from '../DocumentationGraph'
-
-describe('DocumentationGraph', () => {
-  const mockData = {
-    nodes: [
-      { id: '1', title: 'Introduction', x: 0, y: 0 }
-    ]
-  }
-
-  test('renders nodes correctly', () => {
-    render(
-      <DocumentationGraph
-        data={mockData}
-        onNodeClick={jest.fn()}
-      />
-    )
-
-    expect(screen.getByText('Introduction')).toBeInTheDocument()
-  })
-
-  test('calls onNodeClick when node is clicked', () => {
-    const handleClick = jest.fn()
-
-    render(
-      <DocumentationGraph
-        data={mockData}
-        onNodeClick={handleClick}
-      />
-    )
-
-    fireEvent.click(screen.getByText('Introduction'))
-    expect(handleClick).toHaveBeenCalledWith('1')
-  })
-})
-```
-
-## Documentation
-
-### Code Documentation
-
-- Add JSDoc comments for all public functions and components
-- Include usage examples
-- Document complex algorithms
-
-### Content Documentation
-
-- Use clear, concise language
-- Include code examples
-- Add screenshots when helpful
-- Keep content up to date
-
-### API Documentation
-
-Document all public APIs:
-
-````typescript
-/**
- * Theme provider for the documentation system
- *
- * @example
- * ```tsx
- * <ThemeProvider>
- *   <App />
- * </ThemeProvider>
- * ```
- */
-export function ThemeProvider({ children }: { children: ReactNode }) {
-  // Implementation
-}
-````
-
-## Accessibility
-
-### Requirements
-
-All contributions must:
-
-- Support keyboard navigation
-- Include proper ARIA labels
-- Respect motion preferences
-- Meet WCAG 2.1 AA standards
-
-### Testing Accessibility
-
-```bash
-# Install axe-core
-npm install --save-dev @axe-core/react
-
-# Run accessibility tests
-npm run test:a11y
-```
-
-### Common Patterns
-
-```typescript
-// Keyboard navigation
-<button
-  onKeyDown={(e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      handleClick()
-    }
-  }}
->
-  Action
-</button>
-
-// Screen reader support
-<div
-  role="region"
-  aria-labelledby="section-title"
-  aria-describedby="section-description"
->
-  <h2 id="section-title">Section Title</h2>
-  <p id="section-description">Description for screen readers</p>
-</div>
-```
-
-## Performance
-
-### Guidelines
-
-- Use React.memo for expensive components
-- Implement proper code splitting
-- Optimize images and assets
-- Monitor Core Web Vitals
-
-### Profiling
-
-```bash
-# Build analysis
-npm run analyze
-
-# Performance testing
-npm run lighthouse
-```
-
-## Pull Request Process
-
-### Before Submitting
-
-1. **Run all tests**: `npm run test:all`
-2. **Check linting**: `npm run lint`
-3. **Type check**: `npm run type-check`
-4. **Build successfully**: `npm run build`
-5. **Test accessibility**: `npm run test:a11y`
-
-### PR Template
-
-```markdown
-## Description
-
-Brief description of changes
-
-## Type of Change
-
-- [ ] Bug fix
-- [ ] New feature
-- [ ] Documentation update
-- [ ] Performance improvement
-- [ ] Code refactoring
-
-## Testing
-
-- [ ] Unit tests pass
-- [ ] E2E tests pass
-- [ ] Manual testing completed
-- [ ] Accessibility testing completed
-
-## Screenshots/GIFs
-
-If applicable, add screenshots or GIFs
-
-## Checklist
-
-- [ ] Code follows style guidelines
-- [ ] Self-review completed
-- [ ] Documentation updated
-- [ ] No new warnings/errors
-```
-
-### Review Process
-
-1. **Automated checks** must pass
-2. **Code review** by maintainers
-3. **Accessibility review** if UI changes
-4. **Performance review** for significant changes
-
-## Issue Reporting
-
-### Bug Reports
-
-Use the bug report template:
-
-```markdown
-## Bug Description
-
-Clear description of the bug
-
-## Steps to Reproduce
-
-1. Go to '...'
-2. Click on '...'
-3. See error
-
-## Expected Behavior
-
-What should have happened
-
-## Actual Behavior
-
-What actually happened
-
-## Environment
-
-- OS: [e.g., macOS 13.0]
-- Browser: [e.g., Chrome 110]
-- Node.js: [e.g., 18.12.0]
-```
-
-### Feature Requests
-
-Use the feature request template:
-
-```markdown
-## Feature Description
-
-Clear description of the feature
-
-## Use Case
-
-Why is this feature needed?
-
-## Proposed Solution
-
-How would you implement this?
-
-## Alternatives Considered
-
-Any alternative solutions?
-
-## Additional Context
-
-Screenshots, mockups, etc.
-```
-
-## Release Process
-
-### Versioning
-
-We follow [Semantic Versioning](https://semver.org/):
-
-- **MAJOR**: Breaking changes
-- **MINOR**: New features (backward compatible)
-- **PATCH**: Bug fixes (backward compatible)
-
-### Release Checklist
-
-1. Update version in `package.json`
-2. Update `CHANGELOG.md`
-3. Create release tag
-4. Update documentation
-5. Deploy to production
-
-## Community Guidelines
-
-### Code of Conduct
-
-- Be respectful and inclusive
-- Welcome newcomers
-- Focus on constructive feedback
-- Help others learn
-
-### Communication
-
-- **GitHub Issues**: Bug reports and feature requests
-- **Discussions**: Questions and general discussion
-- **PR Reviews**: Code-specific feedback
-
-## Getting Help
-
-### Resources
-
-- **Documentation**: `/docs`
-- **Examples**: `/examples`
-- **API Reference**: `/docs/api-reference`
-
-### Contact
-
-- **Issues**: GitHub Issues
-- **Questions**: GitHub Discussions
-- **Security**: security@your-domain.com
-
-## Development Tips
-
-### Useful Commands
-
-```bash
-# Development
-npm run dev              # Start dev server
-npm run dev:turbo        # Start with turbo mode
-
-# Testing
-npm run test             # Run unit tests
-npm run test:watch       # Watch mode
-npm run test:coverage    # With coverage
-npm run test:e2e         # E2E tests
-
-# Code Quality
-npm run lint             # Lint code
-npm run lint:fix         # Fix linting issues
-npm run type-check       # TypeScript check
-npm run format           # Format code
-
-# Build
-npm run build            # Production build
-npm run analyze          # Bundle analysis
-npm run lighthouse       # Performance audit
-```
-
-### Debug Mode
-
-Enable debug features:
-
-```bash
-# Environment variable
-DEBUG=true npm run dev
-
-# Or in browser console
-localStorage.setItem('debugMode', 'true')
-```
-
-### Hot Reloading
-
-For instant feedback during development:
-
-- Component changes reload automatically
-- CSS changes apply without refresh
-- Content changes update in real-time
-
-## Architecture Decisions
-
-### Technology Choices
-
-- **Next.js 13+**: App Router for better developer experience
-- **TypeScript**: Type safety and better tooling
-- **Framer Motion**: Smooth animations
-- **Tailwind CSS**: Utility-first styling
-- **React Testing Library**: Component testing
-
-### Folder Structure
-
-```
-project/
-├── app/                 # Next.js app directory
-│   ├── components/      # Reusable components
-│   ├── docs/           # Documentation pages
-│   ├── providers/      # Context providers
-│   └── globals.css     # Global styles
-├── public/             # Static assets
-├── tests/              # Test files
-└── docs/               # Project documentation
-```
-
-## Future Roadmap
-
-### Planned Features
-
-- [ ] Full-text search with fuzzy matching
-- [ ] Dark/light theme auto-switching
-- [ ] PDF export functionality
-- [ ] Multi-language support
-- [ ] Analytics dashboard
-- [ ] Comment system
-- [ ] Version history
-
-### Long-term Goals
-
-- Improved performance
-- Better accessibility
-- Enhanced mobile experience
-- Plugin system
-- Advanced theming
-
-Thank you for contributing to make documentation better for everyone! 🚀
-
-
----
-
-
 ### Design System
 
 URL: /docs/developer-guides/design-system
@@ -5416,14 +4592,42 @@ Our design system includes interactive wallet address components with copy funct
 <div class="wallet-info">
   <p class="profile-info">
     <strong>Ethereum:</strong>
-    <code class="wallet-address" data-address="0x1234567890abcdef1234567890abcdef12345678">
+    <code
+      class="wallet-address"
+      data-address="0x1234567890abcdef1234567890abcdef12345678"
+      data-chain="eth"
+    >
       0x1234567890abcdef1234567890abcdef12345678
     </code>
   </p>
   <p class="profile-info">
     <strong>Bitcoin:</strong>
-    <code class="wallet-address" data-address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh">
+    <code
+      class="wallet-address"
+      data-address="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+      data-chain="btc"
+    >
       bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+    </code>
+  </p>
+  <p class="profile-info">
+    <strong>Base:</strong>
+    <code
+      class="wallet-address"
+      data-address="0x742d35Cc6634C0532925a3b844Bc9e7595f8fA6B"
+      data-chain="base"
+    >
+      0x742d35Cc6634C0532925a3b844Bc9e7595f8fA6B
+    </code>
+  </p>
+  <p class="profile-info">
+    <strong>Solana:</strong>
+    <code
+      class="wallet-address"
+      data-address="7VK4A5bh6XwFZMYiKcGDxRF8DzWrr8HMVBgCMhwuCCsF"
+      data-chain="solana"
+    >
+      7VK4A5bh6XwFZMYiKcGDxRF8DzWrr8HMVBgCMhwuCCsF
     </code>
   </p>
 </div>
@@ -5472,6 +4676,33 @@ The wallet addresses automatically get copy buttons when processed by the conten
 }
 ```
 
+### Live Example:
+
+```html
+<div class="wallet-info">
+  <p class="profile-info">
+    <strong>Ethereum:</strong>
+    <code
+      class="wallet-address"
+      data-address="0x742d35Cc6634C0532925a3b844Bc9e7595f8e7c9"
+      data-chain="eth"
+    >
+      0x742d35Cc6634C0532925a3b844Bc9e7595f8e7c9
+    </code>
+  </p>
+  <p class="profile-info">
+    <strong>Solana:</strong>
+    <code
+      class="wallet-address"
+      data-address="7VK4A5bh6XwFZMYiKcGDxRF8DzWrr8HMVBgCMhwuCCsF"
+      data-chain="solana"
+    >
+      7VK4A5bh6XwFZMYiKcGDxRF8DzWrr8HMVBgCMhwuCCsF
+    </code>
+  </p>
+</div>
+```
+
 ## Design Tokens
 
 ### CSS Custom Properties
@@ -5504,42 +4735,113 @@ For opacity and rgba() usage:
 
 ## Typography
 
+Our design system includes multiple font families for different purposes, providing flexibility and accessibility similar to design systems like Notion. Users can select their preferred font theme through the **Font Selector** in the settings.
+
+### Font Sets
+
+#### Sans-serif Fonts
+
+- **Hubot Sans** - Clean, modern display font for headings and UI elements
+- **Mona Sans** - Highly readable body font for general content
+
+#### Serif Fonts
+
+- **DM Serif Display** - Classic serif for elegant headings
+- **Noto Serif JP** - International serif with excellent readability and Japanese character support
+
+#### Monospace Font
+
+- **MapleMono** - Clear, distinct monospace for code and technical content
+
 ### Font Families
 
-The design system uses two primary font families:
+The design system uses these font families across different contexts:
 
+```html
 <div style="margin: 2rem 0;">
-  <div style="font-family: var(--title-font); font-size: 2rem; margin-bottom: 1rem; color: var(--text-color);">
-    Urbanist - Display & Headings
+  <div
+    style="font-family: var(--title-font); font-size: 2rem; margin-bottom: 1rem; color: var(--text-color);"
+  >
+    Hubot Sans - Display & Headings
   </div>
-  <div style="font-family: var(--mono-font); font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text-secondary);">
+  <div
+    style="font-family: var(--serif-font); font-size: 1.8rem; margin-bottom: 1rem; color: var(--text-color);"
+  >
+    Noto Serif JP - Elegant Serif Option
+  </div>
+  <div
+    style="font-family: var(--mono-font); font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text-secondary);"
+  >
     MapleMono - Code & Technical Text
   </div>
   <div style="font-family: var(--body-font); font-size: 1rem; color: var(--text-color);">
-    Urbanist - Body text and general content for optimal readability.
+    Mona Sans - Body text and general content for optimal readability.
   </div>
 </div>
+```
+
+### Font Theme Selection
+
+Users can choose between different font themes using the font selector in the settings. This provides:
+
+- **Accessibility**: Users can select fonts that work best for their reading preferences
+- **Familiarity**: Similar to Notion and other modern design tools
+- **Flexibility**: Different fonts for different use cases and aesthetics
+
+Available font themes:
+
+- **Sans (Default)**: Hubot Sans + Mona Sans
+- **Serif**: DM Serif Display + Noto Serif JP
+- **Mono**: MapleMono for all text
 
 ### Font Weights & Styles
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
+```html
+<div
+  style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;"
+>
   <div style="padding: 1rem; border: 1px solid var(--border-unified); border-radius: 8px;">
-    <div style="font-family: var(--title-font); font-weight: 300; font-size: 1.2rem; margin-bottom: 0.5rem;">Light (300)</div>
-    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">Urbanist Light</div>
+    <div
+      style="font-family: var(--title-font); font-weight: 300; font-size: 1.2rem; margin-bottom: 0.5rem;"
+    >
+      Light (300)
+    </div>
+    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">
+      Hubot Sans Light
+    </div>
   </div>
   <div style="padding: 1rem; border: 1px solid var(--border-unified); border-radius: 8px;">
-    <div style="font-family: var(--title-font); font-weight: 400; font-size: 1.2rem; margin-bottom: 0.5rem;">Regular (400)</div>
-    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">Urbanist Regular</div>
+    <div
+      style="font-family: var(--title-font); font-weight: 400; font-size: 1.2rem; margin-bottom: 0.5rem;"
+    >
+      Regular (400)
+    </div>
+    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">
+      Hubot Sans Regular
+    </div>
   </div>
   <div style="padding: 1rem; border: 1px solid var(--border-unified); border-radius: 8px;">
-    <div style="font-family: var(--title-font); font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem;">Bold (700)</div>
-    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">Urbanist Bold</div>
+    <div
+      style="font-family: var(--title-font); font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem;"
+    >
+      Bold (700)
+    </div>
+    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">
+      Hubot Sans Bold
+    </div>
   </div>
   <div style="padding: 1rem; border: 1px solid var(--border-unified); border-radius: 8px;">
-    <div style="font-family: var(--title-font); font-weight: 900; font-size: 1.2rem; margin-bottom: 0.5rem;">Black (900)</div>
-    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">Urbanist Black</div>
+    <div
+      style="font-family: var(--title-font); font-weight: 900; font-size: 1.2rem; margin-bottom: 0.5rem;"
+    >
+      Black (900)
+    </div>
+    <div style="font-family: var(--mono-font); font-size: 0.8rem; color: var(--muted-color);">
+      Hubot Sans Black
+    </div>
   </div>
 </div>
+```
 
 ### CSS Font Classes
 
@@ -5547,7 +4849,7 @@ The design system uses two primary font families:
 /* Font family classes */
 .font-title {
   font-family: var(--title-font);
-} /* Urbanist */
+} /* Hubot Sans */
 .font-mono {
   font-family: var(--mono-font);
 } /* MapleMono */
@@ -5563,6 +4865,22 @@ h6 {
 }
 ```
 
+### Live Font Example:
+
+```html
+<div style="display: grid; gap: 1rem;">
+  <div style="font-family: var(--title-font); font-size: 1.5rem; font-weight: 700;">
+    Hubot Sans - Display Font
+  </div>
+  <div style="font-family: var(--mono-font); font-size: 1rem;">
+    MapleMono - Monospace Font for Code
+  </div>
+  <div style="font-family: var(--body-font); font-size: 1rem;">
+    Mona Sans - Body text for optimal readability
+  </div>
+</div>
+```
+
 ## Component Examples
 
 ### Interactive Copy Buttons
@@ -5574,7 +4892,7 @@ The system includes reusable copy button functionality for various use cases:
 ```html
 <!-- Example: Color value with copy functionality -->
 <div
-  style="background-color: var(--primary-color); padding: 1rem; border-radius: 8px; position: relative;"
+  style="background-color: var(--primary-color); padding: 1rem; border-radius: 8px; position: relative; margin-bottom: 1rem;"
 >
   <code
     class="wallet-address"
@@ -5590,92 +4908,174 @@ The system includes reusable copy button functionality for various use cases:
 
 ```html
 <!-- Example: API key with copy functionality -->
-<code class="wallet-address" data-address="sk-1234567890abcdef1234567890abcdef">
-  sk-1234567890abcdef1234567890abcdef
-</code>
+<div
+  style="background-color: var(--card-color); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-unified);"
+>
+  <code class="wallet-address" data-address="sk-1234567890abcdef1234567890abcdef">
+    sk-1234567890abcdef1234567890abcdef
+  </code>
+</div>
 ```
 
 ### Notification Styles
 
-The system includes styled notifications using our design tokens:
+The system includes clean, minimal notifications with rounded borders and muted colors:
 
+#### Notification CSS Structure
+
+```css
+.notification {
+  padding: var(--space-4);
+  margin: var(--space-4) 0;
+  border-radius: 12px;
+  border: 1px solid;
+  font-family: var(--mono-font);
+  display: flex;
+  align-items: flex-start;
+}
+
+/* Color variants with muted tones */
+.notification-info {
+  background-color: rgba(100, 149, 200, 0.1);
+  border-color: rgba(100, 149, 200, 0.3);
+}
+
+.notification-success {
+  background-color: rgba(120, 180, 120, 0.1);
+  border-color: rgba(120, 180, 120, 0.3);
+}
+
+.notification-warning {
+  background-color: rgba(200, 160, 80, 0.1);
+  border-color: rgba(200, 160, 80, 0.3);
+}
+
+.notification-error {
+  background-color: rgba(200, 120, 120, 0.1);
+  border-color: rgba(200, 120, 120, 0.3);
+}
+```
+
+### Live Notification Examples:
+
+```html
 <div class="notification notification-info">
-  <img src="/assets/icons/pixel-info-solid.svg" alt="Info" width="20" height="20" />
+  <i
+    class="mingcute:info-circle-fill"
+    style="width: 20px; height: 20px; color: rgba(100, 149, 200, 0.8); margin-right: 8px;"
+  ></i>
   <div>
-    <strong>Info:</strong> This notification uses the design system's info styling with proper spacing and typography.
+    <strong>Info:</strong> This notification uses rounded borders and muted blue tones for a clean
+    appearance.
   </div>
 </div>
 
 <div class="notification notification-success">
-  <img src="/assets/icons/pixel-check-solid.svg" alt="Success" width="20" height="20" />
+  <i
+    class="mingcute:check-circle-fill"
+    style="width: 20px; height: 20px; color: rgba(120, 180, 120, 0.8); margin-right: 8px;"
+  ></i>
   <div>
-    <strong>Success:</strong> Success notifications maintain consistency with the overall design system.
+    <strong>Success:</strong> Success notifications use subtle green colors and clean typography.
   </div>
 </div>
 
 <div class="notification notification-warning">
-  <img src="/assets/icons/pixel-warning-solid.svg" alt="Warning" width="20" height="20" />
+  <i
+    class="mingcute:alert-triangle-fill"
+    style="width: 20px; height: 20px; color: rgba(200, 160, 80, 0.8); margin-right: 8px;"
+  ></i>
   <div>
-    <strong>Warning:</strong> Warning notifications use appropriate contrast ratios for accessibility.
+    <strong>Warning:</strong> Warning notifications feature muted amber tones with proper contrast.
   </div>
 </div>
 
 <div class="notification notification-error">
-  <img src="/assets/icons/pixel-error-solid.svg" alt="Error" width="20" height="20" />
+  <i
+    class="mingcute:close-circle-fill"
+    style="width: 20px; height: 20px; color: rgba(200, 120, 120, 0.8); margin-right: 8px;"
+  ></i>
   <div>
-    <strong>Error:</strong> Error notifications stand out while maintaining design consistency.
+    <strong>Error:</strong> Error notifications use soft red colors while maintaining readability.
   </div>
 </div>
+```
 
 ## Spacing System
 
 The design system uses a consistent spacing scale:
 
+```html
 <div style="margin: 2rem 0;">
   <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-    <div style="width: 0.25rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"></div>
-    <code>0.25rem (4px)</code> - Minimal spacing
+    <div
+      style="width: 0.25rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"
+    ></div>
+    <code style="font-family: var(--mono-font);">0.25rem (4px)</code> - Minimal spacing
   </div>
   <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-    <div style="width: 0.5rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"></div>
-    <code>0.5rem (8px)</code> - Small spacing
+    <div
+      style="width: 0.5rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"
+    ></div>
+    <code style="font-family: var(--mono-font);">0.5rem (8px)</code> - Small spacing
   </div>
   <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-    <div style="width: 1rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"></div>
-    <code>1rem (16px)</code> - Base spacing
+    <div
+      style="width: 1rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"
+    ></div>
+    <code style="font-family: var(--mono-font);">1rem (16px)</code> - Base spacing
   </div>
   <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-    <div style="width: 1.5rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"></div>
-    <code>1.5rem (24px)</code> - Medium spacing
+    <div
+      style="width: 1.5rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"
+    ></div>
+    <code style="font-family: var(--mono-font);">1.5rem (24px)</code> - Medium spacing
   </div>
   <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-    <div style="width: 2rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"></div>
-    <code>2rem (32px)</code> - Large spacing
+    <div
+      style="width: 2rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"
+    ></div>
+    <code style="font-family: var(--mono-font);">2rem (32px)</code> - Large spacing
   </div>
   <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-    <div style="width: 3rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"></div>
-    <code>3rem (48px)</code> - Extra large spacing
+    <div
+      style="width: 3rem; height: 2rem; background-color: var(--primary-color); margin-right: 1rem;"
+    ></div>
+    <code style="font-family: var(--mono-font);">3rem (48px)</code> - Extra large spacing
   </div>
 </div>
+```
 
 ## Border Radius
 
 Consistent border radius values across components:
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 2rem 0;">
-  <div style="background-color: var(--card-color); border: 1px solid var(--border-unified); border-radius: 4px; padding: 1rem; text-align: center;">
-    <code>4px</code><br/>Small radius
+```html
+<div
+  style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 2rem 0;"
+>
+  <div
+    style="background-color: var(--card-color); border: 1px solid var(--border-unified); border-radius: 4px; padding: 1rem; text-align: center;"
+  >
+    <code style="font-family: var(--mono-font);">4px</code><br />Small radius
   </div>
-  <div style="background-color: var(--card-color); border: 1px solid var(--border-unified); border-radius: 6px; padding: 1rem; text-align: center;">
-    <code>6px</code><br/>Medium radius
+  <div
+    style="background-color: var(--card-color); border: 1px solid var(--border-unified); border-radius: 6px; padding: 1rem; text-align: center;"
+  >
+    <code style="font-family: var(--mono-font);">6px</code><br />Medium radius
   </div>
-  <div style="background-color: var(--card-color); border: 1px solid var(--border-unified); border-radius: 8px; padding: 1rem; text-align: center;">
-    <code>8px</code><br/>Base radius
+  <div
+    style="background-color: var(--card-color); border: 1px solid var(--border-unified); border-radius: 8px; padding: 1rem; text-align: center;"
+  >
+    <code style="font-family: var(--mono-font);">8px</code><br />Base radius
   </div>
-  <div style="background-color: var(--card-color); border: 1px solid var(--border-unified); border-radius: 12px; padding: 1rem; text-align: center;">
-    <code>12px</code><br/>Large radius
+  <div
+    style="background-color: var(--card-color); border: 1px solid var(--border-unified); border-radius: 12px; padding: 1rem; text-align: center;"
+  >
+    <code style="font-family: var(--mono-font);">12px</code><br />Large radius
   </div>
 </div>
+```
 
 ## Accessibility
 
@@ -7485,7 +6885,7 @@ interface Config {
 
 const configs: Record<string, Config> = {
   development: {
-    apiUrl: 'http://localhost:3000/api',
+    apiUrl: 'http://localhost:3333/api',
     databaseUrl: process.env.DEV_DATABASE_URL!,
     cacheEnabled: false,
     analyticsEnabled: false,
@@ -8322,7 +7722,7 @@ Add security headers:
 
 ```bash
 # .env.local
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SITE_URL=http://localhost:3333
 NEXT_PUBLIC_BACKGROUND_TYPE=wave
 ```
 
@@ -8912,7 +8312,7 @@ Netlify provides automatic HTTPS with Let's Encrypt certificates.
 
 ```bash
 # .env.local
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SITE_URL=http://localhost:3333
 NEXT_PUBLIC_BACKGROUND_TYPE=wave
 ```
 

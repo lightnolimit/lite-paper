@@ -5,8 +5,7 @@ import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react'
 
 import { documentationTree } from '../data/documentation';
 import { useTheme } from '../providers/ThemeProvider';
-
-import { FileItem } from './FileTree';
+import type { FileItem } from '../types/documentation';
 
 // Types for our graph system
 interface GraphNode {

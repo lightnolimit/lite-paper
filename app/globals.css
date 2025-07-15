@@ -67,7 +67,7 @@
   --primary-color: #678d58;
   --secondary-color: #a3c9a8;
   --accent-color: #557153;
-  --background-color: #fafafa;
+  --background-color: #fafbf9;
   --card-color: #ffffff;
   --border-color: #222; /* Main card border (full brightness) */
   --border-soft: #f2f2f2; /* Even lighter border for header/sidebar */
@@ -118,6 +118,32 @@
   --space-10: 2.5rem; /* 40px */
   --space-12: 3rem; /* 48px */
   --space-16: 4rem; /* 64px */
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow: 300ms ease;
+  --transition-colors: color, background-color, border-color, text-decoration-color, fill, stroke;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.07);
+  --shadow-focus: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
+
+  /* Z-index scale */
+  --z-base: 1;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-fixed: 30;
+  --z-modal-backdrop: 40;
+  --z-modal: 50;
 }
 
 .dark {
@@ -142,6 +168,12 @@
   --tag-text-color: #000000; /* Black text on pink bg */
   --link-hover-color: #ff85a1; /* Sakura pink for hovers */
   --button-hover-bg: rgba(255, 133, 161, 0.1); /* Light pink hover */
+
+  /* Dark mode shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-focus: 0 0 0 2px rgba(var(--primary-color-rgb), 0.3);
 }
 
 /* Responsive Typography Scale - Tablet and up */
@@ -179,8 +211,8 @@ body {
   color: var(--text-color);
   background-color: var(--background-color);
   transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+    background-color var(--transition-slow),
+    color var(--transition-slow);
   font-family: var(--body-font);
   font-size: var(--text-base);
   line-height: var(--leading-normal);
@@ -242,6 +274,7 @@ h6,
 *:focus-visible {
   outline: 2px solid var(--primary-color) !important;
   outline-offset: 2px;
+  box-shadow: var(--shadow-focus);
 }
 
 /* Input focus styles with theme colors */
@@ -251,7 +284,7 @@ select:focus {
   outline: 2px solid var(--primary-color) !important;
   outline-offset: 2px;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
+  box-shadow: var(--shadow-focus);
 }
 
 button:focus,
@@ -265,7 +298,7 @@ a:focus-visible {
 .dark input:focus,
 .dark textarea:focus,
 .dark select:focus {
-  box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.3);
+  box-shadow: var(--shadow-focus);
 }
 
 /* Custom Scrollbar */
@@ -280,8 +313,8 @@ a:focus-visible {
 
 ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.2);
-  border-radius: var(--space-3);
-  transition: background 0.2s ease;
+  border-radius: var(--radius-lg);
+  transition: background var(--transition-normal);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -308,8 +341,8 @@ a:focus-visible {
 
 .command-palette-scroll::-webkit-scrollbar-thumb {
   background: rgba(var(--primary-color-rgb), 0.2);
-  border-radius: var(--space-3);
-  transition: background 0.15s ease;
+  border-radius: var(--radius-lg);
+  transition: background var(--transition-fast);
 }
 
 .command-palette-scroll::-webkit-scrollbar-thumb:hover {
@@ -346,10 +379,10 @@ a:focus-visible {
 
 .doc-content-scroll::-webkit-scrollbar-thumb {
   background: rgba(var(--primary-color-rgb), 0);
-  border-radius: var(--space-2);
+  border-radius: var(--radius-lg);
   border: 2px solid transparent;
   background-clip: padding-box;
-  transition: background 0.3s ease;
+  transition: background var(--transition-slow);
 }
 
 /* Show scrollbar on hover of container */
@@ -367,7 +400,7 @@ a:focus-visible {
 .doc-content-scroll {
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
-  transition: scrollbar-color 0.3s ease;
+  transition: scrollbar-color var(--transition-slow);
 }
 
 .doc-content-scroll:hover {
@@ -480,7 +513,7 @@ a:focus-visible {
 .toc-scroll {
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
-  transition: scrollbar-color 0.3s ease;
+  transition: scrollbar-color var(--transition-slow);
 }
 
 .toc-scroll:hover {
@@ -501,8 +534,8 @@ a:focus-visible {
 
 .toc-scroll::-webkit-scrollbar-thumb {
   background: transparent;
-  border-radius: 3px;
-  transition: background 0.3s ease;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-slow);
 }
 
 .toc-scroll:hover::-webkit-scrollbar-thumb {
@@ -525,7 +558,7 @@ a:focus-visible {
 
 /* Navigation link styling */
 .nav-link {
-  transition: color 0.3s ease;
+  transition: color var(--transition-slow);
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -594,7 +627,7 @@ a:focus-visible {
 .notification {
   padding: var(--space-4);
   margin: var(--space-4) 0;
-  border-radius: 12px;
+  border-radius: var(--radius-xl);
   border: 1px solid;
   font-family: var(--mono-font);
   display: flex;
@@ -642,7 +675,7 @@ pre {
   white-space: pre-wrap;
   word-wrap: break-word;
   padding: var(--space-4);
-  border-radius: var(--space-2);
+  border-radius: var(--radius-lg);
   border: 1px solid rgba(var(--primary-color-rgb), 0.15);
   background-color: rgba(0, 0, 0, 0.02);
   margin: var(--space-4) 0;
@@ -662,7 +695,7 @@ code {
   font-size: 0.9em;
   background-color: rgba(0, 0, 0, 0.06);
   padding: var(--space-1) var(--space-2);
-  border-radius: var(--space-1);
+  border-radius: var(--radius-sm);
   color: var(--text-color);
   font-weight: 500;
   letter-spacing: -0.025em;
@@ -864,7 +897,7 @@ code {
 .doc-content a {
   color: var(--primary-color);
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all var(--transition-normal);
   font-weight: 500;
   border-bottom: 1px solid transparent;
 }
@@ -881,18 +914,25 @@ code {
   border-radius: calc(var(--space-1) / 2);
 }
 
-/* Consolidated link styles - use CSS variables for all links */
+/* Base link reset - remove default underlines */
+a {
+  text-decoration: none;
+}
+
+/* Content links - only apply custom styling to content links */
+.doc-content a,
 .prose a,
 .markdown-content a,
 .markdown-link,
 .link-styled {
   color: var(--primary-color) !important;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all var(--transition-normal);
   font-weight: 500;
   border-bottom: 1px solid transparent;
 }
 
+.doc-content a:hover,
 .prose a:hover,
 .markdown-content a:hover,
 .markdown-link:hover,
@@ -902,6 +942,7 @@ code {
   opacity: 0.8;
 }
 
+.doc-content a:focus,
 .prose a:focus,
 .markdown-content a:focus,
 .markdown-link:focus,
@@ -909,6 +950,32 @@ code {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
   border-radius: calc(var(--space-1) / 2);
+}
+
+/* Navigation and UI links - maintain existing color and no underlines */
+nav a,
+header a,
+.social-link,
+.nav-link,
+.logo-link {
+  text-decoration: none !important;
+}
+
+nav a:hover,
+header a:hover,
+.social-link:hover,
+.nav-link:hover,
+.logo-link:hover {
+  text-decoration: none !important;
+}
+
+/* Social link hover effects */
+.social-link:hover {
+  color: var(--primary-color) !important;
+}
+
+.social-link:hover * {
+  color: var(--primary-color) !important;
 }
 
 /* Markdown blockquote styles - used by markdown processor */
@@ -956,7 +1023,7 @@ code {
   padding: var(--space-6) var(--space-10) var(--space-6) var(--space-12);
   margin: var(--space-8) 0;
   background-color: rgba(0, 0, 0, 0.03);
-  border-radius: var(--space-2);
+  border-radius: var(--radius-lg);
   font-style: normal;
   color: var(--text-secondary);
   overflow: visible;
@@ -1203,7 +1270,7 @@ code.wallet-address {
   background-color: rgba(0, 0, 0, 0.05);
   padding: calc(var(--space-2) - 1px) var(--space-3);
   padding-right: var(--space-10);
-  border-radius: var(--space-1);
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border-color);
   position: relative;
   display: inline-block;
@@ -1217,40 +1284,6 @@ code.wallet-address {
 }
 
 /* Copy button styling */
-.copy-button {
-  background-color: rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--border-color);
-  cursor: pointer;
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--space-1);
-  opacity: 0.9;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.dark .copy-button {
-  background-color: rgba(255, 255, 255, 0.15);
-}
-
-.copy-button:hover {
-  opacity: 1;
-  background-color: rgba(0, 0, 0, 0.15);
-}
-
-.dark .copy-button:hover {
-  background-color: rgba(255, 255, 255, 0.25);
-}
-
-.copy-button img {
-  vertical-align: middle;
-}
 
 /* Chain icon styles for wallet addresses */
 .chain-icon-container {
@@ -1444,7 +1477,7 @@ code.wallet-address {
 /* Add rounded border to all markdown images except icons */
 .markdown-content img:not([src*='pixel-']) {
   border: 1px solid var(--border-color);
-  border-radius: var(--space-2);
+  border-radius: var(--radius-lg);
   width: 100%;
   height: auto;
   max-width: 100%;
@@ -1497,6 +1530,9 @@ code.wallet-address {
 }
 
 /* Typography Utility Classes */
+.text-2xs {
+  font-size: 0.625rem; /* 10px */
+}
 .text-xs {
   font-size: var(--text-xs);
 }
@@ -1654,8 +1690,8 @@ select {
 /* Ensure proper color transitions */
 * {
   transition-property:
-    color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
-    transform, filter, backdrop-filter;
+    var(--transition-colors), opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-duration: var(--transition-normal);
 }
 
 /* View Transitions for smooth navigation */
@@ -1692,55 +1728,52 @@ select {
   }
 }
 
-/* Font family overrides */
+/* Font family overrides - more specific targeting to avoid conflicts */
 .font-sans-serif .doc-content,
-.font-sans-serif body,
-.font-sans-serif p,
-.font-sans-serif li,
-.font-sans-serif td,
-.font-sans-serif th {
+.font-sans-serif .doc-content p,
+.font-sans-serif .doc-content li,
+.font-sans-serif .doc-content td,
+.font-sans-serif .doc-content th {
   font-family: var(--body-font) !important;
 }
 
-.font-sans-serif h1,
-.font-sans-serif h2,
-.font-sans-serif h3,
-.font-sans-serif h4,
-.font-sans-serif h5,
-.font-sans-serif h6 {
+.font-sans-serif .doc-content h1,
+.font-sans-serif .doc-content h2,
+.font-sans-serif .doc-content h3,
+.font-sans-serif .doc-content h4,
+.font-sans-serif .doc-content h5,
+.font-sans-serif .doc-content h6 {
   font-family: var(--title-font) !important;
 }
 
 .font-mono .doc-content,
-.font-mono body,
-.font-mono h1,
-.font-mono h2,
-.font-mono h3,
-.font-mono h4,
-.font-mono h5,
-.font-mono h6,
-.font-mono p,
-.font-mono li,
-.font-mono td,
-.font-mono th {
+.font-mono .doc-content h1,
+.font-mono .doc-content h2,
+.font-mono .doc-content h3,
+.font-mono .doc-content h4,
+.font-mono .doc-content h5,
+.font-mono .doc-content h6,
+.font-mono .doc-content p,
+.font-mono .doc-content li,
+.font-mono .doc-content td,
+.font-mono .doc-content th {
   font-family: var(--mono-font) !important;
 }
 
 .font-serif .doc-content,
-.font-serif body,
-.font-serif p,
-.font-serif li,
-.font-serif td,
-.font-serif th {
+.font-serif .doc-content p,
+.font-serif .doc-content li,
+.font-serif .doc-content td,
+.font-serif .doc-content th {
   font-family: var(--serif-font) !important;
 }
 
-.font-serif h1,
-.font-serif h2,
-.font-serif h3,
-.font-serif h4,
-.font-serif h5,
-.font-serif h6 {
+.font-serif .doc-content h1,
+.font-serif .doc-content h2,
+.font-serif .doc-content h3,
+.font-serif .doc-content h4,
+.font-serif .doc-content h5,
+.font-serif .doc-content h6 {
   font-family: 'DM Serif Display', var(--serif-font) !important;
 }
 
@@ -1753,4 +1786,125 @@ select {
 /* Stable layout for main content area */
 .flex-1 {
   contain: layout style;
+}
+
+/* Utility Classes for Better Maintainability */
+
+/* Transition utilities */
+.transition-fast {
+  transition-duration: var(--transition-fast);
+}
+
+.transition-normal {
+  transition-duration: var(--transition-normal);
+}
+
+.transition-slow {
+  transition-duration: var(--transition-slow);
+}
+
+.transition-colors {
+  transition-property: var(--transition-colors);
+}
+
+/* Border radius utilities */
+.radius-sm {
+  border-radius: var(--radius-sm);
+}
+
+.radius-md {
+  border-radius: var(--radius-md);
+}
+
+.radius-lg {
+  border-radius: var(--radius-lg);
+}
+
+.radius-xl {
+  border-radius: var(--radius-xl);
+}
+
+/* Shadow utilities */
+.shadow-sm {
+  box-shadow: var(--shadow-sm);
+}
+
+.shadow-md {
+  box-shadow: var(--shadow-md);
+}
+
+.shadow-lg {
+  box-shadow: var(--shadow-lg);
+}
+
+.shadow-focus {
+  box-shadow: var(--shadow-focus);
+}
+
+/* Z-index utilities */
+.z-base {
+  z-index: var(--z-base);
+}
+
+.z-dropdown {
+  z-index: var(--z-dropdown);
+}
+
+.z-sticky {
+  z-index: var(--z-sticky);
+}
+
+.z-fixed {
+  z-index: var(--z-fixed);
+}
+
+.z-modal-backdrop {
+  z-index: var(--z-modal-backdrop);
+}
+
+.z-modal {
+  z-index: var(--z-modal);
+}
+
+/* Common interactive element styling */
+.interactive-element {
+  transition: var(--transition-colors) var(--transition-normal);
+  border-radius: var(--radius-sm);
+}
+
+.interactive-element:hover {
+  color: var(--primary-color);
+}
+
+.interactive-element:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Card-like elements */
+.card {
+  background-color: var(--card-color);
+  border: 1px solid var(--border-unified);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-normal);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* Muted text utility */
+.text-muted {
+  color: var(--muted-color);
+}
+
+/* Theme-aware text colors */
+.text-primary {
+  color: var(--primary-color);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
 }

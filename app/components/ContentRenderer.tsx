@@ -7,8 +7,8 @@ import { useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';
 
 import { documentationTree } from '../data/documentation';
+import type { FileItem } from '../types/documentation';
 
-import { FileItem } from './FileTree';
 import MarkdownRenderer from './MarkdownRenderer';
 
 /**

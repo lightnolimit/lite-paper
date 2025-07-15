@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { processLinks, processWalletAddresses } from '../utils/contentProcessor';
 import logger from '../utils/logger';
-import { processMarkdown, CodeBlockData } from '../utils/markdown-processor';
+import { processMarkdown, CodeBlockData } from '../utils/MarkdownProcessor';
 
 import CodeBlock from './CodeBlock';
 import ColorPalette from './ColorPalette';

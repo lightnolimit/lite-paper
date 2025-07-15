@@ -140,7 +140,7 @@ const SettingsMenu = React.memo(
     const headingStyle = useMemo(
       () => ({
         color: 'var(--muted-color)',
-        fontFamily: "'MapleMono', 'SF Mono', 'Monaco', 'Consolas', monospace",
+        fontFamily: "'MapleMono', 'SF Mono', 'Monaco', 'Consolas', monospace !important",
         marginTop: '0',
       }),
       []
@@ -204,12 +204,12 @@ const SettingsMenu = React.memo(
               <div className="flex flex-col items-start justify-start space-y-2">
                 {/* Theme section */}
                 <div className="w-full">
-                  <h3 className="text-sm font-medium mb-1" style={headingStyle}>
+                  <h3 className="text-2xs mb-1" style={headingStyle}>
                     APPEARANCE
                   </h3>
                   <div className="flex items-center justify-between mb-2">
                     <span
-                      className="text-sm"
+                      className="text-2xs"
                       style={{ ...textStyle, fontFamily: 'var(--mono-font)' }}
                     >
                       theme
@@ -218,7 +218,7 @@ const SettingsMenu = React.memo(
                   </div>
                   <div className="flex items-center justify-between mb-2">
                     <span
-                      className="text-sm"
+                      className="text-2xs"
                       style={{ ...textStyle, fontFamily: 'var(--mono-font)' }}
                     >
                       motion
@@ -227,7 +227,7 @@ const SettingsMenu = React.memo(
                   </div>
                   <div className="flex items-center justify-between">
                     <span
-                      className="text-sm"
+                      className="text-2xs"
                       style={{ ...textStyle, fontFamily: 'var(--mono-font)' }}
                     >
                       font
