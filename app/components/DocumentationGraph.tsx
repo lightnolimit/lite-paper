@@ -20,6 +20,7 @@ interface GraphNode {
   connections: string[];
   visible: boolean;
   searchRelevance: number; // 0-1, for search scoring
+  tags?: string[];
 }
 
 interface GraphLink {
@@ -27,6 +28,7 @@ interface GraphLink {
   target: string;
   strength: number;
   visible: boolean;
+  linkType: 'structural' | 'tag'; // structural = folder hierarchy, tag = shared tags
 }
 
 interface DocumentationGraphProps {
@@ -118,6 +120,7 @@ export default function DocumentationGraph({
           connections: [],
           visible: false, // Initially hidden
           searchRelevance: 0,
+          tags: item.tags,
         };
 
         // Create parent-child connections
@@ -128,6 +131,7 @@ export default function DocumentationGraph({
             target: nodeId,
             strength: 1,
             visible: false,
+            linkType: 'structural',
           });
         }
 
@@ -170,12 +174,62 @@ export default function DocumentationGraph({
             target: node2.id,
             strength: 0.7,
             visible: false,
+            linkType: 'structural',
           });
         }
       });
     };
 
     createLogicalConnections();
+
+    // Create tag-based connections
+    const createTagConnections = () => {
+      // Find all nodes with tags
+      const nodesWithTags = extractedNodes.filter((node) => node.tags && node.tags.length > 0);
+
+      // Create connections between nodes that share tags
+      for (let i = 0; i < nodesWithTags.length; i++) {
+        for (let j = i + 1; j < nodesWithTags.length; j++) {
+          const node1 = nodesWithTags[i];
+          const node2 = nodesWithTags[j];
+
+          // Check if they share any tags
+          const sharedTags = node1.tags!.filter((tag) => node2.tags!.includes(tag));
+
+          if (sharedTags.length > 0) {
+            // Don't duplicate if already connected structurally
+            const existingLink = extractedLinks.find(
+              (link) =>
+                (link.source === node1.id && link.target === node2.id) ||
+                (link.source === node2.id && link.target === node1.id)
+            );
+
+            if (!existingLink) {
+              // Add bidirectional connections
+              if (!node1.connections.includes(node2.id)) {
+                node1.connections.push(node2.id);
+              }
+              if (!node2.connections.includes(node1.id)) {
+                node2.connections.push(node1.id);
+              }
+
+              // Strength based on number of shared tags
+              const strength = Math.min(0.3 + sharedTags.length * 0.2, 0.9);
+
+              extractedLinks.push({
+                source: node1.id,
+                target: node2.id,
+                strength,
+                visible: false,
+                linkType: 'tag',
+              });
+            }
+          }
+        }
+      }
+    };
+
+    createTagConnections();
 
     return { graphNodes: extractedNodes, graphLinks: extractedLinks };
   }, [dimensions]);
@@ -692,17 +746,21 @@ export default function DocumentationGraph({
                   y1={sourceNode.y}
                   x2={targetNode.x}
                   y2={targetNode.y}
-                  stroke={themeColors.connected}
+                  stroke={link.linkType === 'tag' ? themeColors.accent : themeColors.connected}
                   strokeWidth={isSidebarView ? 1 : 1.5}
-                  strokeOpacity={0.6}
+                  strokeOpacity={link.linkType === 'tag' ? 0.4 : 0.6}
+                  strokeDasharray={link.linkType === 'tag' ? '4,4' : undefined}
                   initial={{
                     pathLength: prefersReducedMotion ? 1 : 0,
-                    opacity: prefersReducedMotion ? 0.6 : 0,
+                    opacity: prefersReducedMotion ? (link.linkType === 'tag' ? 0.4 : 0.6) : 0,
                   }}
-                  animate={{ pathLength: 1, opacity: 0.6 }}
+                  animate={{
+                    pathLength: 1,
+                    opacity: link.linkType === 'tag' ? 0.4 : 0.6,
+                  }}
                   exit={{
                     pathLength: prefersReducedMotion ? 1 : 0,
-                    opacity: prefersReducedMotion ? 0.6 : 0,
+                    opacity: prefersReducedMotion ? (link.linkType === 'tag' ? 0.4 : 0.6) : 0,
                   }}
                   transition={{
                     duration: prefersReducedMotion ? 0.01 : 0.8,
@@ -924,7 +982,7 @@ export default function DocumentationGraph({
 
       {/* Compact legend */}
       <div
-        className={`graph-legend mt-2 flex justify-center gap-3 text-xs opacity-75 ${
+        className={`graph-legend mt-2 flex flex-wrap justify-center gap-3 text-xs opacity-75 ${
           isSidebarView ? 'text-xs' : 'text-sm'
         }`}
       >
@@ -942,6 +1000,34 @@ export default function DocumentationGraph({
             style={{ fontSize: isSidebarView ? '9px' : '11px', fontFamily: 'var(--mono-font)' }}
           >
             Current
+          </span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div
+            className="w-6 h-0"
+            style={{
+              borderTop: `1px solid ${themeColors.connected}`,
+              opacity: 0.6,
+            }}
+          />
+          <span
+            style={{ fontSize: isSidebarView ? '9px' : '11px', fontFamily: 'var(--mono-font)' }}
+          >
+            Folder
+          </span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div
+            className="w-6 h-0"
+            style={{
+              borderTop: `1px dashed ${themeColors.accent}`,
+              opacity: 0.4,
+            }}
+          />
+          <span
+            style={{ fontSize: isSidebarView ? '9px' : '11px', fontFamily: 'var(--mono-font)' }}
+          >
+            Tags
           </span>
         </div>
         {searchTerm && (

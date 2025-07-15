@@ -16,6 +16,7 @@ export type FileItem = {
   type: 'file' | 'directory';
   children?: FileItem[];
   expanded?: boolean;
+  tags?: string[];
 };
 
 type FileTreeProps = {
@@ -114,7 +115,11 @@ const FileTreeItem: React.FC<FileTreeItemProps> = React.memo(
 
     // Use standard depth for the container, but only apply padding for nested items (depth > 1)
     return (
-      <div style={{ paddingLeft: depth > 1 ? `${(depth - 1) * 12 + 1}px` : '0px' }}>
+      <div
+        style={{
+          paddingLeft: depth > 1 ? `${(depth - 1) * 12 + (item.type === 'file' ? 1 : 0)}px` : '0px',
+        }}
+      >
         <div
           className={`${styles.fileTreeItem} flex items-center py-0.5 ${isActive ? 'active' : ''}`}
           onClick={handleClick}
