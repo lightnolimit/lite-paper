@@ -203,7 +203,7 @@ export default function CommandPalette({ isOpen, onClose }: CommandPaletteProps)
         return 0;
       })
       .slice(0, 8);
-  }, [query, searchIndex]);
+  }, [query, searchIndex, completeSearchIndex]);
 
   // Define handleSelect before it's used
   const handleSelect = useCallback(

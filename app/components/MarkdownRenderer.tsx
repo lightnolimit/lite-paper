@@ -10,6 +10,7 @@ import { processMarkdown, CodeBlockData } from '../utils/markdown-processor';
 
 import CodeBlock from './CodeBlock';
 import ColorPalette from './ColorPalette';
+import LiveExample from './LiveExample';
 
 const componentLogger = logger;
 
@@ -197,6 +198,36 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
             });
         } catch (error) {
           logger.error('Error parsing color palette data:', error);
+        }
+      }
+    });
+
+    // Handle live example placeholders
+    const liveExamplePlaceholders = contentRef.current.querySelectorAll('[data-liveexample-id]');
+
+    liveExamplePlaceholders.forEach((placeholder) => {
+      const language = placeholder.getAttribute('data-language');
+      const encodedCode = placeholder.getAttribute('data-code');
+
+      if (language && encodedCode) {
+        try {
+          const code = decodeURIComponent(encodedCode);
+
+          // Create a container for the React component
+          const container = document.createElement('div');
+          placeholder.parentNode?.replaceChild(container, placeholder);
+
+          // Use createRoot for React 18+
+          import('react-dom/client')
+            .then(({ createRoot }) => {
+              const root = createRoot(container);
+              root.render(<LiveExample code={code} language={language} />);
+            })
+            .catch(() => {
+              logger.warn('Could not load React 18 createRoot, this should not happen');
+            });
+        } catch (error) {
+          logger.error('Error processing live example:', error);
         }
       }
     });

@@ -57,6 +57,14 @@ renderer.code = function (token: { text: string; lang?: string; escaped?: boolea
     }
   }
 
+  // Handle live example code blocks
+  if (language === 'html' || language === 'css') {
+    // Store the live example data
+    const liveExampleId = `liveexample-${Math.random().toString(36).substr(2, 9)}`;
+    // Return a placeholder that we'll replace with LiveExample component
+    return `<div data-liveexample-id="${liveExampleId}" data-language="${language}" data-code="${encodeURIComponent(code)}" class="live-example-placeholder"></div>`;
+  }
+
   // Handle multi-language code blocks (custom syntax)
   if (language.includes('|')) {
     // Format: javascript|TypeScript|python with optional labels
@@ -156,6 +164,8 @@ export const processMarkdown = async (
         'img',
         'div',
         'span',
+        'i',
+        'button',
       ],
       ALLOWED_ATTR: [
         'href',
@@ -167,10 +177,16 @@ export const processMarkdown = async (
         'data-codeblock-id',
         'data-address',
         'data-processed',
+        'data-liveexample-id',
+        'data-language',
+        'data-code',
+        'data-colorpalette-id',
+        'data-palette',
         'tabindex',
         'aria-label',
         'width',
         'height',
+        'style',
       ],
       ALLOWED_URI_REGEXP:
         /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp|\/docs\/):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
