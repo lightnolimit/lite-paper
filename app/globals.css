@@ -110,6 +110,22 @@
   --mindmap-node-search: #b8860b; /* Search highlight color */
   --mindmap-legend-text: #6e7d61; /* Legend text color */
 
+  /* Animation and interaction colors */
+  --animation-text-color: #000000; /* Dark text for animations */
+  --selection-bg-color: #678d58; /* Selection background */
+  --selection-text-color: #ffffff; /* Selection text */
+
+  /* Status and feedback colors */
+  --success-color: #22c55e; /* Success green */
+  --warning-color: #f59e0b; /* Warning amber */
+  --error-color: #ef4444; /* Error red */
+  --info-color: #3b82f6; /* Info blue */
+
+  /* Surface and overlay colors */
+  --surface-color: #ffffff; /* General surface color */
+  --overlay-color: rgba(0, 0, 0, 0.5); /* Modal overlay */
+  --focus-ring-color: rgba(103, 141, 88, 0.3); /* Focus ring */
+
   /* Typography Scale - Mobile First */
   --text-xs: 0.75rem; /* 12px */
   --text-sm: 0.875rem; /* 14px */
@@ -210,6 +226,22 @@
   --mindmap-node-current: #ff6b9d; /* Current node color */
   --mindmap-node-search: #ffcc99; /* Search highlight color */
   --mindmap-legend-text: #9c9caf; /* Legend text color */
+
+  /* Animation and interaction colors */
+  --animation-text-color: #ffffff; /* Light text for animations */
+  --selection-bg-color: #ff85a1; /* Selection background */
+  --selection-text-color: #000000; /* Selection text */
+
+  /* Status and feedback colors */
+  --success-color: #10b981; /* Success green */
+  --warning-color: #fbbf24; /* Warning amber */
+  --error-color: #f87171; /* Error red */
+  --info-color: #60a5fa; /* Info blue */
+
+  /* Surface and overlay colors */
+  --surface-color: #1a1a1f; /* General surface color */
+  --overlay-color: rgba(0, 0, 0, 0.8); /* Modal overlay */
+  --focus-ring-color: rgba(255, 133, 161, 0.3); /* Focus ring */
 
   /* Dark mode shadows */
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);

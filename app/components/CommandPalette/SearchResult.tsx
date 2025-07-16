@@ -26,7 +26,7 @@ interface SearchResultProps {
 
 const SearchResult: React.FC<SearchResultProps> = React.memo(
   ({ result, index, isSelected, onSelect, onMouseEnter }) => {
-    const { isDarkMode } = useTheme();
+    const { isDarkMode: _isDarkMode } = useTheme();
 
     return (
       <motion.button
@@ -64,7 +64,7 @@ const SearchResult: React.FC<SearchResultProps> = React.memo(
               style={{
                 borderColor: isSelected ? 'var(--primary-color)' : 'var(--border-color)',
                 backgroundColor: isSelected ? 'var(--primary-color)' : 'var(--hover-color)',
-                color: isSelected ? (isDarkMode ? '#000' : '#fff') : 'var(--text-color)',
+                color: isSelected ? 'var(--selection-text-color)' : 'var(--text-color)',
               }}
             >
               {result.shortcut === 'T'
@@ -79,7 +79,7 @@ const SearchResult: React.FC<SearchResultProps> = React.memo(
               className="text-xs px-2 py-1 rounded"
               style={{
                 backgroundColor: 'var(--primary-color)',
-                color: isDarkMode ? '#000' : '#fff',
+                color: 'var(--selection-text-color)',
                 fontFamily: 'var(--mono-font)',
               }}
             >
@@ -91,7 +91,7 @@ const SearchResult: React.FC<SearchResultProps> = React.memo(
               className="text-xs px-2 py-1 rounded"
               style={{
                 backgroundColor: 'var(--secondary-color)',
-                color: isDarkMode ? '#000' : '#fff',
+                color: 'var(--selection-text-color)',
                 fontFamily: 'var(--mono-font)',
               }}
             >
