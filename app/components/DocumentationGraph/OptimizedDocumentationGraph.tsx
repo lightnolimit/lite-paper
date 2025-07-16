@@ -54,31 +54,18 @@ export default function OptimizedDocumentationGraph({
     currentPath
   );
 
-  // Theme-aware color scheme
+  // Theme-aware color scheme - consistent between server and client
   const themeColors = useMemo(() => {
-    if (isDarkMode) {
-      return {
-        primary: '#FF85A1',
-        secondary: '#FFC4DD',
-        accent: '#FF4989',
-        connected: '#FFB3C6',
-        current: '#FF6B9D',
-        search: '#FFCC99',
-        muted: '#9C9CAF',
-        background: '#0F0F12',
-      };
-    } else {
-      return {
-        primary: '#678D58',
-        secondary: '#A3C9A8',
-        accent: '#2D4A2A',
-        connected: '#8FB287',
-        current: '#4A6B42',
-        search: '#B8860B',
-        muted: '#6E7D61',
-        background: '#F3F5F0',
-      };
-    }
+    return {
+      primary: isDarkMode ? '#FF85A1' : '#678D58',
+      secondary: isDarkMode ? '#FFC4DD' : '#A3C9A8',
+      accent: isDarkMode ? '#FF4989' : '#2D4A2A',
+      connected: isDarkMode ? '#FFB3C6' : '#8FB287',
+      current: isDarkMode ? '#FF6B9D' : '#4A6B42',
+      search: isDarkMode ? '#FFCC99' : '#B8860B',
+      muted: isDarkMode ? '#9C9CAF' : '#6E7D61',
+      background: isDarkMode ? '#1A1A1F' : '#F3F5F0',
+    };
   }, [isDarkMode]);
 
   // Update node visibility based on current focus and search
@@ -330,11 +317,14 @@ export default function OptimizedDocumentationGraph({
           type="text"
           placeholder={isSidebarView ? 'Search docs...' : 'Search documents...'}
           onChange={handleSearchChange}
-          className={`w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-opacity-50 ${
+          className={`w-full px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-opacity-50 ${
             isSidebarView ? 'text-xs py-1 px-2' : 'text-sm'
           }`}
           style={{
             fontFamily: 'var(--mono-font)',
+            backgroundColor: 'var(--toc-bg-color)',
+            borderColor: 'var(--toc-border-color)',
+            color: 'var(--mindmap-text-color)',
           }}
         />
       </div>
@@ -351,7 +341,8 @@ export default function OptimizedDocumentationGraph({
           style={{
             fontSize: isSidebarView ? '8px' : '10px',
             fontFamily: 'var(--mono-font)',
-            color: isDarkMode ? 'rgba(240, 240, 245, 0.4)' : 'rgba(46, 58, 35, 0.4)',
+            color: 'var(--toc-text-color)',
+            opacity: 0.4,
           }}
         >
           mind-map {scale !== 1 ? `(${Math.round(scale * 100)}%)` : ''}
@@ -439,7 +430,6 @@ export default function OptimizedDocumentationGraph({
 
       {/* Legend */}
       <GraphLegend
-        themeColors={themeColors}
         searchTerm={searchTerm}
         searchResults={searchResults}
         isSidebarView={isSidebarView}

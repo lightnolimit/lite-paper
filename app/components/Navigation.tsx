@@ -120,14 +120,14 @@ export default function Navigation({
         color: [
           'var(--primary-color)',
           'transparent',
-          isDarkMode ? '#FFF' : '#000',
+          'var(--animation-text-color)',
           'transparent',
           'transparent',
           'var(--primary-color)',
           'transparent',
           'transparent',
           'transparent',
-          isDarkMode ? '#FFF' : '#000',
+          'var(--animation-text-color)',
           'var(--primary-color)',
         ],
         transition: {
@@ -147,7 +147,7 @@ export default function Navigation({
         },
       },
     };
-  }, [isDarkMode, prefersReducedMotion]);
+  }, [prefersReducedMotion]);
 
   const rightBracketVariants = useMemo(() => {
     if (prefersReducedMotion) {
@@ -170,14 +170,14 @@ export default function Navigation({
         color: [
           'var(--primary-color)',
           'transparent',
-          isDarkMode ? '#FFF' : '#000',
+          'var(--animation-text-color)',
           'transparent',
           'transparent',
           'var(--primary-color)',
           'transparent',
           'transparent',
           'transparent',
-          isDarkMode ? '#FFF' : '#000',
+          'var(--animation-text-color)',
           'var(--primary-color)',
         ],
         transition: {
@@ -197,7 +197,7 @@ export default function Navigation({
         },
       },
     };
-  }, [isDarkMode, prefersReducedMotion]);
+  }, [prefersReducedMotion]);
 
   // Memoized mobile menu variants (simplified if motion is reduced)
   const mobileMenuVariants = useMemo(() => {
