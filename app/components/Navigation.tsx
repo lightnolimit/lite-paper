@@ -45,7 +45,6 @@ type NavItem = {
  * Main navigation links
  */
 const navItems: NavItem[] = [
-  { label: 'Repository', href: 'https://github.com/lightnolimit/lite-paper' },
   { label: 'Design System', href: '/docs/developer-guides/design-system' },
   { label: 'Deployment', href: '/docs/deployment/overview' },
   { label: 'AI/LLMs', href: '/llms' },
@@ -360,9 +359,8 @@ export default function Navigation({
               style={{ borderColor: 'var(--border-color)' }}
             >
               {typeof navigator !== 'undefined' && navigator.platform?.toLowerCase().includes('mac')
-                ? '⌘'
-                : 'Ctrl'}
-              K
+                ? '⌘ + K'
+                : 'Ctrl + K'}
             </kbd>
           </button>
 

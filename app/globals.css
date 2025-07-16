@@ -803,7 +803,7 @@ code {
 }
 
 .doc-content h1 {
-  font-size: var(--text-3xl);
+  font-size: var(--text-2xl);
   padding-bottom: var(--space-3);
   margin-bottom: var(--space-4);
   margin-top: 0.25rem;
@@ -814,7 +814,7 @@ code {
 }
 
 .doc-content h2 {
-  font-size: var(--text-2xl);
+  font-size: var(--text-xl);
   padding-bottom: var(--space-2);
   border-bottom: 1px solid var(--border-unified);
   margin-top: var(--space-12);
@@ -824,7 +824,7 @@ code {
 }
 
 .doc-content h3 {
-  font-size: var(--text-xl);
+  font-size: var(--text-lg);
   margin-top: var(--space-10);
   margin-bottom: var(--space-3);
   font-weight: 600;
@@ -832,7 +832,7 @@ code {
 }
 
 .doc-content h4 {
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
   margin-top: var(--space-8);
   margin-bottom: var(--space-3);
   font-weight: 600;
@@ -840,7 +840,7 @@ code {
 }
 
 .doc-content h5 {
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
   margin-top: var(--space-6);
   margin-bottom: var(--space-3);
   font-weight: 600;
@@ -861,14 +861,14 @@ code {
   font-family: var(--body-font);
   margin-bottom: var(--space-6);
   line-height: var(--leading-loose);
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
   color: var(--text-color);
   max-width: none;
 }
 
 /* Enhanced first paragraph for better reading flow */
 .doc-content > p:first-of-type {
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
   line-height: var(--leading-loose);
   margin-bottom: var(--space-8);
   color: var(--text-color);
@@ -1003,7 +1003,7 @@ header a:hover,
 .doc-content li {
   margin-bottom: var(--space-2);
   font-family: var(--body-font);
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
   line-height: var(--leading-loose);
   color: var(--text-color);
 }
@@ -1661,14 +1661,14 @@ code.wallet-address {
 
 /* Navigation typography */
 .nav-link {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   font-weight: 500;
 }
 
 /* Mobile navigation adjustments */
 @media (max-width: 767px) {
   .nav-link {
-    font-size: var(--text-base);
+    font-size: var(--text-sm);
     padding: var(--space-2) var(--space-4);
   }
 }
