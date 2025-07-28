@@ -91,7 +91,7 @@
 
 .dark .fileTreeItem:hover svg,
 .dark .fileTreeItem:focus svg {
-  color: #ff85a1; /* Sakura pink */
+  color: var(--primary-color);
 }
 
 .fileTreeItem.active svg {
@@ -99,7 +99,7 @@
 }
 
 .dark .fileTreeItem.active svg {
-  color: #ff85a1; /* Sakura pink */
+  color: var(--primary-color);
 }
 
 /* Reduced motion styles for file tree */

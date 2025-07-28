@@ -50,22 +50,44 @@ function TableOfContents({
   if (headings.length === 0) return null;
 
   return (
-    <div className="bg-[#f3f5f0] dark:bg-[#18151a] rounded-lg border border-gray-200 dark:border-gray-700 p-4 max-h-96 overflow-hidden flex flex-col">
+    <div
+      className="rounded-lg border p-4 max-h-96 overflow-hidden flex flex-col"
+      style={{
+        backgroundColor: 'var(--toc-bg-color)',
+        borderColor: 'var(--toc-border-color)',
+      }}
+    >
       <div className="flex items-center justify-between mb-3 flex-shrink-0">
         <h4
-          className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide"
-          style={{ fontFamily: 'var(--mono-font)' }}
+          className="text-xs font-semibold uppercase tracking-wide"
+          style={{
+            fontFamily: 'var(--mono-font)',
+            color: 'var(--toc-text-color)',
+          }}
         >
           On This Page
         </h4>
         <button
           onClick={onToggleRightSidebar}
-          className="flex items-center justify-center w-6 h-6 rounded-md bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors border border-gray-300 dark:border-gray-600"
+          className="flex items-center justify-center w-6 h-6 rounded-md transition-colors border"
+          style={{
+            backgroundColor: 'var(--toc-button-bg)',
+            borderColor: 'var(--toc-border-color)',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--toc-button-hover-bg)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--toc-button-bg)';
+          }}
           aria-label="Show documentation map"
         >
           <Icon
             icon="mingcute:brain-line"
-            className="w-3.5 h-3.5 text-gray-600 dark:text-gray-400"
+            className="w-3.5 h-3.5"
+            style={{
+              color: 'var(--toc-text-color)',
+            }}
           />
         </button>
       </div>
@@ -74,11 +96,18 @@ function TableOfContents({
           <a
             key={index}
             href={`#${heading.id}`}
-            className="block text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors py-1"
+            className="block text-sm transition-colors py-1"
             style={{
               fontFamily: 'var(--mono-font)',
               paddingLeft: `${(heading.level - 1) * 12}px`,
               fontSize: heading.level === 1 ? '13px' : '12px',
+              color: 'var(--toc-text-color)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'var(--toc-text-hover-color)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'var(--toc-text-color)';
             }}
           >
             {heading.text}
@@ -409,13 +438,21 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                 animate={{ opacity: 1, width: 'auto' }}
                 exit={{ opacity: 0, width: 0 }}
                 transition={{ duration: prefersReducedMotion ? 0.05 : 0.3 }}
-                className="hidden lg:block shrink-0 h-full overflow-hidden border-l border-gray-300 dark:border-gray-700 bg-[#f3f5f0] dark:bg-[#18151a]"
+                className="hidden lg:block shrink-0 h-full overflow-hidden border-l"
+                style={{
+                  backgroundColor: 'var(--mindmap-bg-color)',
+                  borderColor: 'var(--mindmap-border-color)',
+                }}
               >
                 <div className="w-72 xl:w-80 h-full flex flex-col p-4">
                   <div className="mb-2">
                     <h3
-                      className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 font-mono"
-                      style={{ fontFamily: 'var(--mono-font) !important', marginTop: '1px' }}
+                      className="text-sm font-semibold mb-1 font-mono"
+                      style={{
+                        fontFamily: 'var(--mono-font) !important',
+                        marginTop: '1px',
+                        color: 'var(--mindmap-text-color)',
+                      }}
                     >
                       Interactive Map
                     </h3>
@@ -431,7 +468,12 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                   </div>
 
                   {/* Footer with social icons and copyright */}
-                  <div className="flex-shrink-0 pt-4 border-t border-gray-200 dark:border-gray-800">
+                  <div
+                    className="flex-shrink-0 pt-4 border-t"
+                    style={{
+                      borderColor: 'var(--mindmap-border-color)',
+                    }}
+                  >
                     {/* Social Icons */}
                     <div className="flex items-center justify-center gap-3 mb-3">
                       {socialLinks.map((link) => (
@@ -443,7 +485,7 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                           aria-label={link.name}
                           className={`social-link ${UI_CLASSES.button}`}
                           style={{
-                            color: 'var(--muted-color)',
+                            color: 'var(--toc-text-color)',
                           }}
                         >
                           <div className="w-5 h-5">{link.icon}</div>
@@ -454,8 +496,11 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
                     {/* Copyright */}
                     <div className="text-center">
                       <p
-                        className="text-xs text-gray-400 dark:text-gray-600 font-mono"
-                        style={{ fontFamily: 'var(--mono-font) !important' }}
+                        className="text-xs font-mono"
+                        style={{
+                          fontFamily: 'var(--mono-font) !important',
+                          color: 'var(--toc-text-color)',
+                        }}
                       >
                         © 2024 @lightnolimit
                       </p>
@@ -484,13 +529,25 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 100, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="absolute inset-x-4 bottom-4 top-24 bg-white dark:bg-gray-900 rounded-lg shadow-xl p-4"
+              className="absolute inset-x-4 bottom-4 top-24 rounded-lg shadow-xl p-4"
+              style={{
+                backgroundColor: 'var(--mindmap-bg-color)',
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close button */}
               <button
                 onClick={() => setMobileMapVisible(false)}
-                className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                className="absolute top-4 right-4 p-2 rounded-full transition-colors"
+                style={{
+                  backgroundColor: 'transparent',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--toc-button-hover-bg)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
                 aria-label="Close mind map"
               >
                 <Icon icon="mingcute:close-line" className="w-5 h-5" />
@@ -499,7 +556,10 @@ const DocumentationPage = React.memo(({ initialContent, currentPath }: Documenta
               {/* Title */}
               <h3
                 className="text-lg font-semibold mb-4 font-mono"
-                style={{ fontFamily: 'var(--mono-font) !important' }}
+                style={{
+                  fontFamily: 'var(--mono-font) !important',
+                  color: 'var(--mindmap-text-color)',
+                }}
               >
                 Interactive Map
               </h3>
